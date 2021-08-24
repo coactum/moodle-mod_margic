@@ -17,7 +17,7 @@
 /**
  * Capability definitions for this module.
  *
- * @package   mod_diary
+ * @package   mod_annotateddiary
  * @copyright 2020 AL Rachels <drachels@drachels.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -25,7 +25,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $capabilities = array(
 
-    'mod/diary:manageentries' => array(
+    'mod/annotateddiary:manageentries' => array(
 
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
@@ -36,7 +36,7 @@ $capabilities = array(
         )
     ),
 
-    'mod/diary:rate' => array(
+    'mod/annotateddiary:rate' => array(
 
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
@@ -47,7 +47,7 @@ $capabilities = array(
         )
     ),
 
-    'mod/diary:addentries' => array(
+    'mod/annotateddiary:addentries' => array(
 
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
@@ -59,7 +59,7 @@ $capabilities = array(
         )
     ),
 
-    'mod/diary:addinstance' => array(
+    'mod/annotateddiary:addinstance' => array(
         'riskbitmask' => RISK_XSS,
 
         'captype' => 'write',
@@ -69,5 +69,26 @@ $capabilities = array(
             'manager' => CAP_ALLOW
         ),
         'clonepermissionsfrom' => 'moodle/course:manageactivities'
+    ),
+
+    'mod/annotateddiary:makeannotations' => array(
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_MODULE,
+        'archetypes' => array(
+            'teacher' => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW,
+            'manager' => CAP_ALLOW
+        )
+    ),
+
+    'mod/annotateddiary:viewannotations' => array(
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_MODULE,
+        'archetypes' => array(
+            'student' => CAP_ALLOW,
+            'teacher' => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW,
+            'manager' => CAP_ALLOW
+        )
     )
 );
