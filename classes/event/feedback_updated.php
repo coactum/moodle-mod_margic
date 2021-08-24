@@ -15,20 +15,20 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The mod_diary feedback updated event.
+ * The mod_annotateddiary feedback updated event.
  *
- * @package   mod_diary
+ * @package   mod_annotateddiary
  * @copyright 2014 drachels@drachels.com
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-namespace mod_diary\event;
+namespace mod_annotateddiary\event;
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * The mod_diary feedback updated class.
+ * The mod_annotateddiary feedback updated class.
  *
- * @package   mod_diary
+ * @package   mod_annotateddiary
  * @since     Moodle 2.7
  * @copyright 2014 drachels@drachels.com
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -41,7 +41,7 @@ class feedback_updated extends \core\event\base {
     protected function init() {
         $this->data['crud'] = 'u';
         $this->data['edulevel'] = self::LEVEL_TEACHING;
-        $this->data['objecttable'] = 'diary';
+        $this->data['objecttable'] = 'annotateddiary';
     }
 
     /**
@@ -50,7 +50,7 @@ class feedback_updated extends \core\event\base {
      * @return string
      */
     public static function get_name() {
-        return get_string('eventfeedbackupdated', 'mod_diary');
+        return get_string('eventfeedbackupdated', 'mod_annotateddiary');
     }
 
     /**
@@ -59,7 +59,7 @@ class feedback_updated extends \core\event\base {
      * @return string
      */
     public function get_description() {
-        return "The user with id '$this->userid' has updated feedback for the diary activity with the course module id
+        return "The user with id '$this->userid' has updated feedback for the annotateddiary activity with the course module id
             '$this->contextinstanceid'";
     }
 
@@ -69,7 +69,7 @@ class feedback_updated extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/diary/report.php', array(
+        return new \moodle_url('/mod/annotateddiary/report.php', array(
             'id' => $this->contextinstanceid
         ));
     }
@@ -85,7 +85,7 @@ class feedback_updated extends \core\event\base {
         ));
         return array(
             $this->courseid,
-            'diary',
+            'annotateddiary',
             'report',
             $url->out(),
             $this->objectid,

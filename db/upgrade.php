@@ -17,29 +17,29 @@
 /**
  * Upgrade code for install
  *
- * @package   mod_diary
+ * @package   mod_annotateddiary
  * @copyright 2019 AL Rachels drachels@drachels.com
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/diary/lib.php');
+require_once($CFG->dirroot . '/mod/annotateddiary/lib.php');
 
 /**
- * Upgrade this diary instance - this function could be skipped but it will be needed later.
+ * Upgrade this annotateddiary instance - this function could be skipped but it will be needed later.
  *
  * @param int $oldversion
- *            The old version of the diary module
+ *            The old version of the annotateddiary module
  * @return bool
  */
-function xmldb_diary_upgrade($oldversion = 0) {
+function xmldb_annotateddiary_upgrade($oldversion = 0) {
     global $CFG, $DB;
     $dbman = $DB->get_manager();
 
     if ($oldversion < 2020090200) {
 
-        // Define field timeopen to be added to diary.
-        $table = new xmldb_table('diary');
+        // Define field timeopen to be added to annotateddiary.
+        $table = new xmldb_table('annotateddiary');
         $field = new xmldb_field('timeopen', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'timemodified');
 
         // Conditionally launch add field timeopen.
@@ -47,8 +47,8 @@ function xmldb_diary_upgrade($oldversion = 0) {
             $dbman->add_field($table, $field);
         }
 
-        // Define field timeclose to be added to diary.
-        $table = new xmldb_table('diary');
+        // Define field timeclose to be added to annotateddiary.
+        $table = new xmldb_table('annotateddiary');
         $field = new xmldb_field('timeclose', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'timeopen');
 
         // Conditionally launch add field timeclose.
@@ -56,13 +56,13 @@ function xmldb_diary_upgrade($oldversion = 0) {
             $dbman->add_field($table, $field);
         }
 
-        // Diary savepoint reached.
-        upgrade_mod_savepoint(true, 2020090200, 'diary');
+        // annotateddiary savepoint reached.
+        upgrade_mod_savepoint(true, 2020090200, 'annotateddiary');
     }
     if ($oldversion < 2020101500) {
 
-        // Define field editall to be added to diary.
-        $table = new xmldb_table('diary');
+        // Define field editall to be added to annotateddiary.
+        $table = new xmldb_table('annotateddiary');
         $field = new xmldb_field('editall', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '1', 'timeclose');
 
         // Conditionally launch add field editall.
@@ -70,13 +70,13 @@ function xmldb_diary_upgrade($oldversion = 0) {
             $dbman->add_field($table, $field);
         }
 
-        // Diary savepoint reached.
-        upgrade_mod_savepoint(true, 2020101500, 'diary');
+        // annotateddiary savepoint reached.
+        upgrade_mod_savepoint(true, 2020101500, 'annotateddiary');
     }
     if ($oldversion < 2020111900) {
 
-        // Define field editdates to be added to diary.
-        $table = new xmldb_table('diary');
+        // Define field editdates to be added to annotateddiary.
+        $table = new xmldb_table('annotateddiary');
         $field = new xmldb_field('editdates', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'editall');
 
         // Conditionally launch add field editdates.
@@ -84,8 +84,8 @@ function xmldb_diary_upgrade($oldversion = 0) {
             $dbman->add_field($table, $field);
         }
 
-        // Diary savepoint reached.
-        upgrade_mod_savepoint(true, 2020111900, 'diary');
+        // annotateddiary savepoint reached.
+        upgrade_mod_savepoint(true, 2020111900, 'annotateddiary');
     }
     return true;
 }

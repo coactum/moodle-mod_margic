@@ -17,7 +17,7 @@
 /**
  * Definition of log events
  *
- * @package   mod_diary
+ * @package   mod_annotateddiary
  * @copyright 2020 AL Rachels <drachels@drachels.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -25,39 +25,39 @@ defined('MOODLE_INTERNAL') || die();
 
 $logs = array(
     array(
-        'module' => 'diary',
+        'module' => 'annotateddiary',
         'action' => 'view',
-        'mtable' => 'diary',
+        'mtable' => 'annotateddiary',
         'field' => 'name'
     ),
     array(
-        'module' => 'diary',
+        'module' => 'annotateddiary',
         'action' => 'view all',
-        'mtable' => 'diary',
+        'mtable' => 'annotateddiary',
         'field' => 'name'
     ),
     array(
-        'module' => 'diary',
+        'module' => 'annotateddiary',
         'action' => 'view responses',
-        'mtable' => 'diary',
+        'mtable' => 'annotateddiary',
         'field' => 'name'
     ),
     array(
-        'module' => 'diary',
+        'module' => 'annotateddiary',
         'action' => 'add entry',
-        'mtable' => 'diary',
+        'mtable' => 'annotateddiary',
         'field' => 'name'
     ),
     array(
-        'module' => 'diary',
+        'module' => 'annotateddiary',
         'action' => 'update entry',
-        'mtable' => 'diary',
+        'mtable' => 'annotateddiary',
         'field' => 'name'
     ),
     array(
-        'module' => 'diary',
+        'module' => 'annotateddiary',
         'action' => 'update feedback',
-        'mtable' => 'diary',
+        'mtable' => 'annotateddiary',
         'field' => 'name'
     )
 );

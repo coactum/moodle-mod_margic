@@ -1,8 +1,8 @@
-@mod @mod_diary
-Feature: Students can add and edit entries to diary activities
+@mod @mod_annotateddiary
+Feature: Students can add and edit entries to annotateddiary activities
   In order to express and refine my thoughts
   As a student
-  I need to add and update my diary entry
+  I need to add and update my annotateddiary entry
 
   Scenario: A student edits his/her entry
     Given the following "courses" exist:
@@ -18,15 +18,15 @@ Feature: Students can add and edit entries to diary activities
       | student1 | C1 | student        |
     And the following "activities" exist:
       | activity | name            | intro          | course | idnumber |
-      | diary    | Test diary name | Diary question | C1     | diary1   |
+      | annotateddiary    | Test annotateddiary name | annotateddiary question | C1     | annotateddiary1   |
     And I log in as "student1"
     And I am on "Course1" course homepage
-    And I follow "Test diary name"
-    And I press "Start new day or edit current day diary entry"
+    And I follow "Test annotateddiary name"
+    And I press "Start new day or edit current day annotateddiary entry"
     And I set the following fields to these values:
       | Entry | First entry by student1. |
     And I press "Save changes"
-    And I press "Start or edit my diary entry"
+    And I press "Start or edit my annotateddiary entry"
     Then the field "Entry" matches value "First entry by student1."
     And I set the following fields to these values:
       | Entry | Second reply |

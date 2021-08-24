@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Administration settings definitions for the Diary module.
+ * Administration settings definitions for the annotateddiary module.
  *
- * @package   mod_diary
+ * @package   mod_annotateddiary
  * @copyright 2019 AL Rachels (drachels@drachels.com)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later.
  */
@@ -26,61 +26,61 @@ defined('MOODLE_INTERNAL') || die();
 if ($ADMIN->fulltree) {
 
     // Availability settings.
-    $settings->add(new admin_setting_heading('mod_diary/availibility', get_string('availability'), ''));
+    $settings->add(new admin_setting_heading('mod_annotateddiary/availibility', get_string('availability'), ''));
 
-    $settings->add(new admin_setting_configselect('diary/showrecentactivity',
-        get_string('showrecentactivity', 'diary'),
-        get_string('showrecentactivity', 'diary'), 1, array(
+    $settings->add(new admin_setting_configselect('annotateddiary/showrecentactivity',
+        get_string('showrecentactivity', 'annotateddiary'),
+        get_string('showrecentactivity', 'annotateddiary'), 1, array(
         '0' => get_string('no'),
         '1' => get_string('yes')
     )));
 
-    $settings->add(new admin_setting_configselect('diary/overview',
-        get_string('showoverview', 'diary'),
-        get_string('showoverview', 'diary'), 1, array(
+    $settings->add(new admin_setting_configselect('annotateddiary/overview',
+        get_string('showoverview', 'annotateddiary'),
+        get_string('showoverview', 'annotateddiary'), 1, array(
         '0' => get_string('no'),
         '1' => get_string('yes')
     )));
 
     // 20201015 Default edit all entries setting.
-    $settings->add(new admin_setting_configselect('diary/editall',
-        get_string('editall', 'diary'),
-        get_string('editall_help', 'diary'), 1, array(
+    $settings->add(new admin_setting_configselect('annotateddiary/editall',
+        get_string('editall', 'annotateddiary'),
+        get_string('editall_help', 'annotateddiary'), 1, array(
         '0' => get_string('no'),
         '1' => get_string('yes')
     )));
 
     // 20201119 Default edit the date of any entry setting.
-    $settings->add(new admin_setting_configselect('diary/editdates',
-        get_string('editdates', 'diary'),
-        get_string('editdates_help', 'diary'), 1, array(
+    $settings->add(new admin_setting_configselect('annotateddiary/editdates',
+        get_string('editdates', 'annotateddiary'),
+        get_string('editdates_help', 'annotateddiary'), 1, array(
         '0' => get_string('no'),
         '1' => get_string('yes')
     )));
 
     // Appearance settings.
-    $settings->add(new admin_setting_heading('mod_diary/appearance',
+    $settings->add(new admin_setting_heading('mod_annotateddiary/appearance',
         get_string('appearance'), ''));
 
     // Date format setting.
-    $settings->add(new admin_setting_configtext('mod_diary/dateformat',
-        get_string('dateformat', 'diary'),
-        get_string('configdateformat', 'diary'), 'M d, Y G:i', PARAM_TEXT, 15));
+    $settings->add(new admin_setting_configtext('mod_annotateddiary/dateformat',
+        get_string('dateformat', 'annotateddiary'),
+        get_string('configdateformat', 'annotateddiary'), 'M d, Y G:i', PARAM_TEXT, 15));
 
-    // Diary entry/feedback background colour setting.
-    $name = 'mod_diary/entrybgc';
-    $title = get_string('entrybgc_title', 'diary');
-    $description = get_string('entrybgc_descr', 'diary');
-    $default = get_string('entrybgc_colour', 'diary');
+    // annotateddiary entry/feedback background colour setting.
+    $name = 'mod_annotateddiary/entrybgc';
+    $title = get_string('entrybgc_title', 'annotateddiary');
+    $description = get_string('entrybgc_descr', 'annotateddiary');
+    $default = get_string('entrybgc_colour', 'annotateddiary');
     $setting = new admin_setting_configcolourpicker($name, $title, $description, $default);
     $setting->set_updatedcallback('theme_reset_all_caches');
     $settings->add($setting);
 
-    // Diary entry text background colour setting.
-    $name = 'mod_diary/entrytextbgc';
-    $title = get_string('entrytextbgc_title', 'diary');
-    $description = get_string('entrytextbgc_descr', 'diary');
-    $default = get_string('entrytextbgc_colour', 'diary');
+    // annotateddiary entry text background colour setting.
+    $name = 'mod_annotateddiary/entrytextbgc';
+    $title = get_string('entrytextbgc_title', 'annotateddiary');
+    $description = get_string('entrytextbgc_descr', 'annotateddiary');
+    $default = get_string('entrytextbgc_colour', 'annotateddiary');
     $setting = new admin_setting_configcolourpicker($name, $title, $description, $default);
     $setting->set_updatedcallback('theme_reset_all_caches');
     $settings->add($setting);

@@ -1,11 +1,11 @@
-@mod @mod_diary
-Feature: Users can add entries to diary activities
-  In order to populate diarys
+@mod @mod_annotateddiary
+Feature: Users can add entries to annotateddiary activities
+  In order to populate annotateddiarys
   As a user
-  I need to add entries to diarys
+  I need to add entries to annotateddiarys
 
   @javascript
-  Scenario: Students can add entries to a diary
+  Scenario: Students can add entries to a annotateddiary
     Given the following "users" exist:
       | username | firstname | lastname | email |
       | student1 | Student | 1 | student1@example.com |
@@ -19,13 +19,13 @@ Feature: Users can add entries to diary activities
       | student1 | C1 | student |
     And the following "activities" exist:
       | activity | name               | intro | course | idnumber |
-      | diary     | Test diary name | n     | C1     | diary1    |
+      | annotateddiary     | Test annotateddiary name | n     | C1     | annotateddiary1    |
     And I log in as "teacher1"
     And I am on "Course 1" course homepage
-    And I add a "Text input" field to "Test diary name" diary and I fill the form with:
+    And I add a "Text input" field to "Test annotateddiary name" annotateddiary and I fill the form with:
       | Field name | Test field name |
       | Field description | Test field description |
-    And I add a "Text input" field to "Test diary name" diary and I fill the form with:
+    And I add a "Text input" field to "Test annotateddiary name" annotateddiary and I fill the form with:
       | Field name | Test field 2 name |
       | Field description | Test field 2 description |
     # To generate the default templates.
@@ -34,7 +34,7 @@ Feature: Users can add entries to diary activities
     And I log out
     When I log in as "student1"
     And I am on "Course 1" course homepage
-    And I add an entry to "Test diary name" diary with:
+    And I add an entry to "Test annotateddiary name" annotateddiary with:
       | Test field name | Student original entry |
       | Test field 2 name | Student original entry 2 |
     And I press "Save and view"
@@ -50,11 +50,11 @@ Feature: Users can add entries to diary activities
       | Test field name | Student edited entry |
     And I press "Save and view"
     And I should see "Student edited entry"
-    And I add an entry to "Test diary name" diary with:
+    And I add an entry to "Test annotateddiary name" annotateddiary with:
       | Test field name | Student second entry |
     And I press "Save and add another"
     And the field "Test field name" does not match value "Student second entry"
-    And I add an entry to "Test diary name" diary with:
+    And I add an entry to "Test annotateddiary name" annotateddiary with:
       | Test field name | Student third entry |
     And I press "Save and view"
     And I follow "View list"
@@ -71,8 +71,8 @@ Feature: Users can add entries to diary activities
     And I log out
     And I log in as "teacher1"
     And I am on "Course 1" course homepage
-    And I follow "Test diary name"
+    And I follow "Test annotateddiary name"
     And I press "Select all"
     And I press "Delete selected"
     And I press "Delete"
-    And I should see "No entries in diary"
+    And I should see "No entries in annotateddiary"

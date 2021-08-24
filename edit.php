@@ -15,14 +15,14 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This page opens the current instance of a diary entry for editing.
+ * This page opens the current instance of a annotateddiary entry for editing.
  *
- * @package   mod_diary
+ * @package   mod_annotateddiary
  * @copyright 2019 AL Rachels (drachels@drachels.com)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-use mod_diary\local\results;
-use \mod_diary\event\invalid_access_attempt;
+use mod_annotateddiary\local\results;
+use \mod_annotateddiary\event\invalid_access_attempt;
 
 require_once("../../config.php");
 require_once('lib.php'); // May not need this.
@@ -30,28 +30,28 @@ require_once('./edit_form.php');
 global $DB;
 $id = required_param('id', PARAM_INT); // Course Module ID.
 $action = optional_param('action', 'currententry', PARAM_ACTION); // Action(default to current entry).
-$firstkey = optional_param('firstkey', '', PARAM_INT); // Which diary_entries id to edit.
+$firstkey = optional_param('firstkey', '', PARAM_INT); // Which annotateddiary_entries id to edit.
 
-if (! $cm = get_coursemodule_from_id('diary', $id)) {
-    throw new moodle_exception(get_string('incorrectmodule', 'diary'));
+if (! $cm = get_coursemodule_from_id('annotateddiary', $id)) {
+    throw new moodle_exception(get_string('incorrectmodule', 'annotateddiary'));
 }
 
 if (! $course = $DB->get_record("course", array("id" => $cm->course))) {
-    throw new moodle_exception(get_string('incorrectcourseid', 'diary'));
+    throw new moodle_exception(get_string('incorrectcourseid', 'annotateddiary'));
 }
 
 $context = context_module::instance($cm->id);
 
 require_login($course, false, $cm);
 
-require_capability('mod/diary:addentries', $context);
+require_capability('mod/annotateddiary:addentries', $context);
 
-if (! $diary = $DB->get_record("diary", array("id" => $cm->instance))) {
-    throw new moodle_exception(get_string('incorrectcourseid', 'diary'));
+if (! $annotateddiary = $DB->get_record("annotateddiary", array("id" => $cm->instance))) {
+    throw new moodle_exception(get_string('incorrectcourseid', 'annotateddiary'));
 }
 
 // 20210613 Added check to prevent direct access to create new entry when activity is closed.
-if (($diary->timeclose) && (time() > $diary->timeclose)) {
+if (($annotateddiary->timeclose) && (time() > $annotateddiary->timeclose)) {
     // Trigger invalid_access_attempt with redirect to the view page.
     $params = array(
         'objectid' => $id,
@@ -62,26 +62,26 @@ if (($diary->timeclose) && (time() > $diary->timeclose)) {
     );
     $event = invalid_access_attempt::create($params);
     $event->trigger();
-    redirect('view.php?id='.$id, get_string('invalidaccessexp', 'diary'));
+    redirect('view.php?id='.$id, get_string('invalidaccessexp', 'annotateddiary'));
 }
 
 // Header.
-$PAGE->set_url('/mod/diary/edit.php', array('id' => $id));
+$PAGE->set_url('/mod/annotateddiary/edit.php', array('id' => $id));
 $PAGE->navbar->add(get_string('edit'));
-$PAGE->set_title(format_string($diary->name));
+$PAGE->set_title(format_string($annotateddiary->name));
 $PAGE->set_heading($course->fullname);
 
 $data = new stdClass();
 
 $parameters = array(
     'userid' => $USER->id,
-    'diary' => $diary->id,
+    'annotateddiary' => $annotateddiary->id,
     'action' => $action,
     'firstkey' => $firstkey
 );
 
 // Get the single record specified by firstkey.
-$entry = $DB->get_record("diary_entries", array(
+$entry = $DB->get_record("annotateddiary_entries", array(
     "userid" => $USER->id,
     'id' => $firstkey
 ));
@@ -94,7 +94,7 @@ if ($action == 'currententry' && $entry) {
 
     // Check the timecreated of the current entry to see if now is a new calendar day .
     // 20210425 If can edit dates, just start a new entry.
-    if ((strtotime('today midnight') > $entry->timecreated) || ($action == 'currententry' && $diary->editdates)) {
+    if ((strtotime('today midnight') > $entry->timecreated) || ($action == 'currententry' && $annotateddiary->editdates)) {
         $entry = '';
         $data->entryid = null;
         $data->timecreated = time();
@@ -114,14 +114,14 @@ if ($action == 'currententry' && $entry) {
     $data->text = '';
     $data->textformat = FORMAT_HTML;
 } else {
-    throw new moodle_exception(get_string('generalerror', 'diary'));
+    throw new moodle_exception(get_string('generalerror', 'annotateddiary'));
 }
 
 $data->id = $cm->id;
 
-list ($editoroptions, $attachmentoptions) = results::diary_get_editor_and_attachment_options($course,
+list ($editoroptions, $attachmentoptions) = results::annotateddiary_get_editor_and_attachment_options($course,
                                                                                              $context,
-                                                                                             $diary,
+                                                                                             $annotateddiary,
                                                                                              $entry,
                                                                                              $action,
                                                                                              $firstkey);
@@ -130,22 +130,22 @@ $data = file_prepare_standard_editor($data,
                                      'text',
                                      $editoroptions,
                                      $context,
-                                     'mod_diary',
+                                     'mod_annotateddiary',
                                      'entry',
                                      $data->entryid);
 $data = file_prepare_standard_filemanager($data,
                                           'attachment',
                                           $attachmentoptions,
                                           $context,
-                                          'mod_diary',
+                                          'mod_annotateddiary',
                                           'attachment',
                                           $data->entryid);
 
-// 20201119 Added $diary->editdates setting.
-$form = new mod_diary_entry_form(null, array(
+// 20201119 Added $annotateddiary->editdates setting.
+$form = new mod_annotateddiary_entry_form(null, array(
     'current' => $data,
     'cm' => $cm,
-    'diary' => $diary->editdates,
+    'annotateddiary' => $annotateddiary->editdates,
     'editoroptions' => $editoroptions,
     'attachmentoptions' => $attachmentoptions
 ));
@@ -154,7 +154,7 @@ $form = new mod_diary_entry_form(null, array(
 $form->set_data($data);
 
 if ($form->is_cancelled()) {
-    redirect($CFG->wwwroot . '/mod/diary/view.php?id=' . $cm->id);
+    redirect($CFG->wwwroot . '/mod/annotateddiary/view.php?id=' . $cm->id);
 } else if ($fromform = $form->get_data()) {
     // If data submitted, then process and store, contains text, format, and itemid.
     // Prevent CSFR.
@@ -168,10 +168,10 @@ if ($form->is_cancelled()) {
     $newentry->text = $fromform->text_editor['text'];
     $newentry->format = $fromform->text_editor['format'];
 
-    if (! $diary->editdates) {
+    if (! $annotateddiary->editdates) {
         // If editdates is NOT enabled do attempted cheat testing here.
         // 20210619 Before we update, see if there is an entry in database with the same entryid.
-        $entry = $DB->get_record("diary_entries", array(
+        $entry = $DB->get_record("annotateddiary_entries", array(
             "userid" => $USER->id,
             'id' => $fromform->entryid
         ));
@@ -184,9 +184,9 @@ if ($form->is_cancelled()) {
         $newentry->id = $fromform->entryid;
         if (($entry) && (!($entry->timecreated == $newentry->timecreated))) {
             // 20210620 New code to prevent attempts to change timecreated.
-            $newentry->entrycomment = get_string('invalidtimechange', 'diary');
-            $newentry->entrycomment .= get_string('invalidtimechangeoriginal', 'diary', ['one' => userdate($entry->timecreated)]);
-            $newentry->entrycomment .= get_string('invalidtimechangenewtime', 'diary', ['one' => userdate($newentry->timecreated)]);
+            $newentry->entrycomment = get_string('invalidtimechange', 'annotateddiary');
+            $newentry->entrycomment .= get_string('invalidtimechangeoriginal', 'annotateddiary', ['one' => userdate($entry->timecreated)]);
+            $newentry->entrycomment .= get_string('invalidtimechangenewtime', 'annotateddiary', ['one' => userdate($newentry->timecreated)]);
             // Probably do not want to just arbitraily set a rating.
             // Should leave it up to the teacher, otherwise will need to acertain rating settings for the activity.
             // @codingStandardsIgnoreLine
@@ -196,29 +196,29 @@ if ($form->is_cancelled()) {
             $newentry->timemarked = time();
             $newentry->timecreated = $entry->timecreated;
             $fromform->timecreated = $entry->timecreated;
-            $newentry->entrycomment .= get_string('invalidtimeresettime', 'diary', ['one' => userdate($newentry->timecreated)]);
-            $DB->update_record("diary_entries", $newentry);
+            $newentry->entrycomment .= get_string('invalidtimeresettime', 'annotateddiary', ['one' => userdate($newentry->timecreated)]);
+            $DB->update_record("annotateddiary_entries", $newentry);
             // Trigger module entry updated event.
-            $event = \mod_diary\event\invalid_entry_attempt::create(array(
-                'objectid' => $diary->id,
+            $event = \mod_annotateddiary\event\invalid_entry_attempt::create(array(
+                'objectid' => $annotateddiary->id,
                 'context' => $context
             ));
             $event->add_record_snapshot('course_modules', $cm);
             $event->add_record_snapshot('course', $course);
-            $event->add_record_snapshot('diary', $diary);
+            $event->add_record_snapshot('annotateddiary', $annotateddiary);
             $event->trigger();
 
-            redirect(new moodle_url('/mod/diary/view.php?id=' . $cm->id));
+            redirect(new moodle_url('/mod/annotateddiary/view.php?id=' . $cm->id));
             die();
         }
-        if (! $DB->update_record("diary_entries", $newentry)) {
-            throw new moodle_exception(get_string('generalerrorupdate', 'diary'));
+        if (! $DB->update_record("annotateddiary_entries", $newentry)) {
+            throw new moodle_exception(get_string('generalerrorupdate', 'annotateddiary'));
         }
     } else {
         $newentry->userid = $USER->id;
-        $newentry->diary = $diary->id;
-        if (! $newentry->id = $DB->insert_record("diary_entries", $newentry)) {
-            throw new moodle_exception(get_string('generalerrorinsert', 'diary'));
+        $newentry->annotateddiary = $annotateddiary->id;
+        if (! $newentry->id = $DB->insert_record("annotateddiary_entries", $newentry)) {
+            throw new moodle_exception(get_string('generalerrorinsert', 'annotateddiary'));
         }
     }
 
@@ -228,41 +228,41 @@ if ($form->is_cancelled()) {
                                                 'text',
                                                 $editoroptions,
                                                 $editoroptions['context'],
-                                                'mod_diary',
+                                                'mod_annotateddiary',
                                                 'entry',
                                                 $newentry->id);
     $newentry->text = $fromform->text;
     $newentry->format = $fromform->textformat;
     $newentry->timecreated = $fromform->timecreated;
 
-    $DB->update_record('diary_entries', $newentry);
+    $DB->update_record('annotateddiary_entries', $newentry);
 
     if ($entry) {
         // Trigger module entry updated event.
-        $event = \mod_diary\event\entry_updated::create(array(
-            'objectid' => $diary->id,
+        $event = \mod_annotateddiary\event\entry_updated::create(array(
+            'objectid' => $annotateddiary->id,
             'context' => $context
         ));
     } else {
         // Trigger module entry created event.
-        $event = \mod_diary\event\entry_created::create(array(
-            'objectid' => $diary->id,
+        $event = \mod_annotateddiary\event\entry_created::create(array(
+            'objectid' => $annotateddiary->id,
             'context' => $context
         ));
     }
     $event->add_record_snapshot('course_modules', $cm);
     $event->add_record_snapshot('course', $course);
-    $event->add_record_snapshot('diary', $diary);
+    $event->add_record_snapshot('annotateddiary', $annotateddiary);
     $event->trigger();
 
-    redirect(new moodle_url('/mod/diary/view.php?id=' . $cm->id));
+    redirect(new moodle_url('/mod/annotateddiary/view.php?id=' . $cm->id));
     die();
 }
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading(format_string($diary->name));
+echo $OUTPUT->heading(format_string($annotateddiary->name));
 
-$intro = format_module_intro('diary', $diary, $cm->id);
+$intro = format_module_intro('annotateddiary', $annotateddiary, $cm->id);
 echo $OUTPUT->box($intro);
 
 // Otherwise fill and print the form.

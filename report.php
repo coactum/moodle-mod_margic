@@ -15,13 +15,13 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This page opens the current report instance of diary.
+ * This page opens the current report instance of annotateddiary.
  *
- * @package   mod_diary
+ * @package   mod_annotateddiary
  * @copyright 2019 AL Rachels (drachels@drachels.com)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-use mod_diary\local\results;
+use mod_annotateddiary\local\results;
 
 require_once("../../config.php");
 require_once("lib.php");
@@ -30,30 +30,30 @@ require_once($CFG->dirroot . '/rating/lib.php');
 $id = required_param('id', PARAM_INT); // Course module.
 $action = optional_param('action', 'currententry', PARAM_ACTION); // Action(default to current entry).
 
-if (! $cm = get_coursemodule_from_id('diary', $id)) {
-    throw new moodle_exception(get_string('incorrectmodule', 'diary'));
+if (! $cm = get_coursemodule_from_id('annotateddiary', $id)) {
+    throw new moodle_exception(get_string('incorrectmodule', 'annotateddiary'));
 }
 
 if (! $course = $DB->get_record("course", array(
     "id" => $cm->course
 ))) {
-    throw new moodle_exception(get_string('incorrectcourseid', 'diary'));
+    throw new moodle_exception(get_string('incorrectcourseid', 'annotateddiary'));
 }
 
 require_login($course, false, $cm);
 
 $context = context_module::instance($cm->id);
 
-require_capability('mod/diary:manageentries', $context);
+require_capability('mod/annotateddiary:manageentries', $context);
 
-if (! $diary = $DB->get_record("diary", array(
+if (! $annotateddiary = $DB->get_record("annotateddiary", array(
     "id" => $cm->instance
 ))) {
-    throw new moodle_exception(get_string('invalidid', 'diary'));
+    throw new moodle_exception(get_string('invalidid', 'annotateddiary'));
 }
 
-// 20201016 Get the name for this diary activity.
-$diaryname = format_string($diary->name, true, array(
+// 20201016 Get the name for this annotateddiary activity.
+$annotateddiaryname = format_string($annotateddiary->name, true, array(
     'context' => $context
 ));
 
@@ -69,110 +69,110 @@ if ($sortoption = get_user_preferences('sortoption')) {
 if (! empty($action)) {
     switch ($action) {
         case 'download':
-            if (has_capability('mod/diary:manageentries', $context)) {
+            if (has_capability('mod/annotateddiary:manageentries', $context)) {
                 // Call download entries function in lib.php.
-                results::download_entries($context, $course, $diary);
+                results::download_entries($context, $course, $annotateddiary);
             }
             break;
         case 'lastnameasc':
-            if (has_capability('mod/diary:manageentries', $context)) {
+            if (has_capability('mod/annotateddiary:manageentries', $context)) {
                 $stringlable = 'lastnameasc';
-                // 20201014 Set order and get ALL diary entries in lastname ascending order.
+                // 20201014 Set order and get ALL annotateddiary entries in lastname ascending order.
                 set_user_preference('sortoption', 'u.lastname ASC, u.firstname ASC');
                 $sortoption = get_user_preferences('sortoption');
-                $eee = $DB->get_records("diary_entries", array(
-                    "diary" => $diary->id
+                $eee = $DB->get_records("annotateddiary_entries", array(
+                    "annotateddiary" => $annotateddiary->id
                 ));
             }
             break;
         case 'lastnamedesc':
-            if (has_capability('mod/diary:manageentries', $context)) {
+            if (has_capability('mod/annotateddiary:manageentries', $context)) {
                 $stringlable = 'lastnamedesc';
-                // 20201014 Set order and get ALL diary entries in lastname descending order.
+                // 20201014 Set order and get ALL annotateddiary entries in lastname descending order.
                 set_user_preference('sortoption', 'u.lastname DESC, u.firstname DESC');
                 $sortoption = get_user_preferences('sortoption');
-                $eee = $DB->get_records("diary_entries", array(
-                    "diary" => $diary->id
+                $eee = $DB->get_records("annotateddiary_entries", array(
+                    "annotateddiary" => $annotateddiary->id
                 ));
             }
             break;
         case 'currententry':
-            if (has_capability('mod/diary:manageentries', $context)) {
+            if (has_capability('mod/annotateddiary:manageentries', $context)) {
                 $stringlable = 'currententry';
-                // Get ALL diary entries in an order that will result in showing the users most current entry.
-                $eee = $DB->get_records("diary_entries", array(
-                    "diary" => $diary->id
+                // Get ALL annotateddiary entries in an order that will result in showing the users most current entry.
+                $eee = $DB->get_records("annotateddiary_entries", array(
+                    "annotateddiary" => $annotateddiary->id
                 ));
             }
             break;
         case 'firstentry':
-            if (has_capability('mod/diary:manageentries', $context)) {
+            if (has_capability('mod/annotateddiary:manageentries', $context)) {
                 $stringlable = 'firstentry';
-                // Get ALL diary entries in an order that will result in showing the users very first entry.
-                $eee = $DB->get_records("diary_entries", array(
-                    "diary" => $diary->id
+                // Get ALL annotateddiary entries in an order that will result in showing the users very first entry.
+                $eee = $DB->get_records("annotateddiary_entries", array(
+                    "annotateddiary" => $annotateddiary->id
                 ), $sort = 'timecreated DESC');
             }
             break;
         case 'lowestgradeentry':
-            if (has_capability('mod/diary:manageentries', $context)) {
+            if (has_capability('mod/annotateddiary:manageentries', $context)) {
                 $stringlable = 'lowestgradeentry';
-                // Get ALL diary entries in an order that will result in showing the users
+                // Get ALL annotateddiary entries in an order that will result in showing the users
                 // oldest, ungraded entry. Once all ungraded entries have a grade, the entry
                 // with the lowest grade is shown. For duplicate low grades, the entry that
                 // is oldest, is shown.
-                $eee = $DB->get_records("diary_entries", array(
-                    "diary" => $diary->id
+                $eee = $DB->get_records("annotateddiary_entries", array(
+                    "annotateddiary" => $annotateddiary->id
                 ), $sort = 'rating DESC, timemodified DESC');
             }
             break;
         case 'highestgradeentry':
-            if (has_capability('mod/diary:manageentries', $context)) {
+            if (has_capability('mod/annotateddiary:manageentries', $context)) {
                 $stringlable = 'highestgradeentry';
-                // Get ALL diary entries in an order that will result in showing the users highest
+                // Get ALL annotateddiary entries in an order that will result in showing the users highest
                 // graded entry. Duplicates high grades result in showing the most recent entry.
-                $eee = $DB->get_records("diary_entries", array(
-                    "diary" => $diary->id
+                $eee = $DB->get_records("annotateddiary_entries", array(
+                    "annotateddiary" => $annotateddiary->id
                 ), $sort = 'rating ASC');
             }
             break;
         case 'latestmodifiedentry':
-            if (has_capability('mod/diary:manageentries', $context)) {
+            if (has_capability('mod/annotateddiary:manageentries', $context)) {
                 $stringlable = 'latestmodifiedentry';
-                // Get ALL diary entries in an order that will result in showing the users
+                // Get ALL annotateddiary entries in an order that will result in showing the users
                 // most recently modified entry. At the moment, this is no different from current entry.
                 // May be needed for future version if editing old entries is allowed.
-                $eee = $DB->get_records("diary_entries", array(
-                    "diary" => $diary->id
+                $eee = $DB->get_records("annotateddiary_entries", array(
+                    "annotateddiary" => $annotateddiary->id
                 ), $sort = 'timemodified ASC');
             }
             break;
         default:
-            if (has_capability('mod/diary:manageentries', $context)) {
+            if (has_capability('mod/annotateddiary:manageentries', $context)) {
                 $stringlable = 'currententry';
             }
     }
 }
 
 // Header.
-$PAGE->set_url('/mod/diary/report.php', array(
+$PAGE->set_url('/mod/annotateddiary/report.php', array(
     'id' => $id
 ));
-$PAGE->navbar->add((get_string("rate", "diary")) . ' ' . (get_string("entries", "diary")));
-$PAGE->set_title($diaryname);
+$PAGE->navbar->add((get_string("rate", "annotateddiary")) . ' ' . (get_string("entries", "annotateddiary")));
+$PAGE->set_title($annotateddiaryname);
 $PAGE->set_heading($course->fullname);
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading($diaryname);
+echo $OUTPUT->heading($annotateddiaryname);
 
 // 20210511 Changed to using div and span.
 echo '<div class="sortandaggregate">';
-echo ('<span>'.get_string('sortorder', "diary"));
-echo (get_string($stringlable, "diary").'</span>');
+echo ('<span>'.get_string('sortorder', "annotateddiary"));
+echo (get_string($stringlable, "annotateddiary").'</span>');
 
 // 20200827 Added link to index.php page. 20210501 Moved to here.
 echo '<span><a style="float: right;" href="index.php?id='.$course->id.'">'
-    .get_string('viewalldiaries', 'diary').'</a></span></div>';
+    .get_string('viewalldiaries', 'annotateddiary').'</a></span></div>';
 
 // Get a list of groups for this course.
 $currentgroup = groups_get_activity_group($cm, true);
@@ -183,7 +183,7 @@ if ($currentgroup) {
 }
 
 // Get a sorted list of users in the current group to use for processing the report.
-$users = get_users_by_capability($context, 'mod/diary:addentries', '', $sort = 'lastname ASC, firstname ASC', '', '', $groups);
+$users = get_users_by_capability($context, 'mod/annotateddiary:addentries', '', $sort = 'lastname ASC, firstname ASC', '', '', $groups);
 
 if ($eee) {
     // Now, filter down to get entry by any user who has made at least one entry.
@@ -218,7 +218,7 @@ if ($data = data_submitted()) {
         $entry = $entrybyentry[$num];
         // Only update entries where feedback has actually changed.
         $ratingchanged = false;
-        if ($diary->assessed != RATING_AGGREGATE_NONE) {
+        if ($annotateddiary->assessed != RATING_AGGREGATE_NONE) {
             $studentrating = clean_param($vals['r'], PARAM_INT);
         } else {
             $studentrating = '';
@@ -237,8 +237,8 @@ if ($data = data_submitted()) {
             $newentry->timemarked = $timenow;
             $newentry->mailed = 0; // Make sure mail goes out (again, even).
             $newentry->id = $num;
-            if (! $DB->update_record("diary_entries", $newentry)) {
-                notify("Failed to update the diary feedback for user $entry->userid");
+            if (! $DB->update_record("annotateddiary_entries", $newentry)) {
+                notify("Failed to update the annotateddiary feedback for user $entry->userid");
             } else {
                 $count ++;
             }
@@ -250,23 +250,23 @@ if ($data = data_submitted()) {
             $records[$entry->id] = $entrybyuser[$entry->userid];
 
             // Compare to database view.php line 465.
-            if ($diary->assessed != RATING_AGGREGATE_NONE) {
+            if ($annotateddiary->assessed != RATING_AGGREGATE_NONE) {
                 // 20200812 Added rating code and got it working.
                 $ratingoptions = new stdClass();
                 $ratingoptions->contextid = $context->id;
-                $ratingoptions->component = 'mod_diary';
+                $ratingoptions->component = 'mod_annotateddiary';
                 $ratingoptions->ratingarea = 'entry';
                 $ratingoptions->itemid = $entry->id;
-                $ratingoptions->aggregate = $diary->assessed; // The aggregation method.
-                $ratingoptions->scaleid = $diary->scale;
+                $ratingoptions->aggregate = $annotateddiary->assessed; // The aggregation method.
+                $ratingoptions->scaleid = $annotateddiary->scale;
                 $ratingoptions->rating = $studentrating;
                 $ratingoptions->userid = $entry->userid;
                 $ratingoptions->timecreated = $entry->timecreated;
                 $ratingoptions->timemodified = $entry->timemodified;
-                $ratingoptions->returnurl = $CFG->wwwroot . '/mod/diary/report.php?id' . $id;
+                $ratingoptions->returnurl = $CFG->wwwroot . '/mod/annotateddiary/report.php?id' . $id;
 
-                $ratingoptions->assesstimestart = $diary->assesstimestart;
-                $ratingoptions->assesstimefinish = $diary->assesstimefinish;
+                $ratingoptions->assesstimestart = $annotateddiary->assesstimestart;
+                $ratingoptions->assesstimefinish = $annotateddiary->assesstimefinish;
                 // 20200813 Check if there is already a rating, and if so, just update it.
                 if ($rec = results::check_rating_entry($ratingoptions)) {
                     $ratingoptions->id = $rec->id;
@@ -276,37 +276,37 @@ if ($data = data_submitted()) {
                 }
             }
 
-            $diary = $DB->get_record("diary", array(
-                "id" => $entrybyuser[$entry->userid]->diary
+            $annotateddiary = $DB->get_record("annotateddiary", array(
+                "id" => $entrybyuser[$entry->userid]->annotateddiary
             ));
-            $diary->cmidnumber = $cm->idnumber;
+            $annotateddiary->cmidnumber = $cm->idnumber;
 
-            diary_update_grades($diary, $entry->userid);
+            annotateddiary_update_grades($annotateddiary, $entry->userid);
         }
     }
 
     // Trigger module feedback updated event.
-    $event = \mod_diary\event\feedback_updated::create(array(
-        'objectid' => $diary->id,
+    $event = \mod_annotateddiary\event\feedback_updated::create(array(
+        'objectid' => $annotateddiary->id,
         'context' => $context
     ));
     $event->add_record_snapshot('course_modules', $cm);
     $event->add_record_snapshot('course', $course);
-    $event->add_record_snapshot('diary', $diary);
+    $event->add_record_snapshot('annotateddiary', $annotateddiary);
     $event->trigger();
 
     // Report how many entries were updated when the, Save all my feedback button was pressed.
-    echo $OUTPUT->notification(get_string("feedbackupdated", "diary", "$count"), "notifysuccess");
+    echo $OUTPUT->notification(get_string("feedbackupdated", "annotateddiary", "$count"), "notifysuccess");
 } else {
 
     // Trigger module viewed event.
-    $event = \mod_diary\event\entries_viewed::create(array(
-        'objectid' => $diary->id,
+    $event = \mod_annotateddiary\event\entries_viewed::create(array(
+        'objectid' => $annotateddiary->id,
         'context' => $context
     ));
     $event->add_record_snapshot('course_modules', $cm);
     $event->add_record_snapshot('course', $course);
-    $event->add_record_snapshot('diary', $diary);
+    $event->add_record_snapshot('annotateddiary', $annotateddiary);
     $event->trigger();
 }
 
@@ -315,80 +315,80 @@ if (! $users) {
 } else {
     $output = '';
     // Create download, reload, current, oldest, lowest, highest, and most recent tool buttons for all entries.
-    if (has_capability('mod/diary:manageentries', $context)) {
+    if (has_capability('mod/annotateddiary:manageentries', $context)) {
         // 20201003 Changed toolbar code to $output instead of html_writer::alist.
         $options = array();
         $options['id'] = $id;
-        $options['diary'] = $diary->id;
+        $options['annotateddiary'] = $annotateddiary->id;
 
         // Add download button.
         $options['action'] = 'download';
-        $url = new moodle_url('/mod/diary/report.php', $options);
-        $output .= html_writer::link($url, $OUTPUT->pix_icon('i/export', get_string('csvexport', 'diary')), array(
+        $url = new moodle_url('/mod/annotateddiary/report.php', $options);
+        $output .= html_writer::link($url, $OUTPUT->pix_icon('i/export', get_string('csvexport', 'annotateddiary')), array(
             'class' => 'toolbutton'
         ));
 
         // Add sort by lastname ascending button.
         $options['action'] = 'lastnameasc';
-        $url = new moodle_url('/mod/diary/report.php', $options);
-        $output .= html_writer::link($url, $OUTPUT->pix_icon('t/sort_asc', get_string('lastnameasc', 'diary')), array(
+        $url = new moodle_url('/mod/annotateddiary/report.php', $options);
+        $output .= html_writer::link($url, $OUTPUT->pix_icon('t/sort_asc', get_string('lastnameasc', 'annotateddiary')), array(
             'class' => 'toolbutton'
         ));
 
         // Add sort by lastname descending button.
         $options['action'] = 'lastnamedesc';
-        $url = new moodle_url('/mod/diary/report.php', $options);
-        $output .= html_writer::link($url, $OUTPUT->pix_icon('t/sort_desc', get_string('lastnamedesc', 'diary')), array(
+        $url = new moodle_url('/mod/annotateddiary/report.php', $options);
+        $output .= html_writer::link($url, $OUTPUT->pix_icon('t/sort_desc', get_string('lastnamedesc', 'annotateddiary')), array(
             'class' => 'toolbutton'
         ));
 
         // Add reload toolbutton.
         $options['action'] = $stringlable;
-        $url = new moodle_url('/mod/diary/report.php', $options);
-        $output .= html_writer::link($url, $OUTPUT->pix_icon('t/reload', get_string('reload', 'diary')), array(
+        $url = new moodle_url('/mod/annotateddiary/report.php', $options);
+        $output .= html_writer::link($url, $OUTPUT->pix_icon('t/reload', get_string('reload', 'annotateddiary')), array(
             'class' => 'toolbutton'
         ));
 
         $options['action'] = 'currententry';
-        $url = new moodle_url('/mod/diary/report.php', $options);
-        $output .= html_writer::link($url, $OUTPUT->pix_icon('i/edit', get_string('currententry', 'diary')), array(
+        $url = new moodle_url('/mod/annotateddiary/report.php', $options);
+        $output .= html_writer::link($url, $OUTPUT->pix_icon('i/edit', get_string('currententry', 'annotateddiary')), array(
             'class' => 'toolbutton'
         ));
 
         $options['action'] = 'firstentry';
-        $url = new moodle_url('/mod/diary/report.php', $options);
-        $output .= html_writer::link($url, $OUTPUT->pix_icon('t/left', get_string('firstentry', 'diary')), array(
+        $url = new moodle_url('/mod/annotateddiary/report.php', $options);
+        $output .= html_writer::link($url, $OUTPUT->pix_icon('t/left', get_string('firstentry', 'annotateddiary')), array(
             'class' => 'toolbutton'
         ));
 
         $options['action'] = 'lowestgradeentry';
-        $url = new moodle_url('/mod/diary/report.php', $options);
-        $output .= html_writer::link($url, $OUTPUT->pix_icon('t/down', get_string('lowestgradeentry', 'diary')), array(
+        $url = new moodle_url('/mod/annotateddiary/report.php', $options);
+        $output .= html_writer::link($url, $OUTPUT->pix_icon('t/down', get_string('lowestgradeentry', 'annotateddiary')), array(
             'class' => 'toolbutton'
         ));
 
         $options['action'] = 'highestgradeentry';
-        $url = new moodle_url('/mod/diary/report.php', $options);
-        $output .= html_writer::link($url, $OUTPUT->pix_icon('t/up', get_string('highestgradeentry', 'diary')), array(
+        $url = new moodle_url('/mod/annotateddiary/report.php', $options);
+        $output .= html_writer::link($url, $OUTPUT->pix_icon('t/up', get_string('highestgradeentry', 'annotateddiary')), array(
             'class' => 'toolbutton'
         ));
 
         $options['action'] = 'latestmodifiedentry';
-        $url = new moodle_url('/mod/diary/report.php', $options);
-        $output .= html_writer::link($url, $OUTPUT->pix_icon('t/right', get_string('latestmodifiedentry', 'diary')), array(
+        $url = new moodle_url('/mod/annotateddiary/report.php', $options);
+        $output .= html_writer::link($url, $OUTPUT->pix_icon('t/right', get_string('latestmodifiedentry', 'annotateddiary')), array(
             'class' => 'toolbutton'
         ));
 
         // 20210511 Reorganized group and toolbar output.
-        echo '<span>'.groups_print_activity_menu($cm, $CFG->wwwroot."/mod/diary/report.php?id=$cm->id")
-            .'</span><span style="float: right;">'.get_string('toolbar', 'diary').$output.'</span>';
+        echo '<span>'.groups_print_activity_menu($cm, $CFG->wwwroot."/mod/annotateddiary/report.php?id=$cm->id")
+            .'</span><span style="float: right;">'.get_string('toolbar', 'annotateddiary').$output.'</span>';
     }
 
     // Next line is different from Journal line 171.
-    $grades = make_grades_menu($diary->scale);
+    $grades = make_grades_menu($annotateddiary->scale);
 
-    if (! $teachers = get_users_by_capability($context, 'mod/diary:manageentries')) {
-        throw new moodle_exception(get_string('noentriesmanagers', 'diary'));
+    if (! $teachers = get_users_by_capability($context, 'mod/annotateddiary:manageentries')) {
+        throw new moodle_exception(get_string('noentriesmanagers', 'annotateddiary'));
     }
     // Start the page area where feedback and grades are added and will need to be saved.
     echo '<form action="report.php" method="post">';
@@ -397,13 +397,13 @@ if (! $users) {
     $saveallbutton = "<p class=\"feedbacksave\">";
     $saveallbutton .= "<input type=\"hidden\" name=\"id\" value=\"$cm->id\" />";
     $saveallbutton .= "<input type=\"hidden\" name=\"sesskey\" value=\"" . sesskey() . "\" />";
-    $saveallbutton .= "<input type=\"submit\" class='btn btn-primary' value=\"" . get_string("saveallfeedback", "diary") . "\" />";
+    $saveallbutton .= "<input type=\"submit\" class='btn btn-primary' value=\"" . get_string("saveallfeedback", "annotateddiary") . "\" />";
 
     // 20200421 Added a return button.
-    $url = $CFG->wwwroot . '/mod/diary/view.php?id=' . $id;
+    $url = $CFG->wwwroot . '/mod/annotateddiary/view.php?id=' . $id;
     $saveallbutton .= ' <a href="'.$url
                      .'" class="btn btn-secondary" role="button">'
-                     .get_string('returnto', 'diary', $diary->name)
+                     .get_string('returnto', 'annotateddiary', $annotateddiary->name)
                      .'</a>';
 
     $saveallbutton .= "</p>";
@@ -411,17 +411,17 @@ if (! $users) {
     // Add save button at the top of the list of users with entries.
     echo $saveallbutton;
 
-    $dcolor3 = get_config('mod_diary', 'entrybgc');
-    $dcolor4 = get_config('mod_diary', 'entrytextbgc');
+    $dcolor3 = get_config('mod_annotateddiary', 'entrybgc');
+    $dcolor4 = get_config('mod_annotateddiary', 'entrytextbgc');
 
     // Print a list of users who have completed at least one entry.
-    if ($usersdone = diary_get_users_done($diary, $currentgroup, $sortoption)) {
+    if ($usersdone = annotateddiary_get_users_done($annotateddiary, $currentgroup, $sortoption)) {
         foreach ($usersdone as $user) {
             echo '<div class="entry" style="background: '.$dcolor3.'">';
 
             // Based on toolbutton and on list of users with at least one entry, print the entries on screen.
-            echo results::diary_print_user_entry($course,
-                                                 $diary,
+            echo results::annotateddiary_print_user_entry($course,
+                                                 $annotateddiary,
                                                  $user,
                                                  $entrybyuser[$user->id],
                                                  $teachers,
@@ -442,8 +442,8 @@ if (! $users) {
         // 20210511 Changed to class.
         echo '<div class="entry" style="background: '.$dcolor3.'">';
 
-        echo results::diary_print_user_entry($course,
-                                             $diary,
+        echo results::annotateddiary_print_user_entry($course,
+                                             $annotateddiary,
                                              $user,
                                              null,
                                              $teachers,

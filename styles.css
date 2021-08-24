@@ -16,89 +16,89 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This is the css style sheet for Diary.
+ * This is the css style sheet for annotateddiary.
  *
- * @package    mod_diary
+ * @package    mod_annotateddiary
  * @copyright  2019 AL Rachels (drachels@drachels.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later.
  */
 /* 20210502 Added in view.php about line 278.*/
-#page-mod-diary-view .sortandaggregate,
-#page-mod-diary-report .sortandaggregate {
+#page-mod-annotateddiary-view .sortandaggregate,
+#page-mod-annotateddiary-report .sortandaggregate {
     width: 100%;
     font-size: 1.0em;
     /*font-weight: bold;*/
 }
 
 /* 20210502 Added in view.php about line 281 and 282.*/
-#page-mod-diary-view .sortandaggregate .cell {
+#page-mod-annotateddiary-view .sortandaggregate .cell {
     float: right;
     padding: 5px;
 }
 
-#page-mod-diary-view .feedbackbox { /* Used in renderer.php. */
+#page-mod-annotateddiary-view .feedbackbox { /* Used in renderer.php. */
     width: 85%;
     border-collapse: separate;
 }
 
-#page-mod-diary-view .entrycontent { /* Used in renderer.php. */
+#page-mod-annotateddiary-view .entrycontent { /* Used in renderer.php. */
     padding: 3px;
 }
 
-#page-mod-diary-view .picture { /* Used in renderer.php with left. */
+#page-mod-annotateddiary-view .picture { /* Used in renderer.php with left. */
     width: 35px;
 }
 
-#page-mod-diary-view .info { /* Cannot find this in use, anywhere. */
+#page-mod-annotateddiary-view .info { /* Cannot find this in use, anywhere. */
     margin-bottom: 5px;
     text-align: right;
 }
 
-#page-mod-diary-view .diarystart, /* Used in view.php. */
-#page-mod-diary-report .feedbacksave {
+#page-mod-annotateddiary-view .annotateddiarystart, /* Used in view.php. */
+#page-mod-annotateddiary-report .feedbacksave {
     text-align: center;
 }
 
-#page-mod-diary-view .lastedit,
-#page-mod-diary-view .editend {
+#page-mod-annotateddiary-view .lastedit,
+#page-mod-annotateddiary-view .editend {
     font-size: 0.7em;
     margin: 5px;
     text-align: center;
 }
 
-#page-mod-diary-view .needsedit,
-#page-mod-diary-view .editend {
+#page-mod-annotateddiary-view .needsedit,
+#page-mod-annotateddiary-view .editend {
     font-size: 0.9em;
     color: red;
     text-align: center;
 }
 
-#page-mod-diary-view .author { /* Used in renderer.php about line 191. */
+#page-mod-annotateddiary-view .author { /* Used in renderer.php about line 191. */
     font-size: 1em;
     font-weight: bold;
 }
 
-#page-mod-diary-view .time { /* Used in renderer.php about line 192. */
+#page-mod-annotateddiary-view .time { /* Used in renderer.php about line 192. */
     font-size: 0.7em;
     font-style: italic;
 }
 
-#page-mod-diary-view .grade { /* Used in renderer.php about line 200. */
+#page-mod-annotateddiary-view .grade { /* Used in renderer.php about line 200. */
     font-weight: bold;
     font-style: italic;
     text-align: right;
 }
 
-#page-mod-diary-index .cell { /* Cannot find this in use, anywhere. */
+#page-mod-annotateddiary-index .cell { /* Cannot find this in use, anywhere. */
     font-size: 0.8em;
 }
 
 /* 20210501 Added in view.php about line 381.*/
 /* 20210505 Added in report.php about lines 427 and 455.*/
 /* 20210505 Added in reportsingle.php about line 266.*/
-#page-mod-diary-view .entry,
-#page-mod-diary-report .entry,
-#page-mod-diary-reportsingle .entry {
+#page-mod-annotateddiary-view .entry,
+#page-mod-annotateddiary-report .entry,
+#page-mod-annotateddiary-reportsingle .entry {
     text-align: left;
     font-size: 1em;
     padding: 5px;
@@ -112,64 +112,64 @@
 
 }
 
-#page-mod-diary-view .feedbackbox .left,
-#page-mod-diary-view .feedbackbox .entryheader { /* Used in renderer.php about line 190. */
+#page-mod-annotateddiary-view .feedbackbox .left,
+#page-mod-annotateddiary-view .feedbackbox .entryheader { /* Used in renderer.php about line 190. */
     background-color: #ddd;
 }
 
-#page-mod-diary-view .feedbackbox {
+#page-mod-annotateddiary-view .feedbackbox {
     -moz-border-radius-bottomleft: 15px;
     -moz-border-radius-bottomright: 15px;
     border-spacing: 0;
     margin: 0 auto;
 }
 
-#page-mod-diary-view .feedbackbox .side {
+#page-mod-annotateddiary-view .feedbackbox .side {
     -moz-border-radius-bottomleft: 15px;
 }
 
-#page-mod-diary-view .feedbackbox .entrycontent {
+#page-mod-annotateddiary-view .feedbackbox .entrycontent {
     -moz-border-radius-bottomright: 15px;
 }
 
-#page-mod-diary-view .reportlink,
-#page-mod-diary-report .reportlink {
+#page-mod-annotateddiary-view .reportlink,
+#page-mod-annotateddiary-report .reportlink {
     float: right;
     padding: 15px;
 }
 
-#page-mod-diary-report .diaryuserentry {
+#page-mod-annotateddiary-report .annotateddiaryuserentry {
     /*border: 1px solid #000000;*/
     border-collapse: collapse;
     border-spacing: 0;
 }
 
-#page-mod-diary-report .diaryuserentry td {
+#page-mod-annotateddiary-report .annotateddiaryuserentry td {
     padding: 10px;
     vertical-align: top;
     width: 100%;
 }
 
-#page-mod-diary-report .diaryuserentry td.userpix {
+#page-mod-annotateddiary-report .annotateddiaryuserentry td.userpix {
     width: 35px;
 }
 
-#page-mod-diary-report .diaryuserentry td.userfullname {
+#page-mod-annotateddiary-report .annotateddiaryuserentry td.userfullname {
     white-space: nowrap;
 }
 
-#page-mod-diary-report .diaryuserentry td .lastedit {
+#page-mod-annotateddiary-report .annotateddiaryuserentry td .lastedit {
     font-size: 0.7em;
     margin-left: 10px;
 }
 
-#page-mod-diary-report .diaryuserentry td .needsedit {
+#page-mod-annotateddiary-report .annotateddiaryuserentry td .needsedit {
     font-size: 0.9em;
     color: red;
     margin-left: 10px;
 }
 
-#page-mod-diary-report .mediaplugin {
+#page-mod-annotateddiary-report .mediaplugin {
     width: 100%;
 }
 

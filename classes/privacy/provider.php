@@ -17,11 +17,11 @@
 /**
  * Privacy class for requesting user data.
  *
- * @package   mod_diary
+ * @package   mod_annotateddiary
  * @copyright 2019 AL Rachels <drachels@drachels.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-namespace mod_diary\privacy;
+namespace mod_annotateddiary\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -36,12 +36,12 @@ use core_privacy\local\request\helper;
 use core_privacy\local\request\transform;
 use core_privacy\local\request\userlist;
 use core_privacy\local\request\writer;
-require_once($CFG->dirroot . '/mod/diary/lib.php');
+require_once($CFG->dirroot . '/mod/annotateddiary/lib.php');
 
 /**
  * Privacy class for requesting user data.
  *
- * @package   mod_diary
+ * @package   mod_annotateddiary
  * @copyright 2019 AL Rachels <drachels@drachels.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -50,20 +50,20 @@ class provider implements \core_privacy\local\metadata\provider,
                           \core_privacy\local\request\plugin\provider {
 
     /**
-     * Provides meta data that is stored about a user with mod_diary.
+     * Provides meta data that is stored about a user with mod_annotateddiary.
      *
      * @param collection $collection The initialized collection to add items to.
      * @return collection Returns the collection of metadata.
      */
     public static function get_metadata(collection $collection): collection {
-        $collection->add_database_table('diary_entries', [
-            'userid' => 'privacy:metadata:diary_entries:userid',
-            'timecreated' => 'privacy:metadata:diary_entries:timecreated',
-            'timemodified' => 'privacy:metadata:diary_entries:timemodified',
-            'text' => 'privacy:metadata:diary_entries:text',
-            'rating' => 'privacy:metadata:diary_entries:rating',
-            'entrycomment' => 'privacy:metadata:diary_entries:entrycomment'
-        ], 'privacy:metadata:diary_entries');
+        $collection->add_database_table('annotateddiary_entries', [
+            'userid' => 'privacy:metadata:annotateddiary_entries:userid',
+            'timecreated' => 'privacy:metadata:annotateddiary_entries:timecreated',
+            'timemodified' => 'privacy:metadata:annotateddiary_entries:timemodified',
+            'text' => 'privacy:metadata:annotateddiary_entries:text',
+            'rating' => 'privacy:metadata:annotateddiary_entries:rating',
+            'entrycomment' => 'privacy:metadata:annotateddiary_entries:entrycomment'
+        ], 'privacy:metadata:annotateddiary_entries');
 
         return $collection;
     }
@@ -79,9 +79,9 @@ class provider implements \core_privacy\local\metadata\provider,
             SELECT DISTINCT ctx.id
               FROM {%s} fc
               JOIN {modules} m
-                ON m.name = :diary
+                ON m.name = :annotateddiary
               JOIN {course_modules} cm
-                ON cm.instance = fc.diary
+                ON cm.instance = fc.annotateddiary
                AND cm.module = m.id
               JOIN {context} ctx
                 ON ctx.instanceid = cm.id
@@ -89,12 +89,12 @@ class provider implements \core_privacy\local\metadata\provider,
              WHERE fc.userid = :userid";
 
         $params = [
-            'diary' => 'diary',
+            'annotateddiary' => 'annotateddiary',
             'modlevel' => CONTEXT_MODULE,
             'userid' => $userid
         ];
         $contextlist = new contextlist();
-        $contextlist->add_from_sql(sprintf($sql, 'diary_entries'), $params);
+        $contextlist->add_from_sql(sprintf($sql, 'annotateddiary_entries'), $params);
         return $contextlist;
     }
 
@@ -110,26 +110,26 @@ class provider implements \core_privacy\local\metadata\provider,
             return;
         }
 
-        // Find users with diary entries.
+        // Find users with annotateddiary entries.
         $sql = "
             SELECT fc.userid
               FROM {%s} fc
               JOIN {modules} m
-                ON m.name = :diary
+                ON m.name = :annotateddiary
               JOIN {course_modules} cm
-                ON cm.instance = fc.diary
+                ON cm.instance = fc.annotateddiary
                AND cm.module = m.id
               JOIN {context} ctx
                 ON ctx.instanceid = cm.id
                AND ctx.contextlevel = :modlevel
              WHERE ctx.id = :contextid";
         $params = [
-            'diary' => 'diary',
+            'annotateddiary' => 'annotateddiary',
             'modlevel' => CONTEXT_MODULE,
             'contextid' => $context->id
         ];
 
-        $userlist->add_from_sql('userid', sprintf($sql, 'diary_entries'), $params);
+        $userlist->add_from_sql('userid', sprintf($sql, 'annotateddiary_entries'), $params);
     }
 
     /**
@@ -158,45 +158,45 @@ class provider implements \core_privacy\local\metadata\provider,
                   FROM {context} c
             INNER JOIN {course_modules} cm ON cm.id = c.instanceid AND c.contextlevel = :contextlevel
             INNER JOIN {modules} m ON m.id = cm.module AND m.name = :modname
-            INNER JOIN {diary} j ON j.id = cm.instance
-             LEFT JOIN {diary_entries} as den ON den.diary = j.id
+            INNER JOIN {annotateddiary} j ON j.id = cm.instance
+             LEFT JOIN {annotateddiary_entries} as den ON den.annotateddiary = j.id
                  WHERE den.userid = :userid AND c.id {$contextsql}";
         $params = [
             'contextlevel' => CONTEXT_MODULE,
-            'modname' => 'diary',
+            'modname' => 'annotateddiary',
             'userid' => $userid
         ];
         $params += $contextparams;
 
-        // Fetch the individual diarys entries.
-        $diarys = $DB->get_recordset_sql($sql, $params);
-        foreach ($diarys as $diary) {
-            list ($course, $cm) = get_course_and_cm_from_cmid($diary->cmid, 'diary');
-            $diaryobj = new \entry($diary, $cm, $course);
-            $context = $diaryobj->get_context();
+        // Fetch the individual annotateddiarys entries.
+        $annotateddiarys = $DB->get_recordset_sql($sql, $params);
+        foreach ($annotateddiarys as $annotateddiary) {
+            list ($course, $cm) = get_course_and_cm_from_cmid($annotateddiary->cmid, 'annotateddiary');
+            $annotateddiaryobj = new \entry($annotateddiary, $cm, $course);
+            $context = $annotateddiaryobj->get_context();
 
-            $diaryentry = \core_privacy\local\request\helper::get_context_data($context, $contextlist->get_user());
+            $annotateddiaryentry = \core_privacy\local\request\helper::get_context_data($context, $contextlist->get_user());
             \core_privacy\local\request\helper::export_context_files($context, $contextlist->get_user());
 
-            if (! empty($diaryentry->timecreated)) {
-                $diaryentry->timecreated = transform::datetime($diary->timecreated);
+            if (! empty($annotateddiaryentry->timecreated)) {
+                $annotateddiaryentry->timecreated = transform::datetime($annotateddiary->timecreated);
             }
-            if (! empty($diaryentry->timemodified)) {
-                $diaryentry->timemodified = transform::datetime($diary->timemodified);
+            if (! empty($annotateddiaryentry->timemodified)) {
+                $annotateddiaryentry->timemodified = transform::datetime($annotateddiary->timemodified);
             }
-            if (! empty($diaryentry->text)) {
-                $diaryentry->text = $diary->text;
+            if (! empty($annotateddiaryentry->text)) {
+                $annotateddiaryentry->text = $annotateddiary->text;
             }
-            if (! empty($diaryentry->rating)) {
-                $diaryentry->rating = $diary->rating;
+            if (! empty($annotateddiaryentry->rating)) {
+                $annotateddiaryentry->rating = $annotateddiary->rating;
             }
-            if (! empty($diaryentry->entrycomment)) {
-                $diaryentry->entrycomment = $diary->entrycomment;
+            if (! empty($annotateddiaryentry->entrycomment)) {
+                $annotateddiaryentry->entrycomment = $annotateddiary->entrycomment;
             }
 
-            writer::with_context($context)->export_data([], $diaryentry);
+            writer::with_context($context)->export_data([], $annotateddiaryentry);
         }
-        $diarys->close();
+        $annotateddiarys->close();
     }
 
     /**
@@ -218,21 +218,21 @@ class provider implements \core_privacy\local\metadata\provider,
             SELECT fc.id
               FROM {%s} fc
               JOIN {modules} m
-                ON m.name = :diary
+                ON m.name = :annotateddiary
               JOIN {course_modules} cm
-                ON cm.instance = fc.diary
+                ON cm.instance = fc.annotateddiary
                AND cm.module = m.id
              WHERE cm.id = :cmid";
         $completedparams = [
             'cmid' => $context->instanceid,
-            'diary' => 'diary'
+            'annotateddiary' => 'annotateddiary'
         ];
 
-        // Delete diary entries.
-        $completedtmpids = $DB->get_fieldset_sql(sprintf($completedsql, 'diary_entries'), $completedparams);
+        // Delete annotateddiary entries.
+        $completedtmpids = $DB->get_fieldset_sql(sprintf($completedsql, 'annotateddiary_entries'), $completedparams);
         if (! empty($completedtmpids)) {
             list ($insql, $inparams) = $DB->get_in_or_equal($completedtmpids, SQL_PARAMS_NAMED);
-            $DB->delete_records_select('diary_entries', "id $insql", $inparams);
+            $DB->delete_records_select('annotateddiary_entries', "id $insql", $inparams);
         }
     }
 
@@ -258,22 +258,22 @@ class provider implements \core_privacy\local\metadata\provider,
             SELECT fc.id
               FROM {%s} fc
               JOIN {modules} m
-                ON m.name = :diary
+                ON m.name = :annotateddiary
               JOIN {course_modules} cm
-                ON cm.instance = fc.diary
+                ON cm.instance = fc.annotateddiary
                AND cm.module = m.id
              WHERE fc.userid = :userid
                AND cm.id $insql";
         $completedparams = array_merge($inparams, [
             'userid' => $userid,
-            'diary' => 'diary'
+            'annotateddiary' => 'annotateddiary'
         ]);
 
-        // Delete diary entries.
-        $completedtmpids = $DB->get_fieldset_sql(sprintf($completedsql, 'diary_entries'), $completedparams);
+        // Delete annotateddiary entries.
+        $completedtmpids = $DB->get_fieldset_sql(sprintf($completedsql, 'annotateddiary_entries'), $completedparams);
         if (! empty($completedtmpids)) {
             list ($insql, $inparams) = $DB->get_in_or_equal($completedtmpids, SQL_PARAMS_NAMED);
-            $DB->delete_records_select('diary_entries', "id $insql", $inparams);
+            $DB->delete_records_select('annotateddiary_entries', "id $insql", $inparams);
         }
     }
 
@@ -294,22 +294,22 @@ class provider implements \core_privacy\local\metadata\provider,
             SELECT fc.id
               FROM {%s} fc
               JOIN {modules} m
-                ON m.name = :diary
+                ON m.name = :annotateddiary
               JOIN {course_modules} cm
-                ON cm.instance = fc.diary
+                ON cm.instance = fc.annotateddiary
                AND cm.module = m.id
              WHERE cm.id = :instanceid
                AND fc.userid $insql";
         $completedparams = array_merge($inparams, [
             'instanceid' => $context->instanceid,
-            'diary' => 'diary'
+            'annotateddiary' => 'annotateddiary'
         ]);
 
-        // Delete all diary entries.
-        $completedtmpids = $DB->get_fieldset_sql(sprintf($completedsql, 'diary_entries'), $completedparams);
+        // Delete all annotateddiary entries.
+        $completedtmpids = $DB->get_fieldset_sql(sprintf($completedsql, 'annotateddiary_entries'), $completedparams);
         if (! empty($completedtmpids)) {
             list ($insql, $inparams) = $DB->get_in_or_equal($completedtmpids, SQL_PARAMS_NAMED);
-            $DB->delete_records_select('diary_entries', "id $insql", $inparams);
+            $DB->delete_records_select('annotateddiary_entries', "id $insql", $inparams);
         }
     }
 }

@@ -15,57 +15,57 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Diary stats utilities for Diary.
+ * annotateddiary stats utilities for annotateddiary.
  *
  * 2020071700 Moved these functions from lib.php to here.
  *
- * @package   mod_diary
+ * @package   mod_annotateddiary
  * @copyright AL Rachels (drachels@drachels.com)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-namespace mod_diary\local;
+namespace mod_annotateddiary\local;
 
 defined('MOODLE_INTERNAL') || die();
 
-use mod_diary\local\diarystats;
+use mod_annotateddiary\local\annotateddiarystats;
 use stdClass;
 use core_text;
 
 /**
- * Utility class for Diary stats.
+ * Utility class for annotateddiary stats.
  *
- * @package   mod_diary
+ * @package   mod_annotateddiary
  * @copyright AL Rachels (drachels@drachels.com)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class diarystats {
+class annotateddiarystats {
 
     /**
-     * Update the diary statistics for this diary activity.
+     * Update the annotateddiary statistics for this annotateddiary activity.
      *
      * @param string $entry The text for this entry.
      * @return bool
      */
-    public static function get_diary_stats($entry) {
+    public static function get_annotateddiary_stats($entry) {
     // @codingStandardsIgnoreLine
-    // public function get_diary_stats($entry) {
+    // public function get_annotateddiary_stats($entry) {
         // global $DB, $CFG;
         $precision = 1;
-        $diarystats = array();
-        $diarystats['words'] = self::get_stats_words($entry);
-        $diarystats['chars'] = self::get_stats_chars($entry);
-        $diarystats['sentences'] = self::get_stats_sentences($entry);
-        $diarystats['paragraphs'] = self::get_stats_paragraphs($entry);
-        $diarystats['uniquewords'] = self::get_stats_uniquewords($entry);
+        $annotateddiarystats = array();
+        $annotateddiarystats['words'] = self::get_stats_words($entry);
+        $annotateddiarystats['chars'] = self::get_stats_chars($entry);
+        $annotateddiarystats['sentences'] = self::get_stats_sentences($entry);
+        $annotateddiarystats['paragraphs'] = self::get_stats_paragraphs($entry);
+        $annotateddiarystats['uniquewords'] = self::get_stats_uniquewords($entry);
         // @codingStandardsIgnoreLine
-        // print_object('This is the $diarystats array.');
-        // print_object($diarystats);
+        // print_object('This is the $annotateddiarystats array.');
+        // print_object($annotateddiarystats);
 
-        return $diarystats;
+        return $annotateddiarystats;
     }
 
     /**
-     * Update the diary character count statistics for this diary activity.
+     * Update the annotateddiary character count statistics for this annotateddiary activity.
      *
      * @param string $entry The text for this entry.
      * @ return int The number of characters.
@@ -77,7 +77,7 @@ class diarystats {
     }
 
     /**
-     * Update the diary word count statistics for this diary activity.
+     * Update the annotateddiary word count statistics for this annotateddiary activity.
      *
      * @param string $entry The text for this entry.
      * @ return int The number of words.
@@ -87,7 +87,7 @@ class diarystats {
     }
 
     /**
-     * Update the diary sentence count statistics for this diary activity.
+     * Update the annotateddiary sentence count statistics for this annotateddiary activity.
      *
      * @param string $entry The text for this entry.
      * @ return int The number of sentences.
@@ -99,7 +99,7 @@ class diarystats {
     }
 
     /**
-     * Update the diary paragraph count statistics for this diary activity.
+     * Update the annotateddiary paragraph count statistics for this annotateddiary activity.
      *
      * @param string $entry The text for this entry.
      * @ return int The number of paragraphs.
@@ -111,7 +111,7 @@ class diarystats {
     }
 
     /**
-     * Update the diary unique word count statistics for this diary activity.
+     * Update the annotateddiary unique word count statistics for this annotateddiary activity.
      *
      * @param string $entry The text for this entry.
      * @return int The number of unique words.

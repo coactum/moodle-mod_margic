@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * mod_diary data generator.
+ * mod_annotateddiary data generator.
  *
- * @package   mod_diary
+ * @package   mod_annotateddiary
  * @category  test
  * @copyright 2019 AL Rachels <drachels@drachels.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -25,21 +25,21 @@
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * mod_diary data generator class.
+ * mod_annotateddiary data generator class.
  *
- * @package   mod_diary
+ * @package   mod_annotateddiary
  * @category  test
  * @copyright 2019 AL Rachels <drachels@drachels.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class mod_diary_generator extends testing_module_generator
+class mod_annotateddiary_generator extends testing_module_generator
 {
 
     /**
      *
-     * @var int keep track of how many diarys have been created.
+     * @var int keep track of how many annotateddiarys have been created.
      */
-    protected $diarycount = 0;
+    protected $annotateddiarycount = 0;
 
     /**
      * To be called from data reset code only,
@@ -48,25 +48,25 @@ class mod_diary_generator extends testing_module_generator
      * @return void
      */
     public function reset() {
-        $this->diarycount = 0;
+        $this->annotateddiarycount = 0;
         parent::reset();
     }
 
     /**
-     * Create new diary module instance.
+     * Create new annotateddiary module instance.
      *
      * @param array|stdClass $record
      * @param array $options
-     * @return stdClass mod_diary_structure
+     * @return stdClass mod_annotateddiary_structure
      */
     public function create_instance($record = null, array $options = null) {
         $record = (object) (array) $record;
 
         if (! isset($record->name)) {
-            $record->name = 'Test diary name ' . $this->diarycount;
+            $record->name = 'Test annotateddiary name ' . $this->annotateddiarycount;
         }
         if (! isset($record->intro)) {
-            $record->intro = 'Test diary name ' . $this->diarycount;
+            $record->intro = 'Test annotateddiary name ' . $this->annotateddiarycount;
         }
         if (! isset($record->days)) {
             $record->days = 0;
@@ -75,7 +75,7 @@ class mod_diary_generator extends testing_module_generator
             $record->grade = 100;
         }
 
-        $this->diarycount ++;
+        $this->annotateddiarycount ++;
 
         return parent::create_instance($record, (array) $options);
     }

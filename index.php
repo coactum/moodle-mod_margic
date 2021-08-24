@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This page lists all the instances of diary in a particular course
+ * This page lists all the instances of annotateddiary in a particular course
  *
- * @package   mod_diary
+ * @package   mod_annotateddiary
  * @copyright 1999 onwards Martin Dougiamas {@link http://moodle.com}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -29,26 +29,26 @@ $id = required_param('id', PARAM_INT); // Course.
 if (! $course = $DB->get_record('course', array(
     'id' => $id
 ))) {
-    throw new moodle_exception(get_string('incorrectcourseid', 'diary'));
+    throw new moodle_exception(get_string('incorrectcourseid', 'annotateddiary'));
 }
 
 require_course_login($course);
 
 // Header.
-$strdiarys = get_string('modulenameplural', 'diary');
+$strannotateddiarys = get_string('modulenameplural', 'annotateddiary');
 $PAGE->set_pagelayout('incourse');
-$PAGE->set_url('/mod/diary/index.php', array(
+$PAGE->set_url('/mod/annotateddiary/index.php', array(
     'id' => $id
 ));
-$PAGE->navbar->add($strdiarys);
-$PAGE->set_title($strdiarys);
+$PAGE->navbar->add($strannotateddiarys);
+$PAGE->set_title($strannotateddiarys);
 $PAGE->set_heading($course->fullname);
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading($strdiarys);
+echo $OUTPUT->heading($strannotateddiarys);
 
-if (! $diarys = get_all_instances_in_course('diary', $course)) {
-    notice(get_string('thereareno', 'moodle', get_string('modulenameplural', 'diary')), '../../course/view.php?id=$course->id');
+if (! $annotateddiarys = get_all_instances_in_course('annotateddiary', $course)) {
+    notice(get_string('thereareno', 'moodle', get_string('modulenameplural', 'annotateddiary')), '../../course/view.php?id=$course->id');
     die();
 }
 
@@ -79,48 +79,48 @@ $table->align[] = 'left';
 
 $currentsection = '';
 $i = 0;
-foreach ($diarys as $diary) {
+foreach ($annotateddiarys as $annotateddiary) {
 
-    $context = context_module::instance($diary->coursemodule);
-    $entriesmanager = has_capability('mod/diary:manageentries', $context);
+    $context = context_module::instance($annotateddiary->coursemodule);
+    $entriesmanager = has_capability('mod/annotateddiary:manageentries', $context);
 
     // Section.
     $printsection = '';
-    if ($diary->section !== $currentsection) {
-        if ($diary->section) {
-            $printsection = get_section_name($course, $sections[$diary->section]);
+    if ($annotateddiary->section !== $currentsection) {
+        if ($annotateddiary->section) {
+            $printsection = get_section_name($course, $sections[$annotateddiary->section]);
         }
         if ($currentsection !== '') {
             $table->data[$i] = 'hr';
             $i ++;
         }
-        $currentsection = $diary->section;
+        $currentsection = $annotateddiary->section;
     }
     if ($usesections) {
         $table->data[$i][] = $printsection;
     }
 
     // Link.
-    $diaryname = format_string($diary->name, true, array(
+    $annotateddiaryname = format_string($annotateddiary->name, true, array(
         'context' => $context
     ));
-    if (! $diary->visible) {
+    if (! $annotateddiary->visible) {
         // Show dimmed if the mod is hidden.
-        $table->data[$i][] = "<a class=\"dimmed\" href=\"view.php?id=$diary->coursemodule\">" . $diaryname . "</a>";
+        $table->data[$i][] = "<a class=\"dimmed\" href=\"view.php?id=$annotateddiary->coursemodule\">" . $annotateddiaryname . "</a>";
     } else {
         // Show normal if the mod is visible.
-        $table->data[$i][] = "<a href=\"view.php?id=$diary->coursemodule\">" . $diaryname . "</a>";
+        $table->data[$i][] = "<a href=\"view.php?id=$annotateddiary->coursemodule\">" . $annotateddiaryname . "</a>";
     }
 
     // Description.
-    $table->data[$i][] = format_text($diary->intro, $diary->introformat);
+    $table->data[$i][] = format_text($annotateddiary->intro, $annotateddiary->introformat);
 
     // Entries info.
     if ($entriesmanager) {
 
         // Display the report.php col only if is a entries manager in some CONTEXT_MODULE.
         if (empty($managersomewhere)) {
-            $table->head[] = get_string('viewentries', 'diary');
+            $table->head[] = get_string('viewentries', 'annotateddiary');
             $table->align[] = 'left';
             $managersomewhere = true;
 
@@ -133,9 +133,9 @@ foreach ($diarys as $diary) {
             }
         }
 
-        $entrycount = diary_count_entries($diary, groups_get_all_groups($course->id, $USER->id));
-        $table->data[$i][] = "<a href=\"report.php?id=$diary->coursemodule\">"
-            . get_string("viewallentries", "diary", $entrycount) . "</a>";
+        $entrycount = annotateddiary_count_entries($annotateddiary, groups_get_all_groups($course->id, $USER->id));
+        $table->data[$i][] = "<a href=\"report.php?id=$annotateddiary->coursemodule\">"
+            . get_string("viewallentries", "annotateddiary", $entrycount) . "</a>";
     } else if (! empty($managersomewhere)) {
         $table->data[$i][] = "";
     }
@@ -151,7 +151,7 @@ echo html_writer::table($table);
 $params = array(
     'context' => context_course::instance($course->id)
 );
-$event = \mod_diary\event\course_module_instance_list_viewed::create($params);
+$event = \mod_annotateddiary\event\course_module_instance_list_viewed::create($params);
 $event->add_record_snapshot('course', $course);
 $event->trigger();
 

@@ -15,23 +15,23 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Define all the restore steps that will be used by the restore_diary_activity_task
+ * Define all the restore steps that will be used by the restore_annotateddiary_activity_task
  *
- * @package   mod_diary
+ * @package   mod_annotateddiary
  * @copyright 2020 AL Rachels <drachels@drachels.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-use mod_diary\local\results;
+use mod_annotateddiary\local\results;
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Define the complete diary structure for restore, with file and id annotations.
+ * Define the complete annotateddiary structure for restore, with file and id annotations.
  *
- * @package   mod_diary
+ * @package   mod_annotateddiary
  * @copyright 2020 AL Rachels <drachels@drachels.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class restore_diary_activity_structure_step extends restore_activity_structure_step {
+class restore_annotateddiary_activity_structure_step extends restore_activity_structure_step {
 
     /**
      * Define the structure of the restore workflow.
@@ -42,12 +42,12 @@ class restore_diary_activity_structure_step extends restore_activity_structure_s
         $paths = array();
         $userinfo = $this->get_setting_value('userinfo');
 
-        $paths[] = new restore_path_element('diary', '/activity/diary');
+        $paths[] = new restore_path_element('annotateddiary', '/activity/annotateddiary');
 
         if ($userinfo) {
-            $paths[] = new restore_path_element('diary_entry', '/activity/diary/entries/entry');
-            $paths[] = new restore_path_element('diary_entry_rating', '/activity/diary/entries/entry/ratings/rating');
-            $paths[] = new restore_path_element('diary_entry_tag', '/activity/diary/entriestags/tag');
+            $paths[] = new restore_path_element('annotateddiary_entry', '/activity/annotateddiary/entries/entry');
+            $paths[] = new restore_path_element('annotateddiary_entry_rating', '/activity/annotateddiary/entries/entry/ratings/rating');
+            $paths[] = new restore_path_element('annotateddiary_entry_tag', '/activity/annotateddiary/entriestags/tag');
         }
 
         // Return the paths wrapped into standard activity structure.
@@ -55,62 +55,62 @@ class restore_diary_activity_structure_step extends restore_activity_structure_s
     }
 
     /**
-     * Process a diary restore.
+     * Process a annotateddiary restore.
      *
-     * @param object $diary
-     *            The diary in object form
+     * @param object $annotateddiary
+     *            The annotateddiary in object form
      * @return void
      */
-    protected function process_diary($diary) {
+    protected function process_annotateddiary($annotateddiary) {
         global $DB;
 
-        $diary = (object) $diary;
-        $oldid = $diary->id;
-        $diary->course = $this->get_courseid();
+        $annotateddiary = (object) $annotateddiary;
+        $oldid = $annotateddiary->id;
+        $annotateddiary->course = $this->get_courseid();
 
-        unset($diary->id);
+        unset($annotateddiary->id);
 
         // Any changes to the list of dates that needs to be rolled should be same during course restore and course reset.
         // See MDL-9367.
-        $diary->course = $this->get_courseid();
-        $diary->assesstimestart = $this->apply_date_offset($diary->assesstimestart);
-        $diary->assesstimefinish = $this->apply_date_offset($diary->assesstimefinish);
-        $diary->timemodified = $this->apply_date_offset($diary->timemodified);
-        $diary->timeopen = $this->apply_date_offset($diary->timeopen);
-        $diary->timeclose = $this->apply_date_offset($diary->timeclose);
+        $annotateddiary->course = $this->get_courseid();
+        $annotateddiary->assesstimestart = $this->apply_date_offset($annotateddiary->assesstimestart);
+        $annotateddiary->assesstimefinish = $this->apply_date_offset($annotateddiary->assesstimefinish);
+        $annotateddiary->timemodified = $this->apply_date_offset($annotateddiary->timemodified);
+        $annotateddiary->timeopen = $this->apply_date_offset($annotateddiary->timeopen);
+        $annotateddiary->timeclose = $this->apply_date_offset($annotateddiary->timeclose);
 
-        if ($diary->scale < 0) { // Scale found, get mapping.
-            $diary->scale = - ($this->get_mappingid('scale', abs($diary->scale)));
+        if ($annotateddiary->scale < 0) { // Scale found, get mapping.
+            $annotateddiary->scale = - ($this->get_mappingid('scale', abs($annotateddiary->scale)));
         }
 
         // Insert the data record.
-        $newid = $DB->insert_record('diary', $diary);
+        $newid = $DB->insert_record('annotateddiary', $annotateddiary);
         $this->apply_activity_instance($newid);
     }
 
     /**
-     * Process a diaryentry restore.
+     * Process a annotateddiaryentry restore.
      *
-     * @param object $diaryentry
-     *            The diaryentry in object form.
+     * @param object $annotateddiaryentry
+     *            The annotateddiaryentry in object form.
      * @return void
      */
-    protected function process_diary_entry($diaryentry) {
+    protected function process_annotateddiary_entry($annotateddiaryentry) {
         global $DB;
 
-        $diaryentry = (object) $diaryentry;
+        $annotateddiaryentry = (object) $annotateddiaryentry;
 
-        $oldid = $diaryentry->id;
-        unset($diaryentry->id);
+        $oldid = $annotateddiaryentry->id;
+        unset($annotateddiaryentry->id);
 
-        $diaryentry->diary = $this->get_new_parentid('diary');
-        $diaryentry->timemcreated = $this->apply_date_offset($diaryentry->timecreated);
-        $diaryentry->timemodified = $this->apply_date_offset($diaryentry->timemodified);
-        $diaryentry->timemarked = $this->apply_date_offset($diaryentry->timemarked);
-        $diaryentry->userid = $this->get_mappingid('user', $diaryentry->userid);
+        $annotateddiaryentry->annotateddiary = $this->get_new_parentid('annotateddiary');
+        $annotateddiaryentry->timemcreated = $this->apply_date_offset($annotateddiaryentry->timecreated);
+        $annotateddiaryentry->timemodified = $this->apply_date_offset($annotateddiaryentry->timemodified);
+        $annotateddiaryentry->timemarked = $this->apply_date_offset($annotateddiaryentry->timemarked);
+        $annotateddiaryentry->userid = $this->get_mappingid('user', $annotateddiaryentry->userid);
 
-        $newid = $DB->insert_record('diary_entries', $diaryentry);
-        $this->set_mapping('diary_entry', $oldid, $newid);
+        $newid = $DB->insert_record('annotateddiary_entries', $annotateddiaryentry);
+        $this->set_mapping('annotateddiary_entry', $oldid, $newid);
     }
 
     /**
@@ -119,38 +119,38 @@ class restore_diary_activity_structure_step extends restore_activity_structure_s
      * @param stdClass $data
      *            Tag
      */
-    protected function process_diary_entry_tag($data) {
+    protected function process_annotateddiary_entry_tag($data) {
         $data = (object) $data;
 
-        if (! core_tag_tag::is_enabled('mod_diary', 'diary_entries')) { // Tags disabled in server, nothing to process.
+        if (! core_tag_tag::is_enabled('mod_annotateddiary', 'annotateddiary_entries')) { // Tags disabled in server, nothing to process.
             return;
         }
 
-        if (! $itemid = $this->get_mappingid('diary_entries', $data->itemid)) {
+        if (! $itemid = $this->get_mappingid('annotateddiary_entries', $data->itemid)) {
             // Some orphaned tag, we could not find the data record for it - ignore.
             return;
         }
 
         $tag = $data->rawname;
         $context = context_module::instance($this->task->get_moduleid());
-        core_tag_tag::add_item_tag('mod_diary', 'diary_entries', $itemid, $context, $tag);
+        core_tag_tag::add_item_tag('mod_annotateddiary', 'annotateddiary_entries', $itemid, $context, $tag);
     }
 
     /**
-     * Process diary entries to provide a rating restore.
+     * Process annotateddiary entries to provide a rating restore.
      *
      * @param object $data
      *            The data in object form.
      * @return void
      */
-    protected function process_diary_entry_rating($data) {
+    protected function process_annotateddiary_entry_rating($data) {
         global $DB;
 
         $data = (object) $data;
 
         // Cannot use ratings API, cause, it's missing the ability to specify times (modified/created).
         $data->contextid = $this->task->get_contextid();
-        $data->itemid = $this->get_new_parentid('diary_entry');
+        $data->itemid = $this->get_new_parentid('annotateddiary_entry');
         if ($data->scaleid < 0) { // Scale found, get mapping.
             $data->scaleid = - ($this->get_mappingid('scale', abs($data->scaleid)));
         }
@@ -159,7 +159,7 @@ class restore_diary_activity_structure_step extends restore_activity_structure_s
 
         // We need to check that component and ratingarea are both set here.
         if (empty($data->component)) {
-            $data->component = 'mod_diary';
+            $data->component = 'mod_annotateddiary';
         }
         if (empty($data->ratingarea)) {
             $data->ratingarea = 'entry';
@@ -174,8 +174,8 @@ class restore_diary_activity_structure_step extends restore_activity_structure_s
      * @return void
      */
     protected function after_execute() {
-        $this->add_related_files('mod_diary', 'intro', null);
-        $this->add_related_files('mod_diary_entries', 'text', null);
-        $this->add_related_files('mod_diary_entries', 'entrycomment', null);
+        $this->add_related_files('mod_annotateddiary', 'intro', null);
+        $this->add_related_files('mod_annotateddiary_entries', 'text', null);
+        $this->add_related_files('mod_annotateddiary_entries', 'entrycomment', null);
     }
 }

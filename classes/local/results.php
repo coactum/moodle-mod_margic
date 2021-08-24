@@ -15,20 +15,20 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Results utilities for Diary.
+ * Results utilities for annotateddiary.
  *
  * 2020071700 Moved these functions from lib.php to here.
  *
- * @package   mod_diary
+ * @package   mod_annotateddiary
  * @copyright AL Rachels (drachels@drachels.com)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-namespace mod_diary\local;
+namespace mod_annotateddiary\local;
 
 defined('MOODLE_INTERNAL') || die();
-define('DIARY_EVENT_TYPE_OPEN', 'open');
-define('DIARY_EVENT_TYPE_CLOSE', 'close');
-use mod_diary\local\results;
+define('annotateddiary_EVENT_TYPE_OPEN', 'open');
+define('annotateddiary_EVENT_TYPE_CLOSE', 'close');
+use mod_annotateddiary\local\results;
 use stdClass;
 use csv_export_writer;
 use html_writer;
@@ -36,50 +36,50 @@ use context_module;
 use calendar_event;
 
 /**
- * Utility class for Diary results.
+ * Utility class for annotateddiary results.
  *
- * @package   mod_diary
+ * @package   mod_annotateddiary
  * @copyright AL Rachels (drachels@drachels.com)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class results {
 
     /**
-     * Update the calendar entries for this diary activity.
+     * Update the calendar entries for this annotateddiary activity.
      *
-     * @param stdClass $diary the row from the database table diary.
+     * @param stdClass $annotateddiary the row from the database table annotateddiary.
      * @param int $cmid The coursemodule id
      * @return bool
      */
-    public static function diary_update_calendar(stdClass $diary, $cmid) {
+    public static function annotateddiary_update_calendar(stdClass $annotateddiary, $cmid) {
         global $DB, $CFG;
 
         if ($CFG->branch > 30) { // If Moodle less than version 3.1 skip this.
             require_once($CFG->dirroot.'/calendar/lib.php');
 
-            // Get CMID if not sent as part of $diary.
-            if (! isset($diary->coursemodule)) {
-                $cm = get_coursemodule_from_instance('diary', $diary->id, $diary->course);
-                $diary->coursemodule = $cm->id;
+            // Get CMID if not sent as part of $annotateddiary.
+            if (! isset($annotateddiary->coursemodule)) {
+                $cm = get_coursemodule_from_instance('annotateddiary', $annotateddiary->id, $annotateddiary->course);
+                $annotateddiary->coursemodule = $cm->id;
             }
 
-            // Diary start calendar events.
+            // annotateddiary start calendar events.
             $event = new stdClass();
-            $event->eventtype = DIARY_EVENT_TYPE_OPEN;
+            $event->eventtype = annotateddiary_EVENT_TYPE_OPEN;
             // The MOOTYPER_EVENT_TYPE_OPEN event should only be an action event if no close time is specified.
-            $event->type = empty($diary->timeclose) ? CALENDAR_EVENT_TYPE_ACTION : CALENDAR_EVENT_TYPE_STANDARD;
+            $event->type = empty($annotateddiary->timeclose) ? CALENDAR_EVENT_TYPE_ACTION : CALENDAR_EVENT_TYPE_STANDARD;
             if ($event->id = $DB->get_field('event', 'id', array(
-                'modulename' => 'diary',
-                'instance' => $diary->id,
+                'modulename' => 'annotateddiary',
+                'instance' => $annotateddiary->id,
                 'eventtype' => $event->eventtype
             ))) {
-                if ((! empty($diary->timeopen)) && ($diary->timeopen > 0)) {
+                if ((! empty($annotateddiary->timeopen)) && ($annotateddiary->timeopen > 0)) {
                     // Calendar event exists so update it.
-                    $event->name = get_string('calendarstart', 'diary', $diary->name);
-                    $event->description = format_module_intro('diary', $diary, $cmid);
-                    $event->timestart = $diary->timeopen;
-                    $event->timesort = $diary->timeopen;
-                    $event->visible = instance_is_visible('diary', $diary);
+                    $event->name = get_string('calendarstart', 'annotateddiary', $annotateddiary->name);
+                    $event->description = format_module_intro('annotateddiary', $annotateddiary, $cmid);
+                    $event->timestart = $annotateddiary->timeopen;
+                    $event->timesort = $annotateddiary->timeopen;
+                    $event->visible = instance_is_visible('annotateddiary', $annotateddiary);
                     $event->timeduration = 0;
 
                     $calendarevent = calendar_event::load($event->id);
@@ -91,39 +91,39 @@ class results {
                 }
             } else {
                 // Event doesn't exist so create one.
-                if ((! empty($diary->timeopen)) && ($diary->timeopen > 0)) {
-                    $event->name = get_string('calendarstart', 'diary', $diary->name);
-                    $event->description = format_module_intro('diary', $diary, $cmid);
-                    $event->courseid = $diary->course;
+                if ((! empty($annotateddiary->timeopen)) && ($annotateddiary->timeopen > 0)) {
+                    $event->name = get_string('calendarstart', 'annotateddiary', $annotateddiary->name);
+                    $event->description = format_module_intro('annotateddiary', $annotateddiary, $cmid);
+                    $event->courseid = $annotateddiary->course;
                     $event->groupid = 0;
                     $event->userid = 0;
-                    $event->modulename = 'diary';
-                    $event->instance = $diary->id;
-                    $event->timestart = $diary->timeopen;
-                    $event->timesort = $diary->timeopen;
-                    $event->visible = instance_is_visible('diary', $diary);
+                    $event->modulename = 'annotateddiary';
+                    $event->instance = $annotateddiary->id;
+                    $event->timestart = $annotateddiary->timeopen;
+                    $event->timesort = $annotateddiary->timeopen;
+                    $event->visible = instance_is_visible('annotateddiary', $annotateddiary);
                     $event->timeduration = 0;
 
                     calendar_event::create($event, false);
                 }
             }
 
-            // Diary end calendar events.
+            // annotateddiary end calendar events.
             $event = new stdClass();
             $event->type = CALENDAR_EVENT_TYPE_ACTION;
-            $event->eventtype = DIARY_EVENT_TYPE_CLOSE;
+            $event->eventtype = annotateddiary_EVENT_TYPE_CLOSE;
             if ($event->id = $DB->get_field('event', 'id', array(
-                'modulename' => 'diary',
-                'instance' => $diary->id,
+                'modulename' => 'annotateddiary',
+                'instance' => $annotateddiary->id,
                 'eventtype' => $event->eventtype
             ))) {
-                if ((! empty($diary->timeclose)) && ($diary->timeclose > 0)) {
+                if ((! empty($annotateddiary->timeclose)) && ($annotateddiary->timeclose > 0)) {
                     // Calendar event exists so update it.
-                    $event->name = get_string('calendarend', 'diary', $diary->name);
-                    $event->description = format_module_intro('diary', $diary, $cmid);
-                    $event->timestart = $diary->timeclose;
-                    $event->timesort = $diary->timeclose;
-                    $event->visible = instance_is_visible('diary', $diary);
+                    $event->name = get_string('calendarend', 'annotateddiary', $annotateddiary->name);
+                    $event->description = format_module_intro('annotateddiary', $annotateddiary, $cmid);
+                    $event->timestart = $annotateddiary->timeclose;
+                    $event->timesort = $annotateddiary->timeclose;
+                    $event->visible = instance_is_visible('annotateddiary', $annotateddiary);
                     $event->timeduration = 0;
 
                     $calendarevent = calendar_event::load($event->id);
@@ -135,17 +135,17 @@ class results {
                 }
             } else {
                 // Event doesn't exist so create one.
-                if ((! empty($diary->timeclose)) && ($diary->timeclose > 0)) {
-                    $event->name = get_string('calendarend', 'diary', $diary->name);
-                    $event->description = format_module_intro('diary', $diary, $cmid);
-                    $event->courseid = $diary->course;
+                if ((! empty($annotateddiary->timeclose)) && ($annotateddiary->timeclose > 0)) {
+                    $event->name = get_string('calendarend', 'annotateddiary', $annotateddiary->name);
+                    $event->description = format_module_intro('annotateddiary', $annotateddiary, $cmid);
+                    $event->courseid = $annotateddiary->course;
                     $event->groupid = 0;
                     $event->userid = 0;
-                    $event->modulename = 'diary';
-                    $event->instance = $diary->id;
-                    $event->timestart = $diary->timeclose;
-                    $event->timesort = $diary->timeclose;
-                    $event->visible = instance_is_visible('diary', $diary);
+                    $event->modulename = 'annotateddiary';
+                    $event->instance = $annotateddiary->id;
+                    $event->timestart = $annotateddiary->timeclose;
+                    $event->timesort = $annotateddiary->timeclose;
+                    $event->visible = instance_is_visible('annotateddiary', $annotateddiary);
                     $event->timeduration = 0;
 
                     calendar_event::create($event, false);
@@ -159,71 +159,71 @@ class results {
      * Returns availability status.
      * Added 20200903.
      *
-     * @param var $diary
+     * @param var $annotateddiary
      */
-    public static function diary_available($diary) {
-        $timeopen = $diary->timeopen;
-        $timeclose = $diary->timeclose;
+    public static function annotateddiary_available($annotateddiary) {
+        $timeopen = $annotateddiary->timeopen;
+        $timeclose = $annotateddiary->timeclose;
         return (($timeopen == 0 || time() >= $timeopen) && ($timeclose == 0 || time() < $timeclose));
     }
 
     /**
-     * Download entries in this diary activity.
+     * Download entries in this annotateddiary activity.
      *
      * @param array $context Context for this download.
      * @param array $course Course for this download.
-     * @param array $diary Diary to download.
+     * @param array $annotateddiary annotateddiary to download.
      * @return nothing
      */
-    public static function download_entries($context, $course, $diary) {
+    public static function download_entries($context, $course, $annotateddiary) {
         global $CFG, $DB, $USER;
         require_once($CFG->libdir.'/csvlib.class.php');
         $data = new stdClass();
-        $data->diary = $diary->id;
+        $data->annotateddiary = $annotateddiary->id;
 
-        // Trigger download_diary_entries event.
-        $event = \mod_diary\event\download_diary_entries::create(array(
-            'objectid' => $data->diary,
+        // Trigger download_annotateddiary_entries event.
+        $event = \mod_annotateddiary\event\download_annotateddiary_entries::create(array(
+            'objectid' => $data->annotateddiary,
             'context' => $context
         ));
         $event->trigger();
 
         // Construct sql query and filename based on admin, teacher, or student.
-        // Add filename details based on course and Diary activity name.
+        // Add filename details based on course and annotateddiary activity name.
         $csv = new csv_export_writer();
         $whichuser = ''; // Leave blank for an admin or teacher.
         if (is_siteadmin($USER->id)) {
-            $whichdiary = ('AND d.diary > 0');
-            $csv->filename = clean_filename(get_string('exportfilenamep1', 'diary'));
-        } else if (has_capability('mod/diary:manageentries', $context)) {
-            $whichdiary = ('AND d.diary = ');
-            $whichdiary .= ($diary->id);
+            $whichannotateddiary = ('AND d.annotateddiary > 0');
+            $csv->filename = clean_filename(get_string('exportfilenamep1', 'annotateddiary'));
+        } else if (has_capability('mod/annotateddiary:manageentries', $context)) {
+            $whichannotateddiary = ('AND d.annotateddiary = ');
+            $whichannotateddiary .= ($annotateddiary->id);
             $csv->filename = clean_filename(($course->shortname).'_');
-            $csv->filename .= clean_filename(($diary->name));
-        } else if (has_capability('mod/diary:addentries', $context)) {
-            $whichdiary = ('AND d.diary = ');
-            $whichdiary .= ($diary->id);
+            $csv->filename .= clean_filename(($annotateddiary->name));
+        } else if (has_capability('mod/annotateddiary:addentries', $context)) {
+            $whichannotateddiary = ('AND d.annotateddiary = ');
+            $whichannotateddiary .= ($annotateddiary->id);
             $whichuser = (' AND d.userid = '.$USER->id); // Not an admin or teacher so can only get their OWN entries.
             $csv->filename = clean_filename(($course->shortname).'_');
-            $csv->filename .= clean_filename(($diary->name));
+            $csv->filename .= clean_filename(($annotateddiary->name));
         }
-        $csv->filename .= clean_filename(get_string('exportfilenamep2', 'diary').gmdate("Ymd_Hi").'GMT.csv');
+        $csv->filename .= clean_filename(get_string('exportfilenamep2', 'annotateddiary').gmdate("Ymd_Hi").'GMT.csv');
 
         $fields = array();
         $fields = array(
             get_string('firstname'),
             get_string('lastname'),
-            get_string('pluginname', 'diary'),
-            get_string('userid', 'diary'),
-            get_string('timecreated', 'diary'),
-            get_string('timemodified', 'diary'),
-            get_string('format', 'diary'),
-            get_string('rating', 'diary'),
-            get_string('entrycomment', 'diary'),
-            get_string('teacher', 'diary'),
-            get_string('timemarked', 'diary'),
-            get_string('mailed', 'diary'),
-            get_string('text', 'diary')
+            get_string('pluginname', 'annotateddiary'),
+            get_string('userid', 'annotateddiary'),
+            get_string('timecreated', 'annotateddiary'),
+            get_string('timemodified', 'annotateddiary'),
+            get_string('format', 'annotateddiary'),
+            get_string('rating', 'annotateddiary'),
+            get_string('entrycomment', 'annotateddiary'),
+            get_string('teacher', 'annotateddiary'),
+            get_string('timemarked', 'annotateddiary'),
+            get_string('mailed', 'annotateddiary'),
+            get_string('text', 'annotateddiary')
         );
         // Add the headings to our data array.
         $csv->add_data($fields);
@@ -231,7 +231,7 @@ class results {
             $sql = "SELECT d.id AS entry,
                            u.firstname AS firstname,
                            u.lastname AS lastname,
-                           d.diary AS diary,
+                           d.annotateddiary AS annotateddiary,
                            d.userid AS userid,
                            to_char(to_timestamp(d.timecreated), 'YYYY-MM-DD HH24:MI:SS') AS timecreated,
                            to_char(to_timestamp(d.timemodified), 'YYYY-MM-DD HH24:MI:SS') AS timemodified,
@@ -242,14 +242,14 @@ class results {
                            d.teacher AS teacher,
                            to_char(to_timestamp(d.timemarked), 'YYYY-MM-DD HH24:MI:SS') AS timemarked,
                            d.mailed AS mailed
-                      FROM {diary_entries} d
+                      FROM {annotateddiary_entries} d
                       JOIN {user} u ON u.id = d.userid
                      WHERE d.userid > 0 ";
         } else {
             $sql = "SELECT d.id AS entry,
                            u.firstname AS 'firstname',
                            u.lastname AS 'lastname',
-                           d.diary AS diary,
+                           d.annotateddiary AS annotateddiary,
                            d.userid AS userid,
                            FROM_UNIXTIME(d.timecreated) AS TIMECREATED,
                            FROM_UNIXTIME(d.timemodified) AS TIMEMODIFIED,
@@ -260,15 +260,15 @@ class results {
                            d.teacher AS teacher,
                            FROM_UNIXTIME(d.timemarked) AS TIMEMARKED,
                            d.mailed AS mailed
-                      FROM {diary_entries} d
+                      FROM {annotateddiary_entries} d
                       JOIN {user} u ON u.id = d.userid
                      WHERE d.userid > 0 ";
         }
 
-        $sql .= ($whichdiary);
+        $sql .= ($whichannotateddiary);
         $sql .= ($whichuser);
-        $sql .= "       GROUP BY u.lastname, u.firstname, d.diary, d.id
-                  ORDER BY u.lastname ASC, u.firstname ASC, d.diary ASC, d.id ASC";
+        $sql .= "       GROUP BY u.lastname, u.firstname, d.annotateddiary, d.id
+                  ORDER BY u.lastname ASC, u.firstname ASC, d.annotateddiary ASC, d.id ASC";
 
         // Add the list of users and diaries to our data array.
         if ($ds = $DB->get_records_sql($sql, $fields)) {
@@ -276,7 +276,7 @@ class results {
                 $output = array(
                     $d->firstname,
                     $d->lastname,
-                    $d->diary,
+                    $d->annotateddiary,
                     $d->userid,
                     $d->timecreated,
                     $d->timemodified,
@@ -296,36 +296,36 @@ class results {
     }
 
     /**
-     * Prints the currently selected diary entry of student identified as $user, on the report page.
+     * Prints the currently selected annotateddiary entry of student identified as $user, on the report page.
      *
      * @param integer $course
-     * @param integer $diary
+     * @param integer $annotateddiary
      * @param integer $user
      * @param integer $entry
      * @param integer $teachers
      * @param integer $grades
      */
-    public static function diary_print_user_entry($course, $diary, $user, $entry, $teachers, $grades) {
+    public static function annotateddiary_print_user_entry($course, $annotateddiary, $user, $entry, $teachers, $grades) {
         global $USER, $OUTPUT, $DB, $CFG;
         $id = required_param('id', PARAM_INT); // Course module.
 
         // 20210605 Changed to this format.
         require_once(__DIR__ .'/../../../../lib/gradelib.php');
 
-        $dcolor3 = get_config('mod_diary', 'entrybgc');
-        $dcolor4 = get_config('mod_diary', 'entrytextbgc');
+        $dcolor3 = get_config('mod_annotateddiary', 'entrybgc');
+        $dcolor4 = get_config('mod_annotateddiary', 'entrytextbgc');
 
         // Create a table for the current users entry with area for teacher feedback.
-        echo '<table class="diaryuserentry" id="entry-'.$user->id.'">';
+        echo '<table class="annotateddiaryuserentry" id="entry-'.$user->id.'">';
         if ($entry) {
             // Add an entry label followed by the date of the entry.
             echo '<tr>';
-            echo '<td style="width:35px;">'.get_string('entry', 'diary').':</td><td>';
+            echo '<td style="width:35px;">'.get_string('entry', 'annotateddiary').':</td><td>';
             echo userdate($entry->timecreated);
             // 20201202 Added link to all entries for a single user.
             echo '  <a href="reportsingle.php?id='.$id
             .'&user='.$user->id
-            .'&action=allentries">'.get_string('reportsingle', 'diary')
+            .'&action=allentries">'.get_string('reportsingle', 'annotateddiary')
             .'</a></td><td></td>';
             echo '</tr>';
         }
@@ -353,17 +353,17 @@ class results {
             $stdwordspacecount = substr_count($plaintxt, ' ');
             // 20210604 Added for Details in each report entry.
             echo '<div class="lastedit">'
-                .get_string('details', 'diary').' '
-                .get_string('numwordsraw', 'diary', ['one' => $rawwordcount,
+                .get_string('details', 'annotateddiary').' '
+                .get_string('numwordsraw', 'annotateddiary', ['one' => $rawwordcount,
                                                      'two' => $rawwordcharcount,
                                                      'three' => $rawwordspacecount]).'<br>'
-                .get_string('numwordscln', 'diary', ['one' => $clnwordcount,
+                .get_string('numwordscln', 'annotateddiary', ['one' => $clnwordcount,
                                                      'two' => $clnwordcharcount,
                                                      'three' => $clnwordspacecount]).'<br>'
-                .get_string('numwordsstd', 'diary', ['one' => $stdwordcount,
+                .get_string('numwordsstd', 'annotateddiary', ['one' => $stdwordcount,
                                                      'two' => $stdwordcharcount,
                                                      'three' => $stdwordspacecount]).'<br>'
-                .get_string("timecreated", 'diary').':  '
+                .get_string("timecreated", 'annotateddiary').':  '
                 .userdate($entry->timecreated).' '
                 .get_string("lastedited").': '
                 .userdate($entry->timemodified).' </div>';
@@ -378,9 +378,9 @@ class results {
 
         // If there is a user entry, format it and show it.
         if ($entry) {
-            echo self::diary_format_entry_text($entry, $course);
+            echo self::annotateddiary_format_entry_text($entry, $course);
         } else {
-            print_string("noentry", "diary");
+            print_string("noentry", "annotateddiary");
         }
         echo '</div></td><td style="width:55px;"></td></tr>';
 
@@ -399,22 +399,22 @@ class results {
             }
 
             // 20200816 Get the current rating for this user!
-            if ($diary->assessed != RATING_AGGREGATE_NONE) {
-                $gradinginfo = grade_get_grades($course->id, 'mod', 'diary', $diary->id, $user->id);
+            if ($annotateddiary->assessed != RATING_AGGREGATE_NONE) {
+                $gradinginfo = grade_get_grades($course->id, 'mod', 'annotateddiary', $annotateddiary->id, $user->id);
                 $gradeitemgrademax = $gradinginfo->items[0]->grademax;
                 $userfinalgrade = $gradinginfo->items[0]->grades[$user->id];
                 $currentuserrating = $userfinalgrade->str_long_grade;
             } else {
                 $currentuserrating = '';
             }
-            $aggregatestr = self::get_diary_aggregation($diary->assessed);
+            $aggregatestr = self::get_annotateddiary_aggregation($annotateddiary->assessed);
 
             echo $OUTPUT->user_picture($teachers[$entry->teacher], array(
                 'courseid' => $course->id,
                 'alttext' => true
             ));
             echo '</td>';
-            echo '<td>'.get_string('rating', 'diary').':  ';
+            echo '<td>'.get_string('rating', 'annotateddiary').':  ';
 
             $attrs = array();
             $hiddengradestr = '';
@@ -422,8 +422,8 @@ class results {
             $feedbackdisabledstr = '';
             $feedbacktext = $entry->entrycomment;
 
-            // If the grade was modified from the gradebook disable edition also skip if diary is not graded.
-            $gradinginfo = grade_get_grades($course->id, 'mod', 'diary', $entry->diary, array(
+            // If the grade was modified from the gradebook disable edition also skip if annotateddiary is not graded.
+            $gradinginfo = grade_get_grades($course->id, 'mod', 'annotateddiary', $entry->annotateddiary, array(
                 $user->id
             ));
 
@@ -435,7 +435,7 @@ class results {
                     $hiddengradestr = '<input type="hidden" name="r'.$entry->id.'" value="'.$entry->rating.'"/>';
                     $gradebooklink = '<a href="'.$CFG->wwwroot.'/grade/report/grader/index.php?id='.$course->id.'">';
                     $gradebooklink .= $gradinginfo->items[0]->grades[$user->id]->str_long_grade.'</a>';
-                    $gradebookgradestr = '<br/>'.get_string("gradeingradebook", "diary").':&nbsp;'.$gradebooklink;
+                    $gradebookgradestr = '<br/>'.get_string("gradeingradebook", "annotateddiary").':&nbsp;'.$gradebooklink;
 
                     $feedbackdisabledstr = 'disabled="disabled"';
                     $feedbacktext = $gradinginfo->items[0]->grades[$user->id]->str_feedback;
@@ -452,14 +452,14 @@ class results {
                     'r'.$entry->id, true, array('class' => 'accesshide'));
             }
 
-            if ($diary->assessed > 0) {
+            if ($annotateddiary->assessed > 0) {
                 echo html_writer::select($grades, 'r'.$entry->id, $entry->rating, get_string("nograde").'...', $attrs);
             }
             echo $hiddengradestr;
 
             // Rewrote next three lines to show entry needs to be regraded due to resubmission.
             if (! empty($entry->timemarked) && $entry->timemodified > $entry->timemarked) {
-                echo ' <span class="needsedit">'.get_string("needsregrade", "diary").' </span>';
+                echo ' <span class="needsedit">'.get_string("needsregrade", "annotateddiary").' </span>';
             } else if ($entry->timemarked) {
                 echo ' <span class="lastedit">'.userdate($entry->timemarked).' </span>';
             }
@@ -494,18 +494,18 @@ class results {
      * @return int $entry-format Format for user entry.
      * @return array $formatoptions Array of options for a user entry.
      */
-    public static function diary_format_entry_text($entry, $course = false, $cm = false) {
+    public static function annotateddiary_format_entry_text($entry, $course = false, $cm = false) {
         if (! $cm) {
             if ($course) {
                 $courseid = $course->id;
             } else {
                 $courseid = 0;
             }
-            $cm = get_coursemodule_from_instance('diary', $entry->diary, $courseid);
+            $cm = get_coursemodule_from_instance('annotateddiary', $entry->annotateddiary, $courseid);
         }
 
         $context = context_module::instance($cm->id);
-        $entrytext = file_rewrite_pluginfile_urls($entry->text, 'pluginfile.php', $context->id, 'mod_diary', 'entry', $entry->id);
+        $entrytext = file_rewrite_pluginfile_urls($entry->text, 'pluginfile.php', $context->id, 'mod_annotateddiary', 'entry', $entry->id);
 
         $formatoptions = array(
             'context' => $context,
@@ -516,26 +516,26 @@ class results {
     }
 
     /**
-     * Return the editor and attachment options when editing a diary entry.
+     * Return the editor and attachment options when editing a annotateddiary entry.
      *
      * @param stdClass $course Course object.
      * @param stdClass $context Context object.
-     * @param stdClass $diary Diary object.
+     * @param stdClass $annotateddiary annotateddiary object.
      * @param stdClass $entry Entry object.
      * @param stdClass $action Action object.
      * @param stdClass $firstkey Firstkey object.
      * @return array $editoroptions Array containing the editor and attachment options.
      * @return array $attachmentoptions Array containing the editor and attachment options.
      */
-    public static function diary_get_editor_and_attachment_options($course, $context, $diary, $entry, $action, $firstkey) {
+    public static function annotateddiary_get_editor_and_attachment_options($course, $context, $annotateddiary, $entry, $action, $firstkey) {
         $maxfiles = 99; // TODO: add some setting.
         $maxbytes = $course->maxbytes; // TODO: add some setting.
 
         // 20210613 Added more custom data to use in edit_form.php to prevent illegal access.
         $editoroptions = array(
-            'timeclose' => $diary->timeclose,
-            'editall' => $diary->editall,
-            'editdates' => $diary->editdates,
+            'timeclose' => $annotateddiary->timeclose,
+            'editall' => $annotateddiary->editall,
+            'editdates' => $annotateddiary->editdates,
             'action' => $action,
             'firstkey' => $firstkey,
             'trusttext' => true,
@@ -557,19 +557,19 @@ class results {
     }
 
     /**
-     * Get the latest entry in mdl_diary_entries for the current user.
+     * Get the latest entry in mdl_annotateddiary_entries for the current user.
      *
      * Used in lib.php.
      *
-     * @param int $diary ID of the current Diary activity.
+     * @param int $annotateddiary ID of the current annotateddiary activity.
      * @param int $user ID of the current user.
-     * @param int $timecreated Unix time when Diary entry was created.
-     * @param int $timemodified Unix time when Diary entry was last changed.
+     * @param int $timecreated Unix time when annotateddiary entry was created.
+     * @param int $timemodified Unix time when annotateddiary entry was last changed.
      */
-    public static function get_grade_entry($diary, $user, $timecreated, $timemodified) {
+    public static function get_grade_entry($annotateddiary, $user, $timecreated, $timemodified) {
         global $USER, $DB, $CFG;
-        $sql = "SELECT * FROM ".$CFG->prefix."diary_entries"
-                     ." WHERE diary = ".$diary
+        $sql = "SELECT * FROM ".$CFG->prefix."annotateddiary_entries"
+                     ." WHERE annotateddiary = ".$annotateddiary
                         ."AND userid = ".$user
                         ."AND timecreated = ".$timecreated
                         ."AND timemodified = ".$timemodified
@@ -621,10 +621,10 @@ class results {
      *
      * Used in view.php.
      *
-     * @param int $aggregate The Diary rating method.
+     * @param int $aggregate The annotateddiary rating method.
      * @return string $aggregatestr Return the language string for the rating method.
      */
-    public static function get_diary_aggregation($aggregate) {
+    public static function get_annotateddiary_aggregation($aggregate) {
         $aggregatestr = null;
         switch ($aggregate) {
             case 0:
