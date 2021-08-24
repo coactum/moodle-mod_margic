@@ -17,14 +17,14 @@
 /**
  * Plugin version and other meta-data are defined here.
  *
- * @package   mod_annotatedannotateddiary
+ * @package   mod_annotateddiary
  * @copyright 2021 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'mod_annotatedannotateddiary';
+$plugin->component = 'mod_annotateddiary';
 $plugin->release   = '0.1.1';         // User-friendly version number.
 $plugin->version   = 2021082400;      // The current module version (Date: YYYYMMDDXX).
 $plugin->requires  = 2020061507;      // Requires Moodle 3.9.
