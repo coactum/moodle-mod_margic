@@ -417,7 +417,7 @@ if (! $users) {
     // Print a list of users who have completed at least one entry.
     if ($usersdone = annotateddiary_get_users_done($annotateddiary, $currentgroup, $sortoption)) {
         foreach ($usersdone as $user) {
-            echo '<div class="entry" style="background: '.$dcolor3.'">';
+            echo '<div class="entry annotationmode" style="background: '.$dcolor3.'">';
 
             // Based on toolbutton and on list of users with at least one entry, print the entries on screen.
             echo results::annotateddiary_print_user_entry($course,

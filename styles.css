@@ -102,7 +102,7 @@
     text-align: left;
     font-size: 1em;
     padding: 5px;
-    font-weight: bold;
+    /* font-weight: bold; */ /* [annotateddiary] removed */
     background: #f9f5f0;
     /*border: 2px solid grey;*/
     border-style: double;
@@ -177,4 +177,22 @@
     font-size: 0.7em;
     margin: 5px;
     text-align: center;
+}
+
+#page-mod-annotateddiary-view .annotationarea {
+    text-align: left;
+    font-size: 1em;
+    padding: 5px;
+    background: #f9f5f0;
+    /*border: 2px solid grey;*/
+    border-style: double;
+    -webkit-border-radius: 16px;
+    -moz-border-radius: 16px;
+    border-radius: 16px;
+}
+
+#page-mod-annotateddiary-view .annotationarea span:hover {
+    color: red;
+    border-left: red 2px solid;
+    cursor: pointer;
 }

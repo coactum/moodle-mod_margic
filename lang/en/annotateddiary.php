@@ -119,7 +119,7 @@ $string['latestmodifiedentry'] = 'Most recently modified entries:';
 $string['lowestgradeentry'] = 'Lowest rated entries:';
 $string['mailed'] = 'Mailed';
 $string['mailsubject'] = 'annotateddiary feedback';
-$string['modulename'] = 'Annotated annotateddiary';
+$string['modulename'] = 'Annotated diary';
 $string['modulename_help'] = 'The annotateddiary activity enables teachers to obtain students feedback
  over a period of time.';
 $string['modulenameplural'] = 'annotateddiarys';
@@ -184,3 +184,6 @@ $string['usertoolbar'] = 'User toolbar:';
 $string['viewalldiaries'] = 'View all course diaries';
 $string['viewallentries'] = 'View {$a} annotateddiary entries';
 $string['viewentries'] = 'View entries';
+
+$string['annotations'] = 'Annotations';
+$string['viewannotations'] = 'View annotations';

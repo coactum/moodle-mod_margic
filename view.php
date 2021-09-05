@@ -38,6 +38,9 @@ $course = $DB->get_record('course', array(
 ), '*', MUST_EXIST); // Complete details about this course.
 $action = optional_param('action', 'currententry', PARAM_ACTION); // Action(default to current entry).
 
+// [annotateddiary] Param if annotation mode is activated
+$annotationmode = optional_param('annotationmode',  0, PARAM_BOOL); // Annotation mode.
+
 if (! $cm) {
     throw new moodle_exception(get_string('incorrectmodule', 'annotateddiary'));
 }
@@ -198,17 +201,35 @@ if (! empty($action)) {
     }
 }
 
-// Header.
-$PAGE->set_url('/mod/annotateddiary/view.php', array(
-    'id' => $cm->id
-));
-$PAGE->navbar->add(get_string("viewentries", "annotateddiary"));
-$PAGE->set_title($annotateddiaryname);
-$PAGE->set_heading($course->fullname);
+// [annotateddiary] Add javascript and navbar element if annotationmode is activated and user has capability.
+if ($annotationmode === 1 && has_capability('mod/annotateddiary:viewannotations', $context)) {
 
-// 20190523 Added this to force editing cog to show for Boost based themes.
-if ($CFG->branch > 31) {
+    $PAGE->set_url('/mod/annotateddiary/view.php', array(
+        'id' => $cm->id,
+        'annotationmode' => 1,
+    ));
+
+    $PAGE->navbar->add(get_string("viewentries", "annotateddiary"), new moodle_url('/mod/annotateddiary/view.php', array('id' => $cm->id)));
+    $PAGE->navbar->add(get_string('viewannotations', 'mod_annotateddiary'));
+
+    $PAGE->set_title($annotateddiaryname);
+    $PAGE->set_heading($course->fullname);
     $PAGE->force_settings_menu();
+
+    $PAGE->requires->js_call_amd('mod_annotateddiary/annotations', 'init');
+} else {
+    // Header.
+    $PAGE->set_url('/mod/annotateddiary/view.php', array(
+        'id' => $cm->id
+    ));
+    $PAGE->navbar->add(get_string("viewentries", "annotateddiary"));
+    $PAGE->set_title($annotateddiaryname);
+    $PAGE->set_heading($course->fullname);
+
+    // 20190523 Added this to force editing cog to show for Boost based themes.
+    if ($CFG->branch > 31) {
+        $PAGE->force_settings_menu();
+    }
 }
 
 echo $OUTPUT->header();
@@ -304,6 +325,15 @@ if ($timenow > $timestart) {
                     "class" => "singlebutton annotateddiarystart"
                 ));
             }
+
+            // [annotateddiary] Add annotations menu if user has capability.
+            if (has_capability('mod/annotateddiary:viewannotations', $context)) {
+                echo $OUTPUT->single_button('view.php?id='.$cm->id
+                    .'&annotationmode=1', get_string('viewannotations', 'annotateddiary'), null, array(
+                    "class" => "singlebutton annotateddiarystart"
+                ));
+            }
+
             // Print user toolbar icons only if there is at least one entry for this user.
             if ($entrys) {
                 echo '<span style="float: right;">'.get_string('usertoolbar', 'annotateddiary');
@@ -361,6 +391,11 @@ if ($timenow > $timestart) {
         echo userdate($timefinish).'</div>';
     }
 
+    // [annotateddiary] Add divs for annotations menu if annotationmode is activated and user has capability.
+    if ($annotationmode === 1 && has_capability('mod/annotateddiary:viewannotations', $context)) {
+        echo '<div class="container mw-100">';
+    }
+
     // Display entry with the $DB portion supplied/set by the toolbar.
     if ($entrys) {
         // 20200905 Fixed Entries per page when activity is closed.
@@ -378,6 +413,11 @@ if ($timenow > $timestart) {
                 $thispage ++;
                 $color3 = get_config('mod_annotateddiary', 'entrybgc');
                 $color4 = get_config('mod_annotateddiary', 'entrytextbgc');
+
+                // [annotateddiary] Add divs for annotations menu if annotationmode is activated and user has capability.
+                if ($annotationmode === 1 && has_capability('mod/annotateddiary:viewannotations', $context)) {
+                    echo '<div class="row"><div class="col-sm-8">';
+                }
 
                 // 20210501 Changed to class, start a division to contain the overall entry.
                 echo '<div class="entry" style="background: '.$color3.';">';
@@ -404,7 +444,7 @@ if ($timenow > $timestart) {
                 echo $OUTPUT->heading(get_string('entry', 'annotateddiary').': '.userdate($entry->timecreated).'  '.$editthisentry);
 
                 // 20210511 Start an inner division for the user's text entry container.
-                echo '<div class="entry" style="background: '.$color4.';">';
+                echo '<div class="entry originaltext" style="background: '.$color4.';">';
 
                 // This adds the actual entry text division close tag for each entry listed on the page.
                 echo results::annotateddiary_format_entry_text($entry, $course, $cm).'</div>';
@@ -505,6 +545,7 @@ if ($timenow > $timestart) {
                         echo '<div class="editend"><strong>'.get_string('editingends', 'annotateddiary').': </strong> ';
                         echo userdate($timefinish).'</div>';
                     }
+
                 } else {
                     echo '<div class="editend"><strong>'.get_string('editingended', 'annotateddiary').': </strong> ';
                     echo userdate($timefinish).'</div>';
@@ -519,13 +560,28 @@ if ($timenow > $timestart) {
                     // Format output using renderer.php.
                     echo $output->annotateddiary_print_feedback($course, $entry, $grades);
                 }
+
                 // This adds blank space between entries.
                 echo '</div></p>';
+
+                // [annotateddiary] Add annotations menu if annotationmode is activated and user has capability.
+                if ($annotationmode === 1 && has_capability('mod/annotateddiary:viewannotations', $context)) {
+                    echo '</div>';
+                    $entryid = $entry->id;
+                    include(__DIR__ ."/classes/annotations/annotations.php"); // include annotation menu
+                    echo '</div>';
+                }
             }
         }
     } else {
         echo '<span class="warning">'.get_string('notstarted', 'annotateddiary').'.</span>';
     }
+
+    // [annotateddiary] Finisch annotations menu if annotationmode is activated and user has capability.
+    if ($annotationmode === 1 && has_capability('mod/annotateddiary:viewannotations', $context)) {
+        echo '</div>';
+    }
+
     echo $OUTPUT->box_end();
 } else {
     echo '<div class="warning">'.get_string('notopenuntil', 'annotateddiary').': ';

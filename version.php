@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'mod_annotateddiary';
-$plugin->release   = '0.1.1';         // User-friendly version number.
-$plugin->version   = 2021082400;      // The current module version (Date: YYYYMMDDXX).
+$plugin->release   = '0.2.1';         // User-friendly version number.
+$plugin->version   = 2021090500;      // The current module version (Date: YYYYMMDDXX).
 $plugin->requires  = 2020061507;      // Requires Moodle 3.9.
 $plugin->maturity  = MATURITY_ALPHA;
