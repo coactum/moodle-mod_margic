@@ -191,8 +191,20 @@
     border-radius: 16px;
 }
 
-#page-mod-annotateddiary-view .annotationarea span:hover {
-    color: red;
-    border-left: red 2px solid;
+#page-mod-annotateddiary-view .annotationarea .annotation:hover {
+    color: lightblue;
+    border-left: lightblue 2px solid;
     cursor: pointer;
+}
+
+#page-mod-annotateddiary-view .annotated,
+#page-mod-annotateddiary-view .annotated_temp {
+    background-color: yellow;
+    cursor: pointer;
+}
+
+#page-mod-annotateddiary-view .annotated:hover,
+#page-mod-annotateddiary-view .annotated_temp:hover,
+#page-mod-annotateddiary-view .hovered {
+    background-color: lightblue;
 }

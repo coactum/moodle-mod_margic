@@ -216,7 +216,8 @@ if ($annotationmode === 1 && has_capability('mod/annotateddiary:viewannotations'
     $PAGE->set_heading($course->fullname);
     $PAGE->force_settings_menu();
 
-    $PAGE->requires->js_call_amd('mod_annotateddiary/annotations', 'init');
+    $PAGE->requires->js_call_amd('mod_annotateddiary/annotations', 'init',
+        array('annotations' => $DB->get_records('annotateddiary_annotations', array('annotateddiary' => $cm->instance))));
 } else {
     // Header.
     $PAGE->set_url('/mod/annotateddiary/view.php', array(
@@ -444,7 +445,12 @@ if ($timenow > $timestart) {
                 echo $OUTPUT->heading(get_string('entry', 'annotateddiary').': '.userdate($entry->timecreated).'  '.$editthisentry);
 
                 // 20210511 Start an inner division for the user's text entry container.
-                echo '<div class="entry originaltext" style="background: '.$color4.';">';
+                // [annotateddiary] Added class and id.
+                if ($annotationmode === 1 && has_capability('mod/annotateddiary:viewannotations', $context)) {
+                    echo '<div id="entry-'.$entry->id.'" class="entry originaltext" style="background: '.$color4.';">';
+                } else {
+                    echo '<div class="entry" style="background: '.$color4.';">';
+                }
 
                 // This adds the actual entry text division close tag for each entry listed on the page.
                 echo results::annotateddiary_format_entry_text($entry, $course, $cm).'</div>';

@@ -61,7 +61,9 @@
         <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Moodle id of user"/>
         <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Time annotation was created"/>
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Time annotation was last modified"/>
-        <FIELD NAME="type" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="Type of the annotation"/>
+        <FIELD NAME="type" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Type of the annotation"/>
+        <FIELD NAME="startcontainer" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="Start container of the annotation"/>
+        <FIELD NAME="endcontainer" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="End container of the annotation"/>
         <FIELD NAME="startposition" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Start position of the annotation"/>
         <FIELD NAME="endposition" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="End position of the annotation"/>
         <FIELD NAME="text" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="Text of the annotation"/>

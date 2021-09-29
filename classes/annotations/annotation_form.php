@@ -48,11 +48,20 @@ class annotation_form extends moodleform {
         $mform->addElement('hidden', 'id', null);
         $mform->setType('id', PARAM_INT);
 
-        $mform->addElement('hidden', 'startposition[' . $this->_customdata['entry'] . ']', 1);
+        $mform->addElement('hidden', 'annotationmode', 1);
+        $mform->setType('annotationmode', PARAM_INT);
+
+        $mform->addElement('hidden', 'startcontainer[' . $this->_customdata['entry'] . ']', -1);
+        $mform->setType('startcontainer[' . $this->_customdata['entry'] . ']', PARAM_RAW);
+
+        $mform->addElement('hidden', 'endcontainer[' . $this->_customdata['entry'] . ']', -1);
+        $mform->setType('endcontainer[' . $this->_customdata['entry'] . ']', PARAM_RAW);
+
+        $mform->addElement('hidden', 'startposition[' . $this->_customdata['entry'] . ']', -1);
         $mform->setType('startposition[' . $this->_customdata['entry'] . ']', PARAM_INT);
 
-        $mform->addElement('hidden', 'length[' . $this->_customdata['entry'] . ']', 5);
-        $mform->setType('length[' . $this->_customdata['entry'] . ']', PARAM_INT);
+        $mform->addElement('hidden', 'endposition[' . $this->_customdata['entry'] . ']', -1);
+        $mform->setType('endposition[' . $this->_customdata['entry'] . ']', PARAM_INT);
 
         $mform->addElement('hidden', 'annotationid[' . $this->_customdata['entry'] . ']', null);
         $mform->setType('annotationid[' . $this->_customdata['entry'] . ']', PARAM_INT);
