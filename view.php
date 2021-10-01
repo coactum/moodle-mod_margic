@@ -23,6 +23,7 @@
  */
 use mod_annotateddiary\local\results;
 use mod_annotateddiary\local\annotateddiarystats;
+use core\output\notification; // [annotateddiary]
 // @codingStandardsIgnoreLine
 // use core_text;
 
@@ -40,6 +41,8 @@ $action = optional_param('action', 'currententry', PARAM_ACTION); // Action(defa
 
 // [annotateddiary] Param if annotation mode is activated
 $annotationmode = optional_param('annotationmode',  0, PARAM_BOOL); // Annotation mode.
+// [annotateddiary] Param if annotation should be deleted
+$deleteannotation = optional_param('deleteannotation',  0, PARAM_INT); // Annotation to be deleted.
 
 if (! $cm) {
     throw new moodle_exception(get_string('incorrectmodule', 'annotateddiary'));
@@ -71,6 +74,13 @@ if (! $cw = $DB->get_record("course_sections", array(
     "id" => $cm->section
 ))) {
     throw new moodle_exception(get_string('incorrectmodule', 'annotateddiary'));
+}
+
+// [annotateddiary] Delete annotation
+if ($deleteannotation !== 0) {
+    $DB->delete_records('annotateddiary_annotations', array('id' => $deleteannotation, 'annotateddiary' => $annotateddiary->id, 'userid' => $USER->id));
+
+    redirect(new moodle_url('/mod/annotateddiary/view.php', array('id' => $id, 'annotationmode' => 1)), get_string('annotationdeleted', 'mod_annotateddiary'), null, notification::NOTIFY_SUCCESS);
 }
 
 // Get the name for this annotateddiary activity.

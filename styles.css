@@ -203,8 +203,35 @@
     cursor: pointer;
 }
 
+#page-mod-annotateddiary-view .hovered .annotated,
+#page-mod-annotateddiary-view .hovered .annotated_temp {
+    background: none;
+}
+
 #page-mod-annotateddiary-view .annotated:hover,
 #page-mod-annotateddiary-view .annotated_temp:hover,
 #page-mod-annotateddiary-view .hovered {
     background-color: lightblue;
+}
+
+#page-mod-annotateddiary-view .annotation-box {
+    background-color: white;
+    border: 1px solid #dbdbdb;
+    border-radius: 2px;
+    padding: 1em;
+    margin-bottom: 1em;
+    cursor: pointer;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, .1);
+}
+
+#page-mod-annotateddiary-view .annotation-box:hover {
+    box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, .15);
+}
+
+#page-mod-annotateddiary-view #id_submitbutton {
+    margin-right: 5px;
+}
+
+#page-mod-annotateddiary-view textarea {
+    width: 100%;
 }

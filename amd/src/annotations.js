@@ -175,13 +175,13 @@
             console.log ('SITE IS LOADED');
 
             // Hide all Moodle forms
-            $('.mform').hide();
+            $('.annotation-form').hide();
 
             // remove col-mds from moodle form
-            $('.mform div.col-md-3').removeClass('col-md-3');
-            $('.mform div.col-md-9').removeClass('col-md-9');
-            $('.mform div.form-group').removeClass('form-group');
-            $('.mform div.row').removeClass('row');
+            $('.annotation-form div.col-md-3').removeClass('col-md-3');
+            $('.annotation-form div.col-md-9').removeClass('col-md-9');
+            $('.annotation-form div.form-group').removeClass('form-group');
+            $('.annotation-form div.row').removeClass('row');
 
             function recreateAnnotations(){
                 for (let annotation of Object.values(annotations)) {
@@ -223,23 +223,48 @@
                 $('input[name="startposition[' + entry + ']"]').val(annotations[annotationid].startposition);
                 $('input[name="endposition[' + entry + ']"]').val(annotations[annotationid].endposition);
 
+                $('input[name="annotationid[' + entry + ']"]').val(annotationid);
+
                 $('textarea[name="text[' + entry + ']"]').val(annotations[annotationid].text);
 
-                $('.annotationarea-' + entry + ' .mform').show();
+                $('.annotationarea-' + entry + ' .annotation-form').show();
                 $('#id_text_' + entry).focus();
             }
 
+            // function deleteAnnotation(annotationid) {
+
+            //     console.log('delete annotation');
+            //     console.log(annotationid);
+
+            //     // removeAllTempHighlights();
+            //     // resetForms();
+
+            //     // var entry = annotations[annotationid].entry;
+
+            //     // console.log(entry);
+
+            //     // $('input[name="startcontainer[' + entry + ']"]').val(annotations[annotationid].startcontainer);
+            //     // $('input[name="endcontainer[' + entry + ']"]').val(annotations[annotationid].endcontainer);
+            //     // $('input[name="startposition[' + entry + ']"]').val(annotations[annotationid].startposition);
+            //     // $('input[name="endposition[' + entry + ']"]').val(annotations[annotationid].endposition);
+
+            //     // $('textarea[name="text[' + entry + ']"]').val(annotations[annotationid].text);
+
+            //     // $('.annotationarea-' + entry + ' .annotation-form').show();
+            //     // $('#id_text_' + entry).focus();
+            // }
+
             function resetForms(){
-                $('.mform').hide();
+                $('.annotation-form').hide();
 
-                $('.mform input[name^="annotationid"]').val(null);
+                $('.annotation-form input[name^="annotationid"]').val(null);
 
-                $('.mform input[name^="startcontainer"]').val(-1);
-                $('.mform input[name^="endcontainer"]').val(-1);
-                $('.mform input[name^="startposition"]').val(-1);
-                $('.mform input[name^="endposition"]').val(-1);
+                $('.annotation-form input[name^="startcontainer"]').val(-1);
+                $('.annotation-form input[name^="endcontainer"]').val(-1);
+                $('.annotation-form input[name^="startposition"]').val(-1);
+                $('.annotation-form input[name^="endposition"]').val(-1);
 
-                $('.mform textarea[name^="text"]').val('');
+                $('.annotation-form textarea[name^="text"]').val('');
             }
 
             // function hoverAnnotationAndText (){
@@ -714,7 +739,7 @@
 
                     highlightRange(selectedrange, false, 'annotated_temp');
 
-                    $('.annotationarea-' + entry + ' .mform').show();
+                    $('.annotationarea-' + entry + ' .annotation-form').show();
                     $('#id_text_' + entry).focus();
                 }
             });
@@ -754,12 +779,40 @@
                 $('.annotated_temp').removeClass('hovered');
             });
 
-            // edit annotation
+            // onclick listener for editing annotation
             $(document).on('click', '.annotated', function(){
                 console.log('annotated text is clicked');
                 console.log(this);
                 var id = this.id.replace('annotated-', '');
                 editAnnotation(id);
+            });
+
+            // onclick listener for editing annotation
+            $(document).on('click', '.edit-annotation', function(){
+                console.log('edit annotation button clicked');
+                console.log(this);
+                var id = this.id.replace('edit-annotation-', '');
+                editAnnotation(id);
+            });
+
+            // onclick listener for deleting annotation
+            // $(document).on('click', '.delete-annotation', function(){
+            //     console.log('delete annotation button clicked');
+            //     console.log(this);
+            //     var id = this.id.replace('delete-annotation-', '');
+            //     deleteAnnotation(id);
+            // });
+
+            // onclick listener if form is canceled
+            $(document).on('click', '#id_cancel', function(e){
+                e.preventDefault();
+
+                console.log('form is canceled');
+                console.log(e);
+
+                removeAllTempHighlights(); // remove other temporary highlights
+
+                resetForms(); // remove old form contents
             });
 
         }

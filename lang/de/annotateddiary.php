@@ -160,12 +160,16 @@ $string['usertoolbar'] = 'Werkzeuge:';
 $string['viewalldiaries'] = 'Alle Kurstagebücher anzeigen';
 $string['viewallentries'] = 'Anzeigen von {$a} Tagebucheinträgen';
 
-$string['viewentries'] = 'Einträge ansehen';
 $string['startnewentry'] = 'Neuen Eintrag schreiben';
-$string['viewannotations'] = 'Annotierungen ansehen';
+$string['viewentries'] = 'Einträge ansehen';
 $string['numwordsraw'] = '{$a->one} rohe Wörter mit  {$a->two} Zeichen, einschließlich {$a->three} Leerzeichen. ';
 $string['numwordscln'] = '{$a->one} bereinigte Wörter mit {$a->two} Zeichen, AUSSCHLIEßLICH {$a->three} Leerzeichen. ';
 $string['numwordsstd'] = '{$a->one} standardisierte Wörter mit {$a->two} Zeichen, einschließlich {$a->three} Leerzeichen. ';
 $string['annotateddiaryentrydate'] = 'Datum des Eintrages bestimmen';
+
+$string['annotations'] = 'Annotierungen';
+$string['viewannotations'] = 'Annotierungen ansehen';
 $string['annotationadded'] = 'Annotierung hinzugefügt';
+$string['annotationedited'] = 'Annotierung geändert';
+$string['annotationdeleted'] = 'Annotierung gelöscht';
 $string['annotationinvalid'] = 'Annotierung ungültig';

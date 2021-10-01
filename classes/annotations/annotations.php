@@ -40,8 +40,11 @@ echo '<h2 class="text-center">'.get_string('annotations', 'annotateddiary').'</h
 
 if ($annotations) {
     foreach ($annotations as $annotation) {
+        echo '<div class="annotation-box">';
         echo '<span id="annotation-'.$annotation->id.'" class="annotation annotation-'.$annotation->id.'">' . $annotation->text . '</span>';
+        echo '<span class="pull-right"><a href="javascript:void(0);"><i id="edit-annotation-'.$annotation->id.'" class="fa fa-2x fa-pencil m-r-1 edit-annotation" aria-hidden="true"></i></a><a href="'. new moodle_url('/mod/annotateddiary/view.php', array('id' => $id, 'annotationmode' => 1, 'deleteannotation' => $annotation->id)) . '"><i id="delete-annotation-'.$annotation->id.'" class="fa fa-2x fa-trash delete-annotation" aria-hidden="true"></i></a></span>';
         echo '<br>';
+        echo '</div>';
     }
 }
 
@@ -58,6 +61,9 @@ if ($fromform = $mform->get_data()) {
         $annotation->text = $fromform->text[$entryid];
 
         $DB->update_record('annotateddiary_annotations', $annotation);
+
+        redirect(new moodle_url('/mod/annotateddiary/view.php', array('id' => $id, 'annotationmode' => 1)), get_string('annotationedited', 'mod_annotateddiary'), null, notification::NOTIFY_SUCCESS);
+
     } else if ((!isset($fromform->annotationid[$entryid]) || $fromform->annotationid[$entryid] === 0) && isset($fromform->text[$entryid])) { // New annotation.
 
         if ($fromform->startcontainer[$entryid] != -1 && $fromform->endcontainer[$entryid] != -1 && $fromform->startposition[$entryid] != -1 && $fromform->endposition[$entryid] != -1) {
@@ -92,7 +98,9 @@ if ($fromform = $mform->get_data()) {
     $mform->set_data(array('id' => $id));
 }
 
+echo '<div class="annotation-box annotation-form">';
 // Displays the form.
 $mform->display();
+echo '</div>';
 
 echo '</div>';

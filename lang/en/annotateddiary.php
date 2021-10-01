@@ -188,4 +188,6 @@ $string['viewentries'] = 'View entries';
 $string['annotations'] = 'Annotations';
 $string['viewannotations'] = 'View annotations';
 $string['annotationadded'] = 'Annotation added';
+$string['annotationedited'] = 'Annotation edited';
+$string['annotationdeleted'] = 'Annotation deleted';
 $string['annotationinvalid'] = 'Annotation invalid';

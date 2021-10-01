@@ -71,6 +71,8 @@ class annotation_form extends moodleform {
         // $mform->addRule('annotation[' . $this->_customdata['entry'] . ']', get_string('errfilloutfield', 'mod_discourse'), 'required', 'client');
 
         $this->add_action_buttons();
+
+        $mform->disable_form_change_checker();
     }
 
     /**
