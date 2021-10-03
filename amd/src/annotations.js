@@ -22,157 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
- define(['jquery', 'mod_annotateddiary/addertoolbar_new'], function($, addertoolbar) {
+ define(['jquery', 'mod_annotateddiary/addertoolbar_new'], function($) {
     return {
         init: function(annotations) {
-
-            // // replace the 'n'th character of 's' with 't'
-            // function replaceWithHighlights() {
-            //     //var entry = s.substring(0, n) + t + s.substring(n + 1);
-
-            //     console.log(Object.values(annotations));
-
-            //     for (let annotation of Object.values(annotations)) {
-            //         var oldtext = $('#entry-' + annotation.entry)[0].innerHTML;
-
-            //         console.log(annotation);
-
-            //         console.log(oldtext);
-
-            //         var newtext = oldtext.substring(0, annotation.startposition) + '<span>' + oldtext.substring(annotation.startposition + 1, annotation.endposition) + '</span>' + oldtext.substring(annotation.endposition + 1);
-
-            //         console.log(newtext);
-
-            //         $('#entry-' + annotation.entry)[0].innerHTML = newtext;
-            //     }
-            // }
-
-            // function replaceWithHighlights() {
-
-            //     for (let annotation of Object.values(annotations)) {
-            //         //create range from db
-            //         var range = document.createRange();
-
-            //         var startcontainer = annotation.startcontainer+1;
-            //         var endcontainer = annotation.endcontainer+1;
-
-            //         console.log('nth child');
-            //         console.log($( "#entry-" + annotation.entry + " :nth-child(" + startcontainer + ")" ));
-
-            //         range.setStart($( "#entry-" + annotation.entry + " :nth-child(" + startcontainer + ")" )[0].firstChild, annotation.startposition);
-            //         range.setEnd($( "#entry-" + annotation.entry + " :nth-child(" + endcontainer + ")" )[0].firstChild, annotation.endposition);
-
-            //         console.log('new range');
-            //         console.log(range);
-
-            //         // wrap range with span
-            //         var span = document.createElement('SPAN');
-            //         span.textContent = 'TEST'; // needs to be done by js depending on start and endposition
-
-            //         range.deleteContents();
-            //         range.insertNode(span);
-
-            //         console.log('new range with span');
-            //         console.log(range);
-
-            //     }
-            // }
-
-            // function getSelectionValues(entry) {
-            //     if (typeof window.getSelection != "undefined") {
-            //         var selection = window.getSelection();
-            //         var range = selection.getRangeAt(0);
-
-            //         var child = range.startContainer.parentNode;
-            //         var parent = child.parentNode;
-            //         var startcontainer = Array.prototype.indexOf.call(parent.children, child);
-
-            //         var child = range.endContainer.parentNode;
-            //         var parent = child.parentNode;
-            //         var endcontainer = Array.prototype.indexOf.call(parent.children, child);
-            //     }
-
-            //     $('input[name="startcontainer[' + entry + ']"]').val(startcontainer);
-            //     $('input[name="endcontainer[' + entry + ']"]').val(endcontainer);
-            //     $('input[name="startposition[' + entry + ']"]').val(range.startOffset);
-            //     $('input[name="endposition[' + entry + ']"]').val(range.endOffset);
-
-            //     console.log('selected range');
-            //     console.log(range);
-
-            //     return {
-            //         startcontainer: startcontainer,
-            //         endcontainer: endcontainer,
-            //         startposition: range.startOffset,
-            //         endposition: range.endOffset,
-            //     };
-            // }
-
-            // function createAnnotation(entry) {
-            //     if (typeof window.getSelection != "undefined") {
-            //         var range = window.getSelection().getRangeAt(0);
-            //     } else if (typeof document.selection != "undefined") {
-            //         if (document.selection.type == "Text") {
-            //             var range = document.selection.createRange();
-            //         }
-            //     }
-
-            //     console.log('entry');
-            //     console.log(entry);
-
-            //     console.log('window.getSelection()');
-            //     console.log(window.getSelection());
-
-            //     console.log('range');
-            //     console.log(range);
-
-            //     //console.log(priorRange);
-
-            //     console.log('range as string');
-            //     console.log(range.toString());
-
-            //     console.log('range as cloned contents');
-            //     console.log(range.cloneContents());
-
-            //     console.log($('<div>').append(range.cloneContents()).html());
-
-            //     var span = document.createElement('SPAN');
-            //     span.classList.add("annotated")
-
-            //     var str = $('<div>').append(range.cloneContents()).html();
-            //     //var pattern = /<\/(.{1,4})>/g;
-            //     var pattern = /<(?:"[^"]*"['"]*|'[^']*'['"]*|[^'">])+>/g;
-            //     var newstr = str;
-            //     var addition = 0;
-
-            //     while (match = pattern.exec(str)) {
-            //         console.log(match);
-            //         console.log(match.index + ' ' + pattern.lastIndex);
-
-            //         if(match[0].indexOf('</') !== -1) {
-            //             newstr = newstr.substr(0, match.index + addition) + '</span>' + match[0] + newstr.substr(pattern.lastIndex + addition);
-            //             addition += 7;
-            //         } else {
-            //             newstr = newstr.substr(0, match.index + addition) + match[0] + '<span class="annotated">' + newstr.substr(pattern.lastIndex + addition);
-            //             addition += 24;
-            //         }
-
-            //     }
-
-            //     console.log('newstr');
-            //     console.log(newstr);
-
-            //     span.innerHTML = newstr;
-
-            //     range.deleteContents();
-            //     range.insertNode(span);
-
-            //     console.log('range with span as string');
-            //     console.log(range.toString());
-
-            // }
-
-            console.log ('SITE IS LOADED');
 
             // Hide all Moodle forms
             $('.annotation-form').hide();
@@ -186,7 +38,7 @@
             function recreateAnnotations(){
                 for (let annotation of Object.values(annotations)) {
 
-                    console.log($( "#entry-" + annotation.entry)[0]);
+                    //console.log($( "#entry-" + annotation.entry)[0]);
 
                     //recreate range from db
                     var newrange = document.createRange();
@@ -196,11 +48,11 @@
                         newrange.setEnd(nodeFromXPath(annotation.endcontainer, $( "#entry-" + annotation.entry)[0]), annotation.endposition);
                      }
                      catch (e) {
-                        console.log('try/catch');
-                        console.log(e);
+                        //console.log('try/catch');
+                        //console.log(e);
                      }
 
-                    console.log('recreateAnnotations after setStart/End');
+                    //console.log('recreateAnnotations after setStart/End');
 
                     highlightRange(newrange, annotation.id);
 
@@ -211,12 +63,12 @@
                 removeAllTempHighlights();
                 resetForms();
 
-                console.log('annotations from js');
-                console.log(annotations);
+                //console.log('annotations from js');
+                //console.log(annotations);
 
                 var entry = annotations[annotationid].entry;
 
-                console.log(entry);
+                //console.log(entry);
 
                 $('input[name="startcontainer[' + entry + ']"]').val(annotations[annotationid].startcontainer);
                 $('input[name="endcontainer[' + entry + ']"]').val(annotations[annotationid].endcontainer);
@@ -233,8 +85,8 @@
 
             // function deleteAnnotation(annotationid) {
 
-            //     console.log('delete annotation');
-            //     console.log(annotationid);
+            //     //console.log('delete annotation');
+            //     //console.log(annotationid);
 
             //     // removeAllTempHighlights();
             //     // resetForms();
@@ -266,45 +118,6 @@
 
                 $('.annotation-form textarea[name^="text"]').val('');
             }
-
-            // function hoverAnnotationAndText (){
-
-            // }
-
-            // function getSelectionCharOffsetWithin(element) { // unnötig da bereits in selection
-            //     var start = 0;
-            //     var end = 0;
-
-            //     if (typeof window.getSelection != "undefined") {
-            //         var range = window.getSelection().getRangeAt(0);
-            //         var priorRange = range.cloneRange();
-            //         priorRange.selectNodeContents(element);
-            //         priorRange.setEnd(range.startContainer, range.startOffset);
-            //         start = priorRange.toString().length;
-            //         end = start + range.toString().length;
-            //     } else if (typeof document.selection != "undefined") {
-            //         if (document.selection.type == "Text") {
-            //             var range = document.selection.createRange();
-            //             var priorRange = document.body.createTextRange();
-            //             priorRange.moveToElementText(element);
-            //             priorRange.setEndPoint("EndToStart", range);
-            //             start = priorRange.text.length;
-            //             end = start + range.text.length;
-            //         }
-            //     }
-
-            //     return {
-            //         start: start,
-            //         end: end,
-            //     };
-            // }
-
-            // $(document).bind("mouseup", function() {
-            //     var mytext = getSelectionHtml();
-            //     console.log(mytext);
-            // });
-
-            //replaceWithHighlights();
 
             /**
              * Return text nodes which are entirely inside `range`.
@@ -381,7 +194,7 @@
              */
             function highlightRange(range, annotationid = false, cssClass = 'annotated') {
 
-                console.log('highlightRange start');
+                //console.log('highlightRange start');
 
                 const textNodes = wholeTextNodesInRange(range);
 
@@ -435,7 +248,7 @@
                 highlights.push(highlightEl);
                 });
 
-                console.log('highlightRange end');
+                //console.log('highlightRange end');
 
 
                 return highlights;
@@ -711,10 +524,10 @@
             $(document).on('mouseup', '.originaltext', function() {
                 var selectedrange = window.getSelection().getRangeAt(0);
 
-                console.log('window.getSelection()');
-                console.log(window.getSelection());
-                console.log('selectedrange');
-                console.log(selectedrange);
+                //console.log('window.getSelection()');
+                //console.log(window.getSelection());
+                //console.log('selectedrange');
+                //console.log(selectedrange);
 
                 if (selectedrange.cloneContents().textContent !== '') {
                     removeAllTempHighlights(); // remove other temporary highlights
@@ -729,8 +542,8 @@
                     //getSelectionValues(entry);
 
                     //createAnnotation(entry);
-                    console.log('selectedrange.cloneContents().textContent');
-                    console.log(selectedrange.cloneContents().textContent);
+                    //console.log('selectedrange.cloneContents().textContent');
+                    //console.log(selectedrange.cloneContents().textContent);
 
                     $('input[name="startcontainer[' + entry + ']"]').val(xpathFromNode(selectedrange.startContainer, this));
                     $('input[name="endcontainer[' + entry + ']"]').val(xpathFromNode(selectedrange.endContainer, this));
@@ -781,24 +594,24 @@
 
             // onclick listener for editing annotation
             $(document).on('click', '.annotated', function(){
-                console.log('annotated text is clicked');
-                console.log(this);
+                //console.log('annotated text is clicked');
+                //console.log(this);
                 var id = this.id.replace('annotated-', '');
                 editAnnotation(id);
             });
 
             // onclick listener for editing annotation
             $(document).on('click', '.edit-annotation', function(){
-                console.log('edit annotation button clicked');
-                console.log(this);
+                //console.log('edit annotation button clicked');
+                //console.log(this);
                 var id = this.id.replace('edit-annotation-', '');
                 editAnnotation(id);
             });
 
             // onclick listener for deleting annotation
             // $(document).on('click', '.delete-annotation', function(){
-            //     console.log('delete annotation button clicked');
-            //     console.log(this);
+            //     //console.log('delete annotation button clicked');
+            //     //console.log(this);
             //     var id = this.id.replace('delete-annotation-', '');
             //     deleteAnnotation(id);
             // });
@@ -807,8 +620,8 @@
             $(document).on('click', '#id_cancel', function(e){
                 e.preventDefault();
 
-                console.log('form is canceled');
-                console.log(e);
+                //console.log('form is canceled');
+                //console.log(e);
 
                 removeAllTempHighlights(); // remove other temporary highlights
 

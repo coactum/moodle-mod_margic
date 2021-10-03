@@ -183,7 +183,7 @@
     text-align: left;
     font-size: 1em;
     padding: 5px;
-    background: #f9f5f0;
+    /* background: #f9f5f0; */
     /*border: 2px solid grey;*/
     border-style: double;
     -webkit-border-radius: 16px;
@@ -192,8 +192,7 @@
 }
 
 #page-mod-annotateddiary-view .annotationarea .annotation:hover {
-    color: lightblue;
-    border-left: lightblue 2px solid;
+    background-color: lightblue;
     cursor: pointer;
 }
 

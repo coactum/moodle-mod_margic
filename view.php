@@ -77,7 +77,7 @@ if (! $cw = $DB->get_record("course_sections", array(
 }
 
 // [annotateddiary] Delete annotation
-if ($deleteannotation !== 0) {
+if (has_capability('mod/annotateddiary:makeannotations', $context) && $deleteannotation !== 0) {
     $DB->delete_records('annotateddiary_annotations', array('id' => $deleteannotation, 'annotateddiary' => $annotateddiary->id, 'userid' => $USER->id));
 
     redirect(new moodle_url('/mod/annotateddiary/view.php', array('id' => $id, 'annotationmode' => 1)), get_string('annotationdeleted', 'mod_annotateddiary'), null, notification::NOTIFY_SUCCESS);
@@ -339,10 +339,17 @@ if ($timenow > $timestart) {
 
             // [annotateddiary] Add annotations menu if user has capability.
             if (has_capability('mod/annotateddiary:viewannotations', $context)) {
-                echo $OUTPUT->single_button('view.php?id='.$cm->id
-                    .'&annotationmode=1', get_string('viewannotations', 'annotateddiary'), null, array(
-                    "class" => "singlebutton annotateddiarystart"
-                ));
+                if (!$annotationmode){
+                    echo $OUTPUT->single_button('view.php?id='.$cm->id
+                        .'&annotationmode=1', get_string('viewannotations', 'annotateddiary'), null, array(
+                        "class" => "singlebutton annotateddiarystart"
+                    ));
+                } else {
+                    echo $OUTPUT->single_button('view.php?id='.$cm->id, get_string('hideannotations', 'annotateddiary'), null, array(
+                        "class" => "singlebutton annotateddiarystart"
+                    ));
+                }
+
             }
 
             // Print user toolbar icons only if there is at least one entry for this user.
