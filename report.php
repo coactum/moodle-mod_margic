@@ -23,12 +23,19 @@
  */
 use mod_annotateddiary\local\results;
 
+use core\output\notification; // [annotateddiary]
+
 require_once("../../config.php");
 require_once("lib.php");
 require_once($CFG->dirroot . '/rating/lib.php');
 
 $id = required_param('id', PARAM_INT); // Course module.
 $action = optional_param('action', 'currententry', PARAM_ACTION); // Action(default to current entry).
+
+// [annotateddiary] Param if annotation mode is activated
+$annotationmode = optional_param('annotationmode',  1, PARAM_BOOL); // Annotation mode.
+// [annotateddiary] Param if annotation should be deleted
+$deleteannotation = optional_param('deleteannotation',  0, PARAM_INT); // Annotation to be deleted.
 
 if (! $cm = get_coursemodule_from_id('annotateddiary', $id)) {
     throw new moodle_exception(get_string('incorrectmodule', 'annotateddiary'));
@@ -50,6 +57,13 @@ if (! $annotateddiary = $DB->get_record("annotateddiary", array(
     "id" => $cm->instance
 ))) {
     throw new moodle_exception(get_string('invalidid', 'annotateddiary'));
+}
+
+// [annotateddiary] Delete annotation
+if (has_capability('mod/annotateddiary:makeannotations', $context) && $deleteannotation !== 0) {
+    $DB->delete_records('annotateddiary_annotations', array('id' => $deleteannotation, 'annotateddiary' => $annotateddiary->id, 'userid' => $USER->id));
+
+    redirect(new moodle_url('/mod/annotateddiary/report.php', array('id' => $id, 'annotationmode' => 1)), get_string('annotationdeleted', 'mod_annotateddiary'), null, notification::NOTIFY_SUCCESS);
 }
 
 // 20201016 Get the name for this annotateddiary activity.
@@ -154,16 +168,40 @@ if (! empty($action)) {
     }
 }
 
-// Header.
-$PAGE->set_url('/mod/annotateddiary/report.php', array(
-    'id' => $id
-));
-$PAGE->navbar->add((get_string("rate", "annotateddiary")) . ' ' . (get_string("entries", "annotateddiary")));
-$PAGE->set_title($annotateddiaryname);
-$PAGE->set_heading($course->fullname);
+// [annotateddiary] Add javascript and navbar element if annotationmode is activated and user has capability.
+if ($annotationmode === 1 && has_capability('mod/annotateddiary:viewannotations', $context)) {
 
-echo $OUTPUT->header();
-echo $OUTPUT->heading($annotateddiaryname);
+    $PAGE->set_url('/mod/annotateddiary/report.php', array(
+        'id' => $cm->id,
+        'annotationmode' => 1,
+    ));
+
+    $redirecturl = new moodle_url('/mod/annotateddiary/report.php', array('id' => $cm->id, 'annotationmode' => 1));
+
+    $PAGE->navbar->add(get_string("entries", "annotateddiary") . ' ' . get_string("rate", "annotateddiary"));
+
+    $PAGE->set_title($annotateddiaryname);
+    $PAGE->set_heading($course->fullname);
+
+    echo $OUTPUT->header();
+    echo $OUTPUT->heading($annotateddiaryname);
+
+    $PAGE->requires->js_call_amd('mod_annotateddiary/annotations', 'init',
+        array('annotations' => $DB->get_records('annotateddiary_annotations', array('annotateddiary' => $cm->instance)),
+            'canmakeannotations' => has_capability('mod/annotateddiary:makeannotations', $context)));
+} else {
+    // Header.
+    $PAGE->set_url('/mod/annotateddiary/report.php', array(
+        'id' => $id
+    ));
+    $PAGE->navbar->add((get_string("entries", "annotateddiary")) . ' ' .  (get_string("rate", "annotateddiary")));
+    $PAGE->set_title($annotateddiaryname);
+    $PAGE->set_heading($course->fullname);
+
+    echo $OUTPUT->header();
+    echo $OUTPUT->heading($annotateddiaryname);
+}
+
 
 // 20210511 Changed to using div and span.
 echo '<div class="sortandaggregate">';
@@ -414,10 +452,22 @@ if (! $users) {
     $dcolor3 = get_config('mod_annotateddiary', 'entrybgc');
     $dcolor4 = get_config('mod_annotateddiary', 'entrytextbgc');
 
+
     // Print a list of users who have completed at least one entry.
     if ($usersdone = annotateddiary_get_users_done($annotateddiary, $currentgroup, $sortoption)) {
+        // [annotateddiary] Add divs for annotations menu if annotationmode is activated and user has capability.
+        if ($annotationmode === 1 && has_capability('mod/annotateddiary:viewannotations', $context)) {
+            echo '<div class="container mw-100">';
+        }
+
         foreach ($usersdone as $user) {
-            echo '<div class="entry annotationmode" style="background: '.$dcolor3.'">';
+
+            // [annotateddiary] Add divs for annotations menu if annotationmode is activated and user has capability.
+            if ($annotationmode === 1 && has_capability('mod/annotateddiary:viewannotations', $context)) {
+                echo '<div class="row"><div class="col-sm-8">';
+            }
+
+            echo '<div class="entry" style="background: '.$dcolor3.'">';
 
             // Based on toolbutton and on list of users with at least one entry, print the entries on screen.
             echo results::annotateddiary_print_user_entry($course,
@@ -428,11 +478,24 @@ if (! $users) {
                                                  $grades);
             echo '</div>';
 
+            // [annotateddiary] Add annotations menu if annotationmode is activated and user has capability.
+            if ($annotationmode === 1 && has_capability('mod/annotateddiary:viewannotations', $context)) {
+                echo '</div>';
+                $entryid = $entrybyuser[$user->id]->id;
+                include(__DIR__ ."/classes/annotations/annotations.php"); // include annotation menu
+                echo '</div>';
+            }
+
             // Since the list can be quite long, add a save button after each entry that will save ALL visible changes.
             echo $saveallbutton;
 
             // Remove users who are done from our list of everyone so we finish with a list of users with no entries.
             unset($users[$user->id]);
+        }
+
+        // [annotateddiary] Finisch annotations menu if annotationmode is activated and user has capability.
+        if ($annotationmode === 1 && has_capability('mod/annotateddiary:viewannotations', $context)) {
+            echo '</div>';
         }
     }
 

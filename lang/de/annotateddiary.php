@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Strings for component 'diary', language 'de', version '3.9'.
+ * Strings for component 'annotateddiary', language 'de', version '3.9'.
  *
- * @package     diary
+ * @package     annotateddiary
  * @category    string
  * @copyright   1999 Martin Dougiamas and contributors
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -44,27 +44,28 @@ $string['daysavailable'] = 'Verfügbare Tage';
 $string['daysavailable_help'] = 'Wenn Sie das Wochenformat verwenden, können Sie einstellen, wie viele Tage das Tagebuch für die Verwendung geöffnet ist.';
 $string['deadline'] = 'Offene Tage';
 $string['details'] = 'Details:';
-$string['diary:addentries'] = 'Tagebucheinträge hinzufügen';
-$string['diary:addinstance'] = 'Tagebuchinstanzen hinzufügen';
-$string['diary:manageentries'] = 'Tagebucheinträge verwalten';
-$string['diary:rate'] = 'Tagebucheinträge bewerten';
-$string['diaryclosetime'] = 'Endzeit';
-$string['diaryclosetime_help'] = 'Wenn diese Option aktiviert ist, können Sie ein Datum festlegen, an dem das Tagebuch geschlossen wird und nicht mehr verwendet werden kann.';
-$string['diarydescription'] = 'Beschreibung des Tagebuchs';
-$string['diaryentrydate'] = 'Datum für diesen Eintrag festlegen';
-$string['diarymail'] = 'Hallo {$a->user},
+$string['annotateddiary:addentries'] = 'Tagebucheinträge hinzufügen';
+$string['annotateddiary:addinstance'] = 'Tagebuchinstanzen hinzufügen';
+$string['annotateddiary:manageentries'] = 'Tagebucheinträge verwalten';
+$string['annotateddiary:rate'] = 'Tagebucheinträge bewerten';
+$string['annotateddiaryclosetime'] = 'Endzeit';
+$string['annotateddiaryclosetime_help'] = 'Wenn diese Option aktiviert ist, können Sie ein Datum festlegen, an dem das Tagebuch geschlossen wird und nicht mehr verwendet werden kann.';
+$string['annotateddiarydescription'] = 'Beschreibung des Tagebuchs';
+$string['annotateddiaryentrydate'] = 'Datum für diesen Eintrag festlegen';
+$string['annotateddiarymail'] = 'Hallo {$a->user},
 {$a->teacher} hat einige Rückmeldungen zu Ihrem Tagebucheintrag für \'{$a->Tagebuch}\' veröffentlicht.
 
 Sie können diese als Anhang zu Ihrem Tagebucheintrag sehen:
 
     {$a->url}';
-$string['diarymailhtml'] = 'Hallo {$a->user},
+$string['annotateddiarymailhtml'] = 'Hallo {$a->user},
 {$a->teacher} hat einige Rückmeldungen zu Ihrem
-Tagebucheintrag für \'<i>{$a->diary}</i>\' veröffentlicht.<br /><br />
+Tagebucheintrag für \'<i>{$a->annotateddiary}</i>\' veröffentlicht.<br /><br />
 Sie können diese als Anhang zu Ihrem <a href="{$a->url}">Tagebucheintrag sehen >/a>.';
-$string['diaryname'] = 'Name des Tagebuchs';
-$string['diaryopentime'] = 'Startzeit';
-$string['diaryopentime_help'] = 'Wenn diese Option aktiviert ist, können Sie ein Datum festlegen, an dem das Tagebuch zur Verwendung geöffnet wird.';
+$string['annotateddiaryname'] = 'Name des annotierten Tagebuchs';
+$string['annotateddiarydescription'] = 'Beschreibung des annotierten Tagebuchs';
+$string['annotateddiaryopentime'] = 'Startzeit';
+$string['annotateddiaryopentime_help'] = 'Wenn diese Option aktiviert ist, können Sie ein Datum festlegen, an dem das Tagebuch zur Verwendung geöffnet wird.';
 $string['editall'] = 'Alle Einträge bearbeiten';
 $string['editall_help'] = 'Wenn aktiviert, können Nutzer/innen alle Einträge bearbeiten.';
 $string['editdates'] = 'Eintragsdatum bearbeiten';
@@ -82,9 +83,9 @@ $string['entrycomment'] = 'Kommentar zum Eintrag';
 $string['entrytextbgc_colour'] = '#F9F5F0';
 $string['entrytextbgc_descr'] = 'Hiermit wird die Hintergrundfarbe des Textes in einem Tagebucheintrag festgelegt.';
 $string['entrytextbgc_title'] = 'Hintergrundfarbe des Tagebuchtextes';
-$string['eventdiarycreated'] = 'Tagebuch erstellt';
-$string['eventdiarydeleted'] = 'Tagebuch gelöscht';
-$string['eventdiaryviewed'] = 'Tagebuch angezeigt';
+$string['eventannotateddiarycreated'] = 'Tagebuch erstellt';
+$string['eventannotateddiarydeleted'] = 'Tagebuch gelöscht';
+$string['eventannotateddiaryviewed'] = 'Tagebuch angezeigt';
 $string['eventdownloadentriess'] = 'Tagebucheinträge herunterladen';
 $string['evententriesviewed'] = 'Tagebucheinträge angezeigt';
 $string['evententrycreated'] = 'Tagebucheintrag erstellt';
@@ -109,7 +110,7 @@ $string['modulename_help'] = 'Die Tagebuchaktivität ermöglicht es Trainer/inne
 $string['modulenameplural'] = 'Annotierte Tagebücher';
 $string['needsgrading'] = 'Dieser Eintrag hat noch keine Rückmeldung oder Bewertung erhalten.';
 $string['needsregrade'] = 'Dieser Eintrag hat sich geändert, seit ein Feedback oder eine Bewertung abgegeben wurde.';
-$string['newdiaryentries'] = 'Neue Tagebucheinträge';
+$string['newannotateddiaryentries'] = 'Neue Tagebucheinträge';
 $string['nextentry'] = 'Nächster Eintrag';
 $string['nodeadline'] = 'Immer offen';
 $string['noentriesmanagers'] = 'Keine Trainer/innen';

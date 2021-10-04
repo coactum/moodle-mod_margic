@@ -48,6 +48,10 @@ class annotation_form extends moodleform {
         $mform->addElement('hidden', 'id', null);
         $mform->setType('id', PARAM_INT);
 
+        // only temporary while user has to be remembered for singlereport.php
+        $mform->addElement('hidden', 'user', null);
+        $mform->setType('user', PARAM_INT);
+
         $mform->addElement('hidden', 'annotationmode', 1);
         $mform->setType('annotationmode', PARAM_INT);
 

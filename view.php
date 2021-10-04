@@ -219,6 +219,8 @@ if ($annotationmode === 1 && has_capability('mod/annotateddiary:viewannotations'
         'annotationmode' => 1,
     ));
 
+    $redirecturl = new moodle_url('/mod/annotateddiary/view.php', array('id' => $cm->id, 'annotationmode' => 1));
+
     $PAGE->navbar->add(get_string("viewentries", "annotateddiary"), new moodle_url('/mod/annotateddiary/view.php', array('id' => $cm->id)));
     $PAGE->navbar->add(get_string('viewannotations', 'mod_annotateddiary'));
 
@@ -227,7 +229,8 @@ if ($annotationmode === 1 && has_capability('mod/annotateddiary:viewannotations'
     $PAGE->force_settings_menu();
 
     $PAGE->requires->js_call_amd('mod_annotateddiary/annotations', 'init',
-        array('annotations' => $DB->get_records('annotateddiary_annotations', array('annotateddiary' => $cm->instance))));
+        array('annotations' => $DB->get_records('annotateddiary_annotations', array('annotateddiary' => $cm->instance)),
+            'canmakeannotations' => has_capability('mod/annotateddiary:makeannotations', $context)));
 } else {
     // Header.
     $PAGE->set_url('/mod/annotateddiary/view.php', array(

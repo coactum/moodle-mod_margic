@@ -1,17 +1,36 @@
+# License #
 
-[![Build Status](https://travis-ci.org/drachels/moodle-mod_annotateddiary.svg?branch=master)](https://travis-ci.org/drachels/moodle-mod_annotateddiary)
+This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
 
-# Moodle annotateddiary module
-- Source Code: https://github.com/drachels/moodle-mod_annotateddiary
-- License: http://www.gnu.org/licenses/gpl-2.0.txt
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 
-## Install from git
+You should have received a copy of the GNU General Public License along with
+this program.  If not, see <http://www.gnu.org/licenses/>.
+
+@copyright 2021 coactum GmbH
+
+# Annotateddiary #
+
+## Description ##
+
+mod_diary enhanced with annotations.
+
+## Quick installation instructions ##
+
+### Install from git ###
 - Navigate to Moodle root folder.
-- **git clone git://github.com/drachels/moodle-mod_annotateddiary.git mod/annotateddiary**
+- **git clone https://github.com/coactum/moodle-mod-annotateddiary.git mod/annotateddiary**
 
-## Install from a compressed file
+### Install from a compressed file ###
 - Extract the compressed file data.
-- Rename the main folder to annotateddiary.
+- Rename the main folder to discourse.
 - Copy to the Moodle mod/ folder.
 - Click the 'Notifications' link on the frontpage administration block.
 
+## Dependencies ##
+No dependencies.

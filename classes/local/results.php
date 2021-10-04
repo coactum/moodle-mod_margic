@@ -316,7 +316,11 @@ class results {
         $dcolor4 = get_config('mod_annotateddiary', 'entrytextbgc');
 
         // Create a table for the current users entry with area for teacher feedback.
-        echo '<table class="annotateddiaryuserentry" id="entry-'.$user->id.'">';
+
+        // [annotateddiary] move id
+        //echo '<table class="annotateddiaryuserentry" id="entry-'.$user->id.'">';
+        echo '<table class="annotateddiaryuserentry">';
+
         if ($entry) {
             // Add an entry label followed by the date of the entry.
             echo '<tr>';
@@ -374,7 +378,14 @@ class results {
 
         // Add the second of two rows, this one containing the users text for this entry.
         echo '<tr><td>';
-        echo '<div class="entry" style="background: '.$dcolor4.';">';
+
+
+        // [annotateddiary]
+        if (isset($entry->id)) {
+            echo '<div id="entry-'.$entry->id.'" class="entry originaltext" style="background: '.$dcolor4.';">';
+        } else {
+            echo '<div class="entry" style="background: '.$dcolor4.';">';
+        }
 
         // If there is a user entry, format it and show it.
         if ($entry) {

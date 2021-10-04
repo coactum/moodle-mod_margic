@@ -97,8 +97,8 @@ $string['annotateddiarymailhtml'] = 'Greetings {$a->user},
 {$a->teacher} has posted some feedback on your
 annotateddiary entry for \'<i>{$a->annotateddiary}</i>\'.<br /><br />
 You can see it appended to your <a href="{$a->url}">annotateddiary entry</a>.';
-$string['annotateddiaryname'] = 'annotateddiary name';
-$string['annotateddiarydescription'] = 'annotateddiary description';
+$string['annotateddiaryname'] = 'Name of the annotated diary';
+$string['annotateddiarydescription'] = 'Description of the annotated diary';
 $string['format'] = 'Format';
 $string['generalerror'] = 'There has been an error.';
 $string['generalerrorupdate'] = 'Could not update your annotateddiary.';

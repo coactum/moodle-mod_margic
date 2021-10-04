@@ -24,7 +24,7 @@
 
  define(['jquery', 'mod_annotateddiary/addertoolbar_new'], function($) {
     return {
-        init: function(annotations) {
+        init: function(annotations, canmakeannotations) {
 
             // Hide all Moodle forms
             $('.annotation-form').hide();
@@ -60,27 +60,29 @@
             }
 
             function editAnnotation(annotationid) {
-                removeAllTempHighlights();
-                resetForms();
+                if (canmakeannotations) {
+                    removeAllTempHighlights();
+                    resetForms();
 
-                //console.log('annotations from js');
-                //console.log(annotations);
+                    //console.log('annotations from js');
+                    //console.log(annotations);
 
-                var entry = annotations[annotationid].entry;
+                    var entry = annotations[annotationid].entry;
 
-                //console.log(entry);
+                    //console.log(entry);
 
-                $('input[name="startcontainer[' + entry + ']"]').val(annotations[annotationid].startcontainer);
-                $('input[name="endcontainer[' + entry + ']"]').val(annotations[annotationid].endcontainer);
-                $('input[name="startposition[' + entry + ']"]').val(annotations[annotationid].startposition);
-                $('input[name="endposition[' + entry + ']"]').val(annotations[annotationid].endposition);
+                    $('input[name="startcontainer[' + entry + ']"]').val(annotations[annotationid].startcontainer);
+                    $('input[name="endcontainer[' + entry + ']"]').val(annotations[annotationid].endcontainer);
+                    $('input[name="startposition[' + entry + ']"]').val(annotations[annotationid].startposition);
+                    $('input[name="endposition[' + entry + ']"]').val(annotations[annotationid].endposition);
 
-                $('input[name="annotationid[' + entry + ']"]').val(annotationid);
+                    $('input[name="annotationid[' + entry + ']"]').val(annotationid);
 
-                $('textarea[name="text[' + entry + ']"]').val(annotations[annotationid].text);
+                    $('textarea[name="text[' + entry + ']"]').val(annotations[annotationid].text);
 
-                $('.annotationarea-' + entry + ' .annotation-form').show();
-                $('#id_text_' + entry).focus();
+                    $('.annotationarea-' + entry + ' .annotation-form').show();
+                    $('#id_text_' + entry).focus();
+                }
             }
 
             // function deleteAnnotation(annotationid) {
@@ -524,15 +526,19 @@
             $(document).on('mouseup', '.originaltext', function() {
                 var selectedrange = window.getSelection().getRangeAt(0);
 
-                //console.log('window.getSelection()');
-                //console.log(window.getSelection());
-                //console.log('selectedrange');
-                //console.log(selectedrange);
+                // console.log('i should make annotation');
 
-                if (selectedrange.cloneContents().textContent !== '') {
+                // console.log('window.getSelection()');
+                // console.log(window.getSelection());
+                // console.log('selectedrange');
+                // console.log(selectedrange);
+
+                if (selectedrange.cloneContents().textContent !== '' && canmakeannotations) {
                     removeAllTempHighlights(); // remove other temporary highlights
 
                     resetForms(); // remove old form contents
+
+                    //console.log('i should make concrete annotation');
 
                     // console.log(addertoolbar);
                     // console.log(addertoolbar.buildAdderToolbar());

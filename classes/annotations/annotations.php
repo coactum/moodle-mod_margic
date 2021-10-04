@@ -32,7 +32,7 @@ global $DB;
 
 if (has_capability('mod/annotateddiary:viewannotations', $context)){
 
-    echo '<script src="https://hypothes.is/embed.js" async></script>';
+    //echo '<script src="https://hypothes.is/embed.js" async></script>';
 
     $backgroundcolor = get_config('mod_annotateddiary', 'entrytextbgc');
 
@@ -50,13 +50,12 @@ if (has_capability('mod/annotateddiary:viewannotations', $context)){
             echo '<span id="annotation-'.$annotation->id.'" class="annotation annotation-'.$annotation->id.'">' . $annotation->text . '</span>';
 
             if (has_capability('mod/annotateddiary:makeannotations', $context)){
-                echo '<span class="pull-right"><a href="javascript:void(0);"><i id="edit-annotation-'.$annotation->id.'" class="fa fa-2x fa-pencil m-r-1 edit-annotation" aria-hidden="true"></i></a><a href="'. new moodle_url('/mod/annotateddiary/view.php', array('id' => $id, 'annotationmode' => 1, 'deleteannotation' => $annotation->id)) . '"><i id="delete-annotation-'.$annotation->id.'" class="fa fa-2x fa-trash delete-annotation" aria-hidden="true"></i></a></span>';
+                echo '<span class="pull-right"><a href="javascript:void(0);"><i id="edit-annotation-'.$annotation->id.'" class="fa fa-2x fa-pencil m-r-1 edit-annotation" aria-hidden="true"></i></a><a href="'. $redirecturl . '&deleteannotation=' . $annotation->id . '"><i id="delete-annotation-'.$annotation->id.'" class="fa fa-2x fa-trash delete-annotation" aria-hidden="true"></i></a></span>';
             }
             echo '<br>';
             echo '</div>';
         }
     }
-
 
     if (has_capability('mod/annotateddiary:makeannotations', $context)) {
 
@@ -73,7 +72,7 @@ if (has_capability('mod/annotateddiary:viewannotations', $context)){
 
                 $DB->update_record('annotateddiary_annotations', $annotation);
 
-                redirect(new moodle_url('/mod/annotateddiary/view.php', array('id' => $id, 'annotationmode' => 1)), get_string('annotationedited', 'mod_annotateddiary'), null, notification::NOTIFY_SUCCESS);
+                redirect($redirecturl, get_string('annotationedited', 'mod_annotateddiary'), null, notification::NOTIFY_SUCCESS);
             } elseif ((!isset($fromform->annotationid[$entryid]) || $fromform->annotationid[$entryid] === 0) && isset($fromform->text[$entryid])) { // New annotation.
 
                 if ($fromform->startcontainer[$entryid] != -1 && $fromform->endcontainer[$entryid] != -1 && $fromform->startposition[$entryid] != -1 && $fromform->endposition[$entryid] != -1) {
@@ -92,17 +91,23 @@ if (has_capability('mod/annotateddiary:viewannotations', $context)){
 
                     $DB->insert_record('annotateddiary_annotations', $annotation);
 
-                    redirect(new moodle_url('/mod/annotateddiary/view.php', array('id' => $id, 'annotationmode' => 1)), get_string('annotationadded', 'mod_annotateddiary'), null, notification::NOTIFY_SUCCESS);
+                    redirect($redirecturl, get_string('annotationadded', 'mod_annotateddiary'), null, notification::NOTIFY_SUCCESS);
                 } else {
-                    redirect(new moodle_url('/mod/annotateddiary/view.php', array('id' => $id, 'annotationmode' => 1)), get_string('annotationinvalid', 'mod_annotateddiary'), null, notification::NOTIFY_ERROR);
+                    redirect($redirecturl, get_string('annotationinvalid', 'mod_annotateddiary'), null, notification::NOTIFY_ERROR);
                 }
             }
         } else {
             // This branch is executed if the form is submitted but the data doesn't validate and the form should be redisplayed
             // or on the first display of the form.
 
-            // Set default data.
-            $mform->set_data(array('id' => $id));
+            if (isset($userid)) { // Temporary for remembering user for singlereport.php
+                // Set default data.
+                $mform->set_data(array('id' => $id, 'user' => $userid));
+            } else {
+                // Set default data.
+                $mform->set_data(array('id' => $id));
+            }
+
         }
 
         echo '<div class="annotation-box annotation-form">';

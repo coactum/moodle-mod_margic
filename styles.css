@@ -179,7 +179,9 @@
     text-align: center;
 }
 
-#page-mod-annotateddiary-view .annotationarea {
+#page-mod-annotateddiary-view .annotationarea,
+#page-mod-annotateddiary-report .annotationarea,
+#page-mod-annotateddiary-reportsingle .annotationarea {
     text-align: left;
     font-size: 1em;
     padding: 5px;
@@ -191,29 +193,47 @@
     border-radius: 16px;
 }
 
-#page-mod-annotateddiary-view .annotationarea .annotation:hover {
+#page-mod-annotateddiary-view .annotationarea .annotation:hover,
+#page-mod-annotateddiary-report .annotationarea .annotation:hover,
+#page-mod-annotateddiary-reportsingle .annotationarea .annotation:hover {
     background-color: lightblue;
     cursor: pointer;
 }
 
 #page-mod-annotateddiary-view .annotated,
-#page-mod-annotateddiary-view .annotated_temp {
+#page-mod-annotateddiary-view .annotated_temp,
+#page-mod-annotateddiary-report .annotated,
+#page-mod-annotateddiary-reportsingle .annotated,
+#page-mod-annotateddiary-report .annotated_temp,
+#page-mod-annotateddiary-reportsingle .annotated_temp {
     background-color: yellow;
     cursor: pointer;
 }
 
 #page-mod-annotateddiary-view .hovered .annotated,
-#page-mod-annotateddiary-view .hovered .annotated_temp {
+#page-mod-annotateddiary-view .hovered .annotated_temp,
+#page-mod-annotateddiary-report .hovered .annotated,
+#page-mod-annotateddiary-reportsingle .hovered .annotated,
+#page-mod-annotateddiary-report .hovered .annotated_temp,
+#page-mod-annotateddiary-reportsingle .hovered .annotated_temp {
     background: none;
 }
 
 #page-mod-annotateddiary-view .annotated:hover,
 #page-mod-annotateddiary-view .annotated_temp:hover,
-#page-mod-annotateddiary-view .hovered {
+#page-mod-annotateddiary-view .hovered,
+#page-mod-annotateddiary-report .annotated:hover,
+#page-mod-annotateddiary-reportsingle .annotated:hover,
+#page-mod-annotateddiary-report .annotated_temp:hover,
+#page-mod-annotateddiary-reportsingle .annotated_temp:hover,
+#page-mod-annotateddiary-report .hovered,
+#page-mod-annotateddiary-reportsingle .hovered {
     background-color: lightblue;
 }
 
-#page-mod-annotateddiary-view .annotation-box {
+#page-mod-annotateddiary-view .annotation-box,
+#page-mod-annotateddiary-report .annotation-box,
+#page-mod-annotateddiary-reportsingle .annotation-box {
     background-color: white;
     border: 1px solid #dbdbdb;
     border-radius: 2px;
@@ -223,14 +243,20 @@
     box-shadow: 0 1px 1px rgba(0, 0, 0, .1);
 }
 
-#page-mod-annotateddiary-view .annotation-box:hover {
+#page-mod-annotateddiary-view .annotation-box:hover,
+#page-mod-annotateddiary-report .annotation-box:hover,
+#page-mod-annotateddiary-reportsingle .annotation-box:hover {
     box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, .15);
 }
 
-#page-mod-annotateddiary-view #id_submitbutton {
+#page-mod-annotateddiary-view #id_submitbutton,
+#page-mod-annotateddiary-report #id_submitbutton,
+#page-mod-annotateddiary-reportsingle #id_submitbutton {
     margin-right: 5px;
 }
 
-#page-mod-annotateddiary-view textarea {
+#page-mod-annotateddiary-view textarea,
+#page-mod-annotateddiary-report textarea,
+#page-mod-annotateddiary-reportsingle textarea {
     width: 100%;
 }
