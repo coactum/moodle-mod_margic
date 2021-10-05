@@ -130,6 +130,12 @@ function annotateddiary_delete_instance($id) {
         $result = false;
     }
 
+    if (! $DB->delete_records("annotateddiary_annotations", array(
+        "annotateddiary" => $annotateddiary->id
+    ))) {
+        $result = false;
+    }
+
     if (! $DB->delete_records("annotateddiary", array(
         "id" => $annotateddiary->id
     ))) {
@@ -171,8 +177,8 @@ function annotateddiary_supports($feature) {
             return true;
         case FEATURE_COMPLETION_TRACKS_VIEWS:
             return true;
-        case FEATURE_BACKUP_MOODLE2:
-            return true;
+        // case FEATURE_BACKUP_MOODLE2:
+        //     return true;
         default:
             return null;
     }
