@@ -15,14 +15,14 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This page opens the current instance of a annotateddiary entry for editing.
+ * This page opens the current instance of a margic entry for editing.
  *
- * @package   mod_annotateddiary
+ * @package   mod_margic
  * @copyright 2019 AL Rachels (drachels@drachels.com)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-use mod_annotateddiary\local\results;
-use \mod_annotateddiary\event\invalid_access_attempt;
+use mod_margic\local\results;
+use \mod_margic\event\invalid_access_attempt;
 
 require_once("../../config.php");
 require_once('lib.php'); // May not need this.
@@ -30,28 +30,28 @@ require_once('./edit_form.php');
 global $DB;
 $id = required_param('id', PARAM_INT); // Course Module ID.
 $action = optional_param('action', 'currententry', PARAM_ACTION); // Action(default to current entry).
-$firstkey = optional_param('firstkey', '', PARAM_INT); // Which annotateddiary_entries id to edit.
+$firstkey = optional_param('firstkey', '', PARAM_INT); // Which margic_entries id to edit.
 
-if (! $cm = get_coursemodule_from_id('annotateddiary', $id)) {
-    throw new moodle_exception(get_string('incorrectmodule', 'annotateddiary'));
+if (! $cm = get_coursemodule_from_id('margic', $id)) {
+    throw new moodle_exception(get_string('incorrectmodule', 'margic'));
 }
 
 if (! $course = $DB->get_record("course", array("id" => $cm->course))) {
-    throw new moodle_exception(get_string('incorrectcourseid', 'annotateddiary'));
+    throw new moodle_exception(get_string('incorrectcourseid', 'margic'));
 }
 
 $context = context_module::instance($cm->id);
 
 require_login($course, false, $cm);
 
-require_capability('mod/annotateddiary:addentries', $context);
+require_capability('mod/margic:addentries', $context);
 
-if (! $annotateddiary = $DB->get_record("annotateddiary", array("id" => $cm->instance))) {
-    throw new moodle_exception(get_string('incorrectcourseid', 'annotateddiary'));
+if (! $margic = $DB->get_record("margic", array("id" => $cm->instance))) {
+    throw new moodle_exception(get_string('incorrectcourseid', 'margic'));
 }
 
 // 20210613 Added check to prevent direct access to create new entry when activity is closed.
-if (($annotateddiary->timeclose) && (time() > $annotateddiary->timeclose)) {
+if (($margic->timeclose) && (time() > $margic->timeclose)) {
     // Trigger invalid_access_attempt with redirect to the view page.
     $params = array(
         'objectid' => $id,
@@ -62,26 +62,26 @@ if (($annotateddiary->timeclose) && (time() > $annotateddiary->timeclose)) {
     );
     $event = invalid_access_attempt::create($params);
     $event->trigger();
-    redirect('view.php?id='.$id, get_string('invalidaccessexp', 'annotateddiary'));
+    redirect('view.php?id='.$id, get_string('invalidaccessexp', 'margic'));
 }
 
 // Header.
-$PAGE->set_url('/mod/annotateddiary/edit.php', array('id' => $id));
+$PAGE->set_url('/mod/margic/edit.php', array('id' => $id));
 $PAGE->navbar->add(get_string('edit'));
-$PAGE->set_title(format_string($annotateddiary->name));
+$PAGE->set_title(format_string($margic->name));
 $PAGE->set_heading($course->fullname);
 
 $data = new stdClass();
 
 $parameters = array(
     'userid' => $USER->id,
-    'annotateddiary' => $annotateddiary->id,
+    'margic' => $margic->id,
     'action' => $action,
     'firstkey' => $firstkey
 );
 
 // Get the single record specified by firstkey.
-$entry = $DB->get_record("annotateddiary_entries", array(
+$entry = $DB->get_record("margic_entries", array(
     "userid" => $USER->id,
     'id' => $firstkey
 ));
@@ -94,7 +94,7 @@ if ($action == 'currententry' && $entry) {
 
     // Check the timecreated of the current entry to see if now is a new calendar day .
     // 20210425 If can edit dates, just start a new entry.
-    if ((strtotime('today midnight') > $entry->timecreated) || ($action == 'currententry' && $annotateddiary->editdates)) {
+    if ((strtotime('today midnight') > $entry->timecreated) || ($action == 'currententry' && $margic->editdates)) {
         $entry = '';
         $data->entryid = null;
         $data->timecreated = time();
@@ -114,14 +114,14 @@ if ($action == 'currententry' && $entry) {
     $data->text = '';
     $data->textformat = FORMAT_HTML;
 } else {
-    throw new moodle_exception(get_string('generalerror', 'annotateddiary'));
+    throw new moodle_exception(get_string('generalerror', 'margic'));
 }
 
 $data->id = $cm->id;
 
-list ($editoroptions, $attachmentoptions) = results::annotateddiary_get_editor_and_attachment_options($course,
+list ($editoroptions, $attachmentoptions) = results::margic_get_editor_and_attachment_options($course,
                                                                                              $context,
-                                                                                             $annotateddiary,
+                                                                                             $margic,
                                                                                              $entry,
                                                                                              $action,
                                                                                              $firstkey);
@@ -130,22 +130,22 @@ $data = file_prepare_standard_editor($data,
                                      'text',
                                      $editoroptions,
                                      $context,
-                                     'mod_annotateddiary',
+                                     'mod_margic',
                                      'entry',
                                      $data->entryid);
 $data = file_prepare_standard_filemanager($data,
                                           'attachment',
                                           $attachmentoptions,
                                           $context,
-                                          'mod_annotateddiary',
+                                          'mod_margic',
                                           'attachment',
                                           $data->entryid);
 
-// 20201119 Added $annotateddiary->editdates setting.
-$form = new mod_annotateddiary_entry_form(null, array(
+// 20201119 Added $margic->editdates setting.
+$form = new mod_margic_entry_form(null, array(
     'current' => $data,
     'cm' => $cm,
-    'annotateddiary' => $annotateddiary->editdates,
+    'margic' => $margic->editdates,
     'editoroptions' => $editoroptions,
     'attachmentoptions' => $attachmentoptions
 ));
@@ -154,7 +154,7 @@ $form = new mod_annotateddiary_entry_form(null, array(
 $form->set_data($data);
 
 if ($form->is_cancelled()) {
-    redirect($CFG->wwwroot . '/mod/annotateddiary/view.php?id=' . $cm->id);
+    redirect($CFG->wwwroot . '/mod/margic/view.php?id=' . $cm->id);
 } else if ($fromform = $form->get_data()) {
     // If data submitted, then process and store, contains text, format, and itemid.
     // Prevent CSFR.
@@ -168,10 +168,10 @@ if ($form->is_cancelled()) {
     $newentry->text = $fromform->text_editor['text'];
     $newentry->format = $fromform->text_editor['format'];
 
-    if (! $annotateddiary->editdates) {
+    if (! $margic->editdates) {
         // If editdates is NOT enabled do attempted cheat testing here.
         // 20210619 Before we update, see if there is an entry in database with the same entryid.
-        $entry = $DB->get_record("annotateddiary_entries", array(
+        $entry = $DB->get_record("margic_entries", array(
             "userid" => $USER->id,
             'id' => $fromform->entryid
         ));
@@ -184,9 +184,9 @@ if ($form->is_cancelled()) {
         $newentry->id = $fromform->entryid;
         if (($entry) && (!($entry->timecreated == $newentry->timecreated))) {
             // 20210620 New code to prevent attempts to change timecreated.
-            $newentry->entrycomment = get_string('invalidtimechange', 'annotateddiary');
-            $newentry->entrycomment .= get_string('invalidtimechangeoriginal', 'annotateddiary', ['one' => userdate($entry->timecreated)]);
-            $newentry->entrycomment .= get_string('invalidtimechangenewtime', 'annotateddiary', ['one' => userdate($newentry->timecreated)]);
+            $newentry->entrycomment = get_string('invalidtimechange', 'margic');
+            $newentry->entrycomment .= get_string('invalidtimechangeoriginal', 'margic', ['one' => userdate($entry->timecreated)]);
+            $newentry->entrycomment .= get_string('invalidtimechangenewtime', 'margic', ['one' => userdate($newentry->timecreated)]);
             // Probably do not want to just arbitraily set a rating.
             // Should leave it up to the teacher, otherwise will need to acertain rating settings for the activity.
             // @codingStandardsIgnoreLine
@@ -196,29 +196,29 @@ if ($form->is_cancelled()) {
             $newentry->timemarked = time();
             $newentry->timecreated = $entry->timecreated;
             $fromform->timecreated = $entry->timecreated;
-            $newentry->entrycomment .= get_string('invalidtimeresettime', 'annotateddiary', ['one' => userdate($newentry->timecreated)]);
-            $DB->update_record("annotateddiary_entries", $newentry);
+            $newentry->entrycomment .= get_string('invalidtimeresettime', 'margic', ['one' => userdate($newentry->timecreated)]);
+            $DB->update_record("margic_entries", $newentry);
             // Trigger module entry updated event.
-            $event = \mod_annotateddiary\event\invalid_entry_attempt::create(array(
-                'objectid' => $annotateddiary->id,
+            $event = \mod_margic\event\invalid_entry_attempt::create(array(
+                'objectid' => $margic->id,
                 'context' => $context
             ));
             $event->add_record_snapshot('course_modules', $cm);
             $event->add_record_snapshot('course', $course);
-            $event->add_record_snapshot('annotateddiary', $annotateddiary);
+            $event->add_record_snapshot('margic', $margic);
             $event->trigger();
 
-            redirect(new moodle_url('/mod/annotateddiary/view.php?id=' . $cm->id));
+            redirect(new moodle_url('/mod/margic/view.php?id=' . $cm->id));
             die();
         }
-        if (! $DB->update_record("annotateddiary_entries", $newentry)) {
-            throw new moodle_exception(get_string('generalerrorupdate', 'annotateddiary'));
+        if (! $DB->update_record("margic_entries", $newentry)) {
+            throw new moodle_exception(get_string('generalerrorupdate', 'margic'));
         }
     } else {
         $newentry->userid = $USER->id;
-        $newentry->annotateddiary = $annotateddiary->id;
-        if (! $newentry->id = $DB->insert_record("annotateddiary_entries", $newentry)) {
-            throw new moodle_exception(get_string('generalerrorinsert', 'annotateddiary'));
+        $newentry->margic = $margic->id;
+        if (! $newentry->id = $DB->insert_record("margic_entries", $newentry)) {
+            throw new moodle_exception(get_string('generalerrorinsert', 'margic'));
         }
     }
 
@@ -228,41 +228,41 @@ if ($form->is_cancelled()) {
                                                 'text',
                                                 $editoroptions,
                                                 $editoroptions['context'],
-                                                'mod_annotateddiary',
+                                                'mod_margic',
                                                 'entry',
                                                 $newentry->id);
     $newentry->text = $fromform->text;
     $newentry->format = $fromform->textformat;
     $newentry->timecreated = $fromform->timecreated;
 
-    $DB->update_record('annotateddiary_entries', $newentry);
+    $DB->update_record('margic_entries', $newentry);
 
     if ($entry) {
         // Trigger module entry updated event.
-        $event = \mod_annotateddiary\event\entry_updated::create(array(
-            'objectid' => $annotateddiary->id,
+        $event = \mod_margic\event\entry_updated::create(array(
+            'objectid' => $margic->id,
             'context' => $context
         ));
     } else {
         // Trigger module entry created event.
-        $event = \mod_annotateddiary\event\entry_created::create(array(
-            'objectid' => $annotateddiary->id,
+        $event = \mod_margic\event\entry_created::create(array(
+            'objectid' => $margic->id,
             'context' => $context
         ));
     }
     $event->add_record_snapshot('course_modules', $cm);
     $event->add_record_snapshot('course', $course);
-    $event->add_record_snapshot('annotateddiary', $annotateddiary);
+    $event->add_record_snapshot('margic', $margic);
     $event->trigger();
 
-    redirect(new moodle_url('/mod/annotateddiary/view.php?id=' . $cm->id));
+    redirect(new moodle_url('/mod/margic/view.php?id=' . $cm->id));
     die();
 }
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading(format_string($annotateddiary->name));
+echo $OUTPUT->heading(format_string($margic->name));
 
-$intro = format_module_intro('annotateddiary', $annotateddiary, $cm->id);
+$intro = format_module_intro('margic', $margic, $cm->id);
 echo $OUTPUT->box($intro);
 
 // Otherwise fill and print the form.

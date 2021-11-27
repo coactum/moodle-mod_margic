@@ -17,15 +17,15 @@
 /**
  * Plugin version and other meta-data are defined here.
  *
- * @package   mod_annotateddiary
+ * @package   mod_margic
  * @copyright 2021 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'mod_annotateddiary';
-$plugin->release   = '0.9.0';         // User-friendly version number.
-$plugin->version   = 2021100500;      // The current module version (Date: YYYYMMDDXX).
+$plugin->component = 'mod_margic';
+$plugin->release   = '0.9.2';         // User-friendly version number.
+$plugin->version   = 2021112700;      // The current module version (Date: YYYYMMDDXX).
 $plugin->requires  = 2020061507;      // Requires Moodle 3.9.
 $plugin->maturity  = MATURITY_ALPHA;

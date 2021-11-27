@@ -17,22 +17,22 @@
 /**
  * Upgrade code for install
  *
- * @package   mod_annotateddiary
+ * @package   mod_margic
  * @copyright 2019 AL Rachels drachels@drachels.com
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/annotateddiary/lib.php');
+require_once($CFG->dirroot . '/mod/margic/lib.php');
 
 /**
- * Upgrade this annotateddiary instance - this function could be skipped but it will be needed later.
+ * Upgrade this margic instance - this function could be skipped but it will be needed later.
  *
  * @param int $oldversion
- *            The old version of the annotateddiary module
+ *            The old version of the margic module
  * @return bool
  */
-function xmldb_annotateddiary_upgrade($oldversion) {
+function xmldb_margic_upgrade($oldversion) {
     global $CFG, $DB;
     $dbman = $DB->get_manager();
     return true;

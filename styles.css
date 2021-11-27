@@ -16,93 +16,93 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This is the css style sheet for annotateddiary.
+ * This is the css style sheet for margic.
  *
- * @package    mod_annotateddiary
+ * @package    mod_margic
  * @copyright  2019 AL Rachels (drachels@drachels.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later.
  */
 /* 20210502 Added in view.php about line 278.*/
-#page-mod-annotateddiary-view .sortandaggregate,
-#page-mod-annotateddiary-report .sortandaggregate {
+#page-mod-margic-view .sortandaggregate,
+#page-mod-margic-report .sortandaggregate {
     width: 100%;
     font-size: 1.0em;
     /*font-weight: bold;*/
 }
 
 /* 20210502 Added in view.php about line 281 and 282.*/
-#page-mod-annotateddiary-view .sortandaggregate .cell {
+#page-mod-margic-view .sortandaggregate .cell {
     float: right;
     padding: 5px;
 }
 
-#page-mod-annotateddiary-view .feedbackbox { /* Used in renderer.php. */
+#page-mod-margic-view .feedbackbox { /* Used in renderer.php. */
     width: 85%;
     border-collapse: separate;
 }
 
-#page-mod-annotateddiary-view .entrycontent { /* Used in renderer.php. */
+#page-mod-margic-view .entrycontent { /* Used in renderer.php. */
     padding: 3px;
 }
 
-#page-mod-annotateddiary-view .picture { /* Used in renderer.php with left. */
+#page-mod-margic-view .picture { /* Used in renderer.php with left. */
     width: 35px;
 }
 
-#page-mod-annotateddiary-view .info { /* Cannot find this in use, anywhere. */
+#page-mod-margic-view .info { /* Cannot find this in use, anywhere. */
     margin-bottom: 5px;
     text-align: right;
 }
 
-#page-mod-annotateddiary-view .annotateddiarystart, /* Used in view.php. */
-#page-mod-annotateddiary-report .feedbacksave {
+#page-mod-margic-view .margicstart, /* Used in view.php. */
+#page-mod-margic-report .feedbacksave {
     text-align: center;
 }
 
-#page-mod-annotateddiary-view .lastedit,
-#page-mod-annotateddiary-view .editend {
+#page-mod-margic-view .lastedit,
+#page-mod-margic-view .editend {
     font-size: 0.7em;
     margin: 5px;
     text-align: center;
 }
 
-#page-mod-annotateddiary-view .needsedit,
-#page-mod-annotateddiary-view .editend {
+#page-mod-margic-view .needsedit,
+#page-mod-margic-view .editend {
     font-size: 0.9em;
     color: red;
     text-align: center;
 }
 
-#page-mod-annotateddiary-view .author { /* Used in renderer.php about line 191. */
+#page-mod-margic-view .author { /* Used in renderer.php about line 191. */
     font-size: 1em;
     font-weight: bold;
 }
 
-#page-mod-annotateddiary-view .time { /* Used in renderer.php about line 192. */
+#page-mod-margic-view .time { /* Used in renderer.php about line 192. */
     font-size: 0.7em;
     font-style: italic;
 }
 
-#page-mod-annotateddiary-view .grade { /* Used in renderer.php about line 200. */
+#page-mod-margic-view .grade { /* Used in renderer.php about line 200. */
     font-weight: bold;
     font-style: italic;
     text-align: right;
 }
 
-#page-mod-annotateddiary-index .cell { /* Cannot find this in use, anywhere. */
+#page-mod-margic-index .cell { /* Cannot find this in use, anywhere. */
     font-size: 0.8em;
 }
 
 /* 20210501 Added in view.php about line 381.*/
 /* 20210505 Added in report.php about lines 427 and 455.*/
 /* 20210505 Added in reportsingle.php about line 266.*/
-#page-mod-annotateddiary-view .entry,
-#page-mod-annotateddiary-report .entry,
-#page-mod-annotateddiary-reportsingle .entry {
+#page-mod-margic-view .entry,
+#page-mod-margic-report .entry,
+#page-mod-margic-reportsingle .entry {
     text-align: left;
     font-size: 1em;
     padding: 5px;
-    /* font-weight: bold; */ /* [annotateddiary] removed */
+    /* font-weight: bold; */ /* [margic] removed */
     background: #f9f5f0;
     /*border: 2px solid grey;*/
     border-style: double;
@@ -112,64 +112,64 @@
 
 }
 
-#page-mod-annotateddiary-view .feedbackbox .left,
-#page-mod-annotateddiary-view .feedbackbox .entryheader { /* Used in renderer.php about line 190. */
+#page-mod-margic-view .feedbackbox .left,
+#page-mod-margic-view .feedbackbox .entryheader { /* Used in renderer.php about line 190. */
     background-color: #ddd;
 }
 
-#page-mod-annotateddiary-view .feedbackbox {
+#page-mod-margic-view .feedbackbox {
     -moz-border-radius-bottomleft: 15px;
     -moz-border-radius-bottomright: 15px;
     border-spacing: 0;
     margin: 0 auto;
 }
 
-#page-mod-annotateddiary-view .feedbackbox .side {
+#page-mod-margic-view .feedbackbox .side {
     -moz-border-radius-bottomleft: 15px;
 }
 
-#page-mod-annotateddiary-view .feedbackbox .entrycontent {
+#page-mod-margic-view .feedbackbox .entrycontent {
     -moz-border-radius-bottomright: 15px;
 }
 
-#page-mod-annotateddiary-view .reportlink,
-#page-mod-annotateddiary-report .reportlink {
+#page-mod-margic-view .reportlink,
+#page-mod-margic-report .reportlink {
     float: right;
     padding: 15px;
 }
 
-#page-mod-annotateddiary-report .annotateddiaryuserentry {
+#page-mod-margic-report .margicuserentry {
     /*border: 1px solid #000000;*/
     border-collapse: collapse;
     border-spacing: 0;
 }
 
-#page-mod-annotateddiary-report .annotateddiaryuserentry td {
+#page-mod-margic-report .margicuserentry td {
     padding: 10px;
     vertical-align: top;
     width: 100%;
 }
 
-#page-mod-annotateddiary-report .annotateddiaryuserentry td.userpix {
+#page-mod-margic-report .margicuserentry td.userpix {
     width: 35px;
 }
 
-#page-mod-annotateddiary-report .annotateddiaryuserentry td.userfullname {
+#page-mod-margic-report .margicuserentry td.userfullname {
     white-space: nowrap;
 }
 
-#page-mod-annotateddiary-report .annotateddiaryuserentry td .lastedit {
+#page-mod-margic-report .margicuserentry td .lastedit {
     font-size: 0.7em;
     margin-left: 10px;
 }
 
-#page-mod-annotateddiary-report .annotateddiaryuserentry td .needsedit {
+#page-mod-margic-report .margicuserentry td .needsedit {
     font-size: 0.9em;
     color: red;
     margin-left: 10px;
 }
 
-#page-mod-annotateddiary-report .mediaplugin {
+#page-mod-margic-report .mediaplugin {
     width: 100%;
 }
 
@@ -179,9 +179,9 @@
     text-align: center;
 }
 
-#page-mod-annotateddiary-view .annotationarea,
-#page-mod-annotateddiary-report .annotationarea,
-#page-mod-annotateddiary-reportsingle .annotationarea {
+#page-mod-margic-view .annotationarea,
+#page-mod-margic-report .annotationarea,
+#page-mod-margic-reportsingle .annotationarea {
     text-align: left;
     font-size: 1em;
     padding: 5px;
@@ -193,47 +193,47 @@
     border-radius: 16px;
 }
 
-#page-mod-annotateddiary-view .annotationarea .annotation:hover,
-#page-mod-annotateddiary-report .annotationarea .annotation:hover,
-#page-mod-annotateddiary-reportsingle .annotationarea .annotation:hover {
+#page-mod-margic-view .annotationarea .annotation:hover,
+#page-mod-margic-report .annotationarea .annotation:hover,
+#page-mod-margic-reportsingle .annotationarea .annotation:hover {
     background-color: lightblue;
     cursor: pointer;
 }
 
-#page-mod-annotateddiary-view .annotated,
-#page-mod-annotateddiary-view .annotated_temp,
-#page-mod-annotateddiary-report .annotated,
-#page-mod-annotateddiary-reportsingle .annotated,
-#page-mod-annotateddiary-report .annotated_temp,
-#page-mod-annotateddiary-reportsingle .annotated_temp {
+#page-mod-margic-view .annotated,
+#page-mod-margic-view .annotated_temp,
+#page-mod-margic-report .annotated,
+#page-mod-margic-reportsingle .annotated,
+#page-mod-margic-report .annotated_temp,
+#page-mod-margic-reportsingle .annotated_temp {
     background-color: yellow;
     cursor: pointer;
 }
 
-#page-mod-annotateddiary-view .hovered .annotated,
-#page-mod-annotateddiary-view .hovered .annotated_temp,
-#page-mod-annotateddiary-report .hovered .annotated,
-#page-mod-annotateddiary-reportsingle .hovered .annotated,
-#page-mod-annotateddiary-report .hovered .annotated_temp,
-#page-mod-annotateddiary-reportsingle .hovered .annotated_temp {
+#page-mod-margic-view .hovered .annotated,
+#page-mod-margic-view .hovered .annotated_temp,
+#page-mod-margic-report .hovered .annotated,
+#page-mod-margic-reportsingle .hovered .annotated,
+#page-mod-margic-report .hovered .annotated_temp,
+#page-mod-margic-reportsingle .hovered .annotated_temp {
     background: none;
 }
 
-#page-mod-annotateddiary-view .annotated:hover,
-#page-mod-annotateddiary-view .annotated_temp:hover,
-#page-mod-annotateddiary-view .hovered,
-#page-mod-annotateddiary-report .annotated:hover,
-#page-mod-annotateddiary-reportsingle .annotated:hover,
-#page-mod-annotateddiary-report .annotated_temp:hover,
-#page-mod-annotateddiary-reportsingle .annotated_temp:hover,
-#page-mod-annotateddiary-report .hovered,
-#page-mod-annotateddiary-reportsingle .hovered {
+#page-mod-margic-view .annotated:hover,
+#page-mod-margic-view .annotated_temp:hover,
+#page-mod-margic-view .hovered,
+#page-mod-margic-report .annotated:hover,
+#page-mod-margic-reportsingle .annotated:hover,
+#page-mod-margic-report .annotated_temp:hover,
+#page-mod-margic-reportsingle .annotated_temp:hover,
+#page-mod-margic-report .hovered,
+#page-mod-margic-reportsingle .hovered {
     background-color: lightblue;
 }
 
-#page-mod-annotateddiary-view .annotation-box,
-#page-mod-annotateddiary-report .annotation-box,
-#page-mod-annotateddiary-reportsingle .annotation-box {
+#page-mod-margic-view .annotation-box,
+#page-mod-margic-report .annotation-box,
+#page-mod-margic-reportsingle .annotation-box {
     background-color: white;
     border: 1px solid #dbdbdb;
     border-radius: 2px;
@@ -243,20 +243,20 @@
     box-shadow: 0 1px 1px rgba(0, 0, 0, .1);
 }
 
-#page-mod-annotateddiary-view .annotation-box:hover,
-#page-mod-annotateddiary-report .annotation-box:hover,
-#page-mod-annotateddiary-reportsingle .annotation-box:hover {
+#page-mod-margic-view .annotation-box:hover,
+#page-mod-margic-report .annotation-box:hover,
+#page-mod-margic-reportsingle .annotation-box:hover {
     box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, .15);
 }
 
-#page-mod-annotateddiary-view #id_submitbutton,
-#page-mod-annotateddiary-report #id_submitbutton,
-#page-mod-annotateddiary-reportsingle #id_submitbutton {
+#page-mod-margic-view #id_submitbutton,
+#page-mod-margic-report #id_submitbutton,
+#page-mod-margic-reportsingle #id_submitbutton {
     margin-right: 5px;
 }
 
-#page-mod-annotateddiary-view textarea,
-#page-mod-annotateddiary-report textarea,
-#page-mod-annotateddiary-reportsingle textarea {
+#page-mod-margic-view textarea,
+#page-mod-margic-report textarea,
+#page-mod-margic-reportsingle textarea {
     width: 100%;
 }

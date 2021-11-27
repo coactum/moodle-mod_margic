@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * File containing the class definition for the annotate form for the annotated diary.
+ * File containing the class definition for the annotate form for the margic.
  *
- * @package     mod_annotateddiary
+ * @package     mod_margic
  * @copyright   2021 coactum GmbH
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -30,7 +30,7 @@ require_once("$CFG->libdir/formslib.php");
 /**
  * Form for submissions.
  *
- * @package   mod_annotateddiary
+ * @package   mod_margic
  * @copyright 2021 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL Juv3 or later
  */

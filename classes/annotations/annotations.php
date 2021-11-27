@@ -17,7 +17,7 @@
 /**
  * File containing the annotation menu.
  *
- * @package     mod_annotateddiary
+ * @package     mod_margic
  * @copyright   2021 coactum GmbH
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -26,22 +26,22 @@ defined('MOODLE_INTERNAL') || die();
 
 use core\output\notification;
 
-require_once($CFG->dirroot . '/mod/annotateddiary/classes/annotations/annotation_form.php');
+require_once($CFG->dirroot . '/mod/margic/classes/annotations/annotation_form.php');
 
 global $DB;
 
-if (has_capability('mod/annotateddiary:viewannotations', $context)){
+if (has_capability('mod/margic:viewannotations', $context)){
 
     //echo '<script src="https://hypothes.is/embed.js" async></script>';
 
-    $backgroundcolor = get_config('mod_annotateddiary', 'entrytextbgc');
+    $backgroundcolor = get_config('mod_margic', 'entrytextbgc');
 
     echo '<div class="col-sm-4 annotationarea annotationarea-'.$entryid.'" style="background: '.$backgroundcolor.';">';
 
     // Show annotations.
-    $annotations = $DB->get_records('annotateddiary_annotations', array('annotateddiary' => $cm->instance, 'entry' => $entryid));
+    $annotations = $DB->get_records('margic_annotations', array('margic' => $cm->instance, 'entry' => $entryid));
 
-    echo '<h2 class="text-center">'.get_string('annotations', 'annotateddiary').'</h2>';
+    echo '<h2 class="text-center">'.get_string('annotations', 'margic').'</h2>';
 
     if ($annotations) {
         foreach ($annotations as $annotation) {
@@ -49,7 +49,7 @@ if (has_capability('mod/annotateddiary:viewannotations', $context)){
             //echo '<span class="annotation-originaltext annotation-originaltext-'.$annotation->id.' m-b-2 w-100 d-block">...</span>';
             echo '<span id="annotation-'.$annotation->id.'" class="annotation annotation-'.$annotation->id.'">' . $annotation->text . '</span>';
 
-            if (has_capability('mod/annotateddiary:makeannotations', $context)){
+            if (has_capability('mod/margic:makeannotations', $context)){
                 echo '<span class="pull-right"><a href="javascript:void(0);"><i id="edit-annotation-'.$annotation->id.'" class="fa fa-2x fa-pencil m-r-1 edit-annotation" aria-hidden="true"></i></a><a href="'. $redirecturl . '&deleteannotation=' . $annotation->id . '"><i id="delete-annotation-'.$annotation->id.'" class="fa fa-2x fa-trash delete-annotation" aria-hidden="true"></i></a></span>';
             }
             echo '<br>';
@@ -57,7 +57,7 @@ if (has_capability('mod/annotateddiary:viewannotations', $context)){
         }
     }
 
-    if (has_capability('mod/annotateddiary:makeannotations', $context)) {
+    if (has_capability('mod/margic:makeannotations', $context)) {
 
         // Instantiate form.
         $mform = new annotation_form(null, array('entry' => $entryid));
@@ -66,18 +66,18 @@ if (has_capability('mod/annotateddiary:viewannotations', $context)){
             // In this case you process validated data. $mform->get_data() returns data posted in form.
 
             if ((isset($fromform->annotationid[$entryid]) && $fromform->annotationid[$entryid] !== 0) && isset($fromform->text[$entryid])) { // Update existing annotation.
-                $annotation = $DB->get_record('annotateddiary_annotations', array('annotateddiary' => $cm->instance, 'entry' => $entryid, 'id' => $fromform->annotationid[$entryid]));
+                $annotation = $DB->get_record('margic_annotations', array('margic' => $cm->instance, 'entry' => $entryid, 'id' => $fromform->annotationid[$entryid]));
                 $annotation->timemodified = time();
                 $annotation->text = $fromform->text[$entryid];
 
-                $DB->update_record('annotateddiary_annotations', $annotation);
+                $DB->update_record('margic_annotations', $annotation);
 
-                redirect($redirecturl, get_string('annotationedited', 'mod_annotateddiary'), null, notification::NOTIFY_SUCCESS);
+                redirect($redirecturl, get_string('annotationedited', 'mod_margic'), null, notification::NOTIFY_SUCCESS);
             } elseif ((!isset($fromform->annotationid[$entryid]) || $fromform->annotationid[$entryid] === 0) && isset($fromform->text[$entryid])) { // New annotation.
 
                 if ($fromform->startcontainer[$entryid] != -1 && $fromform->endcontainer[$entryid] != -1 && $fromform->startposition[$entryid] != -1 && $fromform->endposition[$entryid] != -1) {
                     $annotation = new stdClass();
-                    $annotation->annotateddiary = (int) $cm->instance;
+                    $annotation->margic = (int) $cm->instance;
                     $annotation->entry = (int) $entryid;
                     $annotation->userid = $USER->id;
                     $annotation->timecreated = time();
@@ -89,11 +89,11 @@ if (has_capability('mod/annotateddiary:viewannotations', $context)){
                     $annotation->endposition = $fromform->endposition[$entryid];
                     $annotation->text = $fromform->text[$entryid];
 
-                    $DB->insert_record('annotateddiary_annotations', $annotation);
+                    $DB->insert_record('margic_annotations', $annotation);
 
-                    redirect($redirecturl, get_string('annotationadded', 'mod_annotateddiary'), null, notification::NOTIFY_SUCCESS);
+                    redirect($redirecturl, get_string('annotationadded', 'mod_margic'), null, notification::NOTIFY_SUCCESS);
                 } else {
-                    redirect($redirecturl, get_string('annotationinvalid', 'mod_annotateddiary'), null, notification::NOTIFY_ERROR);
+                    redirect($redirecturl, get_string('annotationinvalid', 'mod_margic'), null, notification::NOTIFY_ERROR);
                 }
             }
         } else {

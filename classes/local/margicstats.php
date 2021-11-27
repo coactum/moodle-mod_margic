@@ -15,57 +15,57 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * annotateddiary stats utilities for annotateddiary.
+ * margic stats utilities for margic.
  *
  * 2020071700 Moved these functions from lib.php to here.
  *
- * @package   mod_annotateddiary
+ * @package   mod_margic
  * @copyright AL Rachels (drachels@drachels.com)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-namespace mod_annotateddiary\local;
+namespace mod_margic\local;
 
 defined('MOODLE_INTERNAL') || die();
 
-use mod_annotateddiary\local\annotateddiarystats;
+use mod_margic\local\margicstats;
 use stdClass;
 use core_text;
 
 /**
- * Utility class for annotateddiary stats.
+ * Utility class for margic stats.
  *
- * @package   mod_annotateddiary
+ * @package   mod_margic
  * @copyright AL Rachels (drachels@drachels.com)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class annotateddiarystats {
+class margicstats {
 
     /**
-     * Update the annotateddiary statistics for this annotateddiary activity.
+     * Update the margic statistics for this margic activity.
      *
      * @param string $entry The text for this entry.
      * @return bool
      */
-    public static function get_annotateddiary_stats($entry) {
+    public static function get_margic_stats($entry) {
     // @codingStandardsIgnoreLine
-    // public function get_annotateddiary_stats($entry) {
+    // public function get_margic_stats($entry) {
         // global $DB, $CFG;
         $precision = 1;
-        $annotateddiarystats = array();
-        $annotateddiarystats['words'] = self::get_stats_words($entry);
-        $annotateddiarystats['chars'] = self::get_stats_chars($entry);
-        $annotateddiarystats['sentences'] = self::get_stats_sentences($entry);
-        $annotateddiarystats['paragraphs'] = self::get_stats_paragraphs($entry);
-        $annotateddiarystats['uniquewords'] = self::get_stats_uniquewords($entry);
+        $margicstats = array();
+        $margicstats['words'] = self::get_stats_words($entry);
+        $margicstats['chars'] = self::get_stats_chars($entry);
+        $margicstats['sentences'] = self::get_stats_sentences($entry);
+        $margicstats['paragraphs'] = self::get_stats_paragraphs($entry);
+        $margicstats['uniquewords'] = self::get_stats_uniquewords($entry);
         // @codingStandardsIgnoreLine
-        // print_object('This is the $annotateddiarystats array.');
-        // print_object($annotateddiarystats);
+        // print_object('This is the $margicstats array.');
+        // print_object($margicstats);
 
-        return $annotateddiarystats;
+        return $margicstats;
     }
 
     /**
-     * Update the annotateddiary character count statistics for this annotateddiary activity.
+     * Update the margic character count statistics for this margic activity.
      *
      * @param string $entry The text for this entry.
      * @ return int The number of characters.
@@ -77,7 +77,7 @@ class annotateddiarystats {
     }
 
     /**
-     * Update the annotateddiary word count statistics for this annotateddiary activity.
+     * Update the margic word count statistics for this margic activity.
      *
      * @param string $entry The text for this entry.
      * @ return int The number of words.
@@ -87,7 +87,7 @@ class annotateddiarystats {
     }
 
     /**
-     * Update the annotateddiary sentence count statistics for this annotateddiary activity.
+     * Update the margic sentence count statistics for this margic activity.
      *
      * @param string $entry The text for this entry.
      * @ return int The number of sentences.
@@ -99,7 +99,7 @@ class annotateddiarystats {
     }
 
     /**
-     * Update the annotateddiary paragraph count statistics for this annotateddiary activity.
+     * Update the margic paragraph count statistics for this margic activity.
      *
      * @param string $entry The text for this entry.
      * @ return int The number of paragraphs.
@@ -111,7 +111,7 @@ class annotateddiarystats {
     }
 
     /**
-     * Update the annotateddiary unique word count statistics for this annotateddiary activity.
+     * Update the margic unique word count statistics for this margic activity.
      *
      * @param string $entry The text for this entry.
      * @return int The number of unique words.

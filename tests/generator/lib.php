@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * mod_annotateddiary data generator.
+ * mod_margic data generator.
  *
- * @package   mod_annotateddiary
+ * @package   mod_margic
  * @category  test
  * @copyright 2019 AL Rachels <drachels@drachels.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -25,21 +25,21 @@
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * mod_annotateddiary data generator class.
+ * mod_margic data generator class.
  *
- * @package   mod_annotateddiary
+ * @package   mod_margic
  * @category  test
  * @copyright 2019 AL Rachels <drachels@drachels.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class mod_annotateddiary_generator extends testing_module_generator
+class mod_margic_generator extends testing_module_generator
 {
 
     /**
      *
-     * @var int keep track of how many annotateddiarys have been created.
+     * @var int keep track of how many margics have been created.
      */
-    protected $annotateddiarycount = 0;
+    protected $margiccount = 0;
 
     /**
      * To be called from data reset code only,
@@ -48,25 +48,25 @@ class mod_annotateddiary_generator extends testing_module_generator
      * @return void
      */
     public function reset() {
-        $this->annotateddiarycount = 0;
+        $this->margiccount = 0;
         parent::reset();
     }
 
     /**
-     * Create new annotateddiary module instance.
+     * Create new margic module instance.
      *
      * @param array|stdClass $record
      * @param array $options
-     * @return stdClass mod_annotateddiary_structure
+     * @return stdClass mod_margic_structure
      */
     public function create_instance($record = null, array $options = null) {
         $record = (object) (array) $record;
 
         if (! isset($record->name)) {
-            $record->name = 'Test annotateddiary name ' . $this->annotateddiarycount;
+            $record->name = 'Test margic name ' . $this->margiccount;
         }
         if (! isset($record->intro)) {
-            $record->intro = 'Test annotateddiary name ' . $this->annotateddiarycount;
+            $record->intro = 'Test margic name ' . $this->margiccount;
         }
         if (! isset($record->days)) {
             $record->days = 0;
@@ -75,7 +75,7 @@ class mod_annotateddiary_generator extends testing_module_generator
             $record->grade = 100;
         }
 
-        $this->annotateddiarycount ++;
+        $this->margiccount ++;
 
         return parent::create_instance($record, (array) $options);
     }

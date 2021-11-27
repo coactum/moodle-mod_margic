@@ -15,20 +15,20 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Search area for mod_annotateddiary activities.
+ * Search area for mod_margic activities.
  *
- * @package   mod_annotateddiary
+ * @package   mod_margic
  * @copyright 2019 AL Rachels (drachels@drachels.com)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-namespace mod_annotateddiary\search;
+namespace mod_margic\search;
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Search area for mod_annotateddiary activities.
+ * Search area for mod_margic activities.
  *
- * @package   mod_annotateddiary
+ * @package   mod_margic
  * @copyright 2019 AL Rachels (drachels@drachels.com)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -52,7 +52,7 @@ class activity extends \core_search\base_activity {
     public function get_search_fileareas() {
         $fileareas = array(
             'intro',
-            annotateddiary_INTROATTACHMENT_FILEAREA
+            margic_INTROATTACHMENT_FILEAREA
         ); // Fileareas.
         return $fileareas;
     }

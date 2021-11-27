@@ -15,20 +15,20 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The mod_annotateddiary instance list viewed event.
+ * The mod_margic instance list viewed event.
  *
- * @package   mod_annotateddiary
+ * @package   mod_margic
  * @copyright 2014 drachels@drachels.com
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-namespace mod_annotateddiary\event;
+namespace mod_margic\event;
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * The mod_annotateddiary instance list viewed event class.
+ * The mod_margic instance list viewed event class.
  *
- * @package   mod_annotateddiary
+ * @package   mod_margic
  * @since     Moodle 2.7
  * @copyright 2014 drachels@drachels.com
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later

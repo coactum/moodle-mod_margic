@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Defines backup_annotateddiary_activity_task class.
+ * Defines backup_margic_activity_task class.
  *
- * @package     mod_annotateddiary
+ * @package     mod_margic
  * @category    backup
  * @copyright   2020 AL Rachels <drachels@drachels.com>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -25,12 +25,12 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/mod/annotateddiary/backup/moodle2/backup_annotateddiary_stepslib.php');
+require_once($CFG->dirroot.'/mod/margic/backup/moodle2/backup_margic_stepslib.php');
 
 /**
- * Provides the steps to perform one complete backup of the annotateddiary instance.
+ * Provides the steps to perform one complete backup of the margic instance.
  */
-class backup_annotateddiary_activity_task extends backup_activity_task
+class backup_margic_activity_task extends backup_activity_task
 {
 
     /**
@@ -40,10 +40,10 @@ class backup_annotateddiary_activity_task extends backup_activity_task
     }
 
     /**
-     * Defines a backup step to store the instance data in the annotateddiary.xml file.
+     * Defines a backup step to store the instance data in the margic.xml file.
      */
     protected function define_my_steps() {
-        $this->add_step(new backup_annotateddiary_activity_structure_step('annotateddiary_structure', 'annotateddiary.xml'));
+        $this->add_step(new backup_margic_activity_structure_step('margic_structure', 'margic.xml'));
     }
 
     /**
@@ -56,23 +56,23 @@ class backup_annotateddiary_activity_task extends backup_activity_task
 
         global $CFG;
 
-        $base = preg_quote($CFG->wwwroot.'/mod/annotateddiary', '#');
+        $base = preg_quote($CFG->wwwroot.'/mod/margic', '#');
 
         // Link to the list of diaries.
         $pattern = "#(".$base."\/index.php\?id\=)([0-9]+)#";
-        $content = preg_replace($pattern, '$@annotateddiaryINDEX*$2@$', $content);
+        $content = preg_replace($pattern, '$@margicINDEX*$2@$', $content);
 
-        // Link to annotateddiary view by moduleid.
+        // Link to margic view by moduleid.
         $pattern = "#(".$base."\/view.php\?id\=)([0-9]+)#";
-        $content = preg_replace($pattern, '$@annotateddiaryVIEWBYID*$2@$', $content);
+        $content = preg_replace($pattern, '$@margicVIEWBYID*$2@$', $content);
 
-        // Link to annotateddiary report by moduleid.
+        // Link to margic report by moduleid.
         $pattern = "#(".$base."\/report.php\?id\=)([0-9]+)#";
-        $content = preg_replace($pattern, '$@annotateddiaryREPORT*$2@$', $content);
+        $content = preg_replace($pattern, '$@margicREPORT*$2@$', $content);
 
-        // Link to annotateddiary entry by moduleid.
+        // Link to margic entry by moduleid.
         $pattern = "#(".$base."\/edit.php\?id\=)([0-9]+)#";
-        $content = preg_replace($pattern, '$@annotateddiaryEDIT*$2@$', $content);
+        $content = preg_replace($pattern, '$@margicEDIT*$2@$', $content);
 
         return $content;
     }

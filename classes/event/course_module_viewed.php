@@ -15,20 +15,20 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The mod_annotateddiary course module viewed event.
+ * The mod_margic course module viewed event.
  *
- * @package   mod_annotateddiary
+ * @package   mod_margic
  * @copyright 2014 drachels@drachels.com
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-namespace mod_annotateddiary\event;
+namespace mod_margic\event;
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * The mod_annotateddiary course module viewed event class.
+ * The mod_margic course module viewed event class.
  *
- * @package   mod_annotateddiary
+ * @package   mod_margic
  * @since     Moodle 2.7
  * @copyright 2014 drachels@drachels.com
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -43,7 +43,7 @@ class course_module_viewed extends \core\event\course_module_viewed {
     protected function init() {
         $this->data['crud'] = 'r';
         $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
-        $this->data['objecttable'] = 'annotateddiary';
+        $this->data['objecttable'] = 'margic';
     }
 
     /**
@@ -52,7 +52,7 @@ class course_module_viewed extends \core\event\course_module_viewed {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/annotateddiary/view.php', array(
+        return new \moodle_url('/mod/margic/view.php', array(
             'id' => $this->objectid
         ));
     }
@@ -68,7 +68,7 @@ class course_module_viewed extends \core\event\course_module_viewed {
         ));
         return array(
             $this->courseid,
-            'annotateddiary',
+            'margic',
             'view',
             $url->out(),
             $this->objectid,

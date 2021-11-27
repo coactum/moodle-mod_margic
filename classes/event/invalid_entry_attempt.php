@@ -15,20 +15,20 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The mod_annotateddiary invalid entry attempt event.
+ * The mod_margic invalid entry attempt event.
  *
- * @package   mod_annotateddiary
+ * @package   mod_margic
  * @copyright 2021 Al Rachels
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-namespace mod_annotateddiary\event;
+namespace mod_margic\event;
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * The mod_annotateddiary invalid entry created class.
+ * The mod_margic invalid entry created class.
  *
- * @package   mod_annotateddiary
+ * @package   mod_margic
  * @since     Moodle 3.1
  * @copyright 2021 Al Rachels
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -41,7 +41,7 @@ class invalid_entry_attempt extends \core\event\base {
     protected function init() {
         $this->data['crud'] = 'c';
         $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
-        $this->data['objecttable'] = 'annotateddiary';
+        $this->data['objecttable'] = 'margic';
     }
 
     /**
@@ -50,7 +50,7 @@ class invalid_entry_attempt extends \core\event\base {
      * @return string
      */
     public static function get_name() {
-        return get_string('eventinvalidentryattempt', 'mod_annotateddiary');
+        return get_string('eventinvalidentryattempt', 'mod_margic');
     }
 
     /**
@@ -59,7 +59,7 @@ class invalid_entry_attempt extends \core\event\base {
      * @return string
      */
     public function get_description() {
-        return "The user with id '$this->userid' has attempted to make an invalid entry for the annotateddiary activity with " .
+        return "The user with id '$this->userid' has attempted to make an invalid entry for the margic activity with " .
             "the course module id '$this->contextinstanceid'.";
     }
 
@@ -69,7 +69,7 @@ class invalid_entry_attempt extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/annotateddiary/edit.php', array(
+        return new \moodle_url('/mod/margic/edit.php', array(
             'id' => $this->contextinstanceid
         ));
     }
@@ -85,7 +85,7 @@ class invalid_entry_attempt extends \core\event\base {
         ));
         return array(
             $this->courseid,
-            'annotateddiary',
+            'margic',
             'add entry',
             $url->out(),
             $this->objectid,

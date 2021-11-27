@@ -17,7 +17,7 @@
 /**
  * Definition of log events
  *
- * @package   mod_annotateddiary
+ * @package   mod_margic
  * @copyright 2020 AL Rachels <drachels@drachels.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -25,39 +25,39 @@ defined('MOODLE_INTERNAL') || die();
 
 $logs = array(
     array(
-        'module' => 'annotateddiary',
+        'module' => 'margic',
         'action' => 'view',
-        'mtable' => 'annotateddiary',
+        'mtable' => 'margic',
         'field' => 'name'
     ),
     array(
-        'module' => 'annotateddiary',
+        'module' => 'margic',
         'action' => 'view all',
-        'mtable' => 'annotateddiary',
+        'mtable' => 'margic',
         'field' => 'name'
     ),
     array(
-        'module' => 'annotateddiary',
+        'module' => 'margic',
         'action' => 'view responses',
-        'mtable' => 'annotateddiary',
+        'mtable' => 'margic',
         'field' => 'name'
     ),
     array(
-        'module' => 'annotateddiary',
+        'module' => 'margic',
         'action' => 'add entry',
-        'mtable' => 'annotateddiary',
+        'mtable' => 'margic',
         'field' => 'name'
     ),
     array(
-        'module' => 'annotateddiary',
+        'module' => 'margic',
         'action' => 'update entry',
-        'mtable' => 'annotateddiary',
+        'mtable' => 'margic',
         'field' => 'name'
     ),
     array(
-        'module' => 'annotateddiary',
+        'module' => 'margic',
         'action' => 'update feedback',
-        'mtable' => 'annotateddiary',
+        'mtable' => 'margic',
         'field' => 'name'
     )
 );

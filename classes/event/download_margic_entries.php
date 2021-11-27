@@ -15,24 +15,24 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The mod_annotateddiary download annotateddiary entries event.
+ * The mod_margic download margic entries event.
  *
- * @package   mod_annotateddiary
+ * @package   mod_margic
  * @copyright 2016 AL Rachels (drachels@drachels.com)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-namespace mod_annotateddiary\event;
+namespace mod_margic\event;
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * The mod_annotateddiary download annotateddiary entries class.
+ * The mod_margic download margic entries class.
  *
- * @package   mod_annotateddiary
+ * @package   mod_margic
  * @copyright 2019 drachels@drachels.com
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class download_annotateddiary_entries extends \core\event\base {
+class download_margic_entries extends \core\event\base {
 
     /**
      * Init method.
@@ -40,7 +40,7 @@ class download_annotateddiary_entries extends \core\event\base {
     protected function init() {
         $this->data['crud'] = 'u';
         $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
-        $this->data['objecttable'] = 'annotateddiary';
+        $this->data['objecttable'] = 'margic';
     }
 
     /**
@@ -49,7 +49,7 @@ class download_annotateddiary_entries extends \core\event\base {
      * @return string
      */
     public static function get_name() {
-        return get_string('eventdownloadentriess', 'mod_annotateddiary');
+        return get_string('eventdownloadentriess', 'mod_margic');
     }
 
     /**
@@ -58,7 +58,7 @@ class download_annotateddiary_entries extends \core\event\base {
      * @return string
      */
     public function get_description() {
-        return "The user with id '$this->userid' has downloaded annotateddiary entries for the annotateddiary activity with the course module id
+        return "The user with id '$this->userid' has downloaded margic entries for the margic activity with the course module id
             '$this->contextinstanceid'.";
     }
 
@@ -68,7 +68,7 @@ class download_annotateddiary_entries extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/annotateddiary/view.php', array(
+        return new \moodle_url('/mod/margic/view.php', array(
             'id' => $this->contextinstanceid
         ));
     }
@@ -84,7 +84,7 @@ class download_annotateddiary_entries extends \core\event\base {
         ));
         return array(
             $this->courseid,
-            'annotateddiary',
+            'margic',
             'view',
             $url->out(),
             $this->objectid,

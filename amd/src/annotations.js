@@ -14,10 +14,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Module for the annotation functions of the annotated diary.
+ * Module for the annotation functions of the margic.
  *
- * @module     mod_annotateddiary/annotations
- * @package    mod_annotateddiary
+ * @module     mod_margic/annotations
+ * @package    mod_margic
  * @copyright  2021 coactum GmbH
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

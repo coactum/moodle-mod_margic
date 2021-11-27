@@ -15,20 +15,20 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Results utilities for annotateddiary.
+ * Results utilities for margic.
  *
  * 2020071700 Moved these functions from lib.php to here.
  *
- * @package   mod_annotateddiary
+ * @package   mod_margic
  * @copyright AL Rachels (drachels@drachels.com)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-namespace mod_annotateddiary\local;
+namespace mod_margic\local;
 
 defined('MOODLE_INTERNAL') || die();
-define('annotateddiary_EVENT_TYPE_OPEN', 'open');
-define('annotateddiary_EVENT_TYPE_CLOSE', 'close');
-use mod_annotateddiary\local\results;
+define('margic_EVENT_TYPE_OPEN', 'open');
+define('margic_EVENT_TYPE_CLOSE', 'close');
+use mod_margic\local\results;
 use stdClass;
 use csv_export_writer;
 use html_writer;
@@ -36,50 +36,50 @@ use context_module;
 use calendar_event;
 
 /**
- * Utility class for annotateddiary results.
+ * Utility class for margic results.
  *
- * @package   mod_annotateddiary
+ * @package   mod_margic
  * @copyright AL Rachels (drachels@drachels.com)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class results {
 
     /**
-     * Update the calendar entries for this annotateddiary activity.
+     * Update the calendar entries for this margic activity.
      *
-     * @param stdClass $annotateddiary the row from the database table annotateddiary.
+     * @param stdClass $margic the row from the database table margic.
      * @param int $cmid The coursemodule id
      * @return bool
      */
-    public static function annotateddiary_update_calendar(stdClass $annotateddiary, $cmid) {
+    public static function margic_update_calendar(stdClass $margic, $cmid) {
         global $DB, $CFG;
 
         if ($CFG->branch > 30) { // If Moodle less than version 3.1 skip this.
             require_once($CFG->dirroot.'/calendar/lib.php');
 
-            // Get CMID if not sent as part of $annotateddiary.
-            if (! isset($annotateddiary->coursemodule)) {
-                $cm = get_coursemodule_from_instance('annotateddiary', $annotateddiary->id, $annotateddiary->course);
-                $annotateddiary->coursemodule = $cm->id;
+            // Get CMID if not sent as part of $margic.
+            if (! isset($margic->coursemodule)) {
+                $cm = get_coursemodule_from_instance('margic', $margic->id, $margic->course);
+                $margic->coursemodule = $cm->id;
             }
 
-            // annotateddiary start calendar events.
+            // margic start calendar events.
             $event = new stdClass();
-            $event->eventtype = annotateddiary_EVENT_TYPE_OPEN;
+            $event->eventtype = margic_EVENT_TYPE_OPEN;
             // The MOOTYPER_EVENT_TYPE_OPEN event should only be an action event if no close time is specified.
-            $event->type = empty($annotateddiary->timeclose) ? CALENDAR_EVENT_TYPE_ACTION : CALENDAR_EVENT_TYPE_STANDARD;
+            $event->type = empty($margic->timeclose) ? CALENDAR_EVENT_TYPE_ACTION : CALENDAR_EVENT_TYPE_STANDARD;
             if ($event->id = $DB->get_field('event', 'id', array(
-                'modulename' => 'annotateddiary',
-                'instance' => $annotateddiary->id,
+                'modulename' => 'margic',
+                'instance' => $margic->id,
                 'eventtype' => $event->eventtype
             ))) {
-                if ((! empty($annotateddiary->timeopen)) && ($annotateddiary->timeopen > 0)) {
+                if ((! empty($margic->timeopen)) && ($margic->timeopen > 0)) {
                     // Calendar event exists so update it.
-                    $event->name = get_string('calendarstart', 'annotateddiary', $annotateddiary->name);
-                    $event->description = format_module_intro('annotateddiary', $annotateddiary, $cmid);
-                    $event->timestart = $annotateddiary->timeopen;
-                    $event->timesort = $annotateddiary->timeopen;
-                    $event->visible = instance_is_visible('annotateddiary', $annotateddiary);
+                    $event->name = get_string('calendarstart', 'margic', $margic->name);
+                    $event->description = format_module_intro('margic', $margic, $cmid);
+                    $event->timestart = $margic->timeopen;
+                    $event->timesort = $margic->timeopen;
+                    $event->visible = instance_is_visible('margic', $margic);
                     $event->timeduration = 0;
 
                     $calendarevent = calendar_event::load($event->id);
@@ -91,39 +91,39 @@ class results {
                 }
             } else {
                 // Event doesn't exist so create one.
-                if ((! empty($annotateddiary->timeopen)) && ($annotateddiary->timeopen > 0)) {
-                    $event->name = get_string('calendarstart', 'annotateddiary', $annotateddiary->name);
-                    $event->description = format_module_intro('annotateddiary', $annotateddiary, $cmid);
-                    $event->courseid = $annotateddiary->course;
+                if ((! empty($margic->timeopen)) && ($margic->timeopen > 0)) {
+                    $event->name = get_string('calendarstart', 'margic', $margic->name);
+                    $event->description = format_module_intro('margic', $margic, $cmid);
+                    $event->courseid = $margic->course;
                     $event->groupid = 0;
                     $event->userid = 0;
-                    $event->modulename = 'annotateddiary';
-                    $event->instance = $annotateddiary->id;
-                    $event->timestart = $annotateddiary->timeopen;
-                    $event->timesort = $annotateddiary->timeopen;
-                    $event->visible = instance_is_visible('annotateddiary', $annotateddiary);
+                    $event->modulename = 'margic';
+                    $event->instance = $margic->id;
+                    $event->timestart = $margic->timeopen;
+                    $event->timesort = $margic->timeopen;
+                    $event->visible = instance_is_visible('margic', $margic);
                     $event->timeduration = 0;
 
                     calendar_event::create($event, false);
                 }
             }
 
-            // annotateddiary end calendar events.
+            // margic end calendar events.
             $event = new stdClass();
             $event->type = CALENDAR_EVENT_TYPE_ACTION;
-            $event->eventtype = annotateddiary_EVENT_TYPE_CLOSE;
+            $event->eventtype = margic_EVENT_TYPE_CLOSE;
             if ($event->id = $DB->get_field('event', 'id', array(
-                'modulename' => 'annotateddiary',
-                'instance' => $annotateddiary->id,
+                'modulename' => 'margic',
+                'instance' => $margic->id,
                 'eventtype' => $event->eventtype
             ))) {
-                if ((! empty($annotateddiary->timeclose)) && ($annotateddiary->timeclose > 0)) {
+                if ((! empty($margic->timeclose)) && ($margic->timeclose > 0)) {
                     // Calendar event exists so update it.
-                    $event->name = get_string('calendarend', 'annotateddiary', $annotateddiary->name);
-                    $event->description = format_module_intro('annotateddiary', $annotateddiary, $cmid);
-                    $event->timestart = $annotateddiary->timeclose;
-                    $event->timesort = $annotateddiary->timeclose;
-                    $event->visible = instance_is_visible('annotateddiary', $annotateddiary);
+                    $event->name = get_string('calendarend', 'margic', $margic->name);
+                    $event->description = format_module_intro('margic', $margic, $cmid);
+                    $event->timestart = $margic->timeclose;
+                    $event->timesort = $margic->timeclose;
+                    $event->visible = instance_is_visible('margic', $margic);
                     $event->timeduration = 0;
 
                     $calendarevent = calendar_event::load($event->id);
@@ -135,17 +135,17 @@ class results {
                 }
             } else {
                 // Event doesn't exist so create one.
-                if ((! empty($annotateddiary->timeclose)) && ($annotateddiary->timeclose > 0)) {
-                    $event->name = get_string('calendarend', 'annotateddiary', $annotateddiary->name);
-                    $event->description = format_module_intro('annotateddiary', $annotateddiary, $cmid);
-                    $event->courseid = $annotateddiary->course;
+                if ((! empty($margic->timeclose)) && ($margic->timeclose > 0)) {
+                    $event->name = get_string('calendarend', 'margic', $margic->name);
+                    $event->description = format_module_intro('margic', $margic, $cmid);
+                    $event->courseid = $margic->course;
                     $event->groupid = 0;
                     $event->userid = 0;
-                    $event->modulename = 'annotateddiary';
-                    $event->instance = $annotateddiary->id;
-                    $event->timestart = $annotateddiary->timeclose;
-                    $event->timesort = $annotateddiary->timeclose;
-                    $event->visible = instance_is_visible('annotateddiary', $annotateddiary);
+                    $event->modulename = 'margic';
+                    $event->instance = $margic->id;
+                    $event->timestart = $margic->timeclose;
+                    $event->timesort = $margic->timeclose;
+                    $event->visible = instance_is_visible('margic', $margic);
                     $event->timeduration = 0;
 
                     calendar_event::create($event, false);
@@ -159,71 +159,71 @@ class results {
      * Returns availability status.
      * Added 20200903.
      *
-     * @param var $annotateddiary
+     * @param var $margic
      */
-    public static function annotateddiary_available($annotateddiary) {
-        $timeopen = $annotateddiary->timeopen;
-        $timeclose = $annotateddiary->timeclose;
+    public static function margic_available($margic) {
+        $timeopen = $margic->timeopen;
+        $timeclose = $margic->timeclose;
         return (($timeopen == 0 || time() >= $timeopen) && ($timeclose == 0 || time() < $timeclose));
     }
 
     /**
-     * Download entries in this annotateddiary activity.
+     * Download entries in this margic activity.
      *
      * @param array $context Context for this download.
      * @param array $course Course for this download.
-     * @param array $annotateddiary annotateddiary to download.
+     * @param array $margic margic to download.
      * @return nothing
      */
-    public static function download_entries($context, $course, $annotateddiary) {
+    public static function download_entries($context, $course, $margic) {
         global $CFG, $DB, $USER;
         require_once($CFG->libdir.'/csvlib.class.php');
         $data = new stdClass();
-        $data->annotateddiary = $annotateddiary->id;
+        $data->margic = $margic->id;
 
-        // Trigger download_annotateddiary_entries event.
-        $event = \mod_annotateddiary\event\download_annotateddiary_entries::create(array(
-            'objectid' => $data->annotateddiary,
+        // Trigger download_margic_entries event.
+        $event = \mod_margic\event\download_margic_entries::create(array(
+            'objectid' => $data->margic,
             'context' => $context
         ));
         $event->trigger();
 
         // Construct sql query and filename based on admin, teacher, or student.
-        // Add filename details based on course and annotateddiary activity name.
+        // Add filename details based on course and margic activity name.
         $csv = new csv_export_writer();
         $whichuser = ''; // Leave blank for an admin or teacher.
         if (is_siteadmin($USER->id)) {
-            $whichannotateddiary = ('AND d.annotateddiary > 0');
-            $csv->filename = clean_filename(get_string('exportfilenamep1', 'annotateddiary'));
-        } else if (has_capability('mod/annotateddiary:manageentries', $context)) {
-            $whichannotateddiary = ('AND d.annotateddiary = ');
-            $whichannotateddiary .= ($annotateddiary->id);
+            $whichmargic = ('AND d.margic > 0');
+            $csv->filename = clean_filename(get_string('exportfilenamep1', 'margic'));
+        } else if (has_capability('mod/margic:manageentries', $context)) {
+            $whichmargic = ('AND d.margic = ');
+            $whichmargic .= ($margic->id);
             $csv->filename = clean_filename(($course->shortname).'_');
-            $csv->filename .= clean_filename(($annotateddiary->name));
-        } else if (has_capability('mod/annotateddiary:addentries', $context)) {
-            $whichannotateddiary = ('AND d.annotateddiary = ');
-            $whichannotateddiary .= ($annotateddiary->id);
+            $csv->filename .= clean_filename(($margic->name));
+        } else if (has_capability('mod/margic:addentries', $context)) {
+            $whichmargic = ('AND d.margic = ');
+            $whichmargic .= ($margic->id);
             $whichuser = (' AND d.userid = '.$USER->id); // Not an admin or teacher so can only get their OWN entries.
             $csv->filename = clean_filename(($course->shortname).'_');
-            $csv->filename .= clean_filename(($annotateddiary->name));
+            $csv->filename .= clean_filename(($margic->name));
         }
-        $csv->filename .= clean_filename(get_string('exportfilenamep2', 'annotateddiary').gmdate("Ymd_Hi").'GMT.csv');
+        $csv->filename .= clean_filename(get_string('exportfilenamep2', 'margic').gmdate("Ymd_Hi").'GMT.csv');
 
         $fields = array();
         $fields = array(
             get_string('firstname'),
             get_string('lastname'),
-            get_string('pluginname', 'annotateddiary'),
-            get_string('userid', 'annotateddiary'),
-            get_string('timecreated', 'annotateddiary'),
-            get_string('timemodified', 'annotateddiary'),
-            get_string('format', 'annotateddiary'),
-            get_string('rating', 'annotateddiary'),
-            get_string('entrycomment', 'annotateddiary'),
-            get_string('teacher', 'annotateddiary'),
-            get_string('timemarked', 'annotateddiary'),
-            get_string('mailed', 'annotateddiary'),
-            get_string('text', 'annotateddiary')
+            get_string('pluginname', 'margic'),
+            get_string('userid', 'margic'),
+            get_string('timecreated', 'margic'),
+            get_string('timemodified', 'margic'),
+            get_string('format', 'margic'),
+            get_string('rating', 'margic'),
+            get_string('entrycomment', 'margic'),
+            get_string('teacher', 'margic'),
+            get_string('timemarked', 'margic'),
+            get_string('mailed', 'margic'),
+            get_string('text', 'margic')
         );
         // Add the headings to our data array.
         $csv->add_data($fields);
@@ -231,7 +231,7 @@ class results {
             $sql = "SELECT d.id AS entry,
                            u.firstname AS firstname,
                            u.lastname AS lastname,
-                           d.annotateddiary AS annotateddiary,
+                           d.margic AS margic,
                            d.userid AS userid,
                            to_char(to_timestamp(d.timecreated), 'YYYY-MM-DD HH24:MI:SS') AS timecreated,
                            to_char(to_timestamp(d.timemodified), 'YYYY-MM-DD HH24:MI:SS') AS timemodified,
@@ -242,14 +242,14 @@ class results {
                            d.teacher AS teacher,
                            to_char(to_timestamp(d.timemarked), 'YYYY-MM-DD HH24:MI:SS') AS timemarked,
                            d.mailed AS mailed
-                      FROM {annotateddiary_entries} d
+                      FROM {margic_entries} d
                       JOIN {user} u ON u.id = d.userid
                      WHERE d.userid > 0 ";
         } else {
             $sql = "SELECT d.id AS entry,
                            u.firstname AS 'firstname',
                            u.lastname AS 'lastname',
-                           d.annotateddiary AS annotateddiary,
+                           d.margic AS margic,
                            d.userid AS userid,
                            FROM_UNIXTIME(d.timecreated) AS TIMECREATED,
                            FROM_UNIXTIME(d.timemodified) AS TIMEMODIFIED,
@@ -260,15 +260,15 @@ class results {
                            d.teacher AS teacher,
                            FROM_UNIXTIME(d.timemarked) AS TIMEMARKED,
                            d.mailed AS mailed
-                      FROM {annotateddiary_entries} d
+                      FROM {margic_entries} d
                       JOIN {user} u ON u.id = d.userid
                      WHERE d.userid > 0 ";
         }
 
-        $sql .= ($whichannotateddiary);
+        $sql .= ($whichmargic);
         $sql .= ($whichuser);
-        $sql .= "       GROUP BY u.lastname, u.firstname, d.annotateddiary, d.id
-                  ORDER BY u.lastname ASC, u.firstname ASC, d.annotateddiary ASC, d.id ASC";
+        $sql .= "       GROUP BY u.lastname, u.firstname, d.margic, d.id
+                  ORDER BY u.lastname ASC, u.firstname ASC, d.margic ASC, d.id ASC";
 
         // Add the list of users and diaries to our data array.
         if ($ds = $DB->get_records_sql($sql, $fields)) {
@@ -276,7 +276,7 @@ class results {
                 $output = array(
                     $d->firstname,
                     $d->lastname,
-                    $d->annotateddiary,
+                    $d->margic,
                     $d->userid,
                     $d->timecreated,
                     $d->timemodified,
@@ -296,40 +296,40 @@ class results {
     }
 
     /**
-     * Prints the currently selected annotateddiary entry of student identified as $user, on the report page.
+     * Prints the currently selected margic entry of student identified as $user, on the report page.
      *
      * @param integer $course
-     * @param integer $annotateddiary
+     * @param integer $margic
      * @param integer $user
      * @param integer $entry
      * @param integer $teachers
      * @param integer $grades
      */
-    public static function annotateddiary_print_user_entry($course, $annotateddiary, $user, $entry, $teachers, $grades) {
+    public static function margic_print_user_entry($course, $margic, $user, $entry, $teachers, $grades) {
         global $USER, $OUTPUT, $DB, $CFG;
         $id = required_param('id', PARAM_INT); // Course module.
 
         // 20210605 Changed to this format.
         require_once(__DIR__ .'/../../../../lib/gradelib.php');
 
-        $dcolor3 = get_config('mod_annotateddiary', 'entrybgc');
-        $dcolor4 = get_config('mod_annotateddiary', 'entrytextbgc');
+        $dcolor3 = get_config('mod_margic', 'entrybgc');
+        $dcolor4 = get_config('mod_margic', 'entrytextbgc');
 
         // Create a table for the current users entry with area for teacher feedback.
 
-        // [annotateddiary] move id
-        //echo '<table class="annotateddiaryuserentry" id="entry-'.$user->id.'">';
-        echo '<table class="annotateddiaryuserentry">';
+        // [margic] move id
+        //echo '<table class="margicuserentry" id="entry-'.$user->id.'">';
+        echo '<table class="margicuserentry">';
 
         if ($entry) {
             // Add an entry label followed by the date of the entry.
             echo '<tr>';
-            echo '<td style="width:35px;">'.get_string('entry', 'annotateddiary').':</td><td>';
+            echo '<td style="width:35px;">'.get_string('entry', 'margic').':</td><td>';
             echo userdate($entry->timecreated);
             // 20201202 Added link to all entries for a single user.
             echo '  <a href="reportsingle.php?id='.$id
             .'&user='.$user->id
-            .'&action=allentries">'.get_string('reportsingle', 'annotateddiary')
+            .'&action=allentries">'.get_string('reportsingle', 'margic')
             .'</a></td><td></td>';
             echo '</tr>';
         }
@@ -357,17 +357,17 @@ class results {
             $stdwordspacecount = substr_count($plaintxt, ' ');
             // 20210604 Added for Details in each report entry.
             echo '<div class="lastedit">'
-                .get_string('details', 'annotateddiary').' '
-                .get_string('numwordsraw', 'annotateddiary', ['one' => $rawwordcount,
+                .get_string('details', 'margic').' '
+                .get_string('numwordsraw', 'margic', ['one' => $rawwordcount,
                                                      'two' => $rawwordcharcount,
                                                      'three' => $rawwordspacecount]).'<br>'
-                .get_string('numwordscln', 'annotateddiary', ['one' => $clnwordcount,
+                .get_string('numwordscln', 'margic', ['one' => $clnwordcount,
                                                      'two' => $clnwordcharcount,
                                                      'three' => $clnwordspacecount]).'<br>'
-                .get_string('numwordsstd', 'annotateddiary', ['one' => $stdwordcount,
+                .get_string('numwordsstd', 'margic', ['one' => $stdwordcount,
                                                      'two' => $stdwordcharcount,
                                                      'three' => $stdwordspacecount]).'<br>'
-                .get_string("timecreated", 'annotateddiary').':  '
+                .get_string("timecreated", 'margic').':  '
                 .userdate($entry->timecreated).' '
                 .get_string("lastedited").': '
                 .userdate($entry->timemodified).' </div>';
@@ -380,7 +380,7 @@ class results {
         echo '<tr><td>';
 
 
-        // [annotateddiary]
+        // [margic]
         if (isset($entry->id)) {
             echo '<div id="entry-'.$entry->id.'" class="entry originaltext" style="background: '.$dcolor4.';">';
         } else {
@@ -389,9 +389,9 @@ class results {
 
         // If there is a user entry, format it and show it.
         if ($entry) {
-            echo self::annotateddiary_format_entry_text($entry, $course);
+            echo self::margic_format_entry_text($entry, $course);
         } else {
-            print_string("noentry", "annotateddiary");
+            print_string("noentry", "margic");
         }
         echo '</div></td><td style="width:55px;"></td></tr>';
 
@@ -410,22 +410,22 @@ class results {
             }
 
             // 20200816 Get the current rating for this user!
-            if ($annotateddiary->assessed != RATING_AGGREGATE_NONE) {
-                $gradinginfo = grade_get_grades($course->id, 'mod', 'annotateddiary', $annotateddiary->id, $user->id);
+            if ($margic->assessed != RATING_AGGREGATE_NONE) {
+                $gradinginfo = grade_get_grades($course->id, 'mod', 'margic', $margic->id, $user->id);
                 $gradeitemgrademax = $gradinginfo->items[0]->grademax;
                 $userfinalgrade = $gradinginfo->items[0]->grades[$user->id];
                 $currentuserrating = $userfinalgrade->str_long_grade;
             } else {
                 $currentuserrating = '';
             }
-            $aggregatestr = self::get_annotateddiary_aggregation($annotateddiary->assessed);
+            $aggregatestr = self::get_margic_aggregation($margic->assessed);
 
             echo $OUTPUT->user_picture($teachers[$entry->teacher], array(
                 'courseid' => $course->id,
                 'alttext' => true
             ));
             echo '</td>';
-            echo '<td>'.get_string('rating', 'annotateddiary').':  ';
+            echo '<td>'.get_string('rating', 'margic').':  ';
 
             $attrs = array();
             $hiddengradestr = '';
@@ -433,8 +433,8 @@ class results {
             $feedbackdisabledstr = '';
             $feedbacktext = $entry->entrycomment;
 
-            // If the grade was modified from the gradebook disable edition also skip if annotateddiary is not graded.
-            $gradinginfo = grade_get_grades($course->id, 'mod', 'annotateddiary', $entry->annotateddiary, array(
+            // If the grade was modified from the gradebook disable edition also skip if margic is not graded.
+            $gradinginfo = grade_get_grades($course->id, 'mod', 'margic', $entry->margic, array(
                 $user->id
             ));
 
@@ -446,7 +446,7 @@ class results {
                     $hiddengradestr = '<input type="hidden" name="r'.$entry->id.'" value="'.$entry->rating.'"/>';
                     $gradebooklink = '<a href="'.$CFG->wwwroot.'/grade/report/grader/index.php?id='.$course->id.'">';
                     $gradebooklink .= $gradinginfo->items[0]->grades[$user->id]->str_long_grade.'</a>';
-                    $gradebookgradestr = '<br/>'.get_string("gradeingradebook", "annotateddiary").':&nbsp;'.$gradebooklink;
+                    $gradebookgradestr = '<br/>'.get_string("gradeingradebook", "margic").':&nbsp;'.$gradebooklink;
 
                     $feedbackdisabledstr = 'disabled="disabled"';
                     $feedbacktext = $gradinginfo->items[0]->grades[$user->id]->str_feedback;
@@ -463,14 +463,14 @@ class results {
                     'r'.$entry->id, true, array('class' => 'accesshide'));
             }
 
-            if ($annotateddiary->assessed > 0) {
+            if ($margic->assessed > 0) {
                 echo html_writer::select($grades, 'r'.$entry->id, $entry->rating, get_string("nograde").'...', $attrs);
             }
             echo $hiddengradestr;
 
             // Rewrote next three lines to show entry needs to be regraded due to resubmission.
             if (! empty($entry->timemarked) && $entry->timemodified > $entry->timemarked) {
-                echo ' <span class="needsedit">'.get_string("needsregrade", "annotateddiary").' </span>';
+                echo ' <span class="needsedit">'.get_string("needsregrade", "margic").' </span>';
             } else if ($entry->timemarked) {
                 echo ' <span class="lastedit">'.userdate($entry->timemarked).' </span>';
             }
@@ -505,18 +505,18 @@ class results {
      * @return int $entry-format Format for user entry.
      * @return array $formatoptions Array of options for a user entry.
      */
-    public static function annotateddiary_format_entry_text($entry, $course = false, $cm = false) {
+    public static function margic_format_entry_text($entry, $course = false, $cm = false) {
         if (! $cm) {
             if ($course) {
                 $courseid = $course->id;
             } else {
                 $courseid = 0;
             }
-            $cm = get_coursemodule_from_instance('annotateddiary', $entry->annotateddiary, $courseid);
+            $cm = get_coursemodule_from_instance('margic', $entry->margic, $courseid);
         }
 
         $context = context_module::instance($cm->id);
-        $entrytext = file_rewrite_pluginfile_urls($entry->text, 'pluginfile.php', $context->id, 'mod_annotateddiary', 'entry', $entry->id);
+        $entrytext = file_rewrite_pluginfile_urls($entry->text, 'pluginfile.php', $context->id, 'mod_margic', 'entry', $entry->id);
 
         $formatoptions = array(
             'context' => $context,
@@ -527,26 +527,26 @@ class results {
     }
 
     /**
-     * Return the editor and attachment options when editing a annotateddiary entry.
+     * Return the editor and attachment options when editing a margic entry.
      *
      * @param stdClass $course Course object.
      * @param stdClass $context Context object.
-     * @param stdClass $annotateddiary annotateddiary object.
+     * @param stdClass $margic margic object.
      * @param stdClass $entry Entry object.
      * @param stdClass $action Action object.
      * @param stdClass $firstkey Firstkey object.
      * @return array $editoroptions Array containing the editor and attachment options.
      * @return array $attachmentoptions Array containing the editor and attachment options.
      */
-    public static function annotateddiary_get_editor_and_attachment_options($course, $context, $annotateddiary, $entry, $action, $firstkey) {
+    public static function margic_get_editor_and_attachment_options($course, $context, $margic, $entry, $action, $firstkey) {
         $maxfiles = 99; // TODO: add some setting.
         $maxbytes = $course->maxbytes; // TODO: add some setting.
 
         // 20210613 Added more custom data to use in edit_form.php to prevent illegal access.
         $editoroptions = array(
-            'timeclose' => $annotateddiary->timeclose,
-            'editall' => $annotateddiary->editall,
-            'editdates' => $annotateddiary->editdates,
+            'timeclose' => $margic->timeclose,
+            'editall' => $margic->editall,
+            'editdates' => $margic->editdates,
             'action' => $action,
             'firstkey' => $firstkey,
             'trusttext' => true,
@@ -568,19 +568,19 @@ class results {
     }
 
     /**
-     * Get the latest entry in mdl_annotateddiary_entries for the current user.
+     * Get the latest entry in mdl_margic_entries for the current user.
      *
      * Used in lib.php.
      *
-     * @param int $annotateddiary ID of the current annotateddiary activity.
+     * @param int $margic ID of the current margic activity.
      * @param int $user ID of the current user.
-     * @param int $timecreated Unix time when annotateddiary entry was created.
-     * @param int $timemodified Unix time when annotateddiary entry was last changed.
+     * @param int $timecreated Unix time when margic entry was created.
+     * @param int $timemodified Unix time when margic entry was last changed.
      */
-    public static function get_grade_entry($annotateddiary, $user, $timecreated, $timemodified) {
+    public static function get_grade_entry($margic, $user, $timecreated, $timemodified) {
         global $USER, $DB, $CFG;
-        $sql = "SELECT * FROM ".$CFG->prefix."annotateddiary_entries"
-                     ." WHERE annotateddiary = ".$annotateddiary
+        $sql = "SELECT * FROM ".$CFG->prefix."margic_entries"
+                     ." WHERE margic = ".$margic
                         ."AND userid = ".$user
                         ."AND timecreated = ".$timecreated
                         ."AND timemodified = ".$timemodified
@@ -632,10 +632,10 @@ class results {
      *
      * Used in view.php.
      *
-     * @param int $aggregate The annotateddiary rating method.
+     * @param int $aggregate The margic rating method.
      * @return string $aggregatestr Return the language string for the rating method.
      */
-    public static function get_annotateddiary_aggregation($aggregate) {
+    public static function get_margic_aggregation($aggregate) {
         $aggregatestr = null;
         switch ($aggregate) {
             case 0:

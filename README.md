@@ -14,7 +14,7 @@ this program.  If not, see <http://www.gnu.org/licenses/>.
 
 @copyright 2021 coactum GmbH
 
-# Annotateddiary #
+# margic #
 
 ## Description ##
 
@@ -24,7 +24,7 @@ mod_diary enhanced with annotations.
 
 ### Install from git ###
 - Navigate to Moodle root folder.
-- **git clone https://github.com/coactum/moodle-mod-annotateddiary.git mod/annotateddiary**
+- **git clone https://github.com/coactum/moodle-mod_margic.git mod/margic**
 
 ### Install from a compressed file ###
 - Extract the compressed file data.

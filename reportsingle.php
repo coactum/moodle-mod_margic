@@ -15,15 +15,15 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This page opens the current report instance of annotateddiary.
+ * This page opens the current report instance of margic.
  *
- * @package   mod_annotateddiary
+ * @package   mod_margic
  * @copyright 2020 AL Rachels (drachels@drachels.com)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-use mod_annotateddiary\local\results;
+use mod_margic\local\results;
 
-use core\output\notification; // [annotateddiary]
+use core\output\notification; // [margic]
 
 require_once("../../config.php");
 require_once("lib.php");
@@ -33,42 +33,42 @@ $id = required_param('id', PARAM_INT); // Course module.
 $action = optional_param('action', 'currententry', PARAM_ACTION); // Action(default to current entry).
 $user = required_param('user', PARAM_INT); // Course module.
 
-// [annotateddiary] Param if annotation mode is activated
+// [margic] Param if annotation mode is activated
 $annotationmode = optional_param('annotationmode',  1, PARAM_BOOL); // Annotation mode.
-// [annotateddiary] Param if annotation should be deleted
+// [margic] Param if annotation should be deleted
 $deleteannotation = optional_param('deleteannotation',  0, PARAM_INT); // Annotation to be deleted.
 
-if (! $cm = get_coursemodule_from_id('annotateddiary', $id)) {
-    throw new moodle_exception(get_string('incorrectmodule', 'annotateddiary'));
+if (! $cm = get_coursemodule_from_id('margic', $id)) {
+    throw new moodle_exception(get_string('incorrectmodule', 'margic'));
 }
 
 if (! $course = $DB->get_record("course", array(
     "id" => $cm->course
 ))) {
-    throw new moodle_exception(get_string('incorrectcourseid', 'annotateddiary'));
+    throw new moodle_exception(get_string('incorrectcourseid', 'margic'));
 }
 
 require_login($course, false, $cm);
 
 $context = context_module::instance($cm->id);
 
-require_capability('mod/annotateddiary:manageentries', $context);
+require_capability('mod/margic:manageentries', $context);
 
-if (! $annotateddiary = $DB->get_record("annotateddiary", array(
+if (! $margic = $DB->get_record("margic", array(
     "id" => $cm->instance
 ))) {
-    throw new moodle_exception(get_string('invalidid', 'annotateddiary'));
+    throw new moodle_exception(get_string('invalidid', 'margic'));
 }
 
-// [annotateddiary] Delete annotation
-if (has_capability('mod/annotateddiary:makeannotations', $context) && $deleteannotation !== 0) {
-    $DB->delete_records('annotateddiary_annotations', array('id' => $deleteannotation, 'annotateddiary' => $annotateddiary->id, 'userid' => $USER->id));
+// [margic] Delete annotation
+if (has_capability('mod/margic:makeannotations', $context) && $deleteannotation !== 0) {
+    $DB->delete_records('margic_annotations', array('id' => $deleteannotation, 'margic' => $margic->id, 'userid' => $USER->id));
 
-    redirect(new moodle_url('/mod/annotateddiary/reportsingle.php', array('id' => $id, 'user' => $user, 'action' => $action, 'annotationmode' => 1)), get_string('annotationdeleted', 'mod_annotateddiary'), null, notification::NOTIFY_SUCCESS);
+    redirect(new moodle_url('/mod/margic/reportsingle.php', array('id' => $id, 'user' => $user, 'action' => $action, 'annotationmode' => 1)), get_string('annotationdeleted', 'mod_margic'), null, notification::NOTIFY_SUCCESS);
 }
 
-// 20201016 Get the name for this annotateddiary activity.
-$annotateddiaryname = format_string($annotateddiary->name, true, array(
+// 20201016 Get the name for this margic activity.
+$margicname = format_string($margic->name, true, array(
     'context' => $context
 ));
 
@@ -80,59 +80,59 @@ if ($sortoption = get_user_preferences('sortoption')) {
     $sortoption = get_user_preferences('sortoption');
 }
 
-if (has_capability('mod/annotateddiary:manageentries', $context)) {
+if (has_capability('mod/margic:manageentries', $context)) {
     $stringlable = 'reportsingleallentries';
-    // Get ALL annotateddiary entries from this annotateddiary, for this user, from newest to oldest.
-    $eee = $DB->get_records("annotateddiary_entries", array(
-        "annotateddiary" => $annotateddiary->id,
+    // Get ALL margic entries from this margic, for this user, from newest to oldest.
+    $eee = $DB->get_records("margic_entries", array(
+        "margic" => $margic->id,
         "userid" => $user
         ), $sort = 'timecreated DESC');
 }
 
-// [annotateddiary] Add javascript and navbar element if annotationmode is activated and user has capability.
-if ($annotationmode === 1 && has_capability('mod/annotateddiary:viewannotations', $context)) {
+// [margic] Add javascript and navbar element if annotationmode is activated and user has capability.
+if ($annotationmode === 1 && has_capability('mod/margic:viewannotations', $context)) {
 
-    $PAGE->set_url('/mod/annotateddiary/reportsingle.php', array(
+    $PAGE->set_url('/mod/margic/reportsingle.php', array(
         'id' => $cm->id,
         'annotationmode' => 1,
         'user' => $user,
         'action' => $action
     ));
 
-    $redirecturl = new moodle_url('/mod/annotateddiary/reportsingle.php', array('id' => $cm->id, 'annotationmode' => 1, 'user' => $user, 'action' => $action, ));
+    $redirecturl = new moodle_url('/mod/margic/reportsingle.php', array('id' => $cm->id, 'annotationmode' => 1, 'user' => $user, 'action' => $action, ));
     $userid = $user;
 
-    $PAGE->navbar->add(get_string("entries", "annotateddiary") . ' ' . get_string("rate", "annotateddiary"));
+    $PAGE->navbar->add(get_string("entries", "margic") . ' ' . get_string("rate", "margic"));
 
-    $PAGE->set_title($annotateddiaryname);
+    $PAGE->set_title($margicname);
     $PAGE->set_heading($course->fullname);
 
     echo $OUTPUT->header();
-    echo $OUTPUT->heading($annotateddiaryname);
+    echo $OUTPUT->heading($margicname);
 
-    $PAGE->requires->js_call_amd('mod_annotateddiary/annotations', 'init',
-        array('annotations' => $DB->get_records('annotateddiary_annotations', array('annotateddiary' => $cm->instance)),
-            'canmakeannotations' => has_capability('mod/annotateddiary:makeannotations', $context)));
+    $PAGE->requires->js_call_amd('mod_margic/annotations', 'init',
+        array('annotations' => $DB->get_records('margic_annotations', array('margic' => $cm->instance)),
+            'canmakeannotations' => has_capability('mod/margic:makeannotations', $context)));
 } else {
     // Header.
-    $PAGE->set_url('/mod/annotateddiary/reportsingle.php', array(
+    $PAGE->set_url('/mod/margic/reportsingle.php', array(
             'id' => $id
         ));
-    $PAGE->navbar->add(get_string("entries", "annotateddiary") . ' ' . get_string("rate", "annotateddiary"));
-    $PAGE->set_title($annotateddiaryname);
+    $PAGE->navbar->add(get_string("entries", "margic") . ' ' . get_string("rate", "margic"));
+    $PAGE->set_title($margicname);
     $PAGE->set_heading($course->fullname);
 
     echo $OUTPUT->header();
-    echo $OUTPUT->heading($annotateddiaryname);
+    echo $OUTPUT->heading($margicname);
 }
 
 // 20201016 Added missing header label. 20210511 Changed to remove hard coded <h5>'s.
-echo '<div>'.(get_string('sortorder', "annotateddiary"));
-echo (get_string($stringlable, "annotateddiary"));
+echo '<div>'.(get_string('sortorder', "margic"));
+echo (get_string($stringlable, "margic"));
 
 // 20200827 Added link to index.php page.
 echo '<span style="float: right;"><a href="index.php?id='.$course->id.'">'
-    .get_string('viewalldiaries', 'annotateddiary').'</a></span></div>';
+    .get_string('viewalldiaries', 'margic').'</a></span></div>';
 
 // Save our current user id and also get his details. CHECK - might not need this.
 $users = $user;
@@ -171,7 +171,7 @@ if ($data = data_submitted()) {
         $entry = $entrybyentry[$num];
         // Only update entries where feedback has actually changed.
         $ratingchanged = false;
-        if ($annotateddiary->assessed != RATING_AGGREGATE_NONE) {
+        if ($margic->assessed != RATING_AGGREGATE_NONE) {
             $studentrating = clean_param($vals['r'], PARAM_INT);
         } else {
             $studentrating = '';
@@ -190,8 +190,8 @@ if ($data = data_submitted()) {
             $newentry->timemarked = $timenow;
             $newentry->mailed = 0; // Make sure mail goes out (again, even).
             $newentry->id = $num;
-            if (! $DB->update_record("annotateddiary_entries", $newentry)) {
-                notify("Failed to update the annotateddiary feedback for user $entry->userid");
+            if (! $DB->update_record("margic_entries", $newentry)) {
+                notify("Failed to update the margic feedback for user $entry->userid");
             } else {
                 $count ++;
             }
@@ -203,22 +203,22 @@ if ($data = data_submitted()) {
             $records[$entry->id] = $entrybyuser[$entry->userid];
 
             // Compare to database view.php line 465.
-            if ($annotateddiary->assessed != RATING_AGGREGATE_NONE) {
+            if ($margic->assessed != RATING_AGGREGATE_NONE) {
                 // 20200812 Added rating code and got it working.
                 $ratingoptions = new stdClass();
                 $ratingoptions->contextid = $context->id;
-                $ratingoptions->component = 'mod_annotateddiary';
+                $ratingoptions->component = 'mod_margic';
                 $ratingoptions->ratingarea = 'entry';
                 $ratingoptions->itemid = $entry->id;
-                $ratingoptions->aggregate = $annotateddiary->assessed; // The aggregation method.
-                $ratingoptions->scaleid = $annotateddiary->scale;
+                $ratingoptions->aggregate = $margic->assessed; // The aggregation method.
+                $ratingoptions->scaleid = $margic->scale;
                 $ratingoptions->rating = $studentrating;
                 $ratingoptions->userid = $entry->userid;
                 $ratingoptions->timecreated = $entry->timecreated;
                 $ratingoptions->timemodified = $entry->timemodified;
-                $ratingoptions->returnurl = $CFG->wwwroot.'/mod/annotateddiary/reportsingle.php?id'.$id;
-                $ratingoptions->assesstimestart = $annotateddiary->assesstimestart;
-                $ratingoptions->assesstimefinish = $annotateddiary->assesstimefinish;
+                $ratingoptions->returnurl = $CFG->wwwroot.'/mod/margic/reportsingle.php?id'.$id;
+                $ratingoptions->assesstimestart = $margic->assesstimestart;
+                $ratingoptions->assesstimefinish = $margic->assesstimefinish;
                 // 20200813 Check if there is already a rating, and if so, just update it.
                 if ($rec = results::check_rating_entry($ratingoptions)) {
                     $ratingoptions->id = $rec->id;
@@ -228,37 +228,37 @@ if ($data = data_submitted()) {
                 }
             }
 
-            $annotateddiary = $DB->get_record("annotateddiary", array(
-                "id" => $entrybyuser[$entry->userid]->annotateddiary
+            $margic = $DB->get_record("margic", array(
+                "id" => $entrybyuser[$entry->userid]->margic
             ));
-            $annotateddiary->cmidnumber = $cm->idnumber;
+            $margic->cmidnumber = $cm->idnumber;
 
-            annotateddiary_update_grades($annotateddiary, $entry->userid);
+            margic_update_grades($margic, $entry->userid);
         }
     }
 
     // Trigger module feedback updated event.
-    $event = \mod_annotateddiary\event\feedback_updated::create(array(
-        'objectid' => $annotateddiary->id,
+    $event = \mod_margic\event\feedback_updated::create(array(
+        'objectid' => $margic->id,
         'context' => $context
     ));
     $event->add_record_snapshot('course_modules', $cm);
     $event->add_record_snapshot('course', $course);
-    $event->add_record_snapshot('annotateddiary', $annotateddiary);
+    $event->add_record_snapshot('margic', $margic);
     $event->trigger();
 
     // Report how many entries were updated when the, Save all my feedback button was pressed.
-    echo $OUTPUT->notification(get_string("feedbackupdated", "annotateddiary", "$count"), "notifysuccess");
+    echo $OUTPUT->notification(get_string("feedbackupdated", "margic", "$count"), "notifysuccess");
 } else {
 
     // Trigger module viewed event.
-    $event = \mod_annotateddiary\event\entries_viewed::create(array(
-        'objectid' => $annotateddiary->id,
+    $event = \mod_margic\event\entries_viewed::create(array(
+        'objectid' => $margic->id,
         'context' => $context
     ));
     $event->add_record_snapshot('course_modules', $cm);
     $event->add_record_snapshot('course', $course);
-    $event->add_record_snapshot('annotateddiary', $annotateddiary);
+    $event->add_record_snapshot('margic', $margic);
     $event->trigger();
 }
 
@@ -267,10 +267,10 @@ if (! $users) {
 } else {
 
     // Next line is different from Journal line 171.
-    $grades = make_grades_menu($annotateddiary->scale);
+    $grades = make_grades_menu($margic->scale);
 
-    if (! $teachers = get_users_by_capability($context, 'mod/annotateddiary:manageentries')) {
-        throw new moodle_exception(get_string('noentriesmanagers', 'annotateddiary'));
+    if (! $teachers = get_users_by_capability($context, 'mod/margic:manageentries')) {
+        throw new moodle_exception(get_string('noentriesmanagers', 'margic'));
     }
     // Start the page area where feedback and grades are added and will need to be saved.
     // Set up to return to report.php upon saving feedback.
@@ -280,13 +280,13 @@ if (! $users) {
     $saveallbutton = "<p class=\"feedbacksave\">";
     $saveallbutton .= "<input type=\"hidden\" name=\"id\" value=\"$cm->id\" />";
     $saveallbutton .= "<input type=\"hidden\" name=\"sesskey\" value=\"".sesskey()."\" />";
-    $saveallbutton .= "<input type=\"submit\" class='btn btn-primary' value=\"".get_string("saveallfeedback", "annotateddiary")."\" />";
+    $saveallbutton .= "<input type=\"submit\" class='btn btn-primary' value=\"".get_string("saveallfeedback", "margic")."\" />";
 
     // 20201222 Added a return to report.php button if you do not want to save feedback.
-    $url = $CFG->wwwroot.'/mod/annotateddiary/report.php?id='.$id;
+    $url = $CFG->wwwroot.'/mod/margic/report.php?id='.$id;
     $saveallbutton .= ' <a href="'.$url
                      .'" class="btn btn-primary" role="button">'
-                     .get_string('returntoreport', 'annotateddiary', $annotateddiary->name)
+                     .get_string('returntoreport', 'margic', $margic->name)
                      .'</a>';
 
     $saveallbutton .= "</p>";
@@ -294,17 +294,17 @@ if (! $users) {
     // Add save button at the top of the list of users with entries.
     echo $saveallbutton;
 
-    $dcolor3 = get_config('mod_annotateddiary', 'entrybgc');
-    $dcolor4 = get_config('mod_annotateddiary', 'entrytextbgc');
+    $dcolor3 = get_config('mod_margic', 'entrybgc');
+    $dcolor4 = get_config('mod_margic', 'entrytextbgc');
 
-    // [annotateddiary] Add divs for annotations menu if annotationmode is activated and user has capability.
-    if ($annotationmode === 1 && has_capability('mod/annotateddiary:viewannotations', $context)) {
+    // [margic] Add divs for annotations menu if annotationmode is activated and user has capability.
+    if ($annotationmode === 1 && has_capability('mod/margic:viewannotations', $context)) {
         echo '<div class="container mw-100">';
     }
 
     foreach ($eee as $ee) {
-        // [annotateddiary] Add divs for annotations menu if annotationmode is activated and user has capability.
-        if ($annotationmode === 1 && has_capability('mod/annotateddiary:viewannotations', $context)) {
+        // [margic] Add divs for annotations menu if annotationmode is activated and user has capability.
+        if ($annotationmode === 1 && has_capability('mod/margic:viewannotations', $context)) {
             echo '<div class="row"><div class="col-sm-8">';
         }
 
@@ -312,8 +312,8 @@ if (! $users) {
         echo '<div class="entry" style="background: '.$dcolor3.'">';
 
         // Based on the single selected user, print all their entries on screen.
-        echo results::annotateddiary_print_user_entry($course,
-                                             $annotateddiary,
+        echo results::margic_print_user_entry($course,
+                                             $margic,
                                              $user,
                                              $ee,
                                              $teachers,
@@ -321,8 +321,8 @@ if (! $users) {
 
         echo '</div>';
 
-        // [annotateddiary] Add annotations menu if annotationmode is activated and user has capability.
-        if ($annotationmode === 1 && has_capability('mod/annotateddiary:viewannotations', $context)) {
+        // [margic] Add annotations menu if annotationmode is activated and user has capability.
+        if ($annotationmode === 1 && has_capability('mod/margic:viewannotations', $context)) {
             echo '</div>';
             $entryid = $ee->id;
             include(__DIR__ ."/classes/annotations/annotations.php"); // include annotation menu
@@ -333,8 +333,8 @@ if (! $users) {
         echo $saveallbutton;
     }
 
-    // [annotateddiary] Finisch annotations menu if annotationmode is activated and user has capability.
-    if ($annotationmode === 1 && has_capability('mod/annotateddiary:viewannotations', $context)) {
+    // [margic] Finisch annotations menu if annotationmode is activated and user has capability.
+    if ($annotationmode === 1 && has_capability('mod/margic:viewannotations', $context)) {
         echo '</div>';
     }
 

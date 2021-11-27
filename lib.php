@@ -15,14 +15,14 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This page opens the current lib instance of annotateddiary.
+ * This page opens the current lib instance of margic.
  *
- * @package   mod_annotateddiary
+ * @package   mod_margic
  * @copyright 2019 AL Rachels (drachels@drachels.com)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die();
-use mod_annotateddiary\local\results;
+use mod_margic\local\results;
 
 /**
  * Given an object containing all the necessary data,
@@ -30,75 +30,75 @@ use mod_annotateddiary\local\results;
  * will create a new instance and return the id number
  * of the new instance.
  *
- * @param object $annotateddiary
- *            Object containing required annotateddiary properties.
- * @return int annotateddiary ID.
+ * @param object $margic
+ *            Object containing required margic properties.
+ * @return int margic ID.
  */
-function annotateddiary_add_instance($annotateddiary) {
+function margic_add_instance($margic) {
     global $DB;
 
-    if (empty($annotateddiary->assessed)) {
-        $annotateddiary->assessed = 0;
+    if (empty($margic->assessed)) {
+        $margic->assessed = 0;
     }
     // 20190917 First one always true as ratingtime does not exist.
-    if (empty($annotateddiary->ratingtime) || empty($annotateddiary->assessed)) {
-        $annotateddiary->assesstimestart = 0;
-        $annotateddiary->assesstimefinish = 0;
+    if (empty($margic->ratingtime) || empty($margic->assessed)) {
+        $margic->assesstimestart = 0;
+        $margic->assesstimefinish = 0;
     }
-    $annotateddiary->timemodified = time();
-    $annotateddiary->id = $DB->insert_record('annotateddiary', $annotateddiary);
+    $margic->timemodified = time();
+    $margic->id = $DB->insert_record('margic', $margic);
 
     // 20200903 Added calendar dates.
-    results::annotateddiary_update_calendar($annotateddiary, $annotateddiary->coursemodule);
+    results::margic_update_calendar($margic, $margic->coursemodule);
 
     // 20200901 Added expected completion date.
-    if (! empty($annotateddiary->completionexpected)) {
-        \core_completion\api::update_completion_date_event($annotateddiary->coursemodule, 'annotateddiary', $annotateddiary->id, $annotateddiary->completionexpected);
+    if (! empty($margic->completionexpected)) {
+        \core_completion\api::update_completion_date_event($margic->coursemodule, 'margic', $margic->id, $margic->completionexpected);
     }
 
-    annotateddiary_grade_item_update($annotateddiary);
+    margic_grade_item_update($margic);
 
-    return $annotateddiary->id;
+    return $margic->id;
 }
 
 /**
  *
- * Given an object containing all the necessary annotateddiary data,
- * will update an existing instance with new annotateddiary data.
+ * Given an object containing all the necessary margic data,
+ * will update an existing instance with new margic data.
  *
- * @param object $annotateddiary
- *            Object containing required annotateddiary properties.
+ * @param object $margic
+ *            Object containing required margic properties.
  * @return boolean True if successful.
  */
-function annotateddiary_update_instance($annotateddiary) {
+function margic_update_instance($margic) {
     global $DB;
 
-    $annotateddiary->timemodified = time();
-    $annotateddiary->id = $annotateddiary->instance;
+    $margic->timemodified = time();
+    $margic->id = $margic->instance;
 
-    if (empty($annotateddiary->assessed)) {
-        $annotateddiary->assessed = 0;
+    if (empty($margic->assessed)) {
+        $margic->assessed = 0;
     }
 
-    if (empty($annotateddiary->ratingtime) or empty($annotateddiary->assessed)) {
-        $annotateddiary->assesstimestart = 0;
-        $annotateddiary->assesstimefinish = 0;
+    if (empty($margic->ratingtime) or empty($margic->assessed)) {
+        $margic->assesstimestart = 0;
+        $margic->assesstimefinish = 0;
     }
 
-    if (empty($annotateddiary->notification)) {
-        $annotateddiary->notification = 0;
+    if (empty($margic->notification)) {
+        $margic->notification = 0;
     }
 
-    $DB->update_record('annotateddiary', $annotateddiary);
+    $DB->update_record('margic', $margic);
 
     // 20200903 Added calendar dates.
-    results::annotateddiary_update_calendar($annotateddiary, $annotateddiary->coursemodule);
+    results::margic_update_calendar($margic, $margic->coursemodule);
 
     // 20200901 Added expected completion date.
-    $completionexpected = (! empty($annotateddiary->completionexpected)) ? $annotateddiary->completionexpected : null;
-    \core_completion\api::update_completion_date_event($annotateddiary->coursemodule, 'annotateddiary', $annotateddiary->id, $completionexpected);
+    $completionexpected = (! empty($margic->completionexpected)) ? $margic->completionexpected : null;
+    \core_completion\api::update_completion_date_event($margic->coursemodule, 'margic', $margic->id, $completionexpected);
 
-    annotateddiary_grade_item_update($annotateddiary);
+    margic_grade_item_update($margic);
 
     return true;
 }
@@ -110,34 +110,34 @@ function annotateddiary_update_instance($annotateddiary) {
  * and any data that depends on it.
  *
  * @param int $id
- *            annotateddiary ID.
+ *            margic ID.
  * @return boolean True if successful.
  */
-function annotateddiary_delete_instance($id) {
+function margic_delete_instance($id) {
     global $DB;
 
     $result = true;
 
-    if (! $annotateddiary = $DB->get_record("annotateddiary", array(
+    if (! $margic = $DB->get_record("margic", array(
         "id" => $id
     ))) {
         return false;
     }
 
-    if (! $DB->delete_records("annotateddiary_entries", array(
-        "annotateddiary" => $annotateddiary->id
+    if (! $DB->delete_records("margic_entries", array(
+        "margic" => $margic->id
     ))) {
         $result = false;
     }
 
-    if (! $DB->delete_records("annotateddiary_annotations", array(
-        "annotateddiary" => $annotateddiary->id
+    if (! $DB->delete_records("margic_annotations", array(
+        "margic" => $margic->id
     ))) {
         $result = false;
     }
 
-    if (! $DB->delete_records("annotateddiary", array(
-        "id" => $annotateddiary->id
+    if (! $DB->delete_records("margic", array(
+        "id" => $margic->id
     ))) {
         $result = false;
     }
@@ -146,7 +146,7 @@ function annotateddiary_delete_instance($id) {
 }
 
 /**
- * Indicates API features that the annotateddiary supports.
+ * Indicates API features that the margic supports.
  *
  * @uses FEATURE_MOD_INTRO
  * @uses FEATURE_RATE
@@ -159,7 +159,7 @@ function annotateddiary_delete_instance($id) {
  *            FEATURE_xx constant for requested feature.
  * @return mixed True if module supports feature, null if doesn't know.
  */
-function annotateddiary_supports($feature) {
+function margic_supports($feature) {
     switch ($feature) {
         case FEATURE_MOD_INTRO:
             return true;
@@ -194,7 +194,7 @@ function annotateddiary_supports($feature) {
  *
  * @return array
  */
-function annotateddiary_get_view_actions() {
+function margic_get_view_actions() {
     return array(
         'view',
         'view all',
@@ -212,7 +212,7 @@ function annotateddiary_get_view_actions() {
  *
  * @return array
  */
-function annotateddiary_get_post_actions() {
+function margic_get_post_actions() {
     return array(
         'add entry',
         'update entry',
@@ -228,15 +228,15 @@ function annotateddiary_get_post_actions() {
  * @param object $course
  * @param object $user
  * @param object $mod
- * @param object $annotateddiary
+ * @param object $margic
  * @return object|null
  */
-function annotateddiary_user_outline($course, $user, $mod, $annotateddiary) {
+function margic_user_outline($course, $user, $mod, $margic) {
     global $DB;
 
-    if ($entry = $DB->get_record("annotateddiary_entries", array(
+    if ($entry = $DB->get_record("margic_entries", array(
         "userid" => $user->id,
-        "annotateddiary" => $annotateddiary->id
+        "margic" => $margic->id
     ))) {
 
         $numwords = count(preg_split("/\w\b/", $entry->text)) - 1;
@@ -255,14 +255,14 @@ function annotateddiary_user_outline($course, $user, $mod, $annotateddiary) {
  * @param object $course
  * @param object $user
  * @param object $mod
- * @param object $annotateddiary
+ * @param object $margic
  */
-function annotateddiary_user_complete($course, $user, $mod, $annotateddiary) {
+function margic_user_complete($course, $user, $mod, $margic) {
     global $DB, $OUTPUT;
 
-    if ($entry = $DB->get_record("annotateddiary_entries", array(
+    if ($entry = $DB->get_record("margic_entries", array(
         "userid" => $user->id,
-        "annotateddiary" => $annotateddiary->id
+        "margic" => $margic->id
     ))) {
 
         echo $OUTPUT->box_start();
@@ -271,31 +271,31 @@ function annotateddiary_user_complete($course, $user, $mod, $annotateddiary) {
             echo "<p><font size=\"1\">" . get_string("lastedited") . ": " . userdate($entry->timemodified) . "</font></p>";
         }
         if ($entry->text) {
-            echo annotateddiary_format_entry_text($entry, $course, $mod);
+            echo margic_format_entry_text($entry, $course, $mod);
         }
         if ($entry->teacher) {
-            $grades = make_grades_menu($annotateddiary->grade);
-            annotateddiary_print_feedback($course, $entry, $grades);
+            $grades = make_grades_menu($margic->grade);
+            margic_print_feedback($course, $entry, $grades);
         }
 
         echo $OUTPUT->box_end();
     } else {
-        print_string("noentry", "annotateddiary");
+        print_string("noentry", "margic");
     }
 }
 
 /**
  * Function to be run periodically according to the moodle cron.
- * Finds all annotateddiary notifications that have yet to be mailed out, and mails them.
+ * Finds all margic notifications that have yet to be mailed out, and mails them.
  *
  * @return boolean True if successful.
  */
-function annotateddiary_cron() {
+function margic_cron() {
     global $CFG, $USER, $DB;
 
     $cutofftime = time() - $CFG->maxeditingtime;
 
-    if ($entries = annotateddiary_get_unmailed_graded($cutofftime)) {
+    if ($entries = margic_get_unmailed_graded($cutofftime)) {
         $timenow = time();
 
         $usernamefields = get_all_user_name_fields();
@@ -308,7 +308,7 @@ function annotateddiary_cron() {
 
         foreach ($entries as $entry) {
 
-            echo "Processing annotateddiary entry $entry->id\n";
+            echo "Processing margic entry $entry->id\n";
 
             if (! empty($users[$entry->userid])) {
                 $user = $users[$entry->userid];
@@ -347,54 +347,54 @@ function annotateddiary_cron() {
             }
 
             // All cached.
-            $courseannotateddiarys = get_fast_modinfo($course)->get_instances_of('annotateddiary');
-            if (empty($courseannotateddiarys) || empty($courseannotateddiarys[$entry->annotateddiary])) {
-                echo "Could not find course module for annotateddiary id $entry->annotateddiary\n";
+            $coursemargics = get_fast_modinfo($course)->get_instances_of('margic');
+            if (empty($coursemargics) || empty($coursemargics[$entry->margic])) {
+                echo "Could not find course module for margic id $entry->margic\n";
                 continue;
             }
-            $mod = $courseannotateddiarys[$entry->annotateddiary];
+            $mod = $coursemargics[$entry->margic];
 
             // This is already cached internally.
             $context = context_module::instance($mod->id);
-            $canadd = has_capability('mod/annotateddiary:addentries', $context, $user);
-            $entriesmanager = has_capability('mod/annotateddiary:manageentries', $context, $user);
+            $canadd = has_capability('mod/margic:addentries', $context, $user);
+            $entriesmanager = has_capability('mod/margic:manageentries', $context, $user);
 
             if (! $canadd and $entriesmanager) {
                 continue; // Not an active participant.
             }
 
-            $annotateddiaryinfo = new stdClass();
+            $margicinfo = new stdClass();
             // 20200829 Added users first and last name to message.
-            $annotateddiaryinfo->user = $user->firstname . ' ' . $user->lastname;
-            $annotateddiaryinfo->teacher = fullname($teacher);
-            $annotateddiaryinfo->annotateddiary = format_string($entry->name, true);
-            $annotateddiaryinfo->url = "$CFG->wwwroot/mod/annotateddiary/view.php?id=$mod->id";
-            $modnamepl = get_string('modulenameplural', 'annotateddiary');
-            $msubject = get_string('mailsubject', 'annotateddiary');
+            $margicinfo->user = $user->firstname . ' ' . $user->lastname;
+            $margicinfo->teacher = fullname($teacher);
+            $margicinfo->margic = format_string($entry->name, true);
+            $margicinfo->url = "$CFG->wwwroot/mod/margic/view.php?id=$mod->id";
+            $modnamepl = get_string('modulenameplural', 'margic');
+            $msubject = get_string('mailsubject', 'margic');
 
             $postsubject = "$course->shortname: $msubject: " . format_string($entry->name, true);
             $posttext = "$course->shortname -> $modnamepl -> " . format_string($entry->name, true) . "\n";
             $posttext .= "---------------------------------------------------------------------\n";
-            $posttext .= get_string("annotateddiarymail", "annotateddiary", $annotateddiaryinfo) . "\n";
+            $posttext .= get_string("margicmail", "margic", $margicinfo) . "\n";
             $posttext .= "---------------------------------------------------------------------\n";
             if ($user->mailformat == 1) { // HTML.
                 $posthtml = "<p><font face=\"sans-serif\">"
                     ."<a href=\"$CFG->wwwroot/course/view.php?id=$course->id\">$course->shortname</a> ->"
-                    ."<a href=\"$CFG->wwwroot/mod/annotateddiary/index.php?id=$course->id\">annotateddiarys</a> ->"
-                    ."<a href=\"$CFG->wwwroot/mod/annotateddiary/view.php?id=$mod->id\">"
+                    ."<a href=\"$CFG->wwwroot/mod/margic/index.php?id=$course->id\">margics</a> ->"
+                    ."<a href=\"$CFG->wwwroot/mod/margic/view.php?id=$mod->id\">"
                     .format_string($entry->name, true)
                     ."</a></font></p>";
                 $posthtml .= "<hr /><font face=\"sans-serif\">";
-                $posthtml .= "<p>" . get_string("annotateddiarymailhtml", "annotateddiary", $annotateddiaryinfo) . "</p>";
+                $posthtml .= "<p>" . get_string("margicmailhtml", "margic", $margicinfo) . "</p>";
                 $posthtml .= "</font><hr />";
             } else {
                 $posthtml = "";
             }
 
             if (! email_to_user($user, $teacher, $postsubject, $posttext, $posthtml)) {
-                echo "Error: annotateddiary cron: Could not send out mail for id $entry->id to user $user->id ($user->email)\n";
+                echo "Error: margic cron: Could not send out mail for id $entry->id to user $user->id ($user->email)\n";
             }
-            if (! $DB->set_field("annotateddiary_entries", "mailed", "1", array(
+            if (! $DB->set_field("margic_entries", "mailed", "1", array(
                 "id" => $entry->id
             ))) {
                 echo "Could not update the mailed field for id $entry->id\n";
@@ -407,7 +407,7 @@ function annotateddiary_cron() {
 
 /**
  * Given a course and a time, this module should find recent activity
- * that has occurred in annotateddiary activities and print it out.
+ * that has occurred in margic activities and print it out.
  * Return true if there was output, or false if there was none.
  *
  * @param stdClass $course
@@ -415,17 +415,17 @@ function annotateddiary_cron() {
  * @param int $timestart
  * @return bool
  */
-function annotateddiary_print_recent_activity($course, $viewfullnames, $timestart) {
+function margic_print_recent_activity($course, $viewfullnames, $timestart) {
     global $CFG, $USER, $DB, $OUTPUT;
 
-    if (! get_config('annotateddiary', 'showrecentactivity')) {
+    if (! get_config('margic', 'showrecentactivity')) {
         return false;
     }
 
     $dbparams = array(
         $timestart,
         $course->id,
-        'annotateddiary'
+        'margic'
     );
     // 20210611 Added Moodle branch check.
     if ($CFG->branch < 311) {
@@ -435,8 +435,8 @@ function annotateddiary_print_recent_activity($course, $viewfullnames, $timestar
         $namefields = $userfieldsapi->get_sql('u', false, '', 'userid', false)->selects;;
     }
     $sql = "SELECT de.id, de.timemodified, cm.id AS cmid, $namefields
-              FROM {annotateddiary_entries} de
-              JOIN {annotateddiary} d ON d.id = de.annotateddiary
+              FROM {margic_entries} de
+              JOIN {margic} d ON d.id = de.margic
               JOIN {course_modules} cm ON cm.instance = d.id
               JOIN {modules} md ON md.id = cm.module
               JOIN {user} u ON u.id = de.userid
@@ -466,7 +466,7 @@ function annotateddiary_print_recent_activity($course, $viewfullnames, $timestar
         $context = context_module::instance($anentry->cmid);
 
         // Only teachers can see other students entries.
-        if (! has_capability('mod/annotateddiary:manageentries', $context)) {
+        if (! has_capability('mod/margic:manageentries', $context)) {
             continue;
         }
 
@@ -498,15 +498,15 @@ function annotateddiary_print_recent_activity($course, $viewfullnames, $timestar
         return false;
     }
 
-    echo $OUTPUT->heading(get_string('newannotateddiaryentries', 'annotateddiary') . ':', 3);
+    echo $OUTPUT->heading(get_string('newmargicentries', 'margic') . ':', 3);
 
     foreach ($show as $submission) {
         $cm = $modinfo->get_cm($submission->cmid);
         $context = context_module::instance($submission->cmid);
-        if (has_capability('mod/annotateddiary:manageentries', $context)) {
-            $link = $CFG->wwwroot . '/mod/annotateddiary/report.php?id=' . $cm->id;
+        if (has_capability('mod/margic:manageentries', $context)) {
+            $link = $CFG->wwwroot . '/mod/margic/report.php?id=' . $cm->id;
         } else {
-            $link = $CFG->wwwroot . '/mod/annotateddiary/view.php?id=' . $cm->id;
+            $link = $CFG->wwwroot . '/mod/margic/view.php?id=' . $cm->id;
         }
         print_recent_activity_note($submission->timemodified, $submission, $cm->name, $link, false, $viewfullnames);
     }
@@ -514,24 +514,24 @@ function annotateddiary_print_recent_activity($course, $viewfullnames, $timestar
 }
 
 /**
- * Returns the users with data in one annotateddiary.
- * Users with records in annotateddiary_entries - students and teachers.
+ * Returns the users with data in one margic.
+ * Users with records in margic_entries - students and teachers.
  *
- * @param int $annotateddiaryid
- *            annotateddiary ID.
+ * @param int $margicid
+ *            margic ID.
  * @return array Array of user ids.
  */
-function annotateddiary_get_participants($annotateddiaryid) {
+function margic_get_participants($margicid) {
     global $DB;
 
     // Get students.
     $students = $DB->get_records_sql("SELECT DISTINCT u.id
-                                        FROM {user} u, {annotateddiary_entries} d
-                                       WHERE d.annotateddiary = ? AND u.id = d.userid", array($annotateddiaryid));
+                                        FROM {user} u, {margic_entries} d
+                                       WHERE d.margic = ? AND u.id = d.userid", array($margicid));
     // Get teachers.
     $teachers = $DB->get_records_sql("SELECT DISTINCT u.id
-                                        FROM {user} u, {annotateddiary_entries} d
-                                       WHERE d.annotateddiary = ? AND u.id = d.teacher", array($annotateddiaryid));
+                                        FROM {user} u, {margic_entries} d
+                                       WHERE d.margic = ? AND u.id = d.teacher", array($margicid));
 
     // Add teachers to students.
     if ($teachers) {
@@ -544,20 +544,20 @@ function annotateddiary_get_participants($annotateddiaryid) {
 }
 
 /**
- * This function returns true if a scale is being used by one annotateddiary.
+ * This function returns true if a scale is being used by one margic.
  *
- * @param int $annotateddiaryid
- *            annotateddiary ID.
+ * @param int $margicid
+ *            margic ID.
  * @param int $scaleid
  *            Scale ID.
- * @return boolean True if a scale is being used by one annotateddiary.
+ * @return boolean True if a scale is being used by one margic.
  */
-function annotateddiary_scale_used($annotateddiaryid, $scaleid) {
+function margic_scale_used($margicid, $scaleid) {
     global $DB;
     $return = false;
 
-    $rec = $DB->get_record("annotateddiary", array(
-        "id" => $annotateddiaryid,
+    $rec = $DB->get_record("margic", array(
+        "id" => $margicid,
         "grade" => - $scaleid
     ));
 
@@ -569,32 +569,32 @@ function annotateddiary_scale_used($annotateddiaryid, $scaleid) {
 }
 
 /**
- * Checks if scale is being used by any instance of annotateddiary.
+ * Checks if scale is being used by any instance of margic.
  *
  * This is used to find out if scale used anywhere.
  *
  * @param int $scaleid
- * @return boolean True if the scale is used by any annotateddiary.
+ * @return boolean True if the scale is used by any margic.
  */
-function annotateddiary_scale_used_anywhere($scaleid) {
+function margic_scale_used_anywhere($scaleid) {
     global $DB;
 
     if (empty($scaleid)) {
         return false;
     }
 
-    return $DB->record_exists('annotateddiary', ['scale' => $scaleid * - 1]);
+    return $DB->record_exists('margic', ['scale' => $scaleid * - 1]);
 }
 
 /**
  * Implementation of the function for printing the form elements that control
- * whether the course reset functionality affects the annotateddiary.
+ * whether the course reset functionality affects the margic.
  *
  * @param object $mform Form passed by reference.
  */
-function annotateddiary_reset_course_form_definition(&$mform) {
-    $mform->addElement('header', 'annotateddiaryheader', get_string('modulenameplural', 'annotateddiary'));
-    $mform->addElement('advcheckbox', 'reset_annotateddiary', get_string('removemessages', 'annotateddiary'));
+function margic_reset_course_form_definition(&$mform) {
+    $mform->addElement('header', 'margicheader', get_string('modulenameplural', 'margic'));
+    $mform->addElement('advcheckbox', 'reset_margic', get_string('removemessages', 'margic'));
 }
 
 /**
@@ -603,8 +603,8 @@ function annotateddiary_reset_course_form_definition(&$mform) {
  * @param object $course
  * @return array
  */
-function annotateddiary_reset_course_form_defaults($course) {
-    return array('reset_annotateddiary' => 1);
+function margic_reset_course_form_defaults($course) {
+    return array('reset_margic' => 1);
 }
 
 /**
@@ -614,27 +614,27 @@ function annotateddiary_reset_course_form_defaults($course) {
  * @param object $data the data submitted from the reset course.
  * @return array status array
  */
-function annotateddiary_reset_userdata($data) {
+function margic_reset_userdata($data) {
     global $CFG, $DB;
     require_once($CFG->libdir . '/filelib.php');
     require_once($CFG->dirroot . '/rating/lib.php');
 
     $status = array();
     // THIS FUNCTION NEEDS REWRITE!
-    if (! empty($data->reset_annotateddiary)) {
+    if (! empty($data->reset_margic)) {
 
         $sql = "SELECT d.id
-                FROM {annotateddiary} d
+                FROM {margic} d
                 WHERE d.course = ?";
         $params = array(
             $data->courseid
         );
 
-        $DB->delete_records_select('annotateddiary_entries', "annotateddiary IN ($sql)", $params);
+        $DB->delete_records_select('margic_entries', "margic IN ($sql)", $params);
 
         $status[] = array(
-            'component' => get_string('modulenameplural', 'annotateddiary'),
-            'item' => get_string('removeentries', 'annotateddiary'),
+            'component' => get_string('modulenameplural', 'margic'),
+            'item' => get_string('removeentries', 'margic'),
             'error' => false
         );
     }
@@ -643,15 +643,15 @@ function annotateddiary_reset_userdata($data) {
 }
 
 /**
- * Print annotateddiary overview.
+ * Print margic overview.
  *
  * @param object $courses
  * @param array $htmlarray
  */
-function annotateddiary_print_overview($courses, &$htmlarray) {
+function margic_print_overview($courses, &$htmlarray) {
     global $USER, $CFG, $DB;
 
-    if (! get_config('annotateddiary', 'overview')) {
+    if (! get_config('margic', 'overview')) {
         return array();
     }
 
@@ -659,76 +659,76 @@ function annotateddiary_print_overview($courses, &$htmlarray) {
         return array();
     }
 
-    if (! $annotateddiarys = get_all_instances_in_courses('annotateddiary', $courses)) {
+    if (! $margics = get_all_instances_in_courses('margic', $courses)) {
         return array();
     }
 
-    $strannotateddiary = get_string('modulename', 'annotateddiary');
+    $strmargic = get_string('modulename', 'margic');
 
     $timenow = time();
-    foreach ($annotateddiarys as $annotateddiary) {
+    foreach ($margics as $margic) {
 
-        if (empty($courses[$annotateddiary->course]->format)) {
-            $courses[$annotateddiary->course]->format = $DB->get_field('course', 'format', array(
-                'id' => $annotateddiary->course
+        if (empty($courses[$margic->course]->format)) {
+            $courses[$margic->course]->format = $DB->get_field('course', 'format', array(
+                'id' => $margic->course
             ));
         }
 
-        if ($courses[$annotateddiary->course]->format == 'weeks' and $annotateddiary->days) {
+        if ($courses[$margic->course]->format == 'weeks' and $margic->days) {
 
-            $coursestartdate = $courses[$annotateddiary->course]->startdate;
+            $coursestartdate = $courses[$margic->course]->startdate;
 
-            $annotateddiary->timestart = $coursestartdate + (($annotateddiary->section - 1) * 608400);
-            if (! empty($annotateddiary->days)) {
-                $annotateddiary->timefinish = $annotateddiary->timestart + (3600 * 24 * $annotateddiary->days);
+            $margic->timestart = $coursestartdate + (($margic->section - 1) * 608400);
+            if (! empty($margic->days)) {
+                $margic->timefinish = $margic->timestart + (3600 * 24 * $margic->days);
             } else {
-                $annotateddiary->timefinish = 9999999999;
+                $margic->timefinish = 9999999999;
             }
-            $annotateddiaryopen = ($annotateddiary->timestart < $timenow && $timenow < $annotateddiary->timefinish);
+            $margicopen = ($margic->timestart < $timenow && $timenow < $margic->timefinish);
         } else {
-            $annotateddiaryopen = true;
+            $margicopen = true;
         }
 
-        if ($annotateddiaryopen) {
-            $str = '<div class="annotateddiary overview"><div class="name">'
-                .$strannotateddiary.': <a '
-                .($annotateddiary->visible ? '' : ' class="dimmed"')
-                .' href="'.$CFG->wwwroot.'/mod/annotateddiary/view.php?id='
-                .$annotateddiary->coursemodule.'">'
-                .$annotateddiary->name.'</a></div></div>';
+        if ($margicopen) {
+            $str = '<div class="margic overview"><div class="name">'
+                .$strmargic.': <a '
+                .($margic->visible ? '' : ' class="dimmed"')
+                .' href="'.$CFG->wwwroot.'/mod/margic/view.php?id='
+                .$margic->coursemodule.'">'
+                .$margic->name.'</a></div></div>';
 
-            if (empty($htmlarray[$annotateddiary->course]['annotateddiary'])) {
-                $htmlarray[$annotateddiary->course]['annotateddiary'] = $str;
+            if (empty($htmlarray[$margic->course]['margic'])) {
+                $htmlarray[$margic->course]['margic'] = $str;
             } else {
-                $htmlarray[$annotateddiary->course]['annotateddiary'] .= $str;
+                $htmlarray[$margic->course]['margic'] .= $str;
             }
         }
     }
 }
 
 /**
- * Get annotateddiary grades for a user.
+ * Get margic grades for a user.
  *
- * @param object $annotateddiary
- *            if is null, all annotateddiarys
+ * @param object $margic
+ *            if is null, all margics
  * @param int $userid
  *            if is false all users
  * @return object $grades
  */
-function annotateddiary_get_user_grades($annotateddiary, $userid = 0) {
+function margic_get_user_grades($margic, $userid = 0) {
     global $CFG;
 
     require_once($CFG->dirroot . '/rating/lib.php');
     // 20200812 Fixed ratings.
     $ratingoptions = new stdClass();
-    $ratingoptions->component = 'mod_annotateddiary';
+    $ratingoptions->component = 'mod_margic';
     $ratingoptions->ratingarea = 'entry';
-    $ratingoptions->modulename = 'annotateddiary';
-    $ratingoptions->moduleid = $annotateddiary->id;
+    $ratingoptions->modulename = 'margic';
+    $ratingoptions->moduleid = $margic->id;
     $ratingoptions->userid = $userid;
-    $ratingoptions->aggregationmethod = $annotateddiary->assessed;
-    $ratingoptions->scaleid = $annotateddiary->scale;
-    $ratingoptions->itemtable = 'annotateddiary_entries';
+    $ratingoptions->aggregationmethod = $margic->assessed;
+    $ratingoptions->scaleid = $margic->scale;
+    $ratingoptions->itemtable = 'margic_entries';
     $ratingoptions->itemtableusercolumn = 'userid';
 
     $rm = new rating_manager();
@@ -737,57 +737,57 @@ function annotateddiary_get_user_grades($annotateddiary, $userid = 0) {
 }
 
 /**
- * Update annotateddiary activity grades.
+ * Update margic activity grades.
  *
  * @category grade
- * @param object $annotateddiary If is null, then all diaries.
+ * @param object $margic If is null, then all diaries.
  * @param int $userid If is false, then all users.
  * @param boolean $nullifnone Return null if grade does not exist.
  */
-function annotateddiary_update_grades($annotateddiary, $userid = 0, $nullifnone = true) {
+function margic_update_grades($margic, $userid = 0, $nullifnone = true) {
     global $CFG;
     require_once($CFG->libdir . '/gradelib.php');
-    $cm = get_coursemodule_from_instance('annotateddiary', $annotateddiary->id);
-    $annotateddiary->cmidnumber = $cm->idnumber;
-    if (! $annotateddiary->assessed) {
-        annotateddiary_grade_item_update($annotateddiary);
-    } else if ($grades = annotateddiary_get_user_grades($annotateddiary, $userid)) {
-        annotateddiary_grade_item_update($annotateddiary, $grades);
+    $cm = get_coursemodule_from_instance('margic', $margic->id);
+    $margic->cmidnumber = $cm->idnumber;
+    if (! $margic->assessed) {
+        margic_grade_item_update($margic);
+    } else if ($grades = margic_get_user_grades($margic, $userid)) {
+        margic_grade_item_update($margic, $grades);
     } else if ($userid and $nullifnone) {
         $grade = new stdClass();
         $grade->userid = $userid;
         $grade->rawgrade = null;
-        annotateddiary_grade_item_update($annotateddiary, $grade);
+        margic_grade_item_update($margic, $grade);
     } else {
-        annotateddiary_grade_item_update($annotateddiary);
+        margic_grade_item_update($margic);
     }
 }
 
 /**
- * Update or create grade item for given annotateddiary.
+ * Update or create grade item for given margic.
  *
- * @param stdClass $annotateddiary Object with extra cmidnumber.
+ * @param stdClass $margic Object with extra cmidnumber.
  * @param array $grades optional array/object of grade(s); 'reset' means reset grades in gradebook
  * @return int 0 if ok, error code otherwise.
  */
-function annotateddiary_grade_item_update($annotateddiary, $grades = null) {
+function margic_grade_item_update($margic, $grades = null) {
     global $CFG;
     require_once($CFG->libdir . '/gradelib.php');
 
     $params = array(
-        'itemname' => $annotateddiary->name,
-        'idnumber' => $annotateddiary->cmidnumber
+        'itemname' => $margic->name,
+        'idnumber' => $margic->cmidnumber
     );
 
-    if (! $annotateddiary->assessed or $annotateddiary->scale == 0) {
+    if (! $margic->assessed or $margic->scale == 0) {
         $params['gradetype'] = GRADE_TYPE_NONE;
-    } else if ($annotateddiary->scale > 0) {
+    } else if ($margic->scale > 0) {
         $params['gradetype'] = GRADE_TYPE_VALUE;
-        $params['grademax'] = $annotateddiary->scale;
+        $params['grademax'] = $margic->scale;
         $params['grademin'] = 0;
-    } else if ($annotateddiary->scale < 0) {
+    } else if ($margic->scale < 0) {
         $params['gradetype'] = GRADE_TYPE_SCALE;
-        $params['scaleid'] = - $annotateddiary->scale;
+        $params['scaleid'] = - $margic->scale;
     }
 
     if ($grades === 'reset') {
@@ -795,39 +795,39 @@ function annotateddiary_grade_item_update($annotateddiary, $grades = null) {
         $grades = null;
     }
 
-    return grade_update('mod/annotateddiary', $annotateddiary->course, 'mod', 'annotateddiary', $annotateddiary->id, 0, $grades, $params);
+    return grade_update('mod/margic', $margic->course, 'mod', 'margic', $margic->id, 0, $grades, $params);
 }
 
 /**
- * Delete grade item for given annotateddiary.
+ * Delete grade item for given margic.
  *
- * @param object $annotateddiary
+ * @param object $margic
  * @return object grade_item
  */
-function annotateddiary_grade_item_delete($annotateddiary) {
+function margic_grade_item_delete($margic) {
     global $CFG;
 
     require_once($CFG->libdir . '/gradelib.php');
 
-    return grade_update('mod/annotateddiary', $annotateddiary->course, 'mod', 'annotateddiary', $annotateddiary->id, 0, null, array(
+    return grade_update('mod/margic', $margic->course, 'mod', 'margic', $margic->id, 0, null, array(
         'deleted' => 1
     ));
 }
 
 /**
- * Return only the users that have entries in the specified annotateddiary activity.
+ * Return only the users that have entries in the specified margic activity.
  * Used by report.php.
  *
- * @param object $annotateddiary
+ * @param object $margic
  * @param object $currentgroup
- * @param object $sortoption return object $annotateddiarys
+ * @param object $sortoption return object $margics
  */
-function annotateddiary_get_users_done($annotateddiary, $currentgroup, $sortoption) {
+function margic_get_users_done($margic, $currentgroup, $sortoption) {
     global $DB;
 
     $params = array();
 
-    $sql = "SELECT DISTINCT u.* FROM {annotateddiary_entries} de
+    $sql = "SELECT DISTINCT u.* FROM {margic_entries} de
               JOIN {user} u ON de.userid = u.id ";
 
     // Group users.
@@ -836,81 +836,81 @@ function annotateddiary_get_users_done($annotateddiary, $currentgroup, $sortopti
         $params[] = $currentgroup;
     }
     // 20201014 Changed to a sort option preference to sort lastname ascending or descending.
-    $sql .= " WHERE de.annotateddiary = ? ORDER BY " . $sortoption;
+    $sql .= " WHERE de.margic = ? ORDER BY " . $sortoption;
 
-    $params[] = $annotateddiary->id;
+    $params[] = $margic->id;
 
-    $annotateddiarys = $DB->get_records_sql($sql, $params);
+    $margics = $DB->get_records_sql($sql, $params);
 
-    $cm = annotateddiary_get_coursemodule($annotateddiary->id);
-    if (! $annotateddiarys || ! $cm) {
+    $cm = margic_get_coursemodule($margic->id);
+    if (! $margics || ! $cm) {
         return null;
     }
 
     // Remove unenrolled participants.
-    foreach ($annotateddiarys as $key => $user) {
+    foreach ($margics as $key => $user) {
 
         $context = context_module::instance($cm->id);
 
-        $canadd = has_capability('mod/annotateddiary:addentries', $context, $user);
-        $entriesmanager = has_capability('mod/annotateddiary:manageentries', $context, $user);
+        $canadd = has_capability('mod/margic:addentries', $context, $user);
+        $entriesmanager = has_capability('mod/margic:manageentries', $context, $user);
 
         if (! $entriesmanager and ! $canadd) {
-            unset($annotateddiarys[$key]);
+            unset($margics[$key]);
         }
     }
-    return $annotateddiarys;
+    return $margics;
 }
 
 /**
- * Counts all the annotateddiary entries (optionally in a given group).
+ * Counts all the margic entries (optionally in a given group).
  *
- * @param array $annotateddiary
+ * @param array $margic
  * @param int $groupid
- * @return int count($annotateddiarys) Count of annotateddiary entries.
+ * @return int count($margics) Count of margic entries.
  */
-function annotateddiary_count_entries($annotateddiary, $groupid = 0) {
+function margic_count_entries($margic, $groupid = 0) {
     global $DB;
 
-    $cm = annotateddiary_get_coursemodule($annotateddiary->id);
+    $cm = margic_get_coursemodule($margic->id);
     $context = context_module::instance($cm->id);
 
     if ($groupid) { // How many in a particular group?
 
-        $sql = "SELECT DISTINCT u.id FROM {annotateddiary_entries} d
+        $sql = "SELECT DISTINCT u.id FROM {margic_entries} d
                   JOIN {groups_members} g ON g.userid = d.userid
                   JOIN {user} u ON u.id = g.userid
-                 WHERE d.annotateddiary = ? AND g.groupid = ?";
-        $annotateddiarys = $DB->get_records_sql($sql, array(
-            $annotateddiary->id,
+                 WHERE d.margic = ? AND g.groupid = ?";
+        $margics = $DB->get_records_sql($sql, array(
+            $margic->id,
             $groupid
         ));
     } else { // Count all the entries from the whole course.
 
-        $sql = "SELECT DISTINCT u.id FROM {annotateddiary_entries} d
+        $sql = "SELECT DISTINCT u.id FROM {margic_entries} d
                   JOIN {user} u ON u.id = d.userid
-                 WHERE d.annotateddiary = ?";
-        $annotateddiarys = $DB->get_records_sql($sql, array(
-            $annotateddiary->id
+                 WHERE d.margic = ?";
+        $margics = $DB->get_records_sql($sql, array(
+            $margic->id
         ));
     }
 
-    if (! $annotateddiarys) {
+    if (! $margics) {
         return 0;
     }
 
-    $canadd = get_users_by_capability($context, 'mod/annotateddiary:addentries', 'u.id');
-    $entriesmanager = get_users_by_capability($context, 'mod/annotateddiary:manageentries', 'u.id');
+    $canadd = get_users_by_capability($context, 'mod/margic:addentries', 'u.id');
+    $entriesmanager = get_users_by_capability($context, 'mod/margic:manageentries', 'u.id');
 
     // Remove unenrolled participants.
-    foreach ($annotateddiarys as $userid => $notused) {
+    foreach ($margics as $userid => $notused) {
 
         if (! isset($entriesmanager[$userid]) && ! isset($canadd[$userid])) {
-            unset($annotateddiarys[$userid]);
+            unset($margics[$userid]);
         }
     }
 
-    return count($annotateddiarys);
+    return count($margics);
 }
 
 /**
@@ -919,11 +919,11 @@ function annotateddiary_count_entries($annotateddiary, $groupid = 0) {
  * @param int $cutofftime
  * @return object
  */
-function annotateddiary_get_unmailed_graded($cutofftime) {
+function margic_get_unmailed_graded($cutofftime) {
     global $DB;
 
-    $sql = "SELECT de.*, d.course, d.name FROM {annotateddiary_entries} de
-              JOIN {annotateddiary} d ON de.annotateddiary = d.id
+    $sql = "SELECT de.*, d.course, d.name FROM {margic_entries} de
+              JOIN {margic} d ON de.margic = d.id
              WHERE de.mailed = '0' AND de.timemarked < ? AND de.timemarked > 0";
     return $DB->get_records_sql($sql, array(
         $cutofftime
@@ -931,17 +931,17 @@ function annotateddiary_get_unmailed_graded($cutofftime) {
 }
 
 /**
- * Return annotateddiary log info.
+ * Return margic log info.
  *
  * @param string $log
  * @return object
  */
-function annotateddiary_log_info($log) {
+function margic_log_info($log) {
     global $DB;
 
     $sql = "SELECT d.*, u.firstname, u.lastname
-              FROM {annotateddiary} d
-              JOIN {annotateddiary_entries} de ON de.annotateddiary = d.id
+              FROM {margic} d
+              JOIN {margic_entries} de ON de.margic = d.id
               JOIN {user} u ON u.id = de.userid
              WHERE de.id = ?";
     return $DB->get_record_sql($sql, array(
@@ -950,23 +950,23 @@ function annotateddiary_log_info($log) {
 }
 
 /**
- * Returns the annotateddiary instance course_module id.
+ * Returns the margic instance course_module id.
  *
- * @param integer $annotateddiaryid
+ * @param integer $margicid
  * @return object
  */
-function annotateddiary_get_coursemodule($annotateddiaryid) {
+function margic_get_coursemodule($margicid) {
     global $DB;
 
     return $DB->get_record_sql("SELECT cm.id FROM {course_modules} cm
                                   JOIN {modules} m ON m.id = cm.module
-                                 WHERE cm.instance = ? AND m.name = 'annotateddiary'", array(
-        $annotateddiaryid
+                                 WHERE cm.instance = ? AND m.name = 'margic'", array(
+        $margicid
     ));
 }
 
 /**
- * Serves the annotateddiary files.
+ * Serves the margic files.
  * THIS FUNCTION MAY BE ORPHANED. APPEARS TO BE SO IN JOURNAL.
  *
  * @param stdClass $course Course object.
@@ -978,7 +978,7 @@ function annotateddiary_get_coursemodule($annotateddiaryid) {
  * @param array $options Additional options affecting the file serving.
  * @return bool False if file not found, does not return if found - just send the file.
  */
-function annotateddiary_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options = array()) {
+function margic_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options = array()) {
     global $DB, $USER;
 
     if ($context->contextlevel != CONTEXT_MODULE) {
@@ -993,12 +993,12 @@ function annotateddiary_pluginfile($course, $cm, $context, $filearea, $args, $fo
 
     // Args[0] should be the entry id.
     $entryid = intval(array_shift($args));
-    $entry = $DB->get_record('annotateddiary_entries', array(
+    $entry = $DB->get_record('margic_entries', array(
         'id' => $entryid
     ), 'id, userid', MUST_EXIST);
 
-    $canmanage = has_capability('mod/annotateddiary:manageentries', $context);
-    if (! $canmanage && ! has_capability('mod/annotateddiary:addentries', $context)) {
+    $canmanage = has_capability('mod/margic:manageentries', $context);
+    if (! $canmanage && ! has_capability('mod/margic:addentries', $context)) {
         // Even if it is your own entry.
         return false;
     }
@@ -1014,7 +1014,7 @@ function annotateddiary_pluginfile($course, $cm, $context, $filearea, $args, $fo
 
     $fs = get_file_storage();
     $relativepath = implode('/', $args);
-    $fullpath = "/$context->id/mod_annotateddiary/$filearea/$entryid/$relativepath";
+    $fullpath = "/$context->id/mod_margic/$filearea/$entryid/$relativepath";
     $file = $fs->get_file_by_hash(sha1($fullpath));
 
     // Finally send the file.

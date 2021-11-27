@@ -17,7 +17,7 @@
 /**
  * Capability definitions for this module.
  *
- * @package   mod_annotateddiary
+ * @package   mod_margic
  * @copyright 2020 AL Rachels <drachels@drachels.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -25,7 +25,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $capabilities = array(
 
-    'mod/annotateddiary:manageentries' => array(
+    'mod/margic:manageentries' => array(
 
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
@@ -36,7 +36,7 @@ $capabilities = array(
         )
     ),
 
-    'mod/annotateddiary:rate' => array(
+    'mod/margic:rate' => array(
 
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
@@ -47,7 +47,7 @@ $capabilities = array(
         )
     ),
 
-    'mod/annotateddiary:addentries' => array(
+    'mod/margic:addentries' => array(
 
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
@@ -59,7 +59,7 @@ $capabilities = array(
         )
     ),
 
-    'mod/annotateddiary:addinstance' => array(
+    'mod/margic:addinstance' => array(
         'riskbitmask' => RISK_XSS,
 
         'captype' => 'write',
@@ -71,7 +71,7 @@ $capabilities = array(
         'clonepermissionsfrom' => 'moodle/course:manageactivities'
     ),
 
-    'mod/annotateddiary:makeannotations' => array(
+    'mod/margic:makeannotations' => array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => array(
@@ -81,7 +81,7 @@ $capabilities = array(
         )
     ),
 
-    'mod/annotateddiary:viewannotations' => array(
+    'mod/margic:viewannotations' => array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => array(

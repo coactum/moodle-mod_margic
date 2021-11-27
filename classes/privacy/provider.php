@@ -17,11 +17,11 @@
 /**
  * Privacy class for requesting user data.
  *
- * @package   mod_annotateddiary
+ * @package   mod_margic
  * @copyright 2019 AL Rachels <drachels@drachels.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-namespace mod_annotateddiary\privacy;
+namespace mod_margic\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -36,12 +36,12 @@ use core_privacy\local\request\helper;
 use core_privacy\local\request\transform;
 use core_privacy\local\request\userlist;
 use core_privacy\local\request\writer;
-require_once($CFG->dirroot . '/mod/annotateddiary/lib.php');
+require_once($CFG->dirroot . '/mod/margic/lib.php');
 
 /**
  * Privacy class for requesting user data.
  *
- * @package   mod_annotateddiary
+ * @package   mod_margic
  * @copyright 2019 AL Rachels <drachels@drachels.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -50,20 +50,20 @@ class provider implements \core_privacy\local\metadata\provider,
                           \core_privacy\local\request\plugin\provider {
 
     /**
-     * Provides meta data that is stored about a user with mod_annotateddiary.
+     * Provides meta data that is stored about a user with mod_margic.
      *
      * @param collection $collection The initialized collection to add items to.
      * @return collection Returns the collection of metadata.
      */
     public static function get_metadata(collection $collection): collection {
-        $collection->add_database_table('annotateddiary_entries', [
-            'userid' => 'privacy:metadata:annotateddiary_entries:userid',
-            'timecreated' => 'privacy:metadata:annotateddiary_entries:timecreated',
-            'timemodified' => 'privacy:metadata:annotateddiary_entries:timemodified',
-            'text' => 'privacy:metadata:annotateddiary_entries:text',
-            'rating' => 'privacy:metadata:annotateddiary_entries:rating',
-            'entrycomment' => 'privacy:metadata:annotateddiary_entries:entrycomment'
-        ], 'privacy:metadata:annotateddiary_entries');
+        $collection->add_database_table('margic_entries', [
+            'userid' => 'privacy:metadata:margic_entries:userid',
+            'timecreated' => 'privacy:metadata:margic_entries:timecreated',
+            'timemodified' => 'privacy:metadata:margic_entries:timemodified',
+            'text' => 'privacy:metadata:margic_entries:text',
+            'rating' => 'privacy:metadata:margic_entries:rating',
+            'entrycomment' => 'privacy:metadata:margic_entries:entrycomment'
+        ], 'privacy:metadata:margic_entries');
 
         return $collection;
     }
@@ -79,9 +79,9 @@ class provider implements \core_privacy\local\metadata\provider,
             SELECT DISTINCT ctx.id
               FROM {%s} fc
               JOIN {modules} m
-                ON m.name = :annotateddiary
+                ON m.name = :margic
               JOIN {course_modules} cm
-                ON cm.instance = fc.annotateddiary
+                ON cm.instance = fc.margic
                AND cm.module = m.id
               JOIN {context} ctx
                 ON ctx.instanceid = cm.id
@@ -89,12 +89,12 @@ class provider implements \core_privacy\local\metadata\provider,
              WHERE fc.userid = :userid";
 
         $params = [
-            'annotateddiary' => 'annotateddiary',
+            'margic' => 'margic',
             'modlevel' => CONTEXT_MODULE,
             'userid' => $userid
         ];
         $contextlist = new contextlist();
-        $contextlist->add_from_sql(sprintf($sql, 'annotateddiary_entries'), $params);
+        $contextlist->add_from_sql(sprintf($sql, 'margic_entries'), $params);
         return $contextlist;
     }
 
@@ -110,26 +110,26 @@ class provider implements \core_privacy\local\metadata\provider,
             return;
         }
 
-        // Find users with annotateddiary entries.
+        // Find users with margic entries.
         $sql = "
             SELECT fc.userid
               FROM {%s} fc
               JOIN {modules} m
-                ON m.name = :annotateddiary
+                ON m.name = :margic
               JOIN {course_modules} cm
-                ON cm.instance = fc.annotateddiary
+                ON cm.instance = fc.margic
                AND cm.module = m.id
               JOIN {context} ctx
                 ON ctx.instanceid = cm.id
                AND ctx.contextlevel = :modlevel
              WHERE ctx.id = :contextid";
         $params = [
-            'annotateddiary' => 'annotateddiary',
+            'margic' => 'margic',
             'modlevel' => CONTEXT_MODULE,
             'contextid' => $context->id
         ];
 
-        $userlist->add_from_sql('userid', sprintf($sql, 'annotateddiary_entries'), $params);
+        $userlist->add_from_sql('userid', sprintf($sql, 'margic_entries'), $params);
     }
 
     /**
@@ -158,45 +158,45 @@ class provider implements \core_privacy\local\metadata\provider,
                   FROM {context} c
             INNER JOIN {course_modules} cm ON cm.id = c.instanceid AND c.contextlevel = :contextlevel
             INNER JOIN {modules} m ON m.id = cm.module AND m.name = :modname
-            INNER JOIN {annotateddiary} j ON j.id = cm.instance
-             LEFT JOIN {annotateddiary_entries} as den ON den.annotateddiary = j.id
+            INNER JOIN {margic} j ON j.id = cm.instance
+             LEFT JOIN {margic_entries} as den ON den.margic = j.id
                  WHERE den.userid = :userid AND c.id {$contextsql}";
         $params = [
             'contextlevel' => CONTEXT_MODULE,
-            'modname' => 'annotateddiary',
+            'modname' => 'margic',
             'userid' => $userid
         ];
         $params += $contextparams;
 
-        // Fetch the individual annotateddiarys entries.
-        $annotateddiarys = $DB->get_recordset_sql($sql, $params);
-        foreach ($annotateddiarys as $annotateddiary) {
-            list ($course, $cm) = get_course_and_cm_from_cmid($annotateddiary->cmid, 'annotateddiary');
-            $annotateddiaryobj = new \entry($annotateddiary, $cm, $course);
-            $context = $annotateddiaryobj->get_context();
+        // Fetch the individual margics entries.
+        $margics = $DB->get_recordset_sql($sql, $params);
+        foreach ($margics as $margic) {
+            list ($course, $cm) = get_course_and_cm_from_cmid($margic->cmid, 'margic');
+            $margicobj = new \entry($margic, $cm, $course);
+            $context = $margicobj->get_context();
 
-            $annotateddiaryentry = \core_privacy\local\request\helper::get_context_data($context, $contextlist->get_user());
+            $margicentry = \core_privacy\local\request\helper::get_context_data($context, $contextlist->get_user());
             \core_privacy\local\request\helper::export_context_files($context, $contextlist->get_user());
 
-            if (! empty($annotateddiaryentry->timecreated)) {
-                $annotateddiaryentry->timecreated = transform::datetime($annotateddiary->timecreated);
+            if (! empty($margicentry->timecreated)) {
+                $margicentry->timecreated = transform::datetime($margic->timecreated);
             }
-            if (! empty($annotateddiaryentry->timemodified)) {
-                $annotateddiaryentry->timemodified = transform::datetime($annotateddiary->timemodified);
+            if (! empty($margicentry->timemodified)) {
+                $margicentry->timemodified = transform::datetime($margic->timemodified);
             }
-            if (! empty($annotateddiaryentry->text)) {
-                $annotateddiaryentry->text = $annotateddiary->text;
+            if (! empty($margicentry->text)) {
+                $margicentry->text = $margic->text;
             }
-            if (! empty($annotateddiaryentry->rating)) {
-                $annotateddiaryentry->rating = $annotateddiary->rating;
+            if (! empty($margicentry->rating)) {
+                $margicentry->rating = $margic->rating;
             }
-            if (! empty($annotateddiaryentry->entrycomment)) {
-                $annotateddiaryentry->entrycomment = $annotateddiary->entrycomment;
+            if (! empty($margicentry->entrycomment)) {
+                $margicentry->entrycomment = $margic->entrycomment;
             }
 
-            writer::with_context($context)->export_data([], $annotateddiaryentry);
+            writer::with_context($context)->export_data([], $margicentry);
         }
-        $annotateddiarys->close();
+        $margics->close();
     }
 
     /**
@@ -218,21 +218,21 @@ class provider implements \core_privacy\local\metadata\provider,
             SELECT fc.id
               FROM {%s} fc
               JOIN {modules} m
-                ON m.name = :annotateddiary
+                ON m.name = :margic
               JOIN {course_modules} cm
-                ON cm.instance = fc.annotateddiary
+                ON cm.instance = fc.margic
                AND cm.module = m.id
              WHERE cm.id = :cmid";
         $completedparams = [
             'cmid' => $context->instanceid,
-            'annotateddiary' => 'annotateddiary'
+            'margic' => 'margic'
         ];
 
-        // Delete annotateddiary entries.
-        $completedtmpids = $DB->get_fieldset_sql(sprintf($completedsql, 'annotateddiary_entries'), $completedparams);
+        // Delete margic entries.
+        $completedtmpids = $DB->get_fieldset_sql(sprintf($completedsql, 'margic_entries'), $completedparams);
         if (! empty($completedtmpids)) {
             list ($insql, $inparams) = $DB->get_in_or_equal($completedtmpids, SQL_PARAMS_NAMED);
-            $DB->delete_records_select('annotateddiary_entries', "id $insql", $inparams);
+            $DB->delete_records_select('margic_entries', "id $insql", $inparams);
         }
     }
 
@@ -258,22 +258,22 @@ class provider implements \core_privacy\local\metadata\provider,
             SELECT fc.id
               FROM {%s} fc
               JOIN {modules} m
-                ON m.name = :annotateddiary
+                ON m.name = :margic
               JOIN {course_modules} cm
-                ON cm.instance = fc.annotateddiary
+                ON cm.instance = fc.margic
                AND cm.module = m.id
              WHERE fc.userid = :userid
                AND cm.id $insql";
         $completedparams = array_merge($inparams, [
             'userid' => $userid,
-            'annotateddiary' => 'annotateddiary'
+            'margic' => 'margic'
         ]);
 
-        // Delete annotateddiary entries.
-        $completedtmpids = $DB->get_fieldset_sql(sprintf($completedsql, 'annotateddiary_entries'), $completedparams);
+        // Delete margic entries.
+        $completedtmpids = $DB->get_fieldset_sql(sprintf($completedsql, 'margic_entries'), $completedparams);
         if (! empty($completedtmpids)) {
             list ($insql, $inparams) = $DB->get_in_or_equal($completedtmpids, SQL_PARAMS_NAMED);
-            $DB->delete_records_select('annotateddiary_entries', "id $insql", $inparams);
+            $DB->delete_records_select('margic_entries', "id $insql", $inparams);
         }
     }
 
@@ -294,22 +294,22 @@ class provider implements \core_privacy\local\metadata\provider,
             SELECT fc.id
               FROM {%s} fc
               JOIN {modules} m
-                ON m.name = :annotateddiary
+                ON m.name = :margic
               JOIN {course_modules} cm
-                ON cm.instance = fc.annotateddiary
+                ON cm.instance = fc.margic
                AND cm.module = m.id
              WHERE cm.id = :instanceid
                AND fc.userid $insql";
         $completedparams = array_merge($inparams, [
             'instanceid' => $context->instanceid,
-            'annotateddiary' => 'annotateddiary'
+            'margic' => 'margic'
         ]);
 
-        // Delete all annotateddiary entries.
-        $completedtmpids = $DB->get_fieldset_sql(sprintf($completedsql, 'annotateddiary_entries'), $completedparams);
+        // Delete all margic entries.
+        $completedtmpids = $DB->get_fieldset_sql(sprintf($completedsql, 'margic_entries'), $completedparams);
         if (! empty($completedtmpids)) {
             list ($insql, $inparams) = $DB->get_in_or_equal($completedtmpids, SQL_PARAMS_NAMED);
-            $DB->delete_records_select('annotateddiary_entries', "id $insql", $inparams);
+            $DB->delete_records_select('margic_entries', "id $insql", $inparams);
         }
     }
 }

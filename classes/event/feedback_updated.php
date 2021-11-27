@@ -15,20 +15,20 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The mod_annotateddiary feedback updated event.
+ * The mod_margic feedback updated event.
  *
- * @package   mod_annotateddiary
+ * @package   mod_margic
  * @copyright 2014 drachels@drachels.com
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-namespace mod_annotateddiary\event;
+namespace mod_margic\event;
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * The mod_annotateddiary feedback updated class.
+ * The mod_margic feedback updated class.
  *
- * @package   mod_annotateddiary
+ * @package   mod_margic
  * @since     Moodle 2.7
  * @copyright 2014 drachels@drachels.com
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -41,7 +41,7 @@ class feedback_updated extends \core\event\base {
     protected function init() {
         $this->data['crud'] = 'u';
         $this->data['edulevel'] = self::LEVEL_TEACHING;
-        $this->data['objecttable'] = 'annotateddiary';
+        $this->data['objecttable'] = 'margic';
     }
 
     /**
@@ -50,7 +50,7 @@ class feedback_updated extends \core\event\base {
      * @return string
      */
     public static function get_name() {
-        return get_string('eventfeedbackupdated', 'mod_annotateddiary');
+        return get_string('eventfeedbackupdated', 'mod_margic');
     }
 
     /**
@@ -59,7 +59,7 @@ class feedback_updated extends \core\event\base {
      * @return string
      */
     public function get_description() {
-        return "The user with id '$this->userid' has updated feedback for the annotateddiary activity with the course module id
+        return "The user with id '$this->userid' has updated feedback for the margic activity with the course module id
             '$this->contextinstanceid'";
     }
 
@@ -69,7 +69,7 @@ class feedback_updated extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/annotateddiary/report.php', array(
+        return new \moodle_url('/mod/margic/report.php', array(
             'id' => $this->contextinstanceid
         ));
     }
@@ -85,7 +85,7 @@ class feedback_updated extends \core\event\base {
         ));
         return array(
             $this->courseid,
-            'annotateddiary',
+            'margic',
             'report',
             $url->out(),
             $this->objectid,
