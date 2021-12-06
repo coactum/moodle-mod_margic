@@ -33,6 +33,18 @@ defined('MOODLE_INTERNAL') || die();
 class mod_margic_renderer extends plugin_renderer_base {
 
     /**
+     * Defer to template.
+     *
+     * @param margic_view $page
+     *
+     * @return string html for the page
+     */
+    public function render_margic_view(margic_view $page) {
+        $data = $page->export_for_template($this);
+        return parent::render_from_template('mod_margic/margic_view', $data);
+    }
+
+    /**
      * Rendering margic files.
      *
      * @var int $margic

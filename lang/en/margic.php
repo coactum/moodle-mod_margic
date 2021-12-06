@@ -47,14 +47,14 @@ $string['blankentry'] = 'Blank entry';
 $string['calendarend'] = '{$a} closes';
 $string['calendarstart'] = '{$a} opens';
 $string['configdateformat'] = 'This defines how dates are shown in margic reports. The default value, "M d, Y G:i" is Month, day, year and 24 hour format time. Refer to Date in the PHP manual for more examples and predefined date constants.';
-$string['created'] = 'Created {$a->one} days and {$a->two} hours ago.';
+$string['created'] = 'Created {$a->days} days and {$a->hours} hours ago.';
 $string['csvexport'] = 'Export to .csv';
 $string['currententry'] = 'Current margic entries:';
 $string['daysavailable'] = 'Days available';
 $string['daysavailable_help'] = 'If using Weekly format, you can set how many days the margic is open for use.';
 $string['deadline'] = 'Days Open';
 $string['dateformat'] = 'Default date format';
-$string['details'] = 'Details: ';
+$string['details'] = 'Details';
 $string['margicclosetime'] = 'Close time';
 $string['margicclosetime_help'] = 'If enabled, you can set a date for the margic to be closed and no longer open for use.';
 $string['margicentrydate'] = 'Set date for this entry';
@@ -132,12 +132,6 @@ $string['noentriesmanagers'] = 'There are no teachers';
 $string['noentry'] = 'No entry';
 $string['noratinggiven'] = 'No rating given';
 $string['notopenuntil'] = 'This margic won\'t be open until';
-$string['numwordsraw'] = '{$a->one} raw text words using  {$a->two} characters, including {$a->three} spaces. ';
-$string['numwordscln'] = '{$a->one} clean text words using {$a->two} characters, NOT including {$a->three} spaces. ';
-$string['numwordsstd'] = '{$a->one} standardized words using {$a->two} characters, including {$a->three} spaces. ';
-
-$string['numwordsnew'] = 'New calculation: {$a->one} raw text words using {$a->two} characters, in {$a->three} sentences, in {$a->four} paragraphs. ';
-
 
 $string['notstarted'] = 'You have not started this margic yet';
 $string['outof'] = ' out of {$a} entries.';
@@ -194,3 +188,15 @@ $string['annotationadded'] = 'Annotation added';
 $string['annotationedited'] = 'Annotation edited';
 $string['annotationdeleted'] = 'Annotation deleted';
 $string['annotationinvalid'] = 'Annotation invalid';
+$string['noentriesfound'] = 'No entries found';
+$string['lastedited'] = 'Last edited';
+$string['getallentriesofuser'] = 'Get all margic entries for this user';
+$string['myentries'] = 'My entries';
+$string['numwordsraw'] = '{$a->wordscount} text words using {$a->charscount} characters, including {$a->spacescount} spaces. ';
+
+
+// löschen
+$string['numwordscln'] = '{$a->one} clean text words using {$a->two} characters, NOT including {$a->three} spaces. ';
+$string['numwordsstd'] = '{$a->one} standardized words using {$a->two} characters, including {$a->three} spaces. ';
+
+$string['numwordsnew'] = 'New calculation: {$a->one} raw text words using {$a->two} characters, in {$a->three} sentences, in {$a->four} paragraphs. ';

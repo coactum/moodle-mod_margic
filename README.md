@@ -28,7 +28,7 @@ mod_diary enhanced with annotations.
 
 ### Install from a compressed file ###
 - Extract the compressed file data.
-- Rename the main folder to discourse.
+- Rename the main folder to margic.
 - Copy to the Moodle mod/ folder.
 - Click the 'Notifications' link on the frontpage administration block.
 

@@ -72,7 +72,7 @@ class annotation_form extends moodleform {
 
         $mform->addElement('textarea', 'text[' . $this->_customdata['entry'] . ']');
         $mform->setType('text[' . $this->_customdata['entry'] . ']', PARAM_RAW);
-        // $mform->addRule('annotation[' . $this->_customdata['entry'] . ']', get_string('errfilloutfield', 'mod_discourse'), 'required', 'client');
+        // $mform->addRule('annotation[' . $this->_customdata['entry'] . ']', get_string('errfilloutfield', 'mod_margic'), 'required', 'client');
 
         $this->add_action_buttons();
 

@@ -36,14 +36,14 @@ $string['blankentry'] = 'Leerer Eintrag';
 $string['calendarend'] = '{$a} schließt';
 $string['calendarstart'] = '{$a} öffnet';
 $string['configdateformat'] = 'Damit wird festgelegt, wie Daten in Margic-Berichten angezeigt werden. Der Standardwert "M d, Y G:i" ist Monat, Tag, Jahr und Uhrzeit im 24-Stunden-Format. Weitere Beispiele und vordefinierte Datumskonstanten finden Sie unter Datum im PHP-Handbuch.';
-$string['created'] = 'Erstellt vor {$a->one} Tagen und {$a->two}  Stunden.';
+$string['created'] = 'Erstellt vor {$a->days} Tagen und {$a->hours} Stunden.';
 $string['csvexport'] = 'Exportieren nach .csv';
 $string['currententry'] = 'Aktuelle Margic-Einträge:';
 $string['dateformat'] = 'Standard-Datumsformat';
 $string['daysavailable'] = 'Verfügbare Tage';
 $string['daysavailable_help'] = 'Wenn Sie das Wochenformat verwenden, können Sie einstellen, wie viele Tage die Margic-Instanz für die Verwendung geöffnet ist.';
 $string['deadline'] = 'Offene Tage';
-$string['details'] = 'Details:';
+$string['details'] = 'Details';
 $string['margic:addentries'] = 'Margic-Einträge hinzufügen';
 $string['margic:addinstance'] = 'Margic-Instanzen hinzufügen';
 $string['margic:manageentries'] = 'Margic-Einträge verwalten';
@@ -163,9 +163,7 @@ $string['viewallentries'] = 'Anzeigen von {$a} Margic-Einträgen';
 
 $string['startnewentry'] = 'Neuen Eintrag schreiben';
 $string['viewentries'] = 'Einträge ansehen';
-$string['numwordsraw'] = '{$a->one} rohe Wörter mit  {$a->two} Zeichen, einschließlich {$a->three} Leerzeichen. ';
-$string['numwordscln'] = '{$a->one} bereinigte Wörter mit {$a->two} Zeichen, AUSSCHLIEßLICH {$a->three} Leerzeichen. ';
-$string['numwordsstd'] = '{$a->one} standardisierte Wörter mit {$a->two} Zeichen, einschließlich {$a->three} Leerzeichen. ';
+$string['numwordsraw'] = '{$a->wordscount} Wörter mit {$a->charscount} Zeichen, einschließlich {$a->spacescount} Leerzeichen. ';
 $string['margicentrydate'] = 'Datum des Eintrages bestimmen';
 
 $string['margic:viewannotations'] = 'Annotierungen ansehen';
@@ -177,3 +175,11 @@ $string['annotationadded'] = 'Annotierung hinzugefügt';
 $string['annotationedited'] = 'Annotierung geändert';
 $string['annotationdeleted'] = 'Annotierung gelöscht';
 $string['annotationinvalid'] = 'Annotierung ungültig';
+$string['noentriesfound'] = 'Keine Einträge gefunden';
+$string['lastedited'] = 'Zuletzt bearbeitet';
+$string['getallentriesofuser'] = 'Alle Margic Enträge dieses Benutzers anzeigen';
+$string['myentries'] = 'Meine Einträge';
+
+// löschen
+$string['numwordscln'] = '{$a->one} bereinigte Wörter mit {$a->two} Zeichen, AUSSCHLIEßLICH {$a->three} Leerzeichen. ';
+$string['numwordsstd'] = '{$a->one} standardisierte Wörter mit {$a->two} Zeichen, einschließlich {$a->three} Leerzeichen. ';

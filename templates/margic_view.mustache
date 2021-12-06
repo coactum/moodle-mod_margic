@@ -1,0 +1,65 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @copyright   2021 coactum GmbH
+    @template discourse/discourse_view
+
+    Overview.
+}}
+
+{{#js}}
+{{/js}}
+
+{{#canmanageentries}}<h3>{{#str}}entries, mod_margic{{/str}}</h3>{{/canmanageentries}}
+{{^canmanageentries}}<h3>{{#str}}myentries, mod_margic{{/str}}</h3>{{/canmanageentries}}
+
+{{#entries}}
+    <div class="entry" style="background: {{entrybgc}};">
+        <h4>{{#str}}entry, mod_margic{{/str}}: {{#userdate}}{{timecreated}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}} {{#caneditentries}}<a href="edit.php?id={{cmid}}"><i class="fa fa-pencil" title="{{#str}}editthisentry, mod_margic{{/str}}"></i></a>{{/caneditentries}}</h4>
+
+        {{#user}}
+            {{#canmanageentries}}
+                {{firstname}} {{lastname}} <a href="view_reworked.php?id={{cmid}}&userid={{userid}}"><i class="fa fa-user" title="{{#str}}getallentriesofuser, mod_margic{{/str}}"></i></a>
+            {{/canmanageentries}}
+        {{/user}}
+
+        <div class="entry" style="background: {{entrytextbgc}};">
+            {{#text}}{{{text}}}{{/text}}
+            {{^text}}<p class="text-center"><strong>{{#str}}blankentry, mod_margic{{/str}}</strong></p>{{/text}}
+        </div>
+        <div class="lastedit">
+            {{#stats}}
+                <strong>{{#str}}details, mod_margic{{/str}}:</strong> {{#str}}numwordsraw, mod_margic, { "wordscount": {{words}}, "charscount": {{chars}}, "spacescount": {{spaces}} } {{/str}}<br>
+                {{#datediff}}
+                    {{#str}}created, mod_margic, { "days": {{datediff.d}}, "hours": {{datediff.h}} } {{/str}}<br>
+                {{/datediff}}
+            {{/stats}}
+            <strong>{{#str}}timecreated, mod_margic{{/str}}: </strong> {{#userdate}}{{timecreated}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}} | <strong> {{#str}} lastedited, mod_margic {{/str}}: </strong> {{#userdate}}{{timemodified}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}}<br>
+        </div>
+        {{#edittimeends}}
+            <div class="editend">
+                {{#caneditentries}}{{#str}}editingends, mod_margic{{/str}}: {{/caneditentries}}
+                {{^caneditentries}}{{#str}}editingended, mod_margic{{/str}}: {{/caneditentries}}
+                {{#userdate}}{{edittimeends}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}}
+            </div>
+        {{/edittimeends}}
+    </div>
+{{/entries}}
+
+{{^entries}}
+    {{#str}}notstarted, mod_margic{{/str}}
+{{/entries}}
