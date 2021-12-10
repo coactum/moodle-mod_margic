@@ -54,6 +54,8 @@ class margic_view implements renderable, templatable {
     protected $edittimeends;
     /** @var bool */
     protected $canmanageentries;
+    /** @var string */
+    protected $sesskey;
     /**
      * Construct this renderable.
      * @param int $cmid The course module id
@@ -64,8 +66,9 @@ class margic_view implements renderable, templatable {
      * @param bool $caneditentries If entries can be edited
      * @param bool $edittimeends Time when entries cant be edited anymore
      * @param bool $canmanageentries If entries can be managed
+     * @param string $sesskey The session key
      */
-    public function __construct($cmid, $entries, $sortmode, $entrybgc, $entrytextbgc, $caneditentries, $edittimeends, $canmanageentries) {
+    public function __construct($cmid, $entries, $sortmode, $entrybgc, $entrytextbgc, $caneditentries, $edittimeends, $canmanageentries, $sesskey) {
 
         $this->cmid = $cmid;
         $this->entries = $entries;
@@ -75,6 +78,7 @@ class margic_view implements renderable, templatable {
         $this->caneditentries = $caneditentries;
         $this->edittimeends = $edittimeends;
         $this->canmanageentries = $canmanageentries;
+        $this->sesskey = $sesskey;
     }
 
     /**
@@ -93,6 +97,7 @@ class margic_view implements renderable, templatable {
         $data->caneditentries = $this->caneditentries;
         $data->edittimeends = $this->edittimeends;
         $data->canmanageentries = $this->canmanageentries;
+        $data->sesskey = $this->sesskey;
         return $data;
     }
 }

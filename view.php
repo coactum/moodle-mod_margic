@@ -538,17 +538,17 @@ if ($timenow > $timestart) {
 
                         echo '<div class="lastedit"><strong>'
                             .get_string('details', 'margic').'</strong> '
-                            .get_string('numwordsraw', 'margic', ['one' => $rawwordcount,
-                                                                 'two' => $rawwordcharcount,
-                                                                 'three' => $rawwordspacecount]).'<br>'
+                            .get_string('numwordsraw', 'margic', ['wordscount' => $rawwordcount,
+                                                                 'charscount' => $rawwordcharcount,
+                                                                 'spacescount' => $rawwordspacecount]).'<br>'
                             .get_string('numwordscln', 'margic', ['one' => $clnwordcount,
                                                                  'two' => $clnwordcharcount,
                                                                  'three' => $clnwordspacecount]).'<br>'
                             .get_string('numwordsstd', 'margic', ['one' => $stdwordcount,
                                                                  'two' => $stdwordcharcount,
                                                                  'three' => $stdwordspacecount]).'<br>'
-                            .get_string('created', 'margic', ['one' => $diff->days,
-                                                             'two' => $diff->h]).'<br>';
+                            .get_string('created', 'margic', ['days' => $diff->days,
+                                                             'hours' => $diff->h]).'<br>';
 
                         echo '<strong>'.get_string('timecreated', 'margic').': </strong> ';
                         echo userdate($entry->timecreated).' | ';
@@ -564,7 +564,7 @@ if ($timenow > $timestart) {
                         echo '<div class="needsedit">'.get_string('needsgrading', 'margic').'</div>';
                     } else if (! empty($entry->timemodified) and ! empty($entry->timemarked)
                               and $entry->timemodified > $entry->timemarked) {
-                        echo '<div class="needsedit">'.get_string('needsregrade', 'margic').'</div>';
+                        echo '<div class="needsedit">'.get_string('needsregrading', 'margic').'</div>';
                     }
 
                     if (! empty($margic->days)) {

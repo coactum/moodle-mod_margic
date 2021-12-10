@@ -24,12 +24,22 @@
 {{#js}}
 {{/js}}
 
+{{#edittimeends}}{{^caneditentries}}<div class="alert alert-danger alert-block fade in" role="alert"><button type="button" class="close" data-dismiss="alert">×</button>{{#str}}editingended, mod_margic{{/str}}</div>{{/caneditentries}}{{/edittimeends}}
+
 {{#canmanageentries}}<h3>{{#str}}entries, mod_margic{{/str}}</h3>{{/canmanageentries}}
 {{^canmanageentries}}<h3>{{#str}}myentries, mod_margic{{/str}}</h3>{{/canmanageentries}}
 
+<a class="btn btn-primary m-1" href="edit.php?id={{cmid}}&firstkey={{firstkey}}&action=currententry"> {{#str}}startnewentry, mod_margic{{/str}} </a>
+
+{{#canmanageentries}}
+    <form action="view_reworked.php" method="post">
+        <input type="hidden" name="id" value="{{cmid}}">
+        <input type="hidden" name="sesskey" value="{{sesskey}}">
+{{/canmanageentries}}
+
 {{#entries}}
     <div class="entry" style="background: {{entrybgc}};">
-        <h4>{{#str}}entry, mod_margic{{/str}}: {{#userdate}}{{timecreated}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}} {{#caneditentries}}<a href="edit.php?id={{cmid}}"><i class="fa fa-pencil" title="{{#str}}editthisentry, mod_margic{{/str}}"></i></a>{{/caneditentries}}</h4>
+        <h4>{{#str}}entry, mod_margic{{/str}}: {{#userdate}}{{timecreated}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}} {{#caneditentries}}<a href="edit.php?id={{cmid}}&action=editentry&firstkey={{id}}"><i class="fa fa-pencil" title="{{#str}}editthisentry, mod_margic{{/str}}"></i></a>{{/caneditentries}}</h4>
 
         {{#user}}
             {{#canmanageentries}}
@@ -50,6 +60,11 @@
             {{/stats}}
             <strong>{{#str}}timecreated, mod_margic{{/str}}: </strong> {{#userdate}}{{timecreated}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}} | <strong> {{#str}} lastedited, mod_margic {{/str}}: </strong> {{#userdate}}{{timemodified}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}}<br>
         </div>
+
+        {{#needsgrading}}
+            <div class="needsedit">{{needsgrading}}</div>
+        {{/needsgrading}}
+
         {{#edittimeends}}
             <div class="editend">
                 {{#caneditentries}}{{#str}}editingends, mod_margic{{/str}}: {{/caneditentries}}
@@ -57,8 +72,12 @@
                 {{#userdate}}{{edittimeends}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}}
             </div>
         {{/edittimeends}}
+
+        {{#canmanageentries}}{{#gradingform}}{{{gradingform}}}{{/gradingform}}{{/canmanageentries}}
+
     </div>
 {{/entries}}
+{{#canmanageentries}}{{#entries}}</form>{{/entries}}{{/canmanageentries}}
 
 {{^entries}}
     {{#str}}notstarted, mod_margic{{/str}}

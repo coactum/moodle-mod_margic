@@ -25,6 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 use mod_margic\local\entrystats;
+use mod_margic\local\results;
 
 /**
  * Base class for mod_margic.
@@ -108,12 +109,27 @@ class margic {
             $this->entries = $DB->get_records('margic_entries', array('margic' => $this->instance->id, 'userid' => $USER->id));;
         }
 
+        $gradingstr = get_string('needsgrading', 'margic');
+        $regradingstr = get_string('needsregrading', 'margic');
+
         foreach ($this->entries as $i => $entry) {
             $this->entries[$i]->stats = entrystats::get_entry_stats($entry->text, $entry->timecreated);
             $this->entries[$i]->user = $DB->get_record('user', array('id' => $entry->userid));
+
+            if (!empty($entry->timecreated) && !empty($entry->timemodified) && empty($entry->timemarked)) {
+                $this->entries[$i]->needsgrading = $gradingstr;
+            } else if (!empty($entry->timemodified) && !empty($entry->timemarked) && $entry->timemodified > $entry->timemarked) {
+                $this->entries[$i]->needsregrading = $regradingstr;
+            } else {
+                $this->entries[$i]->needsregrading = false;
+            }
+
+            $grades = make_grades_menu($this->instance->scale);
+
+            $this->entries[$i]->gradingform = results::margic_return_comment_and_grade_form_for_entry($this->context, $this->course, $this->instance, $entry, $grades);
+
         }
 
-        $this->entries = array_values($this->entries);
     }
 
     /**
@@ -174,6 +190,15 @@ class margic {
      * @return string action
      */
     public function get_entries() {
+        return array_values($this->entries);
+    }
+
+    /**
+     * Returns the entries for the margic instance from the table margic_entries.
+     *
+     * @return string action
+     */
+    public function get_entries_with_keys() {
         return $this->entries;
     }
 }

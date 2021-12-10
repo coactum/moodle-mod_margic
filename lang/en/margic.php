@@ -124,7 +124,7 @@ $string['modulename_help'] = 'The margic activity enables teachers to obtain stu
  over a period of time.';
 $string['modulenameplural'] = 'margics';
 $string['needsgrading'] = ' This entry has not been given feedback or rated yet.';
-$string['needsregrade'] = 'This entry has changed since feedback or a rating was given.';
+$string['needsregrading'] = 'This entry has changed since feedback or a rating was given.';
 $string['newmargicentries'] = 'New margic entries';
 $string['nextentry'] = 'Next entry';
 $string['nodeadline'] = 'Always open';
