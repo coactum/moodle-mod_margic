@@ -29,13 +29,23 @@
 {{#canmanageentries}}<h3>{{#str}}entries, mod_margic{{/str}}</h3>{{/canmanageentries}}
 {{^canmanageentries}}<h3>{{#str}}myentries, mod_margic{{/str}}</h3>{{/canmanageentries}}
 
-<a class="btn btn-primary m-1" href="edit.php?id={{cmid}}&firstkey={{firstkey}}&action=currententry"> {{#str}}startnewentry, mod_margic{{/str}} </a>
+{{#ratingaggregationmode}}{{#entries.0}}
+        {{ratingaggregationmode}}:
 
-{{#canmanageentries}}
+        {{#currentuserrating}}
+            {{currentuserrating}}
+        {{/currentuserrating}}
+        <br>
+{{/entries.0}}{{/ratingaggregationmode}}
+
+<a class="btn btn-primary m-1" href="edit.php?id={{cmid}}&firstkey={{firstkey}}&action=currententry"> {{#str}}startnewentry, mod_margic{{/str}} </a>
+{{#canmanageentries}}<button class="btn btn-primary" data-toggle="collapse" data-target=".gradingform" aria-expanded="false" aria-controls=".gradingform" title="{{#str}}toggleratingform, mod_margic{{/str}}">{{#str}}toggleratingform, mod_margic{{/str}}</button>{{/canmanageentries}}
+
+{{#canmanageentries}}{{#entries.0}}
     <form action="view_reworked.php" method="post">
         <input type="hidden" name="id" value="{{cmid}}">
         <input type="hidden" name="sesskey" value="{{sesskey}}">
-{{/canmanageentries}}
+{{/entries.0}}{{/canmanageentries}}
 
 {{#entries}}
     <div class="entry" style="background: {{entrybgc}};">
@@ -65,6 +75,10 @@
             <div class="needsedit">{{needsgrading}}</div>
         {{/needsgrading}}
 
+        {{#needsregrading}}
+            <div class="needsedit">{{needsregrading}}</div>
+        {{/needsregrading}}
+
         {{#edittimeends}}
             <div class="editend">
                 {{#caneditentries}}{{#str}}editingends, mod_margic{{/str}}: {{/caneditentries}}
@@ -73,12 +87,23 @@
             </div>
         {{/edittimeends}}
 
-        {{#canmanageentries}}{{#gradingform}}{{{gradingform}}}{{/gradingform}}{{/canmanageentries}}
+        {{#canmanageentries}}
+            {{#gradingform}}
+                <div class="gradingform collapse {{#gradingmode}}show{{/gradingmode}}">
+                    {{{gradingform}}}
+                </div>
+            {{/gradingform}}
+        {{/canmanageentries}}
+        {{^canmanageentries}}
+            {{#gradingform}}{{{gradingform}}}{{/gradingform}}
+        {{/canmanageentries}}
 
     </div>
 {{/entries}}
-{{#canmanageentries}}{{#entries}}</form>{{/entries}}{{/canmanageentries}}
+{{#canmanageentries}}{{#entries.0}}</form>{{/entries.0}}{{/canmanageentries}}
 
 {{^entries}}
-    {{#str}}notstarted, mod_margic{{/str}}
+    <br>
+    {{#canmanageentries}}{{#str}}noentriesfound, mod_margic{{/str}}{{/canmanageentries}}
+    {{^canmanageentries}}{{#str}}notstarted, mod_margic{{/str}}{{/canmanageentries}}
 {{/entries}}

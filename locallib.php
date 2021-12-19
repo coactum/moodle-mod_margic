@@ -90,10 +90,20 @@ class margic {
 
         $this->modulename = get_string('modulename', 'mod_margic');
 
-        if (has_capability('mod/margic:manageentries', $context)) {
+        if ($canmanageentries = has_capability('mod/margic:manageentries', $context)) {
             $this->mode = 'allentries';
         } else {
             $this->mode = 'ownentries';
+        }
+
+
+        // Handling groups.
+        $currentgroups = groups_get_activity_group($this->cm, true);    // Get a list of the currently allowed groups for this course.
+
+        if ($currentgroups) {
+            $allowedusers = get_users_by_capability($this->context, 'mod/margic:addentries', '', $sort = 'lastname ASC, firstname ASC', '', '', $currentgroups);
+        } else {
+            $allowedusers = true;
         }
 
         if ($this->mode == 'allentries') {
@@ -113,20 +123,25 @@ class margic {
         $regradingstr = get_string('needsregrading', 'margic');
 
         foreach ($this->entries as $i => $entry) {
-            $this->entries[$i]->stats = entrystats::get_entry_stats($entry->text, $entry->timecreated);
             $this->entries[$i]->user = $DB->get_record('user', array('id' => $entry->userid));
 
-            if (!empty($entry->timecreated) && !empty($entry->timemodified) && empty($entry->timemarked)) {
-                $this->entries[$i]->needsgrading = $gradingstr;
-            } else if (!empty($entry->timemodified) && !empty($entry->timemarked) && $entry->timemodified > $entry->timemarked) {
-                $this->entries[$i]->needsregrading = $regradingstr;
+            if (!$currentgroups || ($allowedusers && in_array($this->entries[$i]->user, $allowedusers))) {
+                $this->entries[$i]->stats = entrystats::get_entry_stats($entry->text, $entry->timecreated);
+
+                if (!empty($entry->timecreated) && !empty($entry->timemodified) && empty($entry->timemarked)) {
+                    $this->entries[$i]->needsgrading = $gradingstr;
+                } else if (!empty($entry->timemodified) && !empty($entry->timemarked) && $entry->timemodified > $entry->timemarked) {
+                    $this->entries[$i]->needsregrading = $regradingstr;
+                } else {
+                    $this->entries[$i]->needsregrading = false;
+                }
+
+                $grades = make_grades_menu($this->instance->scale);
+
+                $this->entries[$i]->gradingform = results::margic_return_comment_and_grade_form_for_entry($this->context, $this->course, $this->instance, $entry, $grades, $canmanageentries);
             } else {
-                $this->entries[$i]->needsregrading = false;
+                unset($this->entries[$i]);
             }
-
-            $grades = make_grades_menu($this->instance->scale);
-
-            $this->entries[$i]->gradingform = results::margic_return_comment_and_grade_form_for_entry($this->context, $this->course, $this->instance, $entry, $grades);
 
         }
 

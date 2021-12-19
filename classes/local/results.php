@@ -671,107 +671,175 @@ class results {
      * @param integer $margic
      * @param object $entry
      * @param integer $grades
+     * @param bool $canmanageentries
      */
-    public static function margic_return_comment_and_grade_form_for_entry($context, $course, $margic, $entry, $grades) {
+    public static function margic_return_comment_and_grade_form_for_entry($context, $course, $margic, $entry, $grades, $canmanageentries) {
 
         $grade = false;
 
         // If there is a user entry, add a teacher feedback area for grade
         // and comments. Add previous grades and comments, if available.
         if ($entry) {
-            global $USER, $OUTPUT, $DB, $CFG;
+            global $USER, $DB, $CFG;
 
             require_once(__DIR__ .'/../../../../lib/gradelib.php');
 
-            if (! $teachers = get_users_by_capability($context, 'mod/margic:manageentries')) {
-                throw new \moodle_exception(get_string('noentriesmanagers', 'margic'));
-            }
-
             $gradingform = '';
 
-            if (! $entry->teacher) {
-                $entry->teacher = $USER->id;
-            }
-            if (empty($teachers[$entry->teacher])) {
-                $teachers[$entry->teacher] = $DB->get_record('user', array(
-                    'id' => $entry->teacher
-                ));
-            }
-
-            // 20200816 Get the current rating for this user!
-            if ($margic->assessed != 0) {
-                $gradinginfo = grade_get_grades($course->id, 'mod', 'margic', $margic->id, $entry->userid);
-                $gradeitemgrademax = $gradinginfo->items[0]->grademax;
-                $userfinalgrade = $gradinginfo->items[0]->grades[$entry->userid];
-                $currentuserrating = $userfinalgrade->str_long_grade;
-            } else {
-                $currentuserrating = '';
-            }
-
-            $attrs = array();
-            $hiddengradestr = '';
-            $gradebookgradestr = '';
-            $feedbackdisabledstr = '';
-            $feedbacktext = $entry->entrycomment;
-
-            // If the grade was modified from the gradebook disable edition also skip if margic is not graded.
-            $gradinginfo = grade_get_grades($course->id, 'mod', 'margic', $entry->margic, array(
-                $entry->userid
-            ));
-
-            if (! empty($gradinginfo->items[0]->grades[$entry->userid]->str_long_grade)) {
-                if ($gradingdisabled = $gradinginfo->items[0]->grades[$entry->userid]->locked
-                    || $gradinginfo->items[0]->grades[$entry->userid]->overridden) {
-
-                    $attrs['disabled'] = 'disabled';
-                    $hiddengradestr = '<input type="hidden" name="r'.$entry->id.'" value="'.$entry->rating.'"/>';
-                    $gradebooklink = '<a href="'.$CFG->wwwroot.'/grade/report/grader/index.php?id='.$course->id.'">';
-                    $gradebooklink .= $gradinginfo->items[0]->grades[$entry->userid]->str_long_grade.'</a>';
-                    $gradebookgradestr = '<br/>'.get_string("gradeingradebook", "margic").':&nbsp;'.$gradebooklink;
-
-                    $feedbackdisabledstr = 'disabled="disabled"';
-                    $feedbacktext = $gradinginfo->items[0]->grades[$entry->userid]->str_feedback;
+            if($canmanageentries){
+                if (! $entry->teacher) {
+                    $entry->teacher = $USER->id;
                 }
+
+                // 20200816 Get the current rating for this user!
+                if ($margic->assessed != 0) {
+                    $gradinginfo = grade_get_grades($course->id, 'mod', 'margic', $margic->id, $entry->userid);
+                    $userfinalgrade = $gradinginfo->items[0]->grades[$entry->userid];
+                    $currentuserrating = $userfinalgrade->str_long_grade;
+                } else {
+                    $currentuserrating = '';
+                }
+
+                $attrs = array();
+                $hiddengradestr = '';
+                $gradebookgradestr = '';
+                $feedbackdisabledstr = '';
+                $feedbacktext = $entry->entrycomment;
+
+                // If the grade was modified from the gradebook disable edition also skip if margic is not graded.
+                $gradinginfo = grade_get_grades($course->id, 'mod', 'margic', $entry->margic, array(
+                    $entry->userid
+                ));
+
+                if (! empty($gradinginfo->items[0]->grades[$entry->userid]->str_long_grade)) {
+                    if ($gradingdisabled = $gradinginfo->items[0]->grades[$entry->userid]->locked
+                        || $gradinginfo->items[0]->grades[$entry->userid]->overridden) {
+
+                        $attrs['disabled'] = 'disabled';
+                        $hiddengradestr = '<input type="hidden" name="r'.$entry->id.'" value="'.$entry->rating.'"/>';
+                        $gradebooklink = '<a href="'.$CFG->wwwroot.'/grade/report/grader/index.php?id='.$course->id.'">';
+                        $gradebooklink .= $gradinginfo->items[0]->grades[$entry->userid]->str_long_grade.'</a>';
+                        $gradebookgradestr = '<br/>'.get_string("gradeingradebook", "margic").':&nbsp;'.$gradebooklink;
+
+                        $feedbackdisabledstr = 'disabled="disabled"';
+                        $feedbacktext = $gradinginfo->items[0]->grades[$entry->userid]->str_feedback;
+                    }
+                }
+
+                $attrs['id'] = 'r'.$entry->id;
+
+                $user = $DB->get_record('user', array('id' => $entry->userid));
+
+                $gradingform .= '<h3>' . get_string('feedback') . '</h3>';
+
+                $gradingform .= '<div class="row">';
+                $gradingform .= '<div class="col-md-3 col-form-label d-flex pb-0 pr-md-0">';
+                $gradingform .= get_string('rating', 'margic') . ': ';
+
+                $gradingform .= html_writer::label(fullname($user)." ".get_string('grade'), 'r'.$entry->id, true, array('class' => 'accesshide'));
+
+                $gradingform .= '</div><div class="col-md-9 form-inline align-items-start felement">';
+
+                if ($margic->assessed > 0) {
+                    $gradingform .= html_writer::select($grades, 'r'.$entry->id, $entry->rating, get_string("nograde").'...', $attrs);
+                } else {
+                    $gradingform .= get_string('norating', 'mod_margic');
+                }
+
+                $gradingform .= $hiddengradestr;
+
+                if ($entry->timemarked) {
+                    $gradingform .=  ' <span class="lastedit">'.userdate($entry->timemarked).' </span>';
+                }
+
+                $gradingform .= $gradebookgradestr;
+
+                $gradingform .= '</div>';
+                $gradingform .= '</div>';
+
+                $aggregatestr = self::get_margic_aggregation($margic->assessed) . ' ' . get_string('forallentries', 'margic');
+
+                $gradingform .= '<div class="row">';
+                $gradingform .= '<div class="col-md-3 col-form-label d-flex pb-0 pr-md-0">';
+
+                if ($margic->assessed != 0) {
+                    $gradingform .= $aggregatestr.': ';
+                } else {
+                    $gradingform .= $aggregatestr;
+                }
+
+                $gradingform .= '</div>';
+
+                $gradingform .= '<div class="col-md-9 form-inline align-items-start felement">';
+                $gradingform .= $currentuserrating;
+                $gradingform .= '</div>';
+                $gradingform .= '</div>';
+
+                // Feedback text.
+                $gradingform .= html_writer::label(fullname($user)." ".get_string('feedback'), 'c'.$entry->id, true, array(
+                    'class' => 'accesshide'
+                ));
+
+                $gradingform .= '<div class="form-group row  fitem">';
+                $gradingform .= '<div class="col-md-3 col-form-label d-flex pb-0 pr-md-0">';
+                $gradingform .= html_writer::label(get_string('entrycomment', 'margic'). ': ', 'c'.$entry->id, true);
+                $gradingform .= '</div>';
+                $gradingform .= '<div class="col-md-9 form-inline align-items-start felement">';
+                $gradingform .= '<textarea id="c'.$entry->id.'" name="c'.$entry->id.'" rows="6" cols="60"'. $feedbackdisabledstr .'>'.$feedbacktext.'</textarea>';
+                $gradingform .= '</div>';
+                $gradingform .= '</div>';
+
+                if ($feedbackdisabledstr != '') {
+                    $gradingform .= '<input type="hidden" name="c'.$entry->id.'" value="'.$feedbacktext.'"/>';
+                }
+
+                $gradingform .= '<div class="row">';
+                $gradingform .= '<div class="col-md-3">';
+                $gradingform .= '</div>';
+                $gradingform .= '<div class="col-md-9 form-inline align-items-start felement">';
+                $gradingform .= '<input type="submit" class="btn btn-primary " name="submitbutton" id="id_submitbutton" value="' . get_string("saveallfeedback", "margic") .'">';
+                $gradingform .= '</div>';
+                $gradingform .= '</div>';
+            } else if (! empty($entry->entrycomment) || ! empty($entry->rating)){
+                if (! $teacher = $DB->get_record('user', array(
+                    'id' => $entry->teacher
+                ))) {
+                    throw new moodle_exception(get_string('generalerror', 'margic'));
+                }
+
+                $gradingform .= '<h3>' . get_string('feedback') . '</h3>';
+
+                $gradingform .= '<div class="entryheader">';
+                $gradingform .= '<span class="author">' . fullname($teacher) . '</span> ';
+                $gradingform .= '<span class="time">' . userdate($entry->timemarked) . '</span>';
+
+                $gradingform .= '<span class="pull-right"><strong>';
+
+                // Gradebook preference.
+                $gradinginfo = grade_get_grades($course->id, 'mod', 'margic', $entry->margic, array(
+                    $entry->userid
+                ));
+
+                // Branch check for string compatibility.
+                if (! empty($grades)) {
+                    if ($CFG->branch > 310) {
+                        $gradingform .= get_string('gradenoun') . ': ';
+                    } else {
+                        $gradingform .= get_string('grade') . ': ';
+                    }
+                    $gradingform .= $entry->rating . '/' . number_format($gradinginfo->items[0]->grademax, 2);
+                } else {
+                    print_string('nograde');
+                }
+
+                $gradingform .= '</strong></span>';
+                $gradingform .= '</div>';
+
+                // Feedback text.
+                $gradingform .= $entry->entrycomment;
+            } else {
+                $gradingform = false;
             }
-
-            $attrs['id'] = 'r'.$entry->id;
-
-            $user = $DB->get_record('user', array('id' => $entry->userid));
-
-            $gradingform .= html_writer::label(fullname($user)." ".get_string('grade'),
-                    'r'.$entry->id, true, array('class' => 'accesshide'));
-
-            if ($margic->assessed > 0) {
-                $gradingform .= html_writer::select($grades, 'r'.$entry->id, $entry->rating, get_string("nograde").'...', $attrs);
-            }
-
-            $gradingform .= $hiddengradestr;
-
-            if (! empty($entry->timemarked) && $entry->timemodified > $entry->timemarked) {
-                $gradingform .= ' <span class="needsedit">'.get_string("needsregrading", "margic").' </span>';
-            } else if ($entry->timemarked) {
-                $gradingform .=  ' <span class="lastedit">'.userdate($entry->timemarked).' </span>';
-            }
-
-            $gradingform .= $gradebookgradestr;
-
-            $aggregatestr = self::get_margic_aggregation($margic->assessed);
-
-            // 20200816 Added overall rating type and rating.
-            $gradingform .= '<br>'.$aggregatestr.' '.$currentuserrating;
-
-            // Feedback text.
-            $gradingform .= html_writer::label(fullname($user)." ".get_string('feedback'), 'c'.$entry->id, true, array(
-                'class' => 'accesshide'
-            ));
-            $gradingform .= '<textarea id="c'.$entry->id.'" name="c'.$entry->id.'" rows="6" cols="60"'. $feedbackdisabledstr .'>'.$feedbacktext.'</textarea>';
-
-            if ($feedbackdisabledstr != '') {
-                $gradingform .= '<input type="hidden" name="c'.$entry->id.'" value="'.$feedbacktext.'"/>';
-            }
-
-            $gradingform .= '<input type="submit" class="btn btn-primary " name="submitbutton" id="id_submitbutton" value="' . get_string("saveallfeedback", "margic") .'">';
-
         }
         return $gradingform;
     }

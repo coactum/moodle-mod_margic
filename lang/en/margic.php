@@ -130,7 +130,6 @@ $string['nextentry'] = 'Next entry';
 $string['nodeadline'] = 'Always open';
 $string['noentriesmanagers'] = 'There are no teachers';
 $string['noentry'] = 'No entry';
-$string['noratinggiven'] = 'No rating given';
 $string['notopenuntil'] = 'This margic won\'t be open until';
 
 $string['notstarted'] = 'You have not started this margic yet';
@@ -193,7 +192,10 @@ $string['lastedited'] = 'Last edited';
 $string['getallentriesofuser'] = 'Get all margic entries for this user';
 $string['myentries'] = 'My entries';
 $string['numwordsraw'] = '{$a->wordscount} text words using {$a->charscount} characters, including {$a->spacescount} spaces. ';
-
+$string['forallentries'] = 'for all entries of this user';
+$string['forallmyentries'] = 'for all of my entries';
+$string['toggleratingform'] = 'Open/close rating form';
+$string['norating'] = 'No rating';
 
 // löschen
 $string['numwordscln'] = '{$a->one} clean text words using {$a->two} characters, NOT including {$a->three} spaces. ';

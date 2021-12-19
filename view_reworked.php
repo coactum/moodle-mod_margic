@@ -95,11 +95,6 @@ if ($data = data_submitted()) {
 
     $entries = $margic->get_entries_with_keys();
 
-    //var_dump($data);
-    //var_dump($entries);
-
-    // // My single data entry contains id, sesskey, and three other items, entry, feedback, and ???
-
     foreach ($data as $key => $val) {
         if (strpos($key, 'r') === 0 || strpos($key, 'c') === 0) {
             $type = substr($key, 0, 1);
@@ -108,14 +103,10 @@ if ($data = data_submitted()) {
         }
     }
 
-    //var_dump($feedback);
-
     $timenow = time();
     $count = 0;
     foreach ($feedback as $num => $vals) {
         $entry = $entries[$num];
-
-        //var_dump($entry);
 
         // Only update entries where feedback has actually changed.
         $ratingchanged = false;
@@ -144,9 +135,7 @@ if ($data = data_submitted()) {
                 $count ++;
             }
 
-            // Compare to database view.php line 465.
             if ($moduleinstance->assessed != 0) {
-                // 20200812 Added rating code and got it working.
                 $ratingoptions = new stdClass();
                 $ratingoptions->contextid = $context->id;
                 $ratingoptions->component = 'mod_margic';
@@ -163,7 +152,7 @@ if ($data = data_submitted()) {
                 $ratingoptions->assesstimestart = $moduleinstance->assesstimestart;
                 $ratingoptions->assesstimefinish = $moduleinstance->assesstimefinish;
 
-                // 20200813 Check if there is already a rating, and if so, just update it.
+                // Check if there is already a rating, and if so, just update it.
                 if ($rec = results::check_rating_entry($ratingoptions)) {
                     $ratingoptions->id = $rec->id;
                     $DB->update_record('rating', $ratingoptions, false);
@@ -174,8 +163,6 @@ if ($data = data_submitted()) {
 
             $record = $moduleinstance;
             $record->cmidnumber = $cm->idnumber;
-
-            var_dump($record);
 
             margic_update_grades($record, $entry->userid);
         }
@@ -191,8 +178,9 @@ if ($data = data_submitted()) {
     $event->add_record_snapshot('margic', $moduleinstance);
     $event->trigger();
 
-    // Report how many entries were updated when the, Save all my feedback button was pressed.
-    echo $OUTPUT->notification(get_string("feedbackupdated", "margic", "$count"), "notifysuccess");
+    // Redirect and display how many entries were updated with feedback and grades.
+    redirect(new moodle_url('/mod/margic/view_reworked.php', array('id' => $id)), get_string('feedbackupdated', 'mod_margic', $count), null, notification::NOTIFY_SUCCESS);
+
 } else {
 
     // Trigger course_module_viewed event.
@@ -208,6 +196,106 @@ if ($data = data_submitted()) {
 
 // Toolbar action handlers (see view.php)
 //...
+
+
+// Sortorder
+
+// Set a default sorting order for entry retrieval.
+// if ($sortoption = get_user_preferences('sortoption')) {
+//     $sortoption = get_user_preferences('sortoption');
+// } else {
+//     set_user_preference('sortoption', 'u.lastname ASC, u.firstname ASC');
+//     $sortoption = get_user_preferences('sortoption');
+// }
+
+// Handle toolbar capabilities.
+// if (! empty($action)) {
+//     switch ($action) {
+//         case 'download':
+//             if (has_capability('mod/margic:manageentries', $context)) {
+//                 // Call download entries function in lib.php.
+//                 results::download_entries($context, $course, $margic);
+//             }
+//             break;
+//         case 'lastnameasc':
+//             if (has_capability('mod/margic:manageentries', $context)) {
+//                 $stringlable = 'lastnameasc';
+//                 // 20201014 Set order and get ALL margic entries in lastname ascending order.
+//                 set_user_preference('sortoption', 'u.lastname ASC, u.firstname ASC');
+//                 $sortoption = get_user_preferences('sortoption');
+//                 $eee = $DB->get_records("margic_entries", array(
+//                     "margic" => $margic->id
+//                 ));
+//             }
+//             break;
+//         case 'lastnamedesc':
+//             if (has_capability('mod/margic:manageentries', $context)) {
+//                 $stringlable = 'lastnamedesc';
+//                 // 20201014 Set order and get ALL margic entries in lastname descending order.
+//                 set_user_preference('sortoption', 'u.lastname DESC, u.firstname DESC');
+//                 $sortoption = get_user_preferences('sortoption');
+//                 $eee = $DB->get_records("margic_entries", array(
+//                     "margic" => $margic->id
+//                 ));
+//             }
+//             break;
+//         case 'currententry':
+//             if (has_capability('mod/margic:manageentries', $context)) {
+//                 $stringlable = 'currententry';
+//                 // Get ALL margic entries in an order that will result in showing the users most current entry.
+//                 $eee = $DB->get_records("margic_entries", array(
+//                     "margic" => $margic->id
+//                 ));
+//             }
+//             break;
+//         case 'firstentry':
+//             if (has_capability('mod/margic:manageentries', $context)) {
+//                 $stringlable = 'firstentry';
+//                 // Get ALL margic entries in an order that will result in showing the users very first entry.
+//                 $eee = $DB->get_records("margic_entries", array(
+//                     "margic" => $margic->id
+//                 ), $sort = 'timecreated DESC');
+//             }
+//             break;
+//         case 'lowestgradeentry':
+//             if (has_capability('mod/margic:manageentries', $context)) {
+//                 $stringlable = 'lowestgradeentry';
+//                 // Get ALL margic entries in an order that will result in showing the users
+//                 // oldest, ungraded entry. Once all ungraded entries have a grade, the entry
+//                 // with the lowest grade is shown. For duplicate low grades, the entry that
+//                 // is oldest, is shown.
+//                 $eee = $DB->get_records("margic_entries", array(
+//                     "margic" => $margic->id
+//                 ), $sort = 'rating DESC, timemodified DESC');
+//             }
+//             break;
+//         case 'highestgradeentry':
+//             if (has_capability('mod/margic:manageentries', $context)) {
+//                 $stringlable = 'highestgradeentry';
+//                 // Get ALL margic entries in an order that will result in showing the users highest
+//                 // graded entry. Duplicates high grades result in showing the most recent entry.
+//                 $eee = $DB->get_records("margic_entries", array(
+//                     "margic" => $margic->id
+//                 ), $sort = 'rating ASC');
+//             }
+//             break;
+//         case 'latestmodifiedentry':
+//             if (has_capability('mod/margic:manageentries', $context)) {
+//                 $stringlable = 'latestmodifiedentry';
+//                 // Get ALL margic entries in an order that will result in showing the users
+//                 // most recently modified entry. At the moment, this is no different from current entry.
+//                 // May be needed for future version if editing old entries is allowed.
+//                 $eee = $DB->get_records("margic_entries", array(
+//                     "margic" => $margic->id
+//                 ), $sort = 'timemodified ASC');
+//             }
+//             break;
+//         default:
+//             if (has_capability('mod/margic:manageentries', $context)) {
+//                 $stringlable = 'currententry';
+//             }
+//     }
+// }
 
 // Get the name for this margic activity.
 $margicname = format_string($moduleinstance->name, true, array(
@@ -269,16 +357,16 @@ if ($course->format == 'weeks' and $moduleinstance->days) {
     $moduleinstance->days = 0;
 }
 
-// Grading.
-// 20200815 Get the current rating for this user, if this margic is assessed.
-// if ($moduleinstance->assessed != 0) {
-//     $gradinginfo = grade_get_grades($course->id, 'mod', 'margic', $moduleinstance->id, $USER->id);
-//     $gradeitemgrademax = $gradinginfo->items[0]->grademax;
-//     $userfinalgrade = $gradinginfo->items[0]->grades[$USER->id];
-//     $currentuserrating = $userfinalgrade->str_long_grade;
-// } else {
-//     $currentuserrating = '';
-// }
+// Get grading of current user when margic is rated.
+if ($moduleinstance->assessed != 0) {
+    $ratingaggregationmode = results::get_margic_aggregation($moduleinstance->assessed) . ' ' . get_string('forallmyentries', 'mod_margic');
+    $gradinginfo = grade_get_grades($course->id, 'mod', 'margic', $moduleinstance->id, $USER->id);
+    $userfinalgrade = $gradinginfo->items[0]->grades[$USER->id];
+    $currentuserrating = $userfinalgrade->str_long_grade;
+} else {
+    $ratingaggregationmode = false;
+    $currentuserrating = false;
+}
 
 
 if ($moduleinstance->editall) {
@@ -292,12 +380,12 @@ if ($moduleinstance->editall) {
     $edittimeends = $timefinish;
 }
 
+// Handle groups.
+echo groups_print_activity_menu($cm, $CFG->wwwroot . "/mod/margic/view_reworked.php?id=$id");
 
-
-$page = new margic_view($cm->id, $margic->get_entries(), 'testsortmode', get_config('mod_margic', 'entrybgc'), get_config('mod_margic', 'entrytextbgc'), $editentries, $edittimeends, $canmanageentries, sesskey());
+// Output page.
+$page = new margic_view($cm->id, $margic->get_entries(), 'testsortmode', get_config('mod_margic', 'entrybgc'), get_config('mod_margic', 'entrytextbgc'), $editentries, $edittimeends, $canmanageentries, sesskey(), $currentuserrating, $ratingaggregationmode);
 
 echo $OUTPUT->render($page);
-
-var_dump($margic->get_entries());
 
 echo $OUTPUT->footer();

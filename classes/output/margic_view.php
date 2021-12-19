@@ -56,6 +56,10 @@ class margic_view implements renderable, templatable {
     protected $canmanageentries;
     /** @var string */
     protected $sesskey;
+    /** @var string */
+    protected $currentuserrating;
+    /** @var int */
+    protected $ratingaggregationmode;
     /**
      * Construct this renderable.
      * @param int $cmid The course module id
@@ -67,8 +71,10 @@ class margic_view implements renderable, templatable {
      * @param bool $edittimeends Time when entries cant be edited anymore
      * @param bool $canmanageentries If entries can be managed
      * @param string $sesskey The session key
+     * @param string $currentuserrating The rating of the current user viewing the page
+     * @param string $ratingaggregationmode The mode of the aggregated grades
      */
-    public function __construct($cmid, $entries, $sortmode, $entrybgc, $entrytextbgc, $caneditentries, $edittimeends, $canmanageentries, $sesskey) {
+    public function __construct($cmid, $entries, $sortmode, $entrybgc, $entrytextbgc, $caneditentries, $edittimeends, $canmanageentries, $sesskey, $currentuserrating, $ratingaggregationmode) {
 
         $this->cmid = $cmid;
         $this->entries = $entries;
@@ -79,6 +85,8 @@ class margic_view implements renderable, templatable {
         $this->edittimeends = $edittimeends;
         $this->canmanageentries = $canmanageentries;
         $this->sesskey = $sesskey;
+        $this->currentuserrating = $currentuserrating;
+        $this->ratingaggregationmode = $ratingaggregationmode;
     }
 
     /**
@@ -98,6 +106,8 @@ class margic_view implements renderable, templatable {
         $data->edittimeends = $this->edittimeends;
         $data->canmanageentries = $this->canmanageentries;
         $data->sesskey = $this->sesskey;
+        $data->currentuserrating = $this->currentuserrating;
+        $data->ratingaggregationmode = $this->ratingaggregationmode;
         return $data;
     }
 }

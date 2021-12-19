@@ -115,7 +115,6 @@ $string['nextentry'] = 'Nächster Eintrag';
 $string['nodeadline'] = 'Immer offen';
 $string['noentriesmanagers'] = 'Keine Trainer/innen';
 $string['noentry'] = 'Kein Eintrag';
-$string['noratinggiven'] = 'Keine Bewertung abgegeben';
 $string['notopenuntil'] = 'Diese Margic-Instanz ist nicht geöffnet bis';
 $string['notstarted'] = 'Sie haben diese Margic-Instanz noch nicht begonnen';
 $string['outof'] = 'aus {$a} Einträgen.';
@@ -179,6 +178,10 @@ $string['noentriesfound'] = 'Keine Einträge gefunden';
 $string['lastedited'] = 'Zuletzt bearbeitet';
 $string['getallentriesofuser'] = 'Alle Margic Enträge dieses Benutzers anzeigen';
 $string['myentries'] = 'Meine Einträge';
+$string['forallentries'] = 'für alle Einträge dieses Teilnehmenden';
+$string['forallmyentries'] = 'für alle meine Einträge';
+$string['toggleratingform'] = 'Bewertungsmodus öffnen/schließen';
+$string['norating'] = 'Keine Bewertung';
 
 // löschen
 $string['numwordscln'] = '{$a->one} bereinigte Wörter mit {$a->two} Zeichen, AUSSCHLIEßLICH {$a->three} Leerzeichen. ';
