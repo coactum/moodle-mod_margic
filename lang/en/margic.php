@@ -122,7 +122,7 @@ $string['mailsubject'] = 'margic feedback';
 $string['modulename'] = 'Margic';
 $string['modulename_help'] = 'The margic activity enables teachers to obtain students feedback
  over a period of time.';
-$string['modulenameplural'] = 'margics';
+$string['modulenameplural'] = 'Margics';
 $string['needsgrading'] = ' This entry has not been given feedback or rated yet.';
 $string['needsregrading'] = 'This entry has changed since feedback or a rating was given.';
 $string['newmargicentries'] = 'New margic entries';
@@ -174,7 +174,6 @@ $string['timemodified'] = 'Time modified';
 $string['toolbar'] = 'Toolbar:';
 $string['userid'] = 'User id';
 $string['usertoolbar'] = 'User toolbar:';
-$string['viewalldiaries'] = 'View all course diaries';
 $string['viewallentries'] = 'View {$a} margic entries';
 $string['viewentries'] = 'View entries';
 
@@ -192,10 +191,11 @@ $string['lastedited'] = 'Last edited';
 $string['getallentriesofuser'] = 'Get all margic entries for this user';
 $string['myentries'] = 'My entries';
 $string['numwordsraw'] = '{$a->wordscount} text words using {$a->charscount} characters, including {$a->spacescount} spaces. ';
-$string['forallentries'] = 'for all entries of this user';
+$string['forallentries'] = 'for all entries of';
 $string['forallmyentries'] = 'for all of my entries';
 $string['toggleratingform'] = 'Open/close rating form';
-$string['norating'] = 'No rating';
+$string['norating'] = 'Rating disabled.';
+$string['viewallmargics'] = 'View all margics in course';
 
 // löschen
 $string['numwordscln'] = '{$a->one} clean text words using {$a->two} characters, NOT including {$a->three} spaces. ';

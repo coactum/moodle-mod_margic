@@ -170,8 +170,12 @@
     margin-left: 10px;
 }
 
-#page-mod-margic-report .mediaplugin {
+/* #page-mod-margic-report .mediaplugin {
     width: 100%;
+} */
+
+#page-mod-margic-view .ratingform {
+    padding: 5px;
 }
 
 #lastedit {

@@ -262,12 +262,12 @@ if ($entriesmanager) {
     // 20200827 Add link to index.php page right after the report.php link. 20210501 modified to remove div.
     $temp = '<span  class="reportlink"><a href="report.php?id='.$cm->id.'&action=currententry">';
     $temp .= get_string('viewallentries', 'margic', $entrycount).'</a>&nbsp;&nbsp;|&nbsp;&nbsp;';
-    $temp .= '<a href="index.php?id='.$course->id.'">'.get_string('viewalldiaries', 'margic').'</a></span>';
+    $temp .= '<a href="index.php?id='.$course->id.'">'.get_string('viewallmargics', 'margic').'</a></span>';
     echo $temp;
 
 } else {
     // 20200831 Added to show link to index.php page for students. 20210501 modified to remove div.
-    echo '<a class="reportlink" href="index.php?id='.$course->id.'">'.get_string('viewalldiaries', 'margic').'</a>';
+    echo '<a class="reportlink" href="index.php?id='.$course->id.'">'.get_string('viewallmargics', 'margic').'</a>';
 }
 
 // 20200901 Visual separator between activity info and entries.
@@ -484,6 +484,7 @@ if ($timenow > $timestart) {
                         $rawwordspacecount = substr_count($entry->text, ' ');
                         // Calculate cleaned text word/character counts.
                         $plaintext = htmlspecialchars(trim(strip_tags($entry->text)));
+                        //var_dump($plaintext);
                         $clnwordcount = count_words($plaintext);
                         $clnwordspacecount = substr_count($plaintext, ' ');
                         $clnwordcharcount = ((strlen($plaintext)) - $clnwordspacecount);

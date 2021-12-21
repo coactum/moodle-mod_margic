@@ -17,10 +17,11 @@
 /**
  * This page lists all the instances of margic in a particular course
  *
- * @package   mod_margic
- * @copyright 1999 onwards Martin Dougiamas {@link http://moodle.com}
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package     mod_margic
+ * @copyright   2021 coactum GmbH
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 require_once(__DIR__ . "/../../config.php");
 require_once("lib.php");
 
@@ -79,10 +80,10 @@ $table->align[] = 'left';
 
 $currentsection = '';
 $i = 0;
+
 foreach ($margics as $margic) {
 
     $context = context_module::instance($margic->coursemodule);
-    $entriesmanager = has_capability('mod/margic:manageentries', $context);
 
     // Section.
     $printsection = '';
@@ -114,31 +115,6 @@ foreach ($margics as $margic) {
 
     // Description.
     $table->data[$i][] = format_text($margic->intro, $margic->introformat);
-
-    // Entries info.
-    if ($entriesmanager) {
-
-        // Display the report.php col only if is a entries manager in some CONTEXT_MODULE.
-        if (empty($managersomewhere)) {
-            $table->head[] = get_string('viewentries', 'margic');
-            $table->align[] = 'left';
-            $managersomewhere = true;
-
-            // Fill the previous col cells.
-            $manageentriescell = count($table->head) - 1;
-            for ($j = 0; $j < $i; $j ++) {
-                if (is_array($table->data[$j])) {
-                    $table->data[$j][$manageentriescell] = '';
-                }
-            }
-        }
-
-        $entrycount = margic_count_entries($margic, groups_get_all_groups($course->id, $USER->id));
-        $table->data[$i][] = "<a href=\"report.php?id=$margic->coursemodule\">"
-            . get_string("viewallentries", "margic", $entrycount) . "</a>";
-    } else if (! empty($managersomewhere)) {
-        $table->data[$i][] = "";
-    }
 
     $i ++;
 }

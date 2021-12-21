@@ -1020,3 +1020,26 @@ function margic_pluginfile($course, $cm, $context, $filearea, $args, $forcedownl
     // Finally send the file.
     send_stored_file($file, null, 0, $forcedownload, $options);
 }
+
+/**
+ * Extends the global navigation tree by adding mod_margic nodes if there is a relevant content.
+ *
+ * This can be called by an AJAX request so do not rely on $PAGE as it might not be set up properly.
+ *
+ * @param navigation_node $margicnode An object representing the navigation tree node.
+ * @param  stdClass $course Course object
+ * @param  context_course $coursecontext Course context
+*/
+
+function margic_extend_navigation_course($margicnode, $course, $coursecontext) {
+    $modinfo = get_fast_modinfo($course); // get mod_fast_modinfo from $course
+    $index = 1;	//set index
+    foreach ($modinfo->get_cms() as $cmid => $cm) { //search existing course modules for this course
+        if ($index == 1 && $cm->modname=="margic" && $cm->uservisible && $cm->available) { //look if module (in this case margic) exists, is uservisible and available
+            $url = new moodle_url("/mod/" . $cm->modname . "/index.php", array("id" => $course->id)); //set url for the link in the navigation node
+            $node = navigation_node::create(get_string('viewallmargics', 'margic'), $url, navigation_node::TYPE_CUSTOM, null , null , null);
+            $margicnode->add_node($node);
+            $index++;
+        }
+    }
+}

@@ -157,7 +157,6 @@ $string['timemodified'] = 'Zeitpunkt der Bearbeitung';
 $string['toolbar'] = 'Symbolleiste:';
 $string['userid'] = 'Nutzer-ID';
 $string['usertoolbar'] = 'Werkzeuge:';
-$string['viewalldiaries'] = 'Alle Kurstagebücher anzeigen';
 $string['viewallentries'] = 'Anzeigen von {$a} Margic-Einträgen';
 
 $string['startnewentry'] = 'Neuen Eintrag schreiben';
@@ -178,10 +177,11 @@ $string['noentriesfound'] = 'Keine Einträge gefunden';
 $string['lastedited'] = 'Zuletzt bearbeitet';
 $string['getallentriesofuser'] = 'Alle Margic Enträge dieses Benutzers anzeigen';
 $string['myentries'] = 'Meine Einträge';
-$string['forallentries'] = 'für alle Einträge dieses Teilnehmenden';
+$string['forallentries'] = 'für alle Einträge von';
 $string['forallmyentries'] = 'für alle meine Einträge';
 $string['toggleratingform'] = 'Bewertungsmodus öffnen/schließen';
-$string['norating'] = 'Keine Bewertung';
+$string['norating'] = 'Bewertung deaktiviert.';
+$string['viewallmargics'] = 'Alle Margics im Kurs anzeigen';
 
 // löschen
 $string['numwordscln'] = '{$a->one} bereinigte Wörter mit {$a->two} Zeichen, AUSSCHLIEßLICH {$a->three} Leerzeichen. ';
