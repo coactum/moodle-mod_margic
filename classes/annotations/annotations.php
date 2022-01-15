@@ -30,9 +30,9 @@ require_once($CFG->dirroot . '/mod/margic/classes/annotations/annotation_form.ph
 
 global $DB;
 
-if (has_capability('mod/margic:viewannotations', $context)){
+if (has_capability('mod/margic:viewannotations', $context)) {
 
-    //echo '<script src="https://hypothes.is/embed.js" async></script>';
+    // echo '<script src="https://hypothes.is/embed.js" async></script>';
 
     $backgroundcolor = get_config('mod_margic', 'entrytextbgc');
 
@@ -46,10 +46,10 @@ if (has_capability('mod/margic:viewannotations', $context)){
     if ($annotations) {
         foreach ($annotations as $annotation) {
             echo '<div class="annotation-box">';
-            //echo '<span class="annotation-originaltext annotation-originaltext-'.$annotation->id.' m-b-2 w-100 d-block">...</span>';
+            // echo '<span class="annotation-originaltext annotation-originaltext-'.$annotation->id.' m-b-2 w-100 d-block">...</span>';
             echo '<span id="annotation-'.$annotation->id.'" class="annotation annotation-'.$annotation->id.'">' . $annotation->text . '</span>';
 
-            if (has_capability('mod/margic:makeannotations', $context)){
+            if (has_capability('mod/margic:makeannotations', $context)) {
                 echo '<span class="pull-right"><a href="javascript:void(0);"><i id="edit-annotation-'.$annotation->id.'" class="fa fa-2x fa-pencil m-r-1 edit-annotation" aria-hidden="true"></i></a><a href="'. $redirecturl . '&deleteannotation=' . $annotation->id . '"><i id="delete-annotation-'.$annotation->id.'" class="fa fa-2x fa-trash delete-annotation" aria-hidden="true"></i></a></span>';
             }
             echo '<br>';
@@ -68,14 +68,16 @@ if (has_capability('mod/margic:viewannotations', $context)){
             if ((isset($fromform->annotationid[$entryid]) && $fromform->annotationid[$entryid] !== 0) && isset($fromform->text[$entryid])) { // Update existing annotation.
                 $annotation = $DB->get_record('margic_annotations', array('margic' => $cm->instance, 'entry' => $entryid, 'id' => $fromform->annotationid[$entryid]));
                 $annotation->timemodified = time();
-                $annotation->text = $fromform->text[$entryid];
+                $annotation->text = format_text($fromform->text[$entryid]);
 
                 $DB->update_record('margic_annotations', $annotation);
 
                 redirect($redirecturl, get_string('annotationedited', 'mod_margic'), null, notification::NOTIFY_SUCCESS);
-            } elseif ((!isset($fromform->annotationid[$entryid]) || $fromform->annotationid[$entryid] === 0) && isset($fromform->text[$entryid])) { // New annotation.
+            } else if ((!isset($fromform->annotationid[$entryid]) || $fromform->annotationid[$entryid] === 0) && isset($fromform->text[$entryid])) { // New annotation.
 
-                if ($fromform->startcontainer[$entryid] != -1 && $fromform->endcontainer[$entryid] != -1 && $fromform->startposition[$entryid] != -1 && $fromform->endposition[$entryid] != -1) {
+                if ($fromform->startcontainer[$entryid] != -1 && $fromform->endcontainer[$entryid] != -1 &&
+                    $fromform->startposition[$entryid] != -1 && $fromform->endposition[$entryid] != -1) {
+
                     $annotation = new stdClass();
                     $annotation->margic = (int) $cm->instance;
                     $annotation->entry = (int) $entryid;
@@ -87,7 +89,7 @@ if (has_capability('mod/margic:viewannotations', $context)){
                     $annotation->endcontainer = $fromform->endcontainer[$entryid];
                     $annotation->startposition = $fromform->startposition[$entryid];
                     $annotation->endposition = $fromform->endposition[$entryid];
-                    $annotation->text = $fromform->text[$entryid];
+                    $annotation->text = format_text($fromform->text[$entryid]);
 
                     $DB->insert_record('margic_annotations', $annotation);
 

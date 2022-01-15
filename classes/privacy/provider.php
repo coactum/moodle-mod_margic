@@ -185,13 +185,13 @@ class provider implements \core_privacy\local\metadata\provider,
                 $margicentry->timemodified = transform::datetime($margic->timemodified);
             }
             if (! empty($margicentry->text)) {
-                $margicentry->text = $margic->text;
+                $margicentry->text = format_text($margic->text, FORMAT_MOODLE, array('para' => false));
             }
             if (! empty($margicentry->rating)) {
                 $margicentry->rating = $margic->rating;
             }
             if (! empty($margicentry->entrycomment)) {
-                $margicentry->entrycomment = $margic->entrycomment;
+                $margicentry->entrycomment = format_text($margic->entrycomment, FORMAT_MOODLE, array('para' => false));
             }
 
             writer::with_context($context)->export_data([], $margicentry);

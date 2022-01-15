@@ -22,7 +22,6 @@
  * @copyright 2019 AL Rachels <drachels@drachels.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-defined('MOODLE_INTERNAL') || die();
 
 /**
  * mod_margic data generator class.
@@ -32,8 +31,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright 2019 AL Rachels <drachels@drachels.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class mod_margic_generator extends testing_module_generator
-{
+class mod_margic_generator extends testing_module_generator {
 
     /**
      *

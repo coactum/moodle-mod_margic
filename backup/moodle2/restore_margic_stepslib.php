@@ -22,7 +22,6 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 use mod_margic\local\results;
-defined('MOODLE_INTERNAL') || die();
 
 /**
  * Define the complete margic structure for restore, with file and id annotations.

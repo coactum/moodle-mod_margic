@@ -21,7 +21,7 @@
  * @copyright 2019 AL Rachels (drachels@drachels.com)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-defined('MOODLE_INTERNAL') || die();
+
 use mod_margic\local\results;
 
 /**
@@ -177,8 +177,8 @@ function margic_supports($feature) {
             return true;
         case FEATURE_COMPLETION_TRACKS_VIEWS:
             return true;
-        // case FEATURE_BACKUP_MOODLE2:
-        //     return true;
+        /* case FEATURE_BACKUP_MOODLE2:
+            return true; */
         default:
             return null;
     }
@@ -1029,14 +1029,13 @@ function margic_pluginfile($course, $cm, $context, $filearea, $args, $forcedownl
  * @param navigation_node $margicnode An object representing the navigation tree node.
  * @param  stdClass $course Course object
  * @param  context_course $coursecontext Course context
-*/
-
+ */
 function margic_extend_navigation_course($margicnode, $course, $coursecontext) {
-    $modinfo = get_fast_modinfo($course); // get mod_fast_modinfo from $course
-    $index = 1;	//set index
-    foreach ($modinfo->get_cms() as $cmid => $cm) { //search existing course modules for this course
-        if ($index == 1 && $cm->modname=="margic" && $cm->uservisible && $cm->available) { //look if module (in this case margic) exists, is uservisible and available
-            $url = new moodle_url("/mod/" . $cm->modname . "/index.php", array("id" => $course->id)); //set url for the link in the navigation node
+    $modinfo = get_fast_modinfo($course); // Get mod_fast_modinfo from $course.
+    $index = 1; // Set index.
+    foreach ($modinfo->get_cms() as $cmid => $cm) { // Search existing course modules for this course.
+        if ($index == 1 && $cm->modname == "margic" && $cm->uservisible && $cm->available) { // Look if module (in this case margic) exists, is uservisible and available.
+            $url = new moodle_url("/mod/" . $cm->modname . "/index.php", array("id" => $course->id)); // Set url for the link in the navigation node.
             $node = navigation_node::create(get_string('viewallmargics', 'margic'), $url, navigation_node::TYPE_CUSTOM, null , null , null);
             $margicnode->add_node($node);
             $index++;

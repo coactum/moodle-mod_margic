@@ -25,8 +25,6 @@
  */
 namespace mod_margic\local;
 
-defined('MOODLE_INTERNAL') || die();
-
 use mod_margic\local\margicstats;
 use stdClass;
 use core_text;

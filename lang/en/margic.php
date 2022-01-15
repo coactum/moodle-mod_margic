@@ -18,7 +18,8 @@
  * English strings for margic plugin.
  *
  * @package   mod_margic
- * @copyright 2019 AL Rachels (drachels@drachels.com)
+ * @category  string
+ * @copyright 2021 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die();
@@ -107,7 +108,6 @@ $string['highestgradeentry'] = 'Highest rated entries:';
 $string['incorrectcourseid'] = 'Course ID is incorrect';
 $string['incorrectmodule'] = 'Course Module ID was incorrect';
 $string['invalidaccess'] = 'Invalid access';
-$string['invalidaccessexp'] = 'You do not have permission to view the page you attempted to access! The attempt was logged!';
 $string['invalidtimechange'] = 'An invalid attempt to change this entry\'s, Time created, has been detected. ';
 $string['invalidtimechangeoriginal'] = 'The original time was: {$a->one}. ';
 $string['invalidtimechangenewtime'] = 'The changed time was: {$a->one}. ';
@@ -165,7 +165,6 @@ $string['sorthighestentry'] = 'From highest rated margic entry to the lowest rat
 $string['sortlastentry'] = 'From latest modified margic entry to the oldest modified entry.';
 $string['sortoptions'] = ' Sort options: ';
 $string['startnewentry'] = 'Start new entry';
-$string['startoredit'] = 'Start new or edit today\'s entry';
 $string['teacher'] = 'Teacher';
 $string['text'] = 'Text';
 $string['timecreated'] = 'Time created';
@@ -196,8 +195,11 @@ $string['forallmyentries'] = 'for all of my entries';
 $string['toggleratingform'] = 'Open/close rating form';
 $string['norating'] = 'Rating disabled.';
 $string['viewallmargics'] = 'View all margics in course';
+$string['startoreditentry'] = 'Add or edit entry';
+$string['editentrynotpossible'] = 'You can not edit this entry.';
+$string['entrydateinfuture'] = 'Entry date can not be in the future.';
 
-// löschen
+// Löschen.
 $string['numwordscln'] = '{$a->one} clean text words using {$a->two} characters, NOT including {$a->three} spaces. ';
 $string['numwordsstd'] = '{$a->one} standardized words using {$a->two} characters, including {$a->three} spaces. ';
 

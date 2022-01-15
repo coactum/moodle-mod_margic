@@ -22,8 +22,6 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
 use mod_margic\local\entrystats;
 use mod_margic\local\results;
 
@@ -63,12 +61,13 @@ class margic {
     /**
      * Constructor for the base margic class.
      *
-     * @param int $id int the course module id of the margic
-     * @param int $d int the instance id of the margic
+     * @param int $id int The course module id of the margic
+     * @param int $m int The instance id of the margic
+     * @param int $userid int The id of the user for that entries should be shown
      */
     public function __construct($id, $m, $userid) {
 
-        global $DB;
+        global $DB, $USER;
 
         if (isset($id)) {
             list ($course, $cm) = get_course_and_cm_from_cmid($id, 'margic');
@@ -96,7 +95,6 @@ class margic {
             $this->mode = 'ownentries';
         }
 
-
         // Handling groups.
         $currentgroups = groups_get_activity_group($this->cm, true);    // Get a list of the currently allowed groups for this course.
 
@@ -114,13 +112,14 @@ class margic {
                 $this->entries = $DB->get_records('margic_entries', array('margic' => $this->instance->id));;
             }
 
-        } else if ($this->mode == 'ownentries'){
-            global $USER;
+        } else if ($this->mode == 'ownentries') {
             $this->entries = $DB->get_records('margic_entries', array('margic' => $this->instance->id, 'userid' => $USER->id));;
         }
 
         $gradingstr = get_string('needsgrading', 'margic');
         $regradingstr = get_string('needsregrading', 'margic');
+
+        $viewinguserid = $USER->id;
 
         foreach ($this->entries as $i => $entry) {
             $this->entries[$i]->user = $DB->get_record('user', array('id' => $entry->userid));
@@ -138,7 +137,14 @@ class margic {
 
                 $grades = make_grades_menu($this->instance->scale);
 
-                $this->entries[$i]->gradingform = results::margic_return_comment_and_grade_form_for_entry($this->context, $this->course, $this->instance, $entry, $grades, $canmanageentries);
+                $this->entries[$i]->gradingform = results::margic_return_comment_and_grade_form_for_entry($this->context, $this->course, $this->instance,
+                    $entry, $grades, $canmanageentries);
+
+                if ($viewinguserid == $entry->userid) {
+                    $this->entries[$i]->entrycanbeedited = true;
+                } else {
+                    $this->entries[$i]->entrycanbeedited = false;
+                }
             } else {
                 unset($this->entries[$i]);
             }
@@ -151,7 +157,8 @@ class margic {
      * Singleton getter for margic instance.
      *
      * @param int $id int the course module id of margic
-     * @param int $d int the instance id of the margic
+     * @param int $m int the instance id of the margic
+     * @param int $userid int The id of the user for that entries should be shown
      * @return string action
      */
     public static function get_margic_instance($id, $m = null, $userid) {

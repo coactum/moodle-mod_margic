@@ -25,9 +25,8 @@
  */
 namespace mod_margic\local;
 
-defined('MOODLE_INTERNAL') || die();
-define('margic_EVENT_TYPE_OPEN', 'open');
-define('margic_EVENT_TYPE_CLOSE', 'close');
+define('MARGIC_EVENT_TYPE_OPEN', 'open');
+define('MARGIC_EVENT_TYPE_CLOSE', 'close');
 use mod_margic\local\results;
 use stdClass;
 use csv_export_writer;
@@ -54,113 +53,113 @@ class results {
     public static function margic_update_calendar(stdClass $margic, $cmid) {
         global $DB, $CFG;
 
-        if ($CFG->branch > 30) { // If Moodle less than version 3.1 skip this.
-            require_once($CFG->dirroot.'/calendar/lib.php');
+        require_once($CFG->dirroot.'/calendar/lib.php');
 
-            // Get CMID if not sent as part of $margic.
-            if (! isset($margic->coursemodule)) {
-                $cm = get_coursemodule_from_instance('margic', $margic->id, $margic->course);
-                $margic->coursemodule = $cm->id;
-            }
-
-            // margic start calendar events.
-            $event = new stdClass();
-            $event->eventtype = margic_EVENT_TYPE_OPEN;
-            // The MOOTYPER_EVENT_TYPE_OPEN event should only be an action event if no close time is specified.
-            $event->type = empty($margic->timeclose) ? CALENDAR_EVENT_TYPE_ACTION : CALENDAR_EVENT_TYPE_STANDARD;
-            if ($event->id = $DB->get_field('event', 'id', array(
-                'modulename' => 'margic',
-                'instance' => $margic->id,
-                'eventtype' => $event->eventtype
-            ))) {
-                if ((! empty($margic->timeopen)) && ($margic->timeopen > 0)) {
-                    // Calendar event exists so update it.
-                    $event->name = get_string('calendarstart', 'margic', $margic->name);
-                    $event->description = format_module_intro('margic', $margic, $cmid);
-                    $event->timestart = $margic->timeopen;
-                    $event->timesort = $margic->timeopen;
-                    $event->visible = instance_is_visible('margic', $margic);
-                    $event->timeduration = 0;
-
-                    $calendarevent = calendar_event::load($event->id);
-                    $calendarevent->update($event, false);
-                } else {
-                    // Calendar event is no longer needed.
-                    $calendarevent = calendar_event::load($event->id);
-                    $calendarevent->delete();
-                }
-            } else {
-                // Event doesn't exist so create one.
-                if ((! empty($margic->timeopen)) && ($margic->timeopen > 0)) {
-                    $event->name = get_string('calendarstart', 'margic', $margic->name);
-                    $event->description = format_module_intro('margic', $margic, $cmid);
-                    $event->courseid = $margic->course;
-                    $event->groupid = 0;
-                    $event->userid = 0;
-                    $event->modulename = 'margic';
-                    $event->instance = $margic->id;
-                    $event->timestart = $margic->timeopen;
-                    $event->timesort = $margic->timeopen;
-                    $event->visible = instance_is_visible('margic', $margic);
-                    $event->timeduration = 0;
-
-                    calendar_event::create($event, false);
-                }
-            }
-
-            // margic end calendar events.
-            $event = new stdClass();
-            $event->type = CALENDAR_EVENT_TYPE_ACTION;
-            $event->eventtype = margic_EVENT_TYPE_CLOSE;
-            if ($event->id = $DB->get_field('event', 'id', array(
-                'modulename' => 'margic',
-                'instance' => $margic->id,
-                'eventtype' => $event->eventtype
-            ))) {
-                if ((! empty($margic->timeclose)) && ($margic->timeclose > 0)) {
-                    // Calendar event exists so update it.
-                    $event->name = get_string('calendarend', 'margic', $margic->name);
-                    $event->description = format_module_intro('margic', $margic, $cmid);
-                    $event->timestart = $margic->timeclose;
-                    $event->timesort = $margic->timeclose;
-                    $event->visible = instance_is_visible('margic', $margic);
-                    $event->timeduration = 0;
-
-                    $calendarevent = calendar_event::load($event->id);
-                    $calendarevent->update($event, false);
-                } else {
-                    // Calendar event is on longer needed.
-                    $calendarevent = calendar_event::load($event->id);
-                    $calendarevent->delete();
-                }
-            } else {
-                // Event doesn't exist so create one.
-                if ((! empty($margic->timeclose)) && ($margic->timeclose > 0)) {
-                    $event->name = get_string('calendarend', 'margic', $margic->name);
-                    $event->description = format_module_intro('margic', $margic, $cmid);
-                    $event->courseid = $margic->course;
-                    $event->groupid = 0;
-                    $event->userid = 0;
-                    $event->modulename = 'margic';
-                    $event->instance = $margic->id;
-                    $event->timestart = $margic->timeclose;
-                    $event->timesort = $margic->timeclose;
-                    $event->visible = instance_is_visible('margic', $margic);
-                    $event->timeduration = 0;
-
-                    calendar_event::create($event, false);
-                }
-            }
-            return true;
+        // Get CMID if not sent as part of $margic.
+        if (! isset($margic->coursemodule)) {
+            $cm = get_coursemodule_from_instance('margic', $margic->id, $margic->course);
+            $margic->coursemodule = $cm->id;
         }
+
+        // Margic start calendar events.
+        $event = new stdClass();
+        $event->eventtype = MARGIC_EVENT_TYPE_OPEN;
+        // The MOOTYPER_EVENT_TYPE_OPEN event should only be an action event if no close time is specified.
+        $event->type = empty($margic->timeclose) ? CALENDAR_EVENT_TYPE_ACTION : CALENDAR_EVENT_TYPE_STANDARD;
+
+        if ($event->id = $DB->get_field('event', 'id', array(
+            'modulename' => 'margic',
+            'instance' => $margic->id,
+            'eventtype' => $event->eventtype
+        ))) {
+
+            if ((! empty($margic->timeopen)) && ($margic->timeopen > 0)) {
+                // Calendar event exists so update it.
+                $event->name = get_string('calendarstart', 'margic', $margic->name);
+                $event->description = format_module_intro('margic', $margic, $cmid);
+                $event->timestart = $margic->timeopen;
+                $event->timesort = $margic->timeopen;
+                $event->visible = instance_is_visible('margic', $margic);
+                $event->timeduration = 0;
+
+                $calendarevent = calendar_event::load($event->id);
+                $calendarevent->update($event, false);
+            } else {
+                // Calendar event is no longer needed.
+                $calendarevent = calendar_event::load($event->id);
+                $calendarevent->delete();
+            }
+        } else {
+            // Event doesn't exist so create one.
+            if ((! empty($margic->timeopen)) && ($margic->timeopen > 0)) {
+                $event->name = get_string('calendarstart', 'margic', $margic->name);
+                $event->description = format_module_intro('margic', $margic, $cmid);
+                $event->courseid = $margic->course;
+                $event->groupid = 0;
+                $event->userid = 0;
+                $event->modulename = 'margic';
+                $event->instance = $margic->id;
+                $event->timestart = $margic->timeopen;
+                $event->timesort = $margic->timeopen;
+                $event->visible = instance_is_visible('margic', $margic);
+                $event->timeduration = 0;
+
+                calendar_event::create($event, false);
+            }
+        }
+
+        // Margic end calendar events.
+        $event = new stdClass();
+        $event->type = CALENDAR_EVENT_TYPE_ACTION;
+        $event->eventtype = MARGIC_EVENT_TYPE_CLOSE;
+        if ($event->id = $DB->get_field('event', 'id', array(
+            'modulename' => 'margic',
+            'instance' => $margic->id,
+            'eventtype' => $event->eventtype
+        ))) {
+            if ((! empty($margic->timeclose)) && ($margic->timeclose > 0)) {
+                // Calendar event exists so update it.
+                $event->name = get_string('calendarend', 'margic', $margic->name);
+                $event->description = format_module_intro('margic', $margic, $cmid);
+                $event->timestart = $margic->timeclose;
+                $event->timesort = $margic->timeclose;
+                $event->visible = instance_is_visible('margic', $margic);
+                $event->timeduration = 0;
+
+                $calendarevent = calendar_event::load($event->id);
+                $calendarevent->update($event, false);
+            } else {
+                // Calendar event is on longer needed.
+                $calendarevent = calendar_event::load($event->id);
+                $calendarevent->delete();
+            }
+        } else {
+            // Event doesn't exist so create one.
+            if ((! empty($margic->timeclose)) && ($margic->timeclose > 0)) {
+                $event->name = get_string('calendarend', 'margic', $margic->name);
+                $event->description = format_module_intro('margic', $margic, $cmid);
+                $event->courseid = $margic->course;
+                $event->groupid = 0;
+                $event->userid = 0;
+                $event->modulename = 'margic';
+                $event->instance = $margic->id;
+                $event->timestart = $margic->timeclose;
+                $event->timesort = $margic->timeclose;
+                $event->visible = instance_is_visible('margic', $margic);
+                $event->timeduration = 0;
+
+                calendar_event::create($event, false);
+            }
+        }
+        return true;
     }
 
-    // /**
-    //  * Returns availability status.
-    //  * Added 20200903.
-    //  *
-    //  * @param var $margic
-    //  */
+    /**
+     * Returns availability status.
+     * Added 20200903.
+     *
+     * @param var $margic
+     */
     public static function margic_available($margic) {
         $timeopen = $margic->timeopen;
         $timeclose = $margic->timeclose;
@@ -317,8 +316,8 @@ class results {
 
         // Create a table for the current users entry with area for teacher feedback.
 
-        // [margic] move id
-        //echo '<table class="margicuserentry" id="entry-'.$user->id.'">';
+        // Move id.
+        // echo '<table class="margicuserentry" id="entry-'.$user->id.'">';
         echo '<table class="margicuserentry">';
 
         if ($entry) {
@@ -378,7 +377,6 @@ class results {
 
         // Add the second of two rows, this one containing the users text for this entry.
         echo '<tr><td>';
-
 
         // [margic]
         if (isset($entry->id)) {
@@ -532,23 +530,18 @@ class results {
      * @param stdClass $course Course object.
      * @param stdClass $context Context object.
      * @param stdClass $margic margic object.
-     * @param stdClass $entry Entry object.
-     * @param stdClass $action Action object.
-     * @param stdClass $firstkey Firstkey object.
      * @return array $editoroptions Array containing the editor and attachment options.
      * @return array $attachmentoptions Array containing the editor and attachment options.
      */
-    public static function margic_get_editor_and_attachment_options($course, $context, $margic, $entry, $action, $firstkey) {
-        $maxfiles = 99; // TODO: add some setting.
-        $maxbytes = $course->maxbytes; // TODO: add some setting.
+    public static function margic_get_editor_and_attachment_options($course, $context, $margic) {
+        $maxfiles = 5;
+        $maxbytes = $course->maxbytes;
 
         // 20210613 Added more custom data to use in edit_form.php to prevent illegal access.
         $editoroptions = array(
             'timeclose' => $margic->timeclose,
             'editall' => $margic->editall,
             'editdates' => $margic->editdates,
-            'action' => $action,
-            'firstkey' => $firstkey,
             'trusttext' => true,
             'maxfiles' => $maxfiles,
             'maxbytes' => $maxbytes,
@@ -567,31 +560,31 @@ class results {
         );
     }
 
-    // /**
-    //  * Get the latest entry in mdl_margic_entries for the current user.
-    //  *
-    //  * Used in lib.php.
-    //  *
-    //  * @param int $margic ID of the current margic activity.
-    //  * @param int $user ID of the current user.
-    //  * @param int $timecreated Unix time when margic entry was created.
-    //  * @param int $timemodified Unix time when margic entry was last changed.
-    //  */
-    // public static function get_grade_entry($margic, $user, $timecreated, $timemodified) {
-    //     global $USER, $DB, $CFG;
-    //     $sql = "SELECT * FROM ".$CFG->prefix."margic_entries"
-    //                  ." WHERE margic = ".$margic
-    //                     ."AND userid = ".$user
-    //                     ."AND timecreated = ".$timecreated
-    //                     ."AND timemodified = ".$timemodified
-    //                     ."ORDER BY timecreated";
+    /**
+     * Get the latest entry in mdl_margic_entries for the current user.
+     *
+     * Used in lib.php.
+     *
+     * @param int $margic ID of the current margic activity.
+     * @param int $user ID of the current user.
+     * @param int $timecreated Unix time when margic entry was created.
+     * @param int $timemodified Unix time when margic entry was last changed.
+     */
+    /* public static function get_grade_entry($margic, $user, $timecreated, $timemodified) {
+        global $USER, $DB, $CFG;
+        $sql = "SELECT * FROM ".$CFG->prefix."margic_entries"
+                     ." WHERE margic = ".$margic
+                        ."AND userid = ".$user
+                        ."AND timecreated = ".$timecreated
+                        ."AND timemodified = ".$timemodified
+                        ."ORDER BY timecreated";
 
-    //     if ($rec = $DB->get_record_sql($sql, array())) {
-    //         return $rec;
-    //     } else {
-    //         return null;
-    //     }
-    // }
+        if ($rec = $DB->get_record_sql($sql, array())) {
+            return $rec;
+        } else {
+            return null;
+        }
+    } */
 
     /**
      * Check for existing rating entry in mdl_rating for the current user.
@@ -686,7 +679,7 @@ class results {
 
             $gradingform = '';
 
-            if($canmanageentries){
+            if ($canmanageentries) {
                 if (! $entry->teacher) {
                     $entry->teacher = $USER->id;
                 }
@@ -735,7 +728,7 @@ class results {
                     $gradingform .= $hiddengradestr;
 
                     if ($entry->timemarked) {
-                        $gradingform .=  ' <span class="lastedit">'.userdate($entry->timemarked).' </span>';
+                        $gradingform .= ' <span class="teacherpicture m-l-1"></span><span class="m-1">'.userdate($entry->timemarked).' </span>';
                     }
 
                     $gradingform .= $gradebookgradestr;
@@ -781,7 +774,7 @@ class results {
                 $gradingform .= '<input type="submit" class="btn btn-primary " name="submitbutton" id="id_submitbutton" value="' . get_string("saveallfeedback", "margic") .'">';
                 $gradingform .= '</div>';
                 $gradingform .= '</div>';
-            } else if (! empty($entry->entrycomment) || ! empty($entry->rating)){
+            } else if (! empty($entry->entrycomment) || ! empty($entry->rating)) {
                 if (! $teacher = $DB->get_record('user', array(
                     'id' => $entry->teacher
                 ))) {
@@ -791,7 +784,8 @@ class results {
                 $gradingform .= '<div class="ratingform"><h3>' . get_string('feedback') . '</h3>';
 
                 $gradingform .= '<div class="entryheader">';
-                $gradingform .= '<span class="author">' . fullname($teacher) . '</span> ';
+                $gradingform .= '<span class="teacherpicture"></span>';
+                $gradingform .= '<span class="author">' . fullname($teacher) . '</span> - ';
                 $gradingform .= '<span class="time">' . userdate($entry->timemarked) . '</span>';
 
                 $gradingform .= '<span class="pull-right"><strong>';

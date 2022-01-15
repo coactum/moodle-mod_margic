@@ -38,7 +38,7 @@
         <br>
 {{/entries.0}}{{/ratingaggregationmode}}
 
-<a class="btn btn-primary m-1" href="edit.php?id={{cmid}}&firstkey={{firstkey}}&action=currententry"> {{#str}}startnewentry, mod_margic{{/str}} </a>
+<a class="btn btn-primary m-1" href="edit.php?id={{cmid}}"> {{#str}}startnewentry, mod_margic{{/str}} </a>
 {{#canmanageentries}}<button class="btn btn-primary" data-toggle="collapse" data-target=".gradingform" aria-expanded="false" aria-controls=".gradingform" title="{{#str}}toggleratingform, mod_margic{{/str}}">{{#str}}toggleratingform, mod_margic{{/str}}</button>{{/canmanageentries}}
 
 {{#canmanageentries}}{{#entries.0}}
@@ -49,11 +49,13 @@
 
 {{#entries}}
     <div class="entry" style="background: {{entrybgc}};">
-        <h4>{{#str}}entry, mod_margic{{/str}}: {{#userdate}}{{timecreated}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}} {{#caneditentries}}<a href="edit.php?id={{cmid}}&action=editentry&firstkey={{id}}"><i class="fa fa-pencil" title="{{#str}}editthisentry, mod_margic{{/str}}"></i></a>{{/caneditentries}}</h4>
+        <h4>{{#str}}entry, mod_margic{{/str}}: {{#userdate}}{{timecreated}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}}
+            {{#entrycanbeedited}}{{#caneditentries}}<a href="edit.php?id={{cmid}}&entryid={{id}}"><i class="fa fa-pencil" title="{{#str}}editthisentry, mod_margic{{/str}}"></i></a>{{/caneditentries}}{{/entrycanbeedited}}
+        </h4>
 
         {{#user}}
             {{#canmanageentries}}
-                {{firstname}} {{lastname}} <a href="view_reworked.php?id={{cmid}}&userid={{userid}}"><i class="fa fa-user" title="{{#str}}getallentriesofuser, mod_margic{{/str}}"></i></a>
+                {{{userpicture}}} {{firstname}} {{lastname}} <a href="view_reworked.php?id={{cmid}}&userid={{userid}}"><i class="fa fa-user fa-lg" title="{{#str}}getallentriesofuser, mod_margic{{/str}}"></i></a>
             {{/canmanageentries}}
         {{/user}}
 

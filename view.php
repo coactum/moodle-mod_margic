@@ -335,14 +335,14 @@ if ($timenow > $timestart) {
                 // Add button for editing current entry or starting a new entry.
                 echo $OUTPUT->single_button('edit.php?id='.$cm->id
                     .'&firstkey='.$firstkey
-                    .'&action=currententry', get_string('startoredit', 'margic'), 'get', array(
+                    .'&action=currententry', get_string('startoreditentry', 'margic'), 'get', array(
                     "class" => "singlebutton margicstart"
                 ));
             }
 
             // [margic] Add annotations menu if user has capability.
             if (has_capability('mod/margic:viewannotations', $context)) {
-                if (!$annotationmode){
+                if (!$annotationmode) {
                     echo $OUTPUT->single_button('view.php?id='.$cm->id
                         .'&annotationmode=1', get_string('viewannotations', 'margic'), null, array(
                         "class" => "singlebutton margicstart"
@@ -484,7 +484,6 @@ if ($timenow > $timestart) {
                         $rawwordspacecount = substr_count($entry->text, ' ');
                         // Calculate cleaned text word/character counts.
                         $plaintext = htmlspecialchars(trim(strip_tags($entry->text)));
-                        //var_dump($plaintext);
                         $clnwordcount = count_words($plaintext);
                         $clnwordspacecount = substr_count($plaintext, ' ');
                         $clnwordcharcount = ((strlen($plaintext)) - $clnwordspacecount);

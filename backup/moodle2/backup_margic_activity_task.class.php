@@ -30,8 +30,7 @@ require_once($CFG->dirroot.'/mod/margic/backup/moodle2/backup_margic_stepslib.ph
 /**
  * Provides the steps to perform one complete backup of the margic instance.
  */
-class backup_margic_activity_task extends backup_activity_task
-{
+class backup_margic_activity_task extends backup_activity_task {
 
     /**
      * No specific settings for this activity.

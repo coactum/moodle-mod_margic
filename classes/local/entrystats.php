@@ -23,9 +23,6 @@
  */
 namespace mod_margic\local;
 
-defined('MOODLE_INTERNAL') || die();
-
-//use mod_margic\local\entrystats;
 use stdClass;
 use core_text;
 
@@ -42,7 +39,8 @@ class entrystats {
      * Get the statistics for this margic entry.
      *
      * @param string $entrytext The text for this entry.
-     * @return bool
+     * @param string $entrytimecreated The time then the entry was created.
+     * @return array entrystats Array with the statistics of the entry.
      */
     public static function get_entry_stats($entrytext, $entrytimecreated) {
 
@@ -83,7 +81,7 @@ class entrystats {
     /**
      * Get the sentence count statistics for this margic entry.
      *
-     * @param string $ententrytextry The text for this entry.
+     * @param string $entrytext The text for this entry.
      * @ return int The number of sentences.
      */
     public static function get_stats_sentences($entrytext) {
@@ -107,7 +105,7 @@ class entrystats {
     /**
      * Get the unique word count statistics for this margic entry.
      *
-     * @param string $entry The text for this entry.
+     * @param string $entrytext The text for this entry.
      * @return int The number of unique words.
      */
     public static function get_stats_uniquewords($entrytext) {
@@ -120,7 +118,7 @@ class entrystats {
     /**
      * Get the raw spaces count statistics for this margic entry.
      *
-     * @param string $entry The text for this entry.
+     * @param string $entrytext The text for this entry.
      * @return int The number of spaces.
      */
     public static function get_stats_spaces($entrytext) {

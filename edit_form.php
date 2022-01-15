@@ -15,58 +15,52 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This page opens the edit form instance of margic, in a particular course.
+ * The form for editing existing or creating new entries in mod_margic.
  *
- * https://docs.moodle.org/dev/lib/formslib.php_Form_Definition
- *
- * @package mod_margic
- * @copyright 2019 AL Rachels (drachels@drachels.com)
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package     mod_margic
+ * @copyright   2021 coactum GmbH
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/lib/formslib.php');
+global $CFG;
+require_once("$CFG->libdir/formslib.php");
 
 /**
- * Edit user entry form for margic
+ * The form for editing existing or creating new entries in mod_margic.
  *
- * @copyright 2019 AL Rachels <drachels@drachels.com>
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package     mod_margic
+ * @copyright   2021 coactum GmbH
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class mod_margic_entry_form extends moodleform
-{
+class mod_margic_entry_form extends moodleform {
 
     /**
-     * Form definition
+     * Define the form - called by parent constructor
      */
     public function definition() {
-        global $CFG, $DB;
 
         $mform = $this->_form;
 
-        // 20201119 Get the, Edit entry dates, setting for this margic activity.
+        $mform->addElement('hidden', 'id');
+        $mform->setType('id', PARAM_INT);
+
         $mform->addElement('hidden', 'margic');
         $mform->setType('margic', PARAM_INT);
         $mform->setDefault('margic', $this->_customdata['margic']);
 
-        // 20210613 Retrieve margic info for use.
-        $timeclose = $this->_customdata['editoroptions']['timeclose'];
-        $editall = $this->_customdata['editoroptions']['editall'];
+        $mform->addElement('hidden', 'entryid');
+        $mform->setType('entryid', PARAM_INT);
+
         $editdates = $this->_customdata['editoroptions']['editdates'];
 
-        // 20210613 Do not just hide the date selector, skip it unless editdates is enabled. Issue #9.
         if ($editdates) {
-            // 20201119 Added date selector. Can show/hide depending on the, Edit entry dates, setting.
+            // Add date selector if entry dates can be edited.
             $mform->addElement('date_time_selector', 'timecreated', get_string('margicentrydate', 'margic'));
             $mform->setType('timecreated', PARAM_INT);
-            // 20201231 For Moodle 3.4 and higher, hide and disable calendar selector, if not enabled.
-            // For Moodle 3.3 and lower, disable calendar selector, if not enabled.
-            if ($CFG->branch > 33) {
-                $mform->hideIf('timecreated', 'margic', 'neq', '1');
-                $mform->disabledIf('timecreated', 'margic', 'neq', '1');
-            } else {
-                $mform->disabledIf('timecreated', 'margic', 'neq', '1');
-            }
+            $mform->hideIf('timecreated', 'margic', 'neq', '1');
+            $mform->disabledIf('timecreated', 'margic', 'neq', '1');
         } else {
             $mform->addElement('hidden', 'timecreated');
             $mform->setType('timecreated', PARAM_INT);
@@ -75,15 +69,6 @@ class mod_margic_entry_form extends moodleform
         $mform->addElement('editor', 'text_editor', get_string('entry', 'mod_margic'), null, $this->_customdata['editoroptions']);
         $mform->setType('text_editor', PARAM_RAW);
         $mform->addRule('text_editor', null, 'required', null, 'client');
-
-        $mform->addElement('hidden', 'id');
-        $mform->setType('id', PARAM_INT);
-
-        $mform->addElement('hidden', 'firstkey');
-        $mform->setType('firstkey', PARAM_INT);
-
-        $mform->addElement('hidden', 'entryid');
-        $mform->setType('entryid', PARAM_INT);
 
         $this->add_action_buttons();
     }

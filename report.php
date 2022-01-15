@@ -63,7 +63,8 @@ if (! $margic = $DB->get_record("margic", array(
 if (has_capability('mod/margic:makeannotations', $context) && $deleteannotation !== 0) {
     $DB->delete_records('margic_annotations', array('id' => $deleteannotation, 'margic' => $margic->id, 'userid' => $USER->id));
 
-    redirect(new moodle_url('/mod/margic/report.php', array('id' => $id, 'annotationmode' => 1)), get_string('annotationdeleted', 'mod_margic'), null, notification::NOTIFY_SUCCESS);
+    redirect(new moodle_url('/mod/margic/report.php', array('id' => $id, 'annotationmode' => 1)), get_string('annotationdeleted', 'mod_margic'),
+        null, notification::NOTIFY_SUCCESS);
 }
 
 // 20201016 Get the name for this margic activity.

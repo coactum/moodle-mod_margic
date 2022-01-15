@@ -23,8 +23,6 @@
  */
 namespace mod_margic\event;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * The mod_margic invalid entry created class.
  *

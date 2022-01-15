@@ -22,7 +22,6 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 namespace mod_margic\output;
-defined('MOODLE_INTERNAL') || die();
 
 use renderable;
 use renderer_base;
@@ -60,6 +59,8 @@ class margic_view implements renderable, templatable {
     protected $currentuserrating;
     /** @var int */
     protected $ratingaggregationmode;
+    /** @var int */
+    protected $courseid;
     /**
      * Construct this renderable.
      * @param int $cmid The course module id
@@ -73,8 +74,10 @@ class margic_view implements renderable, templatable {
      * @param string $sesskey The session key
      * @param string $currentuserrating The rating of the current user viewing the page
      * @param string $ratingaggregationmode The mode of the aggregated grades
+     * @param int $courseid The course id for getting the user pictures
      */
-    public function __construct($cmid, $entries, $sortmode, $entrybgc, $entrytextbgc, $caneditentries, $edittimeends, $canmanageentries, $sesskey, $currentuserrating, $ratingaggregationmode) {
+    public function __construct($cmid, $entries, $sortmode, $entrybgc, $entrytextbgc, $caneditentries, $edittimeends, $canmanageentries,
+        $sesskey, $currentuserrating, $ratingaggregationmode, $courseid) {
 
         $this->cmid = $cmid;
         $this->entries = $entries;
@@ -98,6 +101,27 @@ class margic_view implements renderable, templatable {
     public function export_for_template(renderer_base $output) {
         $data = new stdClass();
         $data->cmid = $this->cmid;
+
+        global $OUTPUT, $DB, $USER;
+        foreach ($this->entries as $key => $entry) {
+            if ($this->canmanageentries) {
+                $this->entries[$key]->user->userpicture = $OUTPUT->user_picture($entry->user, array('courseid' => $this->courseid, 'link' => true));
+            }
+
+            if ($entry->teacher) {
+                $teacher = $DB->get_record('user', array('id' => $entry->teacher));;
+                $teacherimage = $OUTPUT->user_picture($teacher, array('courseid' => $this->courseid, 'link' => true));
+
+                if ($this->canmanageentries) {
+                    $replace = str_replace('<span class="teacherpicture m-l-1">', '<br><span class="teacherpicture m-l-1">' .  $teacherimage . ' ' . fullname($teacher) . ' - ', $entry->gradingform);
+                } else {
+                    $replace = str_replace('<span class="teacherpicture"></span>', '<span class="teacherpicture">' .  $teacherimage, $entry->gradingform);
+                }
+
+                $this->entries[$key]->gradingform = $replace;
+            }
+        }
+
         $data->entries = $this->entries;
         $data->sortmode = $this->sortmode;
         $data->entrybgc = $this->entrybgc;

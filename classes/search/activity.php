@@ -23,8 +23,6 @@
  */
 namespace mod_margic\search;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Search area for mod_margic activities.
  *
@@ -52,7 +50,7 @@ class activity extends \core_search\base_activity {
     public function get_search_fileareas() {
         $fileareas = array(
             'intro',
-            margic_INTROATTACHMENT_FILEAREA
+            MARGIC_INTROATTACHMENT_FILEAREA
         ); // Fileareas.
         return $fileareas;
     }

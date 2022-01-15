@@ -17,7 +17,7 @@
 /**
  * Strings for component 'margic', language 'de', version '3.9'.
  *
- * @package     margic
+ * @package     mod_margic
  * @category    string
  * @copyright   1999 Martin Dougiamas and contributors
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -148,7 +148,6 @@ $string['sortlastentry'] = 'Vom zuletzt geänderten Margic-Eintrag bis zum älte
 $string['sortlowestentry'] = 'Vom am niedrigsten bewerteten Margic-Eintrag bis zum höchsten.';
 $string['sortoptions'] = 'Einstellungen zur Sortierung:';
 $string['sortorder'] = '<h5>Sortierreihenfolge ist: </h5>';
-$string['startoredit'] = 'Neuen Eintrag beginnen oder den heutigen Eintrag bearbeiten';
 $string['teacher'] = 'Trainer/in';
 $string['text'] = 'Text';
 $string['timecreated'] = 'Zeitpunkt der Erstellung';
@@ -182,6 +181,9 @@ $string['forallmyentries'] = 'für alle meine Einträge';
 $string['toggleratingform'] = 'Bewertungsmodus öffnen/schließen';
 $string['norating'] = 'Bewertung deaktiviert.';
 $string['viewallmargics'] = 'Alle Margics im Kurs anzeigen';
+$string['startoreditentry'] = 'Eintrag anlegen oder bearbeiten';
+$string['editentrynotpossible'] = 'Bearbeiten des Eintrages nicht möglich.';
+$string['entrydateinfuture'] = 'Das Datum der Erstellung des Eintrages kann nicht in der Zukunft liegen.';
 
 // löschen
 $string['numwordscln'] = '{$a->one} bereinigte Wörter mit {$a->two} Zeichen, AUSSCHLIEßLICH {$a->three} Leerzeichen. ';
