@@ -140,17 +140,17 @@ if ($form->is_cancelled()) {
     $newentry = new stdClass();
     $newentry->margic = $moduleinstance->id;
     $newentry->userid = $USER->id;
-    $newentry->timecreated = $fromform->timecreated;
-    $newentry->timemodified = $timenow;
+    $newentry->timecreated = $timenow;
+    $newentry->timemodified = 0;
     $newentry->text = format_text($fromform->text_editor['text'], $fromform->text_editor['format'], array('para' => false));
     $newentry->format = $fromform->text_editor['format'];
 
-    if ($fromform->entryid && $entry) {
+    if ($fromform->entryid != 0 && $entry != false) {
         $newentry->id = $fromform->entryid;
 
         $newentry->entrycomment = $entry->entrycomment;
         $newentry->teacher = $entry->teacher;
-        $newentry->timemodified = time();
+        $newentry->timemodified = $timenow;
         $newentry->timemarked = $entry->timemarked;
         $newentry->timecreated = $entry->timecreated;
     } else {

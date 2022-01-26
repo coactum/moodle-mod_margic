@@ -29,17 +29,32 @@
 {{#canmanageentries}}<h3>{{#str}}entries, mod_margic{{/str}}</h3>{{/canmanageentries}}
 {{^canmanageentries}}<h3>{{#str}}myentries, mod_margic{{/str}}</h3>{{/canmanageentries}}
 
-{{#ratingaggregationmode}}{{#entries.0}}
-        {{ratingaggregationmode}}:
+<div class="pb-2">
+    {{#ratingaggregationmode}}{{#entries.0}}
+            <strong>{{ratingaggregationmode}}: </strong>
 
-        {{#currentuserrating}}
-            {{currentuserrating}}
-        {{/currentuserrating}}
-        <br>
-{{/entries.0}}{{/ratingaggregationmode}}
+            {{#currentuserrating}}
+                {{currentuserrating}}
+            {{/currentuserrating}}
+    {{/entries.0}}{{/ratingaggregationmode}}
+    <span class="pull-right pr-5">
+        <strong>{{#str}}sorting, mod_margic{{/str}}</strong>{{#sortmode}}<strong>: </strong>{{sortmode}}{{/sortmode}}
+    </span>
+</div>
 
-<a class="btn btn-primary m-1" href="edit.php?id={{cmid}}"> {{#str}}startnewentry, mod_margic{{/str}} </a>
-{{#canmanageentries}}<button class="btn btn-primary" data-toggle="collapse" data-target=".gradingform" aria-expanded="false" aria-controls=".gradingform" title="{{#str}}toggleratingform, mod_margic{{/str}}">{{#str}}toggleratingform, mod_margic{{/str}}</button>{{/canmanageentries}}
+<div class="pb-1">
+    <a class="btn btn-primary m-1" href="edit.php?id={{cmid}}"> {{#str}}startnewentry, mod_margic{{/str}} </a>
+    {{#canmanageentries}}<button class="btn btn-primary" data-toggle="collapse" data-target=".gradingform" aria-expanded="false" aria-controls=".gradingform" title="{{#str}}toggleratingform, mod_margic{{/str}}">{{#str}}toggleratingform, mod_margic{{/str}}</button>{{/canmanageentries}}
+
+    <span class="pull-right p-1">
+        <a href="view_reworked.php?id={{cmid}}&action=download" class="p-1 pr-2 border-right solid"><i class="fa fa-2x fa-download" title="{{#str}}csvexport, mod_margic{{/str}}"></i></a>
+        <a href="view_reworked.php?id={{cmid}}&action=currenttooldest" class="p-1"><i class="fa fa-2x fa-arrow-down" title="{{#str}}currenttooldest, mod_margic{{/str}}"></i></a>
+        <a href="view_reworked.php?id={{cmid}}&action=oldesttocurrent" class="p-1"><i class="fa fa-2x fa-arrow-up" title="{{#str}}oldesttocurrent, mod_margic{{/str}}"></i></a>
+        <a href="view_reworked.php?id={{cmid}}&action=lowestgradetohighest" class="p-1"><i class="fa fa-2x fa-thumbs-down" title="{{#str}}lowestgradetohighest, mod_margic{{/str}}"></i></a>
+        <a href="view_reworked.php?id={{cmid}}&action=highestgradetolowest" class="p-1"><i class="fa fa-2x fa-thumbs-up" title="{{#str}}highestgradetolowest, mod_margic{{/str}}"></i></a>
+        <a href="view_reworked.php?id={{cmid}}&action=latestmodified" class="p-1"><i class="fa fa-2x fa-pencil" title="{{#str}}latestmodified, mod_margic{{/str}}"></i></a>
+    </span>
+</div>
 
 {{#canmanageentries}}{{#entries.0}}
     <form action="view_reworked.php" method="post">
@@ -70,7 +85,7 @@
                     {{#str}}created, mod_margic, { "days": {{datediff.d}}, "hours": {{datediff.h}} } {{/str}}<br>
                 {{/datediff}}
             {{/stats}}
-            <strong>{{#str}}timecreated, mod_margic{{/str}}: </strong> {{#userdate}}{{timecreated}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}} | <strong> {{#str}} lastedited, mod_margic {{/str}}: </strong> {{#userdate}}{{timemodified}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}}<br>
+            <strong>{{#str}}timecreated, mod_margic{{/str}}: </strong> {{#userdate}}{{timecreated}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}}{{#timemodified}} | <strong> {{#str}} lastedited, mod_margic {{/str}}: </strong> {{#userdate}}{{timemodified}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}}{{/timemodified}}<br>
         </div>
 
         {{#needsgrading}}

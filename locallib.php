@@ -52,6 +52,9 @@ class margic {
     /** @var string mode of the margic instance */
     private $mode;
 
+    /** @var string sortmode of the margic instance */
+    private $sortmode;
+
     /** @var array Array with all accessible entries of the margic instance */
     private $entries = array();
 
@@ -65,7 +68,7 @@ class margic {
      * @param int $m int The instance id of the margic
      * @param int $userid int The id of the user for that entries should be shown
      */
-    public function __construct($id, $m, $userid) {
+    public function __construct($id, $m, $userid, $action) {
 
         global $DB, $USER;
 
@@ -95,6 +98,44 @@ class margic {
             $this->mode = 'ownentries';
         }
 
+        $sortoptions = '';
+
+        if (has_capability('mod/margic:addentries', $context)) {
+            switch ($action) {
+                case 'currenttooldest':
+                    $this->sortmode = get_string('currententry', 'mod_margic');
+                    set_user_preference('sortoption', 'timecreated DESC');
+                    $sortoptions = get_user_preferences('sortoption');
+                    break;
+                case 'oldesttocurrent':
+                    $this->sortmode = get_string('oldestentry', 'mod_margic');
+                    set_user_preference('sortoption', 'timecreated ASC');
+                    $sortoptions = get_user_preferences('sortoption');
+                    break;
+                case 'lowestgradetohighest':
+                    $this->sortmode = get_string('lowestgradeentry', 'mod_margic');
+                    set_user_preference('sortoption', 'rating ASC, timemodified DESC');
+                    $sortoptions = get_user_preferences('sortoption');
+                    break;
+                case 'highestgradetolowest':
+                    $this->sortmode = get_string('highestgradeentry', 'mod_margic');
+                    set_user_preference('sortoption', 'rating DESC, timemodified DESC');
+                    $sortoptions = get_user_preferences('sortoption');
+                    break;
+                case 'latestmodified':
+                    $this->sortmode = get_string('latestmodifiedentry', 'mod_margic');
+                    set_user_preference('sortoption', 'timemodified DESC, timecreated DESC');
+                    $sortoptions = get_user_preferences('sortoption');
+                    break;
+                default:
+                    if (!$sortoptions = get_user_preferences('sortoption')) {
+                        $this->sortmode = get_string('currententry', 'mod_margic');
+                        set_user_preference('sortoption', 'timecreated DESC');
+                        $sortoptions = get_user_preferences('sortoption');
+                    }
+            }
+        }
+
         // Handling groups.
         $currentgroups = groups_get_activity_group($this->cm, true);    // Get a list of the currently allowed groups for this course.
 
@@ -107,13 +148,13 @@ class margic {
         if ($this->mode == 'allentries') {
 
             if ($userid && $userid != 0) {
-                $this->entries = $DB->get_records('margic_entries', array('margic' => $this->instance->id, 'userid' => $userid));;
+                $this->entries = $DB->get_records('margic_entries', array('margic' => $this->instance->id, 'userid' => $userid), $sortoptions);
             } else {
-                $this->entries = $DB->get_records('margic_entries', array('margic' => $this->instance->id));;
+                $this->entries = $DB->get_records('margic_entries', array('margic' => $this->instance->id), $sortoptions);
             }
 
         } else if ($this->mode == 'ownentries') {
-            $this->entries = $DB->get_records('margic_entries', array('margic' => $this->instance->id, 'userid' => $USER->id));;
+            $this->entries = $DB->get_records('margic_entries', array('margic' => $this->instance->id, 'userid' => $USER->id), $sortoptions);
         }
 
         $gradingstr = get_string('needsgrading', 'margic');
@@ -159,13 +200,14 @@ class margic {
      * @param int $id int the course module id of margic
      * @param int $m int the instance id of the margic
      * @param int $userid int The id of the user for that entries should be shown
+     * @param int $action string The sortmode of the entries
      * @return string action
      */
-    public static function get_margic_instance($id, $m = null, $userid) {
+    public static function get_margic_instance($id, $m = null, $userid, $action = 'currententry') {
 
         static $inst = null;
         if ($inst === null) {
-            $inst = new margic($id, $m, $userid);
+            $inst = new margic($id, $m, $userid, $action);
         }
         return $inst;
     }
@@ -222,5 +264,14 @@ class margic {
      */
     public function get_entries_with_keys() {
         return $this->entries;
+    }
+
+    /**
+     * Returns the current sort mode for the instance.
+     *
+     * @return string action
+     */
+    public function get_sortmode() {
+        return $this->sortmode;
     }
 }

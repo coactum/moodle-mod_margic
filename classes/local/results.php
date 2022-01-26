@@ -193,20 +193,22 @@ class results {
         $whichuser = ''; // Leave blank for an admin or teacher.
         if (is_siteadmin($USER->id)) {
             $whichmargic = ('AND d.margic > 0');
-            $csv->filename = clean_filename(get_string('exportfilenamep1', 'margic'));
+            $csv->filename = clean_filename(get_string('exportfilenameallentries', 'margic'));
         } else if (has_capability('mod/margic:manageentries', $context)) {
             $whichmargic = ('AND d.margic = ');
             $whichmargic .= ($margic->id);
-            $csv->filename = clean_filename(($course->shortname).'_');
+            $csv->filename = clean_filename(get_string('exportfilenamemargicentries', 'margic'));
+            $csv->filename .= '_'.clean_filename(($course->shortname).'_');
             $csv->filename .= clean_filename(($margic->name));
         } else if (has_capability('mod/margic:addentries', $context)) {
             $whichmargic = ('AND d.margic = ');
             $whichmargic .= ($margic->id);
             $whichuser = (' AND d.userid = '.$USER->id); // Not an admin or teacher so can only get their OWN entries.
-            $csv->filename = clean_filename(($course->shortname).'_');
+            $csv->filename = clean_filename(get_string('exportfilenamemyentries', 'margic'));
+            $csv->filename .= '_'.clean_filename(($course->shortname).'_');
             $csv->filename .= clean_filename(($margic->name));
         }
-        $csv->filename .= clean_filename(get_string('exportfilenamep2', 'margic').gmdate("Ymd_Hi").'GMT.csv');
+        $csv->filename .= '_'.clean_filename(gmdate("Ymd_Hi").'GMT.csv');
 
         $fields = array();
         $fields = array(
@@ -278,7 +280,7 @@ class results {
                     $d->margic,
                     $d->userid,
                     $d->timecreated,
-                    $d->timemodified,
+                    $d->timemodified ?: '',
                     $d->format,
                     $d->rating,
                     $d->entrycomment,
