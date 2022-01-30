@@ -43,8 +43,9 @@
 </div>
 
 <div class="pb-1">
-    <a class="btn btn-primary m-1" href="edit.php?id={{cmid}}"> {{#str}}startnewentry, mod_margic{{/str}} </a>
+    <a class="btn btn-primary mr-1" href="edit.php?id={{cmid}}"> {{#str}}startnewentry, mod_margic{{/str}} </a>
     {{#canmanageentries}}<button class="btn btn-primary" data-toggle="collapse" data-target=".gradingform" aria-expanded="false" aria-controls=".gradingform" title="{{#str}}toggleratingform, mod_margic{{/str}}">{{#str}}toggleratingform, mod_margic{{/str}}</button>{{/canmanageentries}}
+    {{#canmanageentries}}{{#singleuser}}<a class="btn btn-primary m-1" href="view_reworked.php?id={{cmid}}"> {{#str}}seeallentries, mod_margic{{/str}} </a>{{/singleuser}}{{/canmanageentries}}
 
     <span class="pull-right p-1">
         <a href="view_reworked.php?id={{cmid}}&action=download" class="p-1 pr-2 border-right solid"><i class="fa fa-2x fa-download" title="{{#str}}csvexport, mod_margic{{/str}}"></i></a>
@@ -55,6 +56,31 @@
         <a href="view_reworked.php?id={{cmid}}&action=latestmodified" class="p-1"><i class="fa fa-2x fa-pencil" title="{{#str}}latestmodified, mod_margic{{/str}}"></i></a>
     </span>
 </div>
+
+{{#entries.0}}
+<form action="view_reworked.php?id={{cmid}}" method="post">
+    <input type="hidden" name="id" value="{{cmid}}">
+    <input type="hidden" name="sesskey" value="{{sesskey}}">
+
+    <div class="mt-1">
+        <ul class="pagination">
+            {{#pagebar}}
+                <li class="page-item">
+                    <a class="page-link" href="view_reworked.php?id={{cmid}}&page={{nr}}">{{{display}}}</a>
+                </li>
+            {{/pagebar}}
+
+            <div class="ml-auto">
+                {{#str}}pagesize, mod_margic{{/str}}:
+                <select onchange="this.form.submit()" aria-label="Select page count" name="pagecount">
+                    {{#pagecountoptions}}<option {{option}}>{{text}}</option>{{/pagecountoptions}}
+                </select>
+            </div>
+        </ul>
+    </div>
+</form>
+
+{{/entries.0}}
 
 {{#canmanageentries}}{{#entries.0}}
     <form action="view_reworked.php" method="post">
@@ -70,7 +96,7 @@
 
         {{#user}}
             {{#canmanageentries}}
-                {{{userpicture}}} {{firstname}} {{lastname}} <a href="view_reworked.php?id={{cmid}}&userid={{userid}}"><i class="fa fa-user fa-lg" title="{{#str}}getallentriesofuser, mod_margic{{/str}}"></i></a>
+                {{{userpicture}}} {{firstname}} {{lastname}} {{^singleuser}}<a href="view_reworked.php?id={{cmid}}&userid={{userid}}"><i class="fa fa-user fa-lg" title="{{#str}}getallentriesofuser, mod_margic{{/str}}"></i></a>{{/singleuser}}
             {{/canmanageentries}}
         {{/user}}
 

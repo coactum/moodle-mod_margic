@@ -42,13 +42,19 @@ $userid = optional_param('userid',  0, PARAM_INT); // User id.
 // Param containing the requested action.
 $action = optional_param('action',  'currententry', PARAM_ALPHANUMEXT);
 
+// Param containing the page count.
+$pagecount = optional_param('pagecount', 0, PARAM_INT);
+
+// Param containing the active page.
+$page = optional_param('page', 1, PARAM_INT);
+
 // Param if annotation mode is activated.
 $annotationmode = optional_param('annotationmode',  0, PARAM_BOOL); // Annotation mode.
 
 // Param if annotation should be deleted.
 $deleteannotation = optional_param('deleteannotation',  0, PARAM_INT); // Annotation to be deleted.
 
-$margic = margic::get_margic_instance($id, $m, $userid, $action);
+$margic = margic::get_margic_instance($id, $m, $userid, $action, $pagecount, $page);
 
 $moduleinstance = $margic->get_module_instance();
 $course = $margic->get_course();
@@ -96,93 +102,98 @@ if ($data = data_submitted()) {
     $feedback = array();
     $data = (array) $data;
 
-    $entries = $margic->get_entries_with_keys();
+    if (isset($data["submitbutton"])) {
+        $entries = $margic->get_entries_with_keys();
 
-    foreach ($data as $key => $val) {
-        if (strpos($key, 'r') === 0 || strpos($key, 'c') === 0) {
-            $type = substr($key, 0, 1);
-            $num = substr($key, 1);
-            $feedback[$num][$type] = $val;
-        }
-    }
-
-    $timenow = time();
-    $count = 0;
-    foreach ($feedback as $num => $vals) {
-        $entry = $entries[$num];
-
-        // Only update entries where feedback has actually changed.
-        $ratingchanged = false;
-        if ($moduleinstance->assessed != 0) {
-            $studentrating = clean_param($vals['r'], PARAM_INT);
-        } else {
-            $studentrating = '';
-        }
-        $studentcomment = clean_text($vals['c'], FORMAT_PLAIN);
-
-        if ($studentrating != $entry->rating && ! ($studentrating == '' && $entry->rating == "0")) {
-            $ratingchanged = true;
-        }
-
-        if ($ratingchanged || $studentcomment != $entry->entrycomment) {
-            $newentry = new StdClass();
-            $newentry->rating = $studentrating;
-            $newentry->entrycomment = $studentcomment;
-            $newentry->teacher = $USER->id;
-            $newentry->timemarked = $timenow;
-            $newentry->mailed = 0; // Make sure mail goes out (again, even).
-            $newentry->id = $num;
-            if (! $DB->update_record("margic_entries", $newentry)) {
-                notify("Failed to update the margic feedback for user $entry->userid");
-            } else {
-                $count ++;
+        foreach ($data as $key => $val) {
+            if (strpos($key, 'r') === 0 || strpos($key, 'c') === 0) {
+                $type = substr($key, 0, 1);
+                $num = substr($key, 1);
+                $feedback[$num][$type] = $val;
             }
+        }
 
+        $timenow = time();
+        $count = 0;
+        foreach ($feedback as $num => $vals) {
+            $entry = $entries[$num];
+
+            // Only update entries where feedback has actually changed.
+            $ratingchanged = false;
             if ($moduleinstance->assessed != 0) {
-                $ratingoptions = new stdClass();
-                $ratingoptions->contextid = $context->id;
-                $ratingoptions->component = 'mod_margic';
-                $ratingoptions->ratingarea = 'entry';
-                $ratingoptions->itemid = $entry->id;
-                $ratingoptions->aggregate = $moduleinstance->assessed; // The aggregation method.
-                $ratingoptions->scaleid = $moduleinstance->scale;
-                $ratingoptions->rating = $studentrating;
-                $ratingoptions->userid = $entry->userid;
-                $ratingoptions->timecreated = $entry->timecreated;
-                $ratingoptions->timemodified = $entry->timemodified;
-                $ratingoptions->returnurl = $CFG->wwwroot . '/mod/margic/view_reworked.php?id' . $id;
+                $studentrating = clean_param($vals['r'], PARAM_INT);
+            } else {
+                $studentrating = '';
+            }
+            $studentcomment = clean_text($vals['c'], FORMAT_PLAIN);
 
-                $ratingoptions->assesstimestart = $moduleinstance->assesstimestart;
-                $ratingoptions->assesstimefinish = $moduleinstance->assesstimefinish;
-
-                // Check if there is already a rating, and if so, just update it.
-                if ($rec = results::check_rating_entry($ratingoptions)) {
-                    $ratingoptions->id = $rec->id;
-                    $DB->update_record('rating', $ratingoptions, false);
-                } else {
-                    $DB->insert_record('rating', $ratingoptions, false);
-                }
+            if ($studentrating != $entry->rating && ! ($studentrating == '' && $entry->rating == "0")) {
+                $ratingchanged = true;
             }
 
-            $record = $moduleinstance;
-            $record->cmidnumber = $cm->idnumber;
+            if ($ratingchanged || $studentcomment != $entry->entrycomment) {
+                $newentry = new StdClass();
+                $newentry->rating = $studentrating;
+                $newentry->entrycomment = $studentcomment;
+                $newentry->teacher = $USER->id;
+                $newentry->timemarked = $timenow;
+                $newentry->mailed = 0; // Make sure mail goes out (again, even).
+                $newentry->id = $num;
+                if (! $DB->update_record("margic_entries", $newentry)) {
+                    notify("Failed to update the margic feedback for user $entry->userid");
+                } else {
+                    $count ++;
+                }
 
-            margic_update_grades($record, $entry->userid);
+                if ($moduleinstance->assessed != 0) {
+                    $ratingoptions = new stdClass();
+                    $ratingoptions->contextid = $context->id;
+                    $ratingoptions->component = 'mod_margic';
+                    $ratingoptions->ratingarea = 'entry';
+                    $ratingoptions->itemid = $entry->id;
+                    $ratingoptions->aggregate = $moduleinstance->assessed; // The aggregation method.
+                    $ratingoptions->scaleid = $moduleinstance->scale;
+                    $ratingoptions->rating = $studentrating;
+                    $ratingoptions->userid = $entry->userid;
+                    $ratingoptions->timecreated = $entry->timecreated;
+                    $ratingoptions->timemodified = $entry->timemodified;
+                    $ratingoptions->returnurl = $CFG->wwwroot . '/mod/margic/view_reworked.php?id' . $id;
+
+                    $ratingoptions->assesstimestart = $moduleinstance->assesstimestart;
+                    $ratingoptions->assesstimefinish = $moduleinstance->assesstimefinish;
+
+                    // Check if there is already a rating, and if so, just update it.
+                    if ($rec = results::check_rating_entry($ratingoptions)) {
+                        $ratingoptions->id = $rec->id;
+                        $DB->update_record('rating', $ratingoptions, false);
+                    } else {
+                        $DB->insert_record('rating', $ratingoptions, false);
+                    }
+                }
+
+                $record = $moduleinstance;
+                $record->cmidnumber = $cm->idnumber;
+
+                margic_update_grades($record, $entry->userid);
+            }
         }
+
+        // Trigger module feedback updated event.
+        $event = \mod_margic\event\feedback_updated::create(array(
+            'objectid' => $moduleinstance->id,
+            'context' => $context
+        ));
+        $event->add_record_snapshot('course_modules', $cm);
+        $event->add_record_snapshot('course', $course);
+        $event->add_record_snapshot('margic', $moduleinstance);
+        $event->trigger();
+
+        // Redirect and display how many entries were updated with feedback and grades.
+        redirect(new moodle_url('/mod/margic/view_reworked.php', array('id' => $id)), get_string('feedbackupdated', 'mod_margic', $count), null, notification::NOTIFY_SUCCESS);
+    } else {
+        // Redirect if pagecount is updated.
+        redirect(new moodle_url('/mod/margic/view_reworked.php', array('id' => $id)), null, null, null);
     }
-
-    // Trigger module feedback updated event.
-    $event = \mod_margic\event\feedback_updated::create(array(
-        'objectid' => $moduleinstance->id,
-        'context' => $context
-    ));
-    $event->add_record_snapshot('course_modules', $cm);
-    $event->add_record_snapshot('course', $course);
-    $event->add_record_snapshot('margic', $moduleinstance);
-    $event->trigger();
-
-    // Redirect and display how many entries were updated with feedback and grades.
-    redirect(new moodle_url('/mod/margic/view_reworked.php', array('id' => $id)), get_string('feedbackupdated', 'mod_margic', $count), null, notification::NOTIFY_SUCCESS);
 
 } else {
 
@@ -290,8 +301,10 @@ if ($moduleinstance->editall || !$timefinish) {
 echo groups_print_activity_menu($cm, $CFG->wwwroot . "/mod/margic/view_reworked.php?id=$id");
 
 // Output page.
-$page = new margic_view($cm->id, $margic->get_entries(), $margic->get_sortmode(), get_config('mod_margic', 'entrybgc'), get_config('mod_margic', 'entrytextbgc'),
-    $editentries, $edittimeends, $canmanageentries, sesskey(), $currentuserrating, $ratingaggregationmode, $course->id);
+$page = new margic_view($cm->id, $margic->get_entries_grouped_by_pagecount(), $margic->get_sortmode(),
+    get_config('mod_margic', 'entrybgc'), get_config('mod_margic', 'entrytextbgc'), $editentries,
+    $edittimeends, $canmanageentries, sesskey(), $currentuserrating, $ratingaggregationmode, $course->id,
+    $userid, $margic->get_pagecountoptions(), $margic->get_pagebar());
 
 echo $OUTPUT->render($page);
 

@@ -39,7 +39,7 @@ class margic_view implements renderable, templatable {
 
     /** @var int */
     protected $cmid;
-    /** @var array */
+    /** @var object */
     protected $entries;
     /** @var string */
     protected $sortmode;
@@ -61,6 +61,12 @@ class margic_view implements renderable, templatable {
     protected $ratingaggregationmode;
     /** @var int */
     protected $courseid;
+    /** @var int */
+    protected $singleuser;
+    /** @var int */
+    protected $pagecountoptions;
+    /** @var array */
+    protected $pagebar;
     /**
      * Construct this renderable.
      * @param int $cmid The course module id
@@ -75,9 +81,12 @@ class margic_view implements renderable, templatable {
      * @param string $currentuserrating The rating of the current user viewing the page
      * @param string $ratingaggregationmode The mode of the aggregated grades
      * @param int $courseid The course id for getting the user pictures
+     * @param int $singleuser If only entries of one user are displayed
+     * @param array $pagecountoptions Options for the pagecount select
+     * @param array $pagebar Array with the bpages for the pagebar
      */
     public function __construct($cmid, $entries, $sortmode, $entrybgc, $entrytextbgc, $caneditentries, $edittimeends, $canmanageentries,
-        $sesskey, $currentuserrating, $ratingaggregationmode, $courseid) {
+        $sesskey, $currentuserrating, $ratingaggregationmode, $courseid, $singleuser, $pagecountoptions, $pagebar) {
 
         $this->cmid = $cmid;
         $this->entries = $entries;
@@ -90,6 +99,9 @@ class margic_view implements renderable, templatable {
         $this->sesskey = $sesskey;
         $this->currentuserrating = $currentuserrating;
         $this->ratingaggregationmode = $ratingaggregationmode;
+        $this->singleuser = $singleuser;
+        $this->pagecountoptions = $pagecountoptions;
+        $this->pagebar = $pagebar;
     }
 
     /**
@@ -103,22 +115,25 @@ class margic_view implements renderable, templatable {
         $data->cmid = $this->cmid;
 
         global $OUTPUT, $DB, $USER;
-        foreach ($this->entries as $key => $entry) {
-            if ($this->canmanageentries) {
-                $this->entries[$key]->user->userpicture = $OUTPUT->user_picture($entry->user, array('courseid' => $this->courseid, 'link' => true));
-            }
 
-            if ($entry->teacher) {
-                $teacher = $DB->get_record('user', array('id' => $entry->teacher));;
-                $teacherimage = $OUTPUT->user_picture($teacher, array('courseid' => $this->courseid, 'link' => true));
-
+        if ($this->entries) {
+            foreach ($this->entries as $key => $entry) {
                 if ($this->canmanageentries) {
-                    $replace = str_replace('<span class="teacherpicture m-l-1">', '<br><span class="teacherpicture m-l-1">' .  $teacherimage . ' ' . fullname($teacher) . ' - ', $entry->gradingform);
-                } else {
-                    $replace = str_replace('<span class="teacherpicture"></span>', '<span class="teacherpicture">' .  $teacherimage, $entry->gradingform);
+                    $this->entries[$key]->user->userpicture = $OUTPUT->user_picture($entry->user, array('courseid' => $this->courseid, 'link' => true));
                 }
 
-                $this->entries[$key]->gradingform = $replace;
+                if ($entry->teacher) {
+                    $teacher = $DB->get_record('user', array('id' => $entry->teacher));;
+                    $teacherimage = $OUTPUT->user_picture($teacher, array('courseid' => $this->courseid, 'link' => true));
+
+                    if ($this->canmanageentries) {
+                        $replace = str_replace('<span class="teacherpicture m-l-1">', '<br><span class="teacherpicture m-l-1">' .  $teacherimage . ' ' . fullname($teacher) . ' - ', $entry->gradingform);
+                    } else {
+                        $replace = str_replace('<span class="teacherpicture"></span>', '<span class="teacherpicture">' .  $teacherimage, $entry->gradingform);
+                    }
+
+                    $this->entries[$key]->gradingform = $replace;
+                }
             }
         }
 
@@ -132,6 +147,9 @@ class margic_view implements renderable, templatable {
         $data->sesskey = $this->sesskey;
         $data->currentuserrating = $this->currentuserrating;
         $data->ratingaggregationmode = $this->ratingaggregationmode;
+        $data->singleuser = $this->singleuser;
+        $data->pagecountoptions = $this->pagecountoptions;
+        $data->pagebar = $this->pagebar;
         return $data;
     }
 }
