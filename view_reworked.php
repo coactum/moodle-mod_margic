@@ -156,7 +156,7 @@ if ($data = data_submitted()) {
                     $ratingoptions->rating = $studentrating;
                     $ratingoptions->userid = $entry->userid;
                     $ratingoptions->timecreated = $entry->timecreated;
-                    $ratingoptions->timemodified = $entry->timemodified;
+                    $ratingoptions->timemodified = $timenow;
                     $ratingoptions->returnurl = $CFG->wwwroot . '/mod/margic/view_reworked.php?id' . $id;
 
                     $ratingoptions->assesstimestart = $moduleinstance->assesstimestart;
@@ -304,7 +304,7 @@ echo groups_print_activity_menu($cm, $CFG->wwwroot . "/mod/margic/view_reworked.
 $page = new margic_view($cm->id, $margic->get_entries_grouped_by_pagecount(), $margic->get_sortmode(),
     get_config('mod_margic', 'entrybgc'), get_config('mod_margic', 'entrytextbgc'), $editentries,
     $edittimeends, $canmanageentries, sesskey(), $currentuserrating, $ratingaggregationmode, $course->id,
-    $userid, $margic->get_pagecountoptions(), $margic->get_pagebar());
+    $userid, $margic->get_pagecountoptions(), $margic->get_pagebar(), count($margic->get_entries()));
 
 echo $OUTPUT->render($page);
 

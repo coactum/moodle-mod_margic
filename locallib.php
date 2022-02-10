@@ -320,6 +320,7 @@ class margic {
     public function get_entries_grouped_by_pagecount() {
         // Group entries by pagecount.
         if ($this->pagecount != 0) {
+
             $groupedentries = array_chunk($this->entries, $this->pagecount, true);
             array_unshift($groupedentries, "temp");
             unset($groupedentries[0]);
@@ -378,7 +379,7 @@ class margic {
 
         $pagecountoptions = array(2, 3, 4, 5, 6, 7, 8, 9, 10,
             15, 20, 30, 40, 50, 100, 200, 300, 400, 500,
-            1000, 'all');
+            1000);
 
         foreach ($pagecountoptions as $key => $number) {
             $obj = new stdClass();

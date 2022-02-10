@@ -127,7 +127,6 @@ $string['noentry'] = 'No entry';
 $string['notopenuntil'] = 'This margic won\'t be open until';
 
 $string['notstarted'] = 'You have not started this margic yet';
-$string['outof'] = ' out of {$a} entries.';
 $string['overallrating'] = 'Overall rating';
 $string['pagesize'] = 'Entries per page';
 $string['pluginadministration'] = 'margic module administration';
@@ -201,6 +200,7 @@ $string['oldestentry'] = 'Oldest entries';
 $string['lowestgradeentry'] = 'Lowest rated entries';
 $string['highestgradeentry'] = 'Highest rated entries';
 $string['latestmodifiedentry'] = 'Last modified entries';
+$string['viewallentries'] = 'View all entries';
 
 // Löschen.
 $string['numwordscln'] = '{$a->one} clean text words using {$a->two} characters, NOT including {$a->three} spaces. ';
@@ -209,3 +209,4 @@ $string['numwordsnew'] = 'New calculation: {$a->one} raw text words using {$a->t
 $string['edittopoflist'] = 'Edit top of the list';
 $string['reload'] = 'Reload and show from current to oldest margic entry';
 $string['sortfirstentry'] = 'From first margic entry to the latest entry.';
+$string['outof'] = ' out of {$a} entries.';

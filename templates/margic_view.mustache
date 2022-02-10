@@ -45,7 +45,7 @@
 <div class="pb-1">
     <a class="btn btn-primary mr-1" href="edit.php?id={{cmid}}"> {{#str}}startnewentry, mod_margic{{/str}} </a>
     {{#canmanageentries}}<button class="btn btn-primary" data-toggle="collapse" data-target=".gradingform" aria-expanded="false" aria-controls=".gradingform" title="{{#str}}toggleratingform, mod_margic{{/str}}">{{#str}}toggleratingform, mod_margic{{/str}}</button>{{/canmanageentries}}
-    {{#canmanageentries}}{{#singleuser}}<a class="btn btn-primary m-1" href="view_reworked.php?id={{cmid}}"> {{#str}}seeallentries, mod_margic{{/str}} </a>{{/singleuser}}{{/canmanageentries}}
+    {{#canmanageentries}}{{#singleuser}}<a class="btn btn-primary m-1" href="view_reworked.php?id={{cmid}}"> {{#str}}viewallentries, mod_margic{{/str}} </a>{{/singleuser}}{{/canmanageentries}}
 
     <span class="pull-right p-1">
         <a href="view_reworked.php?id={{cmid}}&action=download" class="p-1 pr-2 border-right solid"><i class="fa fa-2x fa-download" title="{{#str}}csvexport, mod_margic{{/str}}"></i></a>
@@ -71,10 +71,11 @@
             {{/pagebar}}
 
             <div class="ml-auto">
-                {{#str}}pagesize, mod_margic{{/str}}:
+                <strong>{{#str}}pagesize, mod_margic{{/str}}:</strong>
                 <select onchange="this.form.submit()" aria-label="Select page count" name="pagecount">
                     {{#pagecountoptions}}<option {{option}}>{{text}}</option>{{/pagecountoptions}}
                 </select>
+                <strong> / {{entriescount}}</strong>
             </div>
         </ul>
     </div>

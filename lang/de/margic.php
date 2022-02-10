@@ -111,7 +111,6 @@ $string['noentriesmanagers'] = 'Keine Trainer/innen';
 $string['noentry'] = 'Kein Eintrag';
 $string['notopenuntil'] = 'Diese Margic-Instanz ist nicht geöffnet bis';
 $string['notstarted'] = 'Sie haben diese Margic-Instanz noch nicht begonnen';
-$string['outof'] = 'aus {$a} Einträgen.';
 $string['overallrating'] = 'Gesamtbewertung';
 $string['pagesize'] = 'Einträge pro Seite';
 $string['pluginadministration'] = 'Administration zu Margic';
@@ -187,6 +186,7 @@ $string['oldestentry'] = 'Älteste Einträge';
 $string['lowestgradeentry'] = 'Am niedrigsten bewertete Einträge';
 $string['highestgradeentry'] = 'Am höchsten bewertete Beiträge';
 $string['latestmodifiedentry'] = 'Zuletzt geänderte Einträge';
+$string['viewallentries'] = 'Alle Einträge ansehen';
 
 // löschen
 $string['numwordscln'] = '{$a->one} bereinigte Wörter mit {$a->two} Zeichen, AUSSCHLIEßLICH {$a->three} Leerzeichen. ';
@@ -194,3 +194,4 @@ $string['numwordsstd'] = '{$a->one} standardisierte Wörter mit {$a->two} Zeiche
 $string['edittopoflist'] = 'Den Anfang der Liste bearbeiten';
 $string['reload'] = 'Neuladen und Anzeigen vom aktuellsten zum ältesten Margic-Eintrag';
 $string['sortfirstentry'] = 'Vom ersten Margic-Eintrag bis zum letzten.';
+$string['outof'] = 'aus {$a} Einträgen.';

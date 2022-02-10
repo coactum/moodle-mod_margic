@@ -67,6 +67,8 @@ class margic_view implements renderable, templatable {
     protected $pagecountoptions;
     /** @var array */
     protected $pagebar;
+    /** @var int */
+    protected $entriescount;
     /**
      * Construct this renderable.
      * @param int $cmid The course module id
@@ -84,9 +86,10 @@ class margic_view implements renderable, templatable {
      * @param int $singleuser If only entries of one user are displayed
      * @param array $pagecountoptions Options for the pagecount select
      * @param array $pagebar Array with the bpages for the pagebar
+     * @param int $entriescount The amount of all entries
      */
     public function __construct($cmid, $entries, $sortmode, $entrybgc, $entrytextbgc, $caneditentries, $edittimeends, $canmanageentries,
-        $sesskey, $currentuserrating, $ratingaggregationmode, $courseid, $singleuser, $pagecountoptions, $pagebar) {
+        $sesskey, $currentuserrating, $ratingaggregationmode, $courseid, $singleuser, $pagecountoptions, $pagebar, $entriescount) {
 
         $this->cmid = $cmid;
         $this->entries = $entries;
@@ -102,6 +105,7 @@ class margic_view implements renderable, templatable {
         $this->singleuser = $singleuser;
         $this->pagecountoptions = $pagecountoptions;
         $this->pagebar = $pagebar;
+        $this->entriescount = $entriescount;
     }
 
     /**
@@ -150,6 +154,7 @@ class margic_view implements renderable, templatable {
         $data->singleuser = $this->singleuser;
         $data->pagecountoptions = $this->pagecountoptions;
         $data->pagebar = $this->pagebar;
+        $data->entriescount = $this->entriescount;
         return $data;
     }
 }

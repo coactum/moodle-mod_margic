@@ -41,7 +41,7 @@ $m  = optional_param('d', null, PARAM_INT);
 // ID of the entry to be edited (if existing).
 $entryid = optional_param('entryid', '', PARAM_INT);
 
-$margic = margic::get_margic_instance($id, $m, false);
+$margic = margic::get_margic_instance($id, $m, false, 'currententry', 0, 1);
 
 $moduleinstance = $margic->get_module_instance();
 $course = $margic->get_course();
