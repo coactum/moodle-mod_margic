@@ -661,6 +661,7 @@ class results {
     /**
      * Returns the grade for a specific margic entry.
      *
+     * @param integer $cmid
      * @param object $context
      * @param integer $course
      * @param integer $margic
@@ -668,7 +669,7 @@ class results {
      * @param integer $grades
      * @param bool $canmanageentries
      */
-    public static function margic_return_comment_and_grade_form_for_entry($context, $course, $margic, $entry, $grades, $canmanageentries) {
+    public static function margic_return_comment_and_grade_form_for_entry($cmid, $context, $course, $margic, $entry, $grades, $canmanageentries) {
 
         $grade = false;
 
@@ -698,6 +699,10 @@ class results {
                 $userfullname = fullname($user);
 
                 $gradingform .= '<h3>' . get_string('feedback') . '</h3>';
+
+                $gradingform .= '<form action="view_reworked.php" method="post">';
+                $gradingform .= '<input type="hidden" name="id" value="' . $cmid . '">';
+                $gradingform .= '<input type="hidden" name="sesskey" value="' . sesskey() . '">';
 
                 // Get the current rating for this user!
                 if ($margic->assessed != 0) { // Append grading area only when grading is not disabled.
@@ -776,6 +781,7 @@ class results {
                 $gradingform .= '<input type="submit" class="btn btn-primary " name="submitbutton" id="id_submitbutton" value="' . get_string("saveallfeedback", "margic") .'">';
                 $gradingform .= '</div>';
                 $gradingform .= '</div>';
+                $gradingform .= '</form>';
             } else if (! empty($entry->entrycomment) || ! empty($entry->rating)) {
                 if (! $teacher = $DB->get_record('user', array(
                     'id' => $entry->teacher

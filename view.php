@@ -594,7 +594,7 @@ if ($timenow > $timestart) {
                 if ($annotationmode === 1 && has_capability('mod/margic:viewannotations', $context)) {
                     echo '</div>';
                     $entryid = $entry->id;
-                    include(__DIR__ ."/classes/annotations/annotations.php"); // include annotation menu
+                    include(__DIR__ ."/classes/annotations/annotations_general.php"); // include annotation menu
                     echo '</div>';
                 }
             }

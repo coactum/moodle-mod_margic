@@ -51,9 +51,6 @@ $page = optional_param('page', 1, PARAM_INT);
 // Param if annotation mode is activated.
 $annotationmode = optional_param('annotationmode',  0, PARAM_BOOL); // Annotation mode.
 
-// Param if annotation should be deleted.
-$deleteannotation = optional_param('deleteannotation',  0, PARAM_INT); // Annotation to be deleted.
-
 $margic = margic::get_margic_instance($id, $m, $userid, $action, $pagecount, $page);
 
 $moduleinstance = $margic->get_module_instance();
@@ -86,14 +83,6 @@ $canaddentries = has_capability('mod/margic:addentries', $context);
 
 if (!$canaddentries) {
     throw new moodle_exception(get_string('accessdenied', 'margic'));
-}
-
-// Delete annotation.
-if (has_capability('mod/margic:makeannotations', $context) && $deleteannotation !== 0) {
-    global $USER;
-    $DB->delete_records('margic_annotations', array('id' => $deleteannotation, 'margic' => $moduleinstance->id, 'userid' => $USER->id));
-
-    redirect(new moodle_url('/mod/margic/view.php', array('id' => $id, 'annotationmode' => 1)), get_string('annotationdeleted', 'mod_margic'), null, notification::NOTIFY_SUCCESS);
 }
 
 // Process incoming data if there is any.
@@ -219,6 +208,8 @@ $margicname = format_string($moduleinstance->name, true, array(
     'context' => $context
 ));
 
+$canmakeannotations = has_capability('mod/margic:makeannotations', $context);
+
 // Add javascript and navbar element if annotationmode is activated and user has capability.
 if ($annotationmode === 1 && has_capability('mod/margic:viewannotations', $context)) {
 
@@ -232,7 +223,7 @@ if ($annotationmode === 1 && has_capability('mod/margic:viewannotations', $conte
 
     $PAGE->requires->js_call_amd('mod_margic/annotations', 'init',
         array('annotations' => $DB->get_records('margic_annotations', array('margic' => $cm->instance)),
-            'canmakeannotations' => has_capability('mod/margic:makeannotations', $context)));
+            'canmakeannotations' => $canmakeannotations));
 } else {
     // Header.
     $PAGE->set_url('/mod/margic/view.php', array(
@@ -241,7 +232,7 @@ if ($annotationmode === 1 && has_capability('mod/margic:viewannotations', $conte
     $PAGE->navbar->add(get_string("viewentries", "margic"));
 }
 
-$PAGE->set_title($margicname);
+$PAGE->set_title(get_string('modulename', 'mod_margic').': ' . $margicname);
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
 $PAGE->force_settings_menu();
@@ -301,10 +292,10 @@ if ($moduleinstance->editall || !$timefinish) {
 echo groups_print_activity_menu($cm, $CFG->wwwroot . "/mod/margic/view_reworked.php?id=$id");
 
 // Output page.
-$page = new margic_view($cm->id, $margic->get_entries_grouped_by_pagecount(), $margic->get_sortmode(),
+$page = new margic_view($cm, $margic->get_entries_grouped_by_pagecount(), $margic->get_sortmode(),
     get_config('mod_margic', 'entrybgc'), get_config('mod_margic', 'entrytextbgc'), $editentries,
     $edittimeends, $canmanageentries, sesskey(), $currentuserrating, $ratingaggregationmode, $course->id,
-    $userid, $margic->get_pagecountoptions(), $margic->get_pagebar(), count($margic->get_entries()));
+    $userid, $margic->get_pagecountoptions(), $margic->get_pagebar(), count($margic->get_entries()), $annotationmode, $canmakeannotations);
 
 echo $OUTPUT->render($page);
 

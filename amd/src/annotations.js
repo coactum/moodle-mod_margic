@@ -26,6 +26,9 @@
     return {
         init: function(annotations, canmakeannotations) {
 
+            console.log('js init');
+            console.log(annotations);
+
             // Hide all Moodle forms
             $('.annotation-form').hide();
 
@@ -35,10 +38,15 @@
             $('.annotation-form div.form-group').removeClass('form-group');
             $('.annotation-form div.row').removeClass('row');
 
+            console.log('js after colremove');
+
             function recreateAnnotations(){
+                console.log('js start recreateAnnotations');
+
                 for (let annotation of Object.values(annotations)) {
 
-                    //console.log($( "#entry-" + annotation.entry)[0]);
+                    console.log('js in loop recreateAnnotations');
+                    console.log(annotation);
 
                     //recreate range from db
                     var newrange = document.createRange();
@@ -57,6 +65,7 @@
                     highlightRange(newrange, annotation.id);
 
                 }
+                console.log('js end recreateAnnotations');
             }
 
             function editAnnotation(annotationid) {
@@ -71,21 +80,23 @@
 
                     //console.log(entry);
 
-                    $('input[name="startcontainer[' + entry + ']"]').val(annotations[annotationid].startcontainer);
-                    $('input[name="endcontainer[' + entry + ']"]').val(annotations[annotationid].endcontainer);
-                    $('input[name="startposition[' + entry + ']"]').val(annotations[annotationid].startposition);
-                    $('input[name="endposition[' + entry + ']"]').val(annotations[annotationid].endposition);
+                    $('.annotation-box-' + annotationid).hide(); // hide edited annotation-box
 
-                    $('input[name="annotationid[' + entry + ']"]').val(annotationid);
+                    $('.annotation-form-' + entry + ' input[name="startcontainer"]').val(annotations[annotationid].startcontainer);
+                    $('.annotation-form-' + entry + ' input[name="endcontainer"]').val(annotations[annotationid].endcontainer);
+                    $('.annotation-form-' + entry + ' input[name="startposition"]').val(annotations[annotationid].startposition);
+                    $('.annotation-form-' + entry + ' input[name="endposition"]').val(annotations[annotationid].endposition);
 
-                    $('textarea[name="text[' + entry + ']"]').val(annotations[annotationid].text);
+                    $('.annotation-form-' + entry + ' input[name="annotationid"]').val(annotationid);
+
+                    $('.annotation-form-' + entry + ' textarea[name="text"]').val(annotations[annotationid].text);
 
                     $('.annotationarea-' + entry + ' .annotation-form').show();
                     $('#id_text_' + entry).focus();
                 }
             }
 
-            // function deleteAnnotation(annotationid) {
+            // function deleteAnnotation(annotationid) { // for later with ajax use
 
             //     //console.log('delete annotation');
             //     //console.log(annotationid);
@@ -109,6 +120,8 @@
             // }
 
             function resetForms(){
+                console.log('js start resetForms');
+
                 $('.annotation-form').hide();
 
                 $('.annotation-form input[name^="annotationid"]').val(null);
@@ -119,6 +132,11 @@
                 $('.annotation-form input[name^="endposition"]').val(-1);
 
                 $('.annotation-form textarea[name^="text"]').val('');
+
+                $('.annotation-box').not('.annotation-form').show(); // To show again edited annotation
+
+                console.log('js end resetForms');
+
             }
 
             /**
@@ -196,7 +214,7 @@
              */
             function highlightRange(range, annotationid = false, cssClass = 'annotated') {
 
-                //console.log('highlightRange start');
+                console.log('js start highlightRange');
 
                 const textNodes = wholeTextNodesInRange(range);
 
@@ -250,7 +268,7 @@
                 highlights.push(highlightEl);
                 });
 
-                //console.log('highlightRange end');
+                console.log('js end highlightRange');
 
 
                 return highlights;
@@ -297,10 +315,6 @@
                 }
                 return node.parentElement.closest(placeholderSelector) !== null;
             }
-
-
-
-
 
             /**
              * Get the node name for use in generating an xpath expression.
@@ -524,6 +538,8 @@
 
             // If user selects text for new annotation
             $(document).on('mouseup', '.originaltext', function() {
+                console.log('js start mouseup .originaltext');
+
                 var selectedrange = window.getSelection().getRangeAt(0);
 
                 // console.log('i should make annotation');
@@ -551,16 +567,18 @@
                     //console.log('selectedrange.cloneContents().textContent');
                     //console.log(selectedrange.cloneContents().textContent);
 
-                    $('input[name="startcontainer[' + entry + ']"]').val(xpathFromNode(selectedrange.startContainer, this));
-                    $('input[name="endcontainer[' + entry + ']"]').val(xpathFromNode(selectedrange.endContainer, this));
-                    $('input[name="startposition[' + entry + ']"]').val(selectedrange.startOffset);
-                    $('input[name="endposition[' + entry + ']"]').val(selectedrange.endOffset);
+                    $('.annotation-form-' + entry + ' input[name="startcontainer"]').val(xpathFromNode(selectedrange.startContainer, this));
+                    $('.annotation-form-' + entry + ' input[name="endcontainer"]').val(xpathFromNode(selectedrange.endContainer, this));
+                    $('.annotation-form-' + entry + ' input[name="startposition"]').val(selectedrange.startOffset);
+                    $('.annotation-form-' + entry + ' input[name="endposition"]').val(selectedrange.endOffset);
 
                     highlightRange(selectedrange, false, 'annotated_temp');
 
                     $('.annotationarea-' + entry + ' .annotation-form').show();
                     $('#id_text_' + entry).focus();
                 }
+                console.log('js end mouseup .originaltext');
+
             });
 
             recreateAnnotations();

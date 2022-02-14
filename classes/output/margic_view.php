@@ -37,6 +37,8 @@ use stdClass;
  */
 class margic_view implements renderable, templatable {
 
+    /** @var object */
+    protected $cm;
     /** @var int */
     protected $cmid;
     /** @var object */
@@ -69,6 +71,10 @@ class margic_view implements renderable, templatable {
     protected $pagebar;
     /** @var int */
     protected $entriescount;
+    /** @var bool */
+    protected $annotationmode;
+    /** @var bool */
+    protected $canmakeannotations;
     /**
      * Construct this renderable.
      * @param int $cmid The course module id
@@ -87,11 +93,14 @@ class margic_view implements renderable, templatable {
      * @param array $pagecountoptions Options for the pagecount select
      * @param array $pagebar Array with the bpages for the pagebar
      * @param int $entriescount The amount of all entries
+     * @param bool $annotationmode If annotation mode is set
+     * @param bool $canmakeannotations If user can make annotations
      */
-    public function __construct($cmid, $entries, $sortmode, $entrybgc, $entrytextbgc, $caneditentries, $edittimeends, $canmanageentries,
-        $sesskey, $currentuserrating, $ratingaggregationmode, $courseid, $singleuser, $pagecountoptions, $pagebar, $entriescount) {
+    public function __construct($cm, $entries, $sortmode, $entrybgc, $entrytextbgc, $caneditentries, $edittimeends, $canmanageentries,
+        $sesskey, $currentuserrating, $ratingaggregationmode, $courseid, $singleuser, $pagecountoptions, $pagebar, $entriescount, $annotationmode, $canmakeannotations) {
 
-        $this->cmid = $cmid;
+        $this->cm = $cm;
+        $this->cmid = $this->cm->id;
         $this->entries = $entries;
         $this->sortmode = $sortmode;
         $this->entrybgc = $entrybgc;
@@ -106,6 +115,8 @@ class margic_view implements renderable, templatable {
         $this->pagecountoptions = $pagecountoptions;
         $this->pagebar = $pagebar;
         $this->entriescount = $entriescount;
+        $this->annotationmode = $annotationmode;
+        $this->canmakeannotations = $canmakeannotations;
     }
 
     /**
@@ -118,7 +129,9 @@ class margic_view implements renderable, templatable {
         $data = new stdClass();
         $data->cmid = $this->cmid;
 
-        global $OUTPUT, $DB, $USER;
+        global $OUTPUT, $DB, $USER, $CFG;
+
+        require_once($CFG->dirroot . '/mod/margic/annotation_form.php');
 
         if ($this->entries) {
             foreach ($this->entries as $key => $entry) {
@@ -127,7 +140,7 @@ class margic_view implements renderable, templatable {
                 }
 
                 if ($entry->teacher) {
-                    $teacher = $DB->get_record('user', array('id' => $entry->teacher));;
+                    $teacher = $DB->get_record('user', array('id' => $entry->teacher));
                     $teacherimage = $OUTPUT->user_picture($teacher, array('courseid' => $this->courseid, 'link' => true));
 
                     if ($this->canmanageentries) {
@@ -138,8 +151,26 @@ class margic_view implements renderable, templatable {
 
                     $this->entries[$key]->gradingform = $replace;
                 }
+
+                if ($this->annotationmode) {
+                    $mform = new \annotation_form(new \moodle_url('/mod/margic/annotations.php', array('id' => $this->cmid)), array('entry' => $entry->id));
+
+                    // Set default data.
+                    $mform->set_data(array('id' => $this->cmid, 'entry' => $entry->id));
+
+                    $this->entries[$key]->annotationform = $mform->render();
+
+                    $this->entries[$key]->annotations = array_values($DB->get_records('margic_annotations', array('margic' => $this->cm->instance, 'entry' => $entry->id)));
+                } else {
+                    $this->entries[$key]->annotationform = false;
+                    $this->entries[$key]->annotations = false;
+                }
+
             }
         }
+
+        //var_dump($this->entries);
+
 
         $data->entries = $this->entries;
         $data->sortmode = $this->sortmode;
@@ -155,6 +186,8 @@ class margic_view implements renderable, templatable {
         $data->pagecountoptions = $this->pagecountoptions;
         $data->pagebar = $this->pagebar;
         $data->entriescount = $this->entriescount;
+        $data->annotationmode = $this->annotationmode;
+        $data->canmakeannotations = $this->canmakeannotations;
         return $data;
     }
 }

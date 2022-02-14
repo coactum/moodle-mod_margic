@@ -26,7 +26,7 @@ defined('MOODLE_INTERNAL') || die();
 
 use core\output\notification;
 
-require_once($CFG->dirroot . '/mod/margic/classes/annotations/annotation_form.php');
+require_once($CFG->dirroot . '/mod/margic/annotation_form.php');
 
 global $DB;
 

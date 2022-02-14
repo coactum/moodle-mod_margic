@@ -46,6 +46,8 @@
     <a class="btn btn-primary mr-1" href="edit.php?id={{cmid}}"> {{#str}}startnewentry, mod_margic{{/str}} </a>
     {{#canmanageentries}}<button class="btn btn-primary" data-toggle="collapse" data-target=".gradingform" aria-expanded="false" aria-controls=".gradingform" title="{{#str}}toggleratingform, mod_margic{{/str}}">{{#str}}toggleratingform, mod_margic{{/str}}</button>{{/canmanageentries}}
     {{#canmanageentries}}{{#singleuser}}<a class="btn btn-primary m-1" href="view_reworked.php?id={{cmid}}"> {{#str}}viewallentries, mod_margic{{/str}} </a>{{/singleuser}}{{/canmanageentries}}
+    {{^annotationmode}}<a class="btn btn-primary m-1" href="view_reworked.php?id={{cmid}}&annotationmode=1"> {{#str}}viewannotations, mod_margic{{/str}} </a>{{/annotationmode}}
+    {{#annotationmode}}<a class="btn btn-primary m-1" href="view_reworked.php?id={{cmid}}"> {{#str}}hideannotations, mod_margic{{/str}} </a>{{/annotationmode}}
 
     <span class="pull-right p-1">
         <a href="view_reworked.php?id={{cmid}}&action=download" class="p-1 pr-2 border-right solid"><i class="fa fa-2x fa-download" title="{{#str}}csvexport, mod_margic{{/str}}"></i></a>
@@ -66,7 +68,7 @@
         <ul class="pagination">
             {{#pagebar}}
                 <li class="page-item">
-                    <a class="page-link" href="view_reworked.php?id={{cmid}}&page={{nr}}">{{{display}}}</a>
+                    <a class="page-link" href="view_reworked.php?id={{cmid}}&page={{nr}}{{#annotationmode}}&annotationmode=1{{/annotationmode}}">{{{display}}}</a>
                 </li>
             {{/pagebar}}
 
@@ -83,14 +85,9 @@
 
 {{/entries.0}}
 
-{{#canmanageentries}}{{#entries.0}}
-    <form action="view_reworked.php" method="post">
-        <input type="hidden" name="id" value="{{cmid}}">
-        <input type="hidden" name="sesskey" value="{{sesskey}}">
-{{/entries.0}}{{/canmanageentries}}
-
 {{#entries}}
-    <div class="entry" style="background: {{entrybgc}};">
+<div class="d-flex justify-content-between">
+    <div class="entry {{#annotationmode}}w-75{{/annotationmode}} {{^annotationmode}}w-100{{/annotationmode}}" style="background: {{entrybgc}};">
         <h4>{{#str}}entry, mod_margic{{/str}}: {{#userdate}}{{timecreated}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}}
             {{#entrycanbeedited}}{{#caneditentries}}<a href="edit.php?id={{cmid}}&entryid={{id}}"><i class="fa fa-pencil" title="{{#str}}editthisentry, mod_margic{{/str}}"></i></a>{{/caneditentries}}{{/entrycanbeedited}}
         </h4>
@@ -101,10 +98,12 @@
             {{/canmanageentries}}
         {{/user}}
 
-        <div class="entry" style="background: {{entrytextbgc}};">
-            {{#text}}{{{text}}}{{/text}}
-            {{^text}}<p class="text-center"><strong>{{#str}}blankentry, mod_margic{{/str}}</strong></p>{{/text}}
-        </div>
+        {{#text}}
+            <div id="entry-{{id}}" class="entry originaltext" style="background: {{entrytextbgc}};">
+                {{{text}}}
+            </div>
+        {{/text}}
+        {{^text}}<p class="text-center"><strong>{{#str}}blankentry, mod_margic{{/str}}</strong></p>{{/text}}
         <div class="lastedit">
             {{#stats}}
                 <strong>{{#str}}details, mod_margic{{/str}}:</strong> {{#str}}numwordsraw, mod_margic, { "wordscount": {{words}}, "charscount": {{chars}}, "spacescount": {{spaces}} } {{/str}}<br>
@@ -143,8 +142,28 @@
         {{/canmanageentries}}
 
     </div>
+    {{#annotationmode}}
+        <div class="annotationarea annotationarea-{{id}} w-25" style="background: {{entrybgc}};">
+            <h2 class="text-center">{{#str}} annotations, mod_margic {{/str}}</h2>
+            {{#annotations}}
+                <div class="annotation-box annotation-box-{{id}}">
+                    <span id="annotation-{{id}}" class="annotation annotation-{{id}}">{{text}}</span>
+                    {{#canmakeannotations}}
+                        <span class="pull-right"><a href="javascript:void(0);"><i id="edit-annotation-{{id}}" class="fa fa-2x fa-pencil m-r-1 edit-annotation" aria-hidden="true"></i></a><a href="annotations.php?id={{cmid}}&deleteannotation={{id}}"><i id="delete-annotation-{{id}}" class="fa fa-2x fa-trash delete-annotation" aria-hidden="true"></i></a></span>
+                    {{/canmakeannotations}}
+                    <br>
+                </div>
+            {{/annotations}}
+
+            {{#annotationform}}
+                <div class="annotation-box annotation-form annotation-form-{{id}}">
+                    {{{annotationform}}}
+                </div>
+            {{/annotationform}}
+        </div>
+    {{/annotationmode}}
+</div>
 {{/entries}}
-{{#canmanageentries}}{{#entries.0}}</form>{{/entries.0}}{{/canmanageentries}}
 
 {{^entries}}
     <br>

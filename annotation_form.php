@@ -48,31 +48,33 @@ class annotation_form extends moodleform {
         $mform->addElement('hidden', 'id', null);
         $mform->setType('id', PARAM_INT);
 
-        // only temporary while user has to be remembered for singlereport.php
         $mform->addElement('hidden', 'user', null);
         $mform->setType('user', PARAM_INT);
+
+        $mform->addElement('hidden', 'entry', null);
+        $mform->setType('entry', PARAM_INT);
 
         $mform->addElement('hidden', 'annotationmode', 1);
         $mform->setType('annotationmode', PARAM_INT);
 
-        $mform->addElement('hidden', 'startcontainer[' . $this->_customdata['entry'] . ']', -1);
-        $mform->setType('startcontainer[' . $this->_customdata['entry'] . ']', PARAM_RAW);
+        $mform->addElement('hidden', 'startcontainer', -1);
+        $mform->setType('startcontainer', PARAM_RAW);
 
-        $mform->addElement('hidden', 'endcontainer[' . $this->_customdata['entry'] . ']', -1);
-        $mform->setType('endcontainer[' . $this->_customdata['entry'] . ']', PARAM_RAW);
+        $mform->addElement('hidden', 'endcontainer', -1);
+        $mform->setType('endcontainer', PARAM_RAW);
 
-        $mform->addElement('hidden', 'startposition[' . $this->_customdata['entry'] . ']', -1);
-        $mform->setType('startposition[' . $this->_customdata['entry'] . ']', PARAM_INT);
+        $mform->addElement('hidden', 'startposition', -1);
+        $mform->setType('startposition', PARAM_INT);
 
-        $mform->addElement('hidden', 'endposition[' . $this->_customdata['entry'] . ']', -1);
-        $mform->setType('endposition[' . $this->_customdata['entry'] . ']', PARAM_INT);
+        $mform->addElement('hidden', 'endposition', -1);
+        $mform->setType('endposition', PARAM_INT);
 
-        $mform->addElement('hidden', 'annotationid[' . $this->_customdata['entry'] . ']', null);
-        $mform->setType('annotationid[' . $this->_customdata['entry'] . ']', PARAM_INT);
+        $mform->addElement('hidden', 'annotationid', null);
+        $mform->setType('annotationid', PARAM_INT);
 
-        $mform->addElement('textarea', 'text[' . $this->_customdata['entry'] . ']');
-        $mform->setType('text[' . $this->_customdata['entry'] . ']', PARAM_RAW);
-        // $mform->addRule('annotation[' . $this->_customdata['entry'] . ']', get_string('errfilloutfield', 'mod_margic'), 'required', 'client');
+        $mform->addElement('textarea', 'text');
+        $mform->setType('text', PARAM_RAW);
+        // $mform->addRule('annotation', get_string('errfilloutfield', 'mod_margic'), 'required', 'client');
 
         $this->add_action_buttons();
 

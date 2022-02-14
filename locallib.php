@@ -223,7 +223,7 @@ class margic {
 
                 $grades = make_grades_menu($this->instance->scale);
 
-                $this->entries[$i]->gradingform = results::margic_return_comment_and_grade_form_for_entry($this->context, $this->course, $this->instance,
+                $this->entries[$i]->gradingform = results::margic_return_comment_and_grade_form_for_entry($this->cm->id, $this->context, $this->course, $this->instance,
                     $entry, $grades, $canmanageentries);
 
                 if ($viewinguserid == $entry->userid) {
@@ -231,6 +231,7 @@ class margic {
                 } else {
                     $this->entries[$i]->entrycanbeedited = false;
                 }
+
             } else {
                 unset($this->entries[$i]);
             }
