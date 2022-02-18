@@ -72,9 +72,11 @@ class annotation_form extends moodleform {
         $mform->addElement('hidden', 'annotationid', null);
         $mform->setType('annotationid', PARAM_INT);
 
+        $select = $mform->addElement('select', 'type', '', $this->_customdata['types']);
+        $mform->setType('type', PARAM_INT);
+
         $mform->addElement('textarea', 'text');
         $mform->setType('text', PARAM_RAW);
-        // $mform->addRule('annotation', get_string('errfilloutfield', 'mod_margic'), 'required', 'client');
 
         $this->add_action_buttons();
 

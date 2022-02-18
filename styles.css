@@ -68,9 +68,10 @@
 
 #page-mod-margic-view .needsedit,
 #page-mod-margic-view .editend {
-    font-size: 0.9em;
-    color: red;
+    color: darkred;
     text-align: center;
+    background: white;
+    font-weight: bold;
 }
 
 #page-mod-margic-view .author { /* Used in renderer.php about line 191. */
@@ -101,16 +102,15 @@
 #page-mod-margic-reportsingle .entry {
     text-align: left;
     font-size: 1em;
-    padding: 5px;
     /* font-weight: bold; */ /* [margic] removed */
-    background: #f9f5f0;
-    /*border: 2px solid grey;*/
-    border-style: double;
-    -webkit-border-radius: 16px;
-    -moz-border-radius: 16px;
-    border-radius: 16px;
+    padding: 10px;
     margin-bottom: 10px;
-
+    /* background: #f9f5f0; */
+    border: 1px solid rgba(0,0,0,.125);
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    /* border-style: double; */
 }
 
 #page-mod-margic-view .feedbackbox .left,
@@ -189,15 +189,15 @@
 #page-mod-margic-reportsingle .annotationarea {
     text-align: left;
     font-size: 1em;
-    padding: 5px;
-    /* background: #f9f5f0; */
-    /*border: 2px solid grey;*/
-    border-style: double;
-    -webkit-border-radius: 16px;
-    -moz-border-radius: 16px;
-    border-radius: 16px;
+    /* font-weight: bold; */ /* [margic] removed */
+    padding: 10px;
     margin-bottom: 10px;
     margin-left: 10px;
+    border: 1px solid rgba(0,0,0,.125);
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    /* border-style: double; */
 }
 
 #page-mod-margic-view .annotationarea .annotation:hover,
@@ -235,7 +235,7 @@
 #page-mod-margic-reportsingle .annotated_temp:hover,
 #page-mod-margic-report .hovered,
 #page-mod-margic-reportsingle .hovered {
-    background-color: lightblue;
+    background-color: lightblue !important;
 }
 
 #page-mod-margic-view .annotation-box,

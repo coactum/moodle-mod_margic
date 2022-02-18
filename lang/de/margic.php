@@ -188,6 +188,15 @@ $string['highestgradeentry'] = 'Am höchsten bewertete Beiträge';
 $string['latestmodifiedentry'] = 'Zuletzt geänderte Einträge';
 $string['viewallentries'] = 'Alle Einträge ansehen';
 
+$string['grammar_verb'] = 'Grammatik: Verbform';
+$string['grammar_syntax'] = 'Grammatik: Satzbau';
+$string['grammar_congruence'] = 'Grammatik: Kongruenz';
+$string['grammar_other'] = 'Grammatik: Sonstiges';
+$string['expression'] = 'Ausdruck';
+$string['orthography'] = 'Orthographie';
+$string['punctuation'] = 'Interpunktion';
+$string['other'] = 'Sonstiges';
+
 // löschen
 $string['numwordscln'] = '{$a->one} bereinigte Wörter mit {$a->two} Zeichen, AUSSCHLIEßLICH {$a->three} Leerzeichen. ';
 $string['numwordsstd'] = '{$a->one} standardisierte Wörter mit {$a->two} Zeichen, einschließlich {$a->three} Leerzeichen. ';

@@ -89,7 +89,7 @@ if (has_capability('mod/margic:makeannotations', $context) && $deleteannotation 
 require_once($CFG->dirroot . '/mod/margic/annotation_form.php');
 
 // Instantiate form.
-$mform = new annotation_form(null, array('id' => $id));
+$mform = new annotation_form(null, array('types' => $margic->get_annotationtypes_for_form()));
 
 if ($fromform = $mform->get_data()) {
 
@@ -98,6 +98,7 @@ if ($fromform = $mform->get_data()) {
         $annotation = $DB->get_record('margic_annotations', array('margic' => $cm->instance, 'entry' => $fromform->entry, 'id' => $fromform->annotationid));
         $annotation->timemodified = time();
         $annotation->text = format_text($fromform->text, 2, array('para' => false));
+        $annotation->type = $fromform->type;
 
         $DB->update_record('margic_annotations', $annotation);
 
@@ -112,7 +113,7 @@ if ($fromform = $mform->get_data()) {
             $annotation->userid = $USER->id;
             $annotation->timecreated = time();
             $annotation->timemodified = 0;
-            $annotation->type = 1;
+            $annotation->type = $fromform->type;
             $annotation->startcontainer = $fromform->startcontainer;
             $annotation->endcontainer = $fromform->endcontainer;
             $annotation->startposition = $fromform->startposition;

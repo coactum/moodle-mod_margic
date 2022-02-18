@@ -117,7 +117,7 @@ $string['modulename'] = 'Margic';
 $string['modulename_help'] = 'The margic activity enables teachers to obtain students feedback
  over a period of time.';
 $string['modulenameplural'] = 'Margics';
-$string['needsgrading'] = ' This entry has not been given feedback or rated yet.';
+$string['needsgrading'] = ' This entry has not been given feedback or a rating yet.';
 $string['needsregrading'] = 'This entry has changed since feedback or a rating was given.';
 $string['newmargicentries'] = 'New margic entries';
 $string['nextentry'] = 'Next entry';
@@ -201,6 +201,15 @@ $string['lowestgradeentry'] = 'Lowest rated entries';
 $string['highestgradeentry'] = 'Highest rated entries';
 $string['latestmodifiedentry'] = 'Last modified entries';
 $string['viewallentries'] = 'View all entries';
+
+$string['grammar_verb'] = 'Grammar: Verb form';
+$string['grammar_syntax'] = 'Grammar: Syntax';
+$string['grammar_congruence'] = 'Grammar: Congruence';
+$string['grammar_other'] = 'Grammar: Other';
+$string['expression'] = 'Expression';
+$string['orthography'] = 'Orthography';
+$string['punctuation'] = 'Punctuation';
+$string['other'] = 'Other';
 
 // Löschen.
 $string['numwordscln'] = '{$a->one} clean text words using {$a->two} characters, NOT including {$a->three} spaces. ';

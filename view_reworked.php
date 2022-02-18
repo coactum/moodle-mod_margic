@@ -222,7 +222,7 @@ if ($annotationmode === 1 && has_capability('mod/margic:viewannotations', $conte
     $PAGE->navbar->add(get_string('viewannotations', 'mod_margic'));
 
     $PAGE->requires->js_call_amd('mod_margic/annotations', 'init',
-        array('annotations' => $DB->get_records('margic_annotations', array('margic' => $cm->instance)),
+        array('annotations' => $margic->get_annotations(),
             'canmakeannotations' => $canmakeannotations));
 } else {
     // Header.
@@ -295,7 +295,7 @@ echo groups_print_activity_menu($cm, $CFG->wwwroot . "/mod/margic/view_reworked.
 $page = new margic_view($cm, $margic->get_entries_grouped_by_pagecount(), $margic->get_sortmode(),
     get_config('mod_margic', 'entrybgc'), get_config('mod_margic', 'entrytextbgc'), $editentries,
     $edittimeends, $canmanageentries, sesskey(), $currentuserrating, $ratingaggregationmode, $course->id,
-    $userid, $margic->get_pagecountoptions(), $margic->get_pagebar(), count($margic->get_entries()), $annotationmode, $canmakeannotations);
+    $userid, $margic->get_pagecountoptions(), $margic->get_pagebar(), count($margic->get_entries()), $annotationmode, $canmakeannotations, $margic->get_annotationtypes_for_form());
 
 echo $OUTPUT->render($page);
 

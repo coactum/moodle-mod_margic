@@ -144,9 +144,9 @@
     </div>
     {{#annotationmode}}
         <div class="annotationarea annotationarea-{{id}} w-25" style="background: {{entrybgc}};">
-            <h2 class="text-center">{{#str}} annotations, mod_margic {{/str}}</h2>
+            <h4 class="text-center">{{#str}} annotations, mod_margic {{/str}}</h4>
             {{#annotations}}
-                <div class="annotation-box annotation-box-{{id}}">
+                <div class="annotation-box annotation-box-{{id}}" style="background: {{entrytextbgc}};">
                     <span id="annotation-{{id}}" class="annotation annotation-{{id}}">{{text}}</span>
                     {{#canmakeannotations}}
                         <span class="pull-right"><a href="javascript:void(0);"><i id="edit-annotation-{{id}}" class="fa fa-2x fa-pencil m-r-1 edit-annotation" aria-hidden="true"></i></a><a href="annotations.php?id={{cmid}}&deleteannotation={{id}}"><i id="delete-annotation-{{id}}" class="fa fa-2x fa-trash delete-annotation" aria-hidden="true"></i></a></span>

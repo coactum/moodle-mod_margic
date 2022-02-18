@@ -64,6 +64,12 @@ class margic {
     /** @var array Array with all accessible entries of the margic instance */
     private $entries = array();
 
+    /** @var array Array with all annotations to entries of the margic instance */
+    private $annotations = array();
+
+    /** @var array Array with all types of annotations */
+    private $annotationtypes = array();
+
     /** @var array Array of error messages encountered during the execution of margic related operations. */
     private $errors = array();
 
@@ -232,6 +238,13 @@ class margic {
                     $this->entries[$i]->entrycanbeedited = false;
                 }
 
+                $this->entries[$i]->annotations = array_values($DB->get_records('margic_annotations', array('margic' => $this->cm->instance, 'entry' => $entry->id)));
+
+                $annotationtypes = $this->get_all_annotationtypes();
+                foreach ($this->entries[$i]->annotations as $key => $annotation) {
+                    $this->entries[$i]->annotations[$key]->color = $annotationtypes[$annotation->type]->color;
+                }
+
             } else {
                 unset($this->entries[$i]);
             }
@@ -311,6 +324,64 @@ class margic {
      */
     public function get_entries_with_keys() {
         return $this->entries;
+    }
+
+    /**
+     * Returns all annotations for the margic instance.
+     *
+     * @return array action
+     */
+    public function get_annotations() {
+        global $DB, $USER;
+
+        $this->annotations = $DB->get_records('margic_annotations', array('margic' => $this->get_course_module()->instance));
+
+        $select = "defaulttype = 1";
+        $select .= " OR userid = " . $USER->id;
+        $annotationtypes = array();
+        $annotationtypes = $this->get_all_annotationtypes();
+
+        foreach ($this->annotations as $key => $annotation) {
+            $this->annotations[$key]->color = $annotationtypes[$annotation->type]->color;
+        }
+
+        return $this->annotations;
+    }
+
+    /**
+     * Returns all annotationtypes.
+     *
+     * @return array action
+     */
+    public function get_all_annotationtypes() {
+        global $DB, $USER;
+
+        $select = "defaulttype = 1";
+        $select .= " OR userid = " . $USER->id;
+        $annotationtypes = $DB->get_records_select('margic_annotation_types', $select);
+
+        $this->annotationtypes = $annotationtypes;
+
+        return $this->annotationtypes;
+    }
+
+    /**
+     * Returns annotationtype array for select form.
+     *
+     * @return array action
+     */
+    public function get_annotationtypes_for_form() {
+        $types = array();
+        $strmanager = get_string_manager();
+        foreach ($this->annotationtypes as $key => $type) {
+            if ($type->defaulttype == 1 && $strmanager->string_exists($type->name, 'mod_margic')) {
+                $types[$key] = get_string($type->name, 'mod_margic');
+            } else {
+                $types[$key] = $type->name;
+            }
+        }
+
+        return $types;
     }
 
     /**
