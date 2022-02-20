@@ -211,6 +211,10 @@ $string['orthography'] = 'Orthography';
 $string['punctuation'] = 'Punctuation';
 $string['other'] = 'Other';
 
+$string['annotationssummary'] = 'Annotations summary and error types';
+$string['participant'] = 'Participant';
+$string['backtooverview'] = 'Back to overview';
+
 // Löschen.
 $string['numwordscln'] = '{$a->one} clean text words using {$a->two} characters, NOT including {$a->three} spaces. ';
 $string['numwordsstd'] = '{$a->one} standardized words using {$a->two} characters, including {$a->three} spaces. ';

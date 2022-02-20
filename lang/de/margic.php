@@ -197,6 +197,10 @@ $string['orthography'] = 'Orthographie';
 $string['punctuation'] = 'Interpunktion';
 $string['other'] = 'Sonstiges';
 
+$string['annotationssummary'] = 'Annotationsauswertung und Fehlertypen';
+$string['participant'] = 'TeilnehmerIn';
+$string['backtooverview'] = 'Zurück zur Übersicht';
+
 // löschen
 $string['numwordscln'] = '{$a->one} bereinigte Wörter mit {$a->two} Zeichen, AUSSCHLIEßLICH {$a->three} Leerzeichen. ';
 $string['numwordsstd'] = '{$a->one} standardisierte Wörter mit {$a->two} Zeichen, einschließlich {$a->three} Leerzeichen. ';
