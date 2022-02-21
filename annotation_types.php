@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Prints the annotation summary for the margic instance.
+ * Prints the annotation type form for the margic instance.
  *
  * @package     mod_margic
- * @copyright   2021 coactum GmbH
+ * @copyright   2022 coactum GmbH
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -28,6 +28,7 @@ use mod_margic\output\margic_annotations_summary;
 require(__DIR__.'/../../config.php');
 require_once(__DIR__.'/lib.php');
 require_once($CFG->dirroot . '/mod/margic/locallib.php');
+require_once($CFG->dirroot . '/mod/margic/annotation_types_form.php');
 
 // Course_module ID.
 $id = required_param('id', PARAM_INT);
@@ -64,13 +65,44 @@ require_login($course, true, $cm);
 
 require_capability('mod/margic:makeannotations', $context);
 
+// Instantiate form.
+$mform = new annotation_types_form();
+$mform->set_data(array('id' => $id));
+
+$redirecturl = new moodle_url('/mod/margic/annotations_summary.php', array('id' => $id));
+
+if ($mform->is_cancelled()) {
+    redirect($redirecturl);
+} else if ($fromform = $mform->get_data()) {
+
+    // In this case you process validated data. $mform->get_data() returns data posted in form.
+    if (isset($fromform->typename)) { // Create new annotation type.
+
+        $annotationtype = new stdClass();
+        $annotationtype->userid = $USER->id;
+        $annotationtype->timecreated = time();
+        $annotationtype->timemodified = 0;
+        $annotationtype->name = format_text($fromform->typename, 2, array('para' => false));
+        $annotationtype->color = 'FF0000';
+        $annotationtype->defaulttype = 0;
+        $annotationtype->unused = 0;
+        $annotationtype->replaces = null;
+
+        $DB->insert_record('margic_annotation_types', $annotationtype);
+
+        redirect($redirecturl, get_string('annotationtypeaddedormodified', 'mod_margic'), null, notification::NOTIFY_SUCCESS);
+    } else {
+        redirect($redirecturl, get_string('annotationtypeinvalid', 'mod_margic'), null, notification::NOTIFY_ERROR);
+    }
+}
+
 // Get the name for this margic activity.
 $margicname = format_string($moduleinstance->name, true, array(
     'context' => $context
 ));
 
-$PAGE->set_url('/mod/margic/annotations_summary.php', array('id' => $cm->id));
-$PAGE->navbar->add(get_string('annotationssummary', 'mod_margic'));
+$PAGE->set_url('/mod/margic/annotation_types.php', array('id' => $cm->id));
+$PAGE->navbar->add(get_string('editannotationtype', 'mod_margic'));
 
 $PAGE->set_title(get_string('modulename', 'mod_margic').': ' . $margicname);
 $PAGE->set_heading(format_string($course->fullname));
@@ -84,33 +116,6 @@ if ($moduleinstance->intro) {
     echo $OUTPUT->box(format_module_intro('margic', $moduleinstance, $cm->id), 'generalbox mod_introbox', 'newmoduleintro');
 }
 
-$participants = array_values(get_enrolled_users($context, 'mod/margic:addentries'));
-$annotationtypes = $margic->get_annotationtypes_for_form();
-
-foreach ($participants as $key => $participant) {
-    $participants[$key]->errors = array();
-
-    foreach ($annotationtypes as $i => $type) {
-        $sql = "SELECT COUNT(*)
-            FROM {margic_annotations} a
-            JOIN {margic_entries} e ON e.id = a.entry
-            WHERE e.margic = :margic AND
-                e.userid = :userid AND
-                a.type = :atype";
-        $params = array('margic' => $moduleinstance->id, 'userid' => $participant->id, 'atype' => $i);
-        $count = $DB->count_records_sql($sql, $params);
-
-        $participants[$key]->errors[$i] = $count;
-    }
-
-    $participants[$key]->errors = array_values($participants[$key]->errors);
-}
-
-$annotationtypes = array_values($annotationtypes);
-
-// Output page.
-$page = new margic_annotations_summary($cm->id, $participants, $annotationtypes);
-
-echo $OUTPUT->render($page);
+$mform->display();
 
 echo $OUTPUT->footer();

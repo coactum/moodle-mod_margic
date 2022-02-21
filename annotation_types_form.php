@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * File containing the class definition for the annotate form for the margic.
+ * File containing the class definition for the annotationtypes form for the margic.
  *
  * @package     mod_margic
- * @copyright   2021 coactum GmbH
+ * @copyright   2022 coactum GmbH
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -28,13 +28,13 @@ global $CFG;
 require_once("$CFG->libdir/formslib.php");
 
 /**
- * Form for annotations.
+ * Form for annotation types.
  *
  * @package   mod_margic
- * @copyright 2021 coactum GmbH
+ * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL Juv3 or later
  */
-class annotation_form extends moodleform {
+class annotation_types_form extends moodleform {
 
     /**
      * Define the form - called by parent constructor
@@ -48,39 +48,11 @@ class annotation_form extends moodleform {
         $mform->addElement('hidden', 'id', null);
         $mform->setType('id', PARAM_INT);
 
-        $mform->addElement('hidden', 'user', null);
-        $mform->setType('user', PARAM_INT);
-
-        $mform->addElement('hidden', 'entry', null);
-        $mform->setType('entry', PARAM_INT);
-
-        $mform->addElement('hidden', 'annotationmode', 1);
-        $mform->setType('annotationmode', PARAM_INT);
-
-        $mform->addElement('hidden', 'startcontainer', -1);
-        $mform->setType('startcontainer', PARAM_RAW);
-
-        $mform->addElement('hidden', 'endcontainer', -1);
-        $mform->setType('endcontainer', PARAM_RAW);
-
-        $mform->addElement('hidden', 'startposition', -1);
-        $mform->setType('startposition', PARAM_INT);
-
-        $mform->addElement('hidden', 'endposition', -1);
-        $mform->setType('endposition', PARAM_INT);
-
-        $mform->addElement('hidden', 'annotationid', null);
-        $mform->setType('annotationid', PARAM_INT);
-
-        $select = $mform->addElement('select', 'type', '', $this->_customdata['types']);
-        $mform->setType('type', PARAM_INT);
-
-        $mform->addElement('textarea', 'text');
-        $mform->setType('text', PARAM_RAW);
+        $mform->addElement('text', 'typename', get_string('nameofannotationtype', 'mod_margic'));
+        $mform->setType('typename', PARAM_ALPHANUMEXT);
+        $mform->addRule('typename', null, 'required', null, 'client');
 
         $this->add_action_buttons();
-
-        $mform->disable_form_change_checker();
     }
 
     /**

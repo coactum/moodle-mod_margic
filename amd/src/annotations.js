@@ -87,7 +87,7 @@
                     $('.annotation-form-' + entry + ' select').val(annotations[annotationid].type);
 
                     $('.annotationarea-' + entry + ' .annotation-form').show();
-                    $('#id_text_' + entry).focus();
+                    $('.annotationarea-' + entry + ' #id_text').focus();
                 }
             }
 

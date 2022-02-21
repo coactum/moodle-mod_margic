@@ -214,6 +214,10 @@ $string['other'] = 'Other';
 $string['annotationssummary'] = 'Annotations summary and error types';
 $string['participant'] = 'Participant';
 $string['backtooverview'] = 'Back to overview';
+$string['editannotationtype'] = 'Add or edit annotation type';
+$string['annotationtypeaddedormodified'] = 'Annotation type added or edited';
+$string['annotationtypeinvalid'] = 'Annotation type invalid';
+$string['nameofannotationtype'] = 'Name of annotation type';
 
 // Löschen.
 $string['numwordscln'] = '{$a->one} clean text words using {$a->two} characters, NOT including {$a->three} spaces. ';
