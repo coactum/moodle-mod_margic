@@ -19,7 +19,7 @@
  * This is the css style sheet for margic.
  *
  * @package    mod_margic
- * @copyright  2019 AL Rachels (drachels@drachels.com)
+ * @copyright  2022 coactum GmbH
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later.
  */
 /* 20210502 Added in view.php about line 278.*/
@@ -70,8 +70,13 @@
 #page-mod-margic-view .editend {
     color: darkred;
     text-align: center;
-    background: white;
     font-weight: bold;
+}
+
+#page-mod-margic-view .needsedit span,
+#page-mod-margic-view .editend span {
+    background: white;
+    padding: 2px;
 }
 
 #page-mod-margic-view .author { /* Used in renderer.php about line 191. */
@@ -169,10 +174,6 @@
     color: red;
     margin-left: 10px;
 }
-
-/* #page-mod-margic-report .mediaplugin {
-    width: 100%;
-} */
 
 #page-mod-margic-view .ratingform {
     padding: 5px;

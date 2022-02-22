@@ -82,7 +82,7 @@ if ($mform->is_cancelled()) {
         $annotationtype->userid = $USER->id;
         $annotationtype->timecreated = time();
         $annotationtype->timemodified = 0;
-        $annotationtype->name = format_text($fromform->typename, 2, array('para' => false));
+        $annotationtype->name = format_text($fromform->typename, 1, array('para' => false));
         $annotationtype->color = 'FF0000';
         $annotationtype->defaulttype = 0;
         $annotationtype->unused = 0;

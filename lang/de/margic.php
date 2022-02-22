@@ -201,9 +201,9 @@ $string['annotationssummary'] = 'Annotationsauswertung und Fehlertypen';
 $string['participant'] = 'TeilnehmerIn';
 $string['backtooverview'] = 'Zurück zur Übersicht';
 $string['editannotationtype'] = 'Fehlertypen anlegen oder bearbeiten';
-$string['annotationtypeaddedormodified'] = 'Fehlertypen angelegt oder bearbeitet';
-$string['annotationtypeinvalid'] = 'Fehlertypen ungültig';
-$string['nameofannotationtype'] = 'Name des Fehlertypen';
+$string['annotationtypeaddedormodified'] = 'Fehlertyp angelegt oder bearbeitet';
+$string['annotationtypeinvalid'] = 'Fehlertyp ungültig';
+$string['nameofannotationtype'] = 'Name des Fehlertyps';
 
 // löschen
 $string['numwordscln'] = '{$a->one} bereinigte Wörter mit {$a->two} Zeichen, AUSSCHLIEßLICH {$a->three} Leerzeichen. ';

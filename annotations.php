@@ -33,7 +33,7 @@ global $DB, $CFG;
 $id = required_param('id', PARAM_INT);
 
 // Module instance ID as alternative.
-$m  = optional_param('d', null, PARAM_INT);
+$m  = optional_param('m', null, PARAM_INT);
 
 // Param if annotation should be deleted.
 $deleteannotation = optional_param('deleteannotation',  0, PARAM_INT); // Annotation to be deleted.

@@ -49,7 +49,7 @@ class annotation_types_form extends moodleform {
         $mform->setType('id', PARAM_INT);
 
         $mform->addElement('text', 'typename', get_string('nameofannotationtype', 'mod_margic'));
-        $mform->setType('typename', PARAM_ALPHANUMEXT);
+        $mform->setType('typename', PARAM_RAW);
         $mform->addRule('typename', null, 'required', null, 'client');
 
         $this->add_action_buttons();

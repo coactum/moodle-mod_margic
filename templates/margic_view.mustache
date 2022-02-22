@@ -116,19 +116,19 @@
         </div>
 
         {{#needsgrading}}
-            <div class="needsedit">{{needsgrading}}</div>
+            <div class="needsedit"><span>{{needsgrading}}</span></div>
         {{/needsgrading}}
 
         {{#needsregrading}}
-            <div class="needsedit">{{needsregrading}}</div>
+            <div class="needsedit"><span>{{needsregrading}}</span></div>
         {{/needsregrading}}
 
         {{#edittimeends}}
-            <div class="editend">
+            <div class="editend"><span>
                 {{#caneditentries}}{{#str}}editingends, mod_margic{{/str}}: {{/caneditentries}}
                 {{^caneditentries}}{{#str}}editingended, mod_margic{{/str}}: {{/caneditentries}}
                 {{#userdate}}{{edittimeends}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}}
-            </div>
+            </span></div>
         {{/edittimeends}}
 
         {{#canmanageentries}}

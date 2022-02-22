@@ -135,37 +135,52 @@ class margic {
         if (has_capability('mod/margic:addentries', $context)) {
             switch ($action) {
                 case 'currenttooldest':
-                    $this->sortmode = get_string('currententry', 'mod_margic');
-                    set_user_preference('sortoption', 'timecreated DESC');
-                    $sortoptions = get_user_preferences('sortoption');
+                    set_user_preference('sortoption['.$id.']', 1);
                     break;
                 case 'oldesttocurrent':
-                    $this->sortmode = get_string('oldestentry', 'mod_margic');
-                    set_user_preference('sortoption', 'timecreated ASC');
-                    $sortoptions = get_user_preferences('sortoption');
+                    set_user_preference('sortoption['.$id.']', 2);
                     break;
                 case 'lowestgradetohighest':
-                    $this->sortmode = get_string('lowestgradeentry', 'mod_margic');
-                    set_user_preference('sortoption', 'rating ASC, timemodified DESC');
-                    $sortoptions = get_user_preferences('sortoption');
+                    set_user_preference('sortoption['.$id.']', 3);
                     break;
                 case 'highestgradetolowest':
-                    $this->sortmode = get_string('highestgradeentry', 'mod_margic');
-                    set_user_preference('sortoption', 'rating DESC, timemodified DESC');
-                    $sortoptions = get_user_preferences('sortoption');
+                    set_user_preference('sortoption['.$id.']', 4);
                     break;
                 case 'latestmodified':
-                    $this->sortmode = get_string('latestmodifiedentry', 'mod_margic');
-                    set_user_preference('sortoption', 'timemodified DESC, timecreated DESC');
-                    $sortoptions = get_user_preferences('sortoption');
+                    set_user_preference('sortoption['.$id.']', 5);
                     break;
                 default:
-                    if (!$sortoptions = get_user_preferences('sortoption')) {
-                        $this->sortmode = get_string('currententry', 'mod_margic');
-                        set_user_preference('sortoption', 'timecreated DESC');
-                        $sortoptions = get_user_preferences('sortoption');
+                    if (!get_user_preferences('sortoption['.$id.']')) {
+                        set_user_preference('sortoption['.$id.']', 1);
                     }
             }
+
+            switch (get_user_preferences('sortoption['.$id.']')) {
+                case 1:
+                    $this->sortmode = get_string('currententry', 'mod_margic');
+                    $sortoptions = 'timecreated DESC';
+                    break;
+                case 2:
+                    $this->sortmode = get_string('oldestentry', 'mod_margic');
+                    $sortoptions = 'timecreated ASC';
+                    break;
+                case 3:
+                    $this->sortmode = get_string('lowestgradeentry', 'mod_margic');
+                    $sortoptions = 'rating ASC, timemodified DESC';
+                    break;
+                case 4:
+                    $this->sortmode = get_string('highestgradeentry', 'mod_margic');
+                    $sortoptions = 'rating DESC, timemodified DESC';
+                    break;
+                case 5:
+                    $this->sortmode = get_string('latestmodifiedentry', 'mod_margic');
+                    $sortoptions = 'timemodified DESC, timecreated DESC';
+                    break;
+                default:
+                    $this->sortmode = get_string('currententry', 'mod_margic');
+                    $sortoptions = 'timecreated DESC';
+            }
+
         }
 
         // Page selector.
