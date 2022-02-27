@@ -107,21 +107,18 @@ class margic {
 
         $this->modulename = get_string('modulename', 'mod_margic');
 
-        $select = "defaulttype = 1";
-        $select .= " OR userid = " . $USER->id;
-        $annotationtypes = $DB->get_records_select('margic_annotation_types', $select);
-
-        $this->annotationtypes = $annotationtypes;
-
         $this->annotations = $DB->get_records('margic_annotations', array('margic' => $this->get_course_module()->instance));
 
         $select = "defaulttype = 1";
         $select .= " OR userid = " . $USER->id;
-        $annotationtypes = array();
-        $annotationtypes = $this->get_all_annotationtypes();
+        $this->annotationtypes = (array) $DB->get_records_select('margic_annotation_types', $select);
 
         foreach ($this->annotations as $key => $annotation) {
-            $this->annotations[$key]->color = $annotationtypes[$annotation->type]->color;
+            if (!array_key_exists($annotation->type, $this->annotationtypes)) {
+                $this->annotationtypes[$annotation->type] = $DB->get_record('margic_annotation_types', array('id' => $annotation->type));
+            }
+
+            $this->annotations[$key]->color = $this->annotationtypes[$annotation->type]->color;
         }
 
         if ($canmanageentries = has_capability('mod/margic:manageentries', $context)) {
@@ -272,9 +269,8 @@ class margic {
 
                 $this->entries[$i]->annotations = array_values($DB->get_records('margic_annotations', array('margic' => $this->cm->instance, 'entry' => $entry->id)));
 
-                $annotationtypes = $this->get_all_annotationtypes();
                 foreach ($this->entries[$i]->annotations as $key => $annotation) {
-                    $this->entries[$i]->annotations[$key]->color = $annotationtypes[$annotation->type]->color;
+                    $this->entries[$i]->annotations[$key]->color = $this->annotationtypes[$annotation->type]->color;
                 }
 
             } else {

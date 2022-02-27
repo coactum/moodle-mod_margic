@@ -56,12 +56,38 @@ if (! $course) {
     throw new moodle_exception(get_string('incorrectcourseid', 'margic'));
 }
 
+if (! $coursesections = $DB->get_record("course_sections", array(
+    "id" => $cm->section
+))) {
+    throw new moodle_exception(get_string('incorrectmodule', 'margic'));
+}
+
 require_login($course, true, $cm);
 
 require_capability('mod/margic:addentries', $context);
 
 // Prevent creating and editing of entries when activity is closed.
-if ($moduleinstance->timeclose && (time() > $moduleinstance->timeclose)) {
+$timenow = time();
+if ($course->format == 'weeks' and $moduleinstance->days) {
+    $timestart = $course->startdate + (($coursesections->section - 1) * 604800);
+    if ($moduleinstance->days) {
+        $timefinish = $timestart + (3600 * 24 * $moduleinstance->days);
+    } else {
+        $timefinish = $course->enddate;
+    }
+} else if (! ((($moduleinstance->timeopen == 0 || time() >= $moduleinstance->timeopen)
+    && ($moduleinstance->timeclose == 0 || time() < $moduleinstance->timeclose)))) { // If margic is not available?
+    // If used, set calendar availability time limits on the margics.
+    $timestart = $moduleinstance->timeopen;
+    $timefinish = $moduleinstance->timeclose;
+    $moduleinstance->days = 0;
+} else {
+    // Have no time limits on the margics.
+    $timestart = false;
+    $timefinish = false;
+}
+
+if (!$moduleinstance->editall && $timefinish && (time() > $timefinish)) {
     // Trigger invalid_access_attempt with redirect to the view page.
     $params = array(
         'objectid' => $id,
@@ -72,7 +98,7 @@ if ($moduleinstance->timeclose && (time() > $moduleinstance->timeclose)) {
     );
     $event = invalid_access_attempt::create($params);
     $event->trigger();
-    redirect('view.php?id='.$id, get_string('editentrynotpossible', 'margic'), null, notification::NOTIFY_ERROR);
+    redirect('view_reworked.php?id='.$id, get_string('editentrynotpossible', 'margic'), null, notification::NOTIFY_ERROR);
 }
 
 // Header.
@@ -137,15 +163,23 @@ if ($form->is_cancelled()) {
         redirect('view_reworked.php?id='.$id, get_string('entrydateinfuture', 'margic'), null, notification::NOTIFY_ERROR);
     }
 
+    // Relink using the proper entryid because draft area didn't have an itemid associated when creating new entry.
     $newentry = new stdClass();
     $newentry->margic = $moduleinstance->id;
     $newentry->userid = $USER->id;
-    $newentry->timecreated = $timenow;
-    $newentry->timemodified = 0;
-    $newentry->text = format_text($fromform->text_editor['text'], $fromform->text_editor['format'], array('para' => false));
-    $newentry->format = $fromform->text_editor['format'];
 
+    if ($moduleinstance->editdates && $fromform->timecreated) {
+        $newentry->timecreated = $fromform->timecreated;
+    } else {
+        $fromform->timecreated = $timenow;
+    }
+
+    $newentry->timemodified = 0;
+
+    $newentry->text = '';
+    $newentry->format = 1;
     if ($fromform->entryid != 0 && $entry != false) {
+
         $newentry->id = $fromform->entryid;
 
         $newentry->entrycomment = $entry->entrycomment;
@@ -159,21 +193,17 @@ if ($form->is_cancelled()) {
         }
     }
 
-    // Relink using the proper entryid because draft area didn't have an itemid associated when creating new entry.
-    $fromform = file_postupdate_standard_editor($fromform,
-                                                'text',
-                                                $editoroptions,
-                                                $editoroptions['context'],
-                                                'mod_margic',
-                                                'entry',
-                                                $newentry->id);
-    $newentry->text = format_text($fromform->text, $fromform->textformat, array('para' => false));
+
+    $fromform = file_postupdate_standard_editor($fromform, 'text', $editoroptions, $editoroptions['context'], 'mod_margic', 'entry', $newentry->id);
+
+    $entrytext = file_rewrite_pluginfile_urls($fromform->text, 'pluginfile.php', $context->id, 'mod_margic', 'entry', $newentry->id);
+
+    $newentry->text = format_text($entrytext, $fromform->textformat, array('para' => false));
     $newentry->format = $fromform->textformat;
-    $newentry->timecreated = $fromform->timecreated;
+
+    $DB->update_record('margic_entries', $newentry);
 
     if ($entry && $fromform->entryid) {
-        $DB->update_record('margic_entries', $newentry);
-
         // Trigger module entry updated event.
         $event = \mod_margic\event\entry_updated::create(array(
             'objectid' => $moduleinstance->id,

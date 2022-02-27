@@ -158,6 +158,7 @@ $string['margic:viewannotations'] = 'Annotierungen ansehen';
 $string['margic:makeannotations'] = 'Annotierungen anlegen';
 $string['annotations'] = 'Annotierungen';
 $string['viewannotations'] = 'Annotierungen ansehen';
+$string['viewandmakeannotations'] = 'Annotierungen erstellen und ansehen';
 $string['hideannotations'] = 'Annotierungen verstecken';
 $string['annotationadded'] = 'Annotierung hinzugefügt';
 $string['annotationedited'] = 'Annotierung geändert';

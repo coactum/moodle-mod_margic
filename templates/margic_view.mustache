@@ -43,10 +43,13 @@
 </div>
 
 <div class="pb-1">
-    <a class="btn btn-primary mr-1" href="edit.php?id={{cmid}}"> {{#str}}startnewentry, mod_margic{{/str}} </a>
+    {{#caneditentries}}<a class="btn btn-primary mr-1" href="edit.php?id={{cmid}}"> {{#str}}startnewentry, mod_margic{{/str}} </a>{{/caneditentries}}
     {{#canmanageentries}}<button class="btn btn-primary" data-toggle="collapse" data-target=".gradingform" aria-expanded="false" aria-controls=".gradingform" title="{{#str}}toggleratingform, mod_margic{{/str}}">{{#str}}toggleratingform, mod_margic{{/str}}</button>{{/canmanageentries}}
     {{#canmanageentries}}{{#singleuser}}<a class="btn btn-primary m-1" href="view_reworked.php?id={{cmid}}"> {{#str}}viewallentries, mod_margic{{/str}} </a>{{/singleuser}}{{/canmanageentries}}
-    {{^annotationmode}}<a class="btn btn-primary m-1" href="view_reworked.php?id={{cmid}}&annotationmode=1"> {{#str}}viewannotations, mod_margic{{/str}} </a>{{/annotationmode}}
+    {{^annotationmode}}
+        {{#canmakeannotations}}<a class="btn btn-primary m-1" href="view_reworked.php?id={{cmid}}&annotationmode=1"> {{#str}}viewandmakeannotations, mod_margic{{/str}} </a>{{/canmakeannotations}}
+        {{^canmakeannotations}}<a class="btn btn-primary m-1" href="view_reworked.php?id={{cmid}}&annotationmode=1"> {{#str}}viewannotations, mod_margic{{/str}} </a>{{/canmakeannotations}}
+    {{/annotationmode}}
     {{#annotationmode}}<a class="btn btn-primary m-1" href="view_reworked.php?id={{cmid}}"> {{#str}}hideannotations, mod_margic{{/str}} </a>{{/annotationmode}}
     {{#canmanageentries}}<a class="btn btn-primary m-1" href="annotations_summary.php?id={{cmid}}"> {{#str}}annotationssummary, mod_margic{{/str}} </a>{{/canmanageentries}}
 
