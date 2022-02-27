@@ -18,7 +18,7 @@
  * The page for the edit entry form in mod_margic.
  *
  * @package     mod_margic
- * @copyright   2021 coactum GmbH
+ * @copyright   2022 coactum GmbH
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -98,7 +98,7 @@ if (!$moduleinstance->editall && $timefinish && (time() > $timefinish)) {
     );
     $event = invalid_access_attempt::create($params);
     $event->trigger();
-    redirect('view_reworked.php?id='.$id, get_string('editentrynotpossible', 'margic'), null, notification::NOTIFY_ERROR);
+    redirect('view.php?id='.$id, get_string('editentrynotpossible', 'margic'), null, notification::NOTIFY_ERROR);
 }
 
 // Header.
@@ -126,7 +126,7 @@ if (isset($margic->get_entries_with_keys()[$entryid])) {
         );
         $event = invalid_access_attempt::create($params);
         $event->trigger();
-        redirect('view_reworked.php?id='.$id, get_string('editentrynotpossible', 'margic'), null, notification::NOTIFY_ERROR);
+        redirect('view.php?id='.$id, get_string('editentrynotpossible', 'margic'), null, notification::NOTIFY_ERROR);
     }
 
     $data->entryid = $entry->id;
@@ -154,13 +154,13 @@ $form = new mod_margic_entry_form(null, array('margic' => $moduleinstance->editd
 $form->set_data($data);
 
 if ($form->is_cancelled()) {
-    redirect($CFG->wwwroot . '/mod/margic/view_reworked.php?id=' . $cm->id);
+    redirect($CFG->wwwroot . '/mod/margic/view.php?id=' . $cm->id);
 } else if ($fromform = $form->get_data()) {
     $timenow = time();
 
     // Prevent creation dates in the future.
     if ($moduleinstance->editdates && $fromform->timecreated > $timenow) {
-        redirect('view_reworked.php?id='.$id, get_string('entrydateinfuture', 'margic'), null, notification::NOTIFY_ERROR);
+        redirect('view.php?id='.$id, get_string('entrydateinfuture', 'margic'), null, notification::NOTIFY_ERROR);
     }
 
     // Relink using the proper entryid because draft area didn't have an itemid associated when creating new entry.
@@ -222,7 +222,7 @@ if ($form->is_cancelled()) {
     $event->add_record_snapshot('margic', $moduleinstance);
     $event->trigger();
 
-    redirect(new moodle_url('/mod/margic/view_reworked.php?id=' . $cm->id));
+    redirect(new moodle_url('/mod/margic/view.php?id=' . $cm->id));
 }
 
 echo $OUTPUT->header();

@@ -18,7 +18,7 @@
  * Prints the annotation summary for the margic instance.
  *
  * @package     mod_margic
- * @copyright   2021 coactum GmbH
+ * @copyright   2022 coactum GmbH
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

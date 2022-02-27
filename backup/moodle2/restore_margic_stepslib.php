@@ -18,7 +18,7 @@
  * Define all the restore steps that will be used by the restore_margic_activity_task
  *
  * @package   mod_margic
- * @copyright 2020 AL Rachels <drachels@drachels.com>
+ * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 use mod_margic\local\results;
@@ -27,7 +27,7 @@ use mod_margic\local\results;
  * Define the complete margic structure for restore, with file and id annotations.
  *
  * @package   mod_margic
- * @copyright 2020 AL Rachels <drachels@drachels.com>
+ * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class restore_margic_activity_structure_step extends restore_activity_structure_step {

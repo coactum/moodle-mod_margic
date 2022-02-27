@@ -18,7 +18,7 @@
  * This file contains the forms to create and edit an instance of the margic module.
  *
  * @package   mod_margic
- * @copyright 2019 AL Rachels (drachels@drachels.com)
+ * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die();
@@ -29,7 +29,7 @@ require_once($CFG->dirroot . '/course/moodleform_mod.php');
  * margic settings form.
  *
  * @package   mod_margic
- * @copyright 2019 AL Rachels (drachels@drachels.com)
+ * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class mod_margic_mod_form extends moodleform_mod {

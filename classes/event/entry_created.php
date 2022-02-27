@@ -18,7 +18,7 @@
  * The mod_margic entry created event.
  *
  * @package   mod_margic
- * @copyright 2015 David Monllao
+ * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 namespace mod_margic\event;
@@ -28,7 +28,7 @@ namespace mod_margic\event;
  *
  * @package   mod_margic
  * @since     Moodle 3.1
- * @copyright 2015 David Monllao
+ * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class entry_created extends \core\event\base {

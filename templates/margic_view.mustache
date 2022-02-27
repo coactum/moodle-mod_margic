@@ -15,7 +15,7 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @copyright   2021 coactum GmbH
+    @copyright   2022 coactum GmbH
     @template margic/margic_view
 
     Overview.
@@ -45,26 +45,26 @@
 <div class="pb-1">
     {{#caneditentries}}<a class="btn btn-primary mr-1" href="edit.php?id={{cmid}}"> {{#str}}startnewentry, mod_margic{{/str}} </a>{{/caneditentries}}
     {{#canmanageentries}}<button class="btn btn-primary" data-toggle="collapse" data-target=".gradingform" aria-expanded="false" aria-controls=".gradingform" title="{{#str}}toggleratingform, mod_margic{{/str}}">{{#str}}toggleratingform, mod_margic{{/str}}</button>{{/canmanageentries}}
-    {{#canmanageentries}}{{#singleuser}}<a class="btn btn-primary m-1" href="view_reworked.php?id={{cmid}}"> {{#str}}viewallentries, mod_margic{{/str}} </a>{{/singleuser}}{{/canmanageentries}}
+    {{#canmanageentries}}{{#singleuser}}<a class="btn btn-primary m-1" href="view.php?id={{cmid}}"> {{#str}}viewallentries, mod_margic{{/str}} </a>{{/singleuser}}{{/canmanageentries}}
     {{^annotationmode}}
-        {{#canmakeannotations}}<a class="btn btn-primary m-1" href="view_reworked.php?id={{cmid}}&annotationmode=1"> {{#str}}viewandmakeannotations, mod_margic{{/str}} </a>{{/canmakeannotations}}
-        {{^canmakeannotations}}<a class="btn btn-primary m-1" href="view_reworked.php?id={{cmid}}&annotationmode=1"> {{#str}}viewannotations, mod_margic{{/str}} </a>{{/canmakeannotations}}
+        {{#canmakeannotations}}<a class="btn btn-primary m-1" href="view.php?id={{cmid}}&annotationmode=1"> {{#str}}viewandmakeannotations, mod_margic{{/str}} </a>{{/canmakeannotations}}
+        {{^canmakeannotations}}<a class="btn btn-primary m-1" href="view.php?id={{cmid}}&annotationmode=1"> {{#str}}viewannotations, mod_margic{{/str}} </a>{{/canmakeannotations}}
     {{/annotationmode}}
-    {{#annotationmode}}<a class="btn btn-primary m-1" href="view_reworked.php?id={{cmid}}"> {{#str}}hideannotations, mod_margic{{/str}} </a>{{/annotationmode}}
+    {{#annotationmode}}<a class="btn btn-primary m-1" href="view.php?id={{cmid}}"> {{#str}}hideannotations, mod_margic{{/str}} </a>{{/annotationmode}}
     {{#canmanageentries}}<a class="btn btn-primary m-1" href="annotations_summary.php?id={{cmid}}"> {{#str}}annotationssummary, mod_margic{{/str}} </a>{{/canmanageentries}}
 
     <span class="pull-right p-1">
-        <a href="view_reworked.php?id={{cmid}}&action=download" class="p-1 pr-2 border-right solid"><i class="fa fa-2x fa-download" title="{{#str}}csvexport, mod_margic{{/str}}"></i></a>
-        <a href="view_reworked.php?id={{cmid}}&action=currenttooldest" class="p-1"><i class="fa fa-2x fa-arrow-down" title="{{#str}}currenttooldest, mod_margic{{/str}}"></i></a>
-        <a href="view_reworked.php?id={{cmid}}&action=oldesttocurrent" class="p-1"><i class="fa fa-2x fa-arrow-up" title="{{#str}}oldesttocurrent, mod_margic{{/str}}"></i></a>
-        <a href="view_reworked.php?id={{cmid}}&action=lowestgradetohighest" class="p-1"><i class="fa fa-2x fa-thumbs-down" title="{{#str}}lowestgradetohighest, mod_margic{{/str}}"></i></a>
-        <a href="view_reworked.php?id={{cmid}}&action=highestgradetolowest" class="p-1"><i class="fa fa-2x fa-thumbs-up" title="{{#str}}highestgradetolowest, mod_margic{{/str}}"></i></a>
-        <a href="view_reworked.php?id={{cmid}}&action=latestmodified" class="p-1"><i class="fa fa-2x fa-pencil" title="{{#str}}latestmodified, mod_margic{{/str}}"></i></a>
+        <a href="view.php?id={{cmid}}&action=download" class="p-1 pr-2 border-right solid"><i class="fa fa-2x fa-download" title="{{#str}}csvexport, mod_margic{{/str}}"></i></a>
+        <a href="view.php?id={{cmid}}&action=currenttooldest" class="p-1"><i class="fa fa-2x fa-arrow-down" title="{{#str}}currenttooldest, mod_margic{{/str}}"></i></a>
+        <a href="view.php?id={{cmid}}&action=oldesttocurrent" class="p-1"><i class="fa fa-2x fa-arrow-up" title="{{#str}}oldesttocurrent, mod_margic{{/str}}"></i></a>
+        <a href="view.php?id={{cmid}}&action=lowestgradetohighest" class="p-1"><i class="fa fa-2x fa-thumbs-down" title="{{#str}}lowestgradetohighest, mod_margic{{/str}}"></i></a>
+        <a href="view.php?id={{cmid}}&action=highestgradetolowest" class="p-1"><i class="fa fa-2x fa-thumbs-up" title="{{#str}}highestgradetolowest, mod_margic{{/str}}"></i></a>
+        <a href="view.php?id={{cmid}}&action=latestmodified" class="p-1"><i class="fa fa-2x fa-pencil" title="{{#str}}latestmodified, mod_margic{{/str}}"></i></a>
     </span>
 </div>
 
 {{#entries.0}}
-<form action="view_reworked.php?id={{cmid}}" method="post">
+<form action="view.php?id={{cmid}}" method="post">
     <input type="hidden" name="id" value="{{cmid}}">
     <input type="hidden" name="sesskey" value="{{sesskey}}">
 
@@ -72,7 +72,7 @@
         <ul class="pagination">
             {{#pagebar}}
                 <li class="page-item">
-                    <a class="page-link" href="view_reworked.php?id={{cmid}}&page={{nr}}{{#annotationmode}}&annotationmode=1{{/annotationmode}}">{{{display}}}</a>
+                    <a class="page-link" href="view.php?id={{cmid}}&page={{nr}}{{#annotationmode}}&annotationmode=1{{/annotationmode}}">{{{display}}}</a>
                 </li>
             {{/pagebar}}
 
@@ -98,7 +98,7 @@
 
         {{#user}}
             {{#canmanageentries}}
-                {{{userpicture}}} {{firstname}} {{lastname}} {{^singleuser}}<a href="view_reworked.php?id={{cmid}}&userid={{userid}}"><i class="fa fa-user fa-lg" title="{{#str}}getallentriesofuser, mod_margic{{/str}}"></i></a>{{/singleuser}}
+                {{{userpicture}}} {{firstname}} {{lastname}} {{^singleuser}}<a href="view.php?id={{cmid}}&userid={{userid}}"><i class="fa fa-user fa-lg" title="{{#str}}getallentriesofuser, mod_margic{{/str}}"></i></a>{{/singleuser}}
             {{/canmanageentries}}
         {{/user}}
 

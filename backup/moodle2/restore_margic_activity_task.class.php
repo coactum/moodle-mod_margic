@@ -18,7 +18,7 @@
  * Define all the backup steps that will be used by the backup_margic_activity_task
  *
  * @package   mod_margic
- * @copyright 2020 AL Rachels <drachels@drachels.com>
+ * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die();
@@ -29,7 +29,7 @@ require_once($CFG->dirroot . '/mod/margic/backup/moodle2/restore_margic_stepslib
  * margic restore task that provides all the settings and steps to perform one complete restore of the activity.
  *
  * @package   mod_margic
- * @copyright 2020 AL Rachels <drachels@drachels.com>
+ * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class restore_margic_activity_task extends restore_activity_task {

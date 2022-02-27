@@ -12,13 +12,13 @@ PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with
 this program.  If not, see <http://www.gnu.org/licenses/>.
 
-@copyright 2021 coactum GmbH
+@copyright 2022 coactum GmbH
 
 # margic #
 
 ## Description ##
 
-mod_diary enhanced with annotations.
+Allows to annotate entries for various purposes (fork of mod_diary).
 
 ## Quick installation instructions ##
 

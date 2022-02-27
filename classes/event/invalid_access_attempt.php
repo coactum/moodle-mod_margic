@@ -20,7 +20,7 @@
  * Logs invalid direct URL entry attempts to margic php files.
  *
  * @package     mod_margic
- * @copyright   2020 AL Rachels (drachels@drachels.com)
+ * @copyright   2022 coactum GmbH
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -30,7 +30,7 @@ namespace mod_margic\event;
  * The mod_margic invalid access attempt event class.
  *
  * @package    mod_margic
- * @copyright  2020 AL Rachels drachels@drachels.com
+ * @copyright  2022 coactum GmbH
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class invalid_access_attempt extends \core\event\base {

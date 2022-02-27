@@ -75,7 +75,7 @@ $PAGE->set_heading($course->fullname);
 
 $urlparams = array('id' => $id, 'annotationmode' => 1);
 
-$redirecturl = new moodle_url('/mod/margic/view_reworked.php', $urlparams);
+$redirecturl = new moodle_url('/mod/margic/view.php', $urlparams);
 
 // Delete annotation.
 if (has_capability('mod/margic:makeannotations', $context) && $deleteannotation !== 0) {

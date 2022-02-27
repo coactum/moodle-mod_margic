@@ -18,7 +18,7 @@
  * Upgrade code for install
  *
  * @package   mod_margic
- * @copyright 2019 AL Rachels drachels@drachels.com
+ * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die();
@@ -26,7 +26,7 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot . '/mod/margic/lib.php');
 
 /**
- * Upgrade this margic instance - this function could be skipped but it will be needed later.
+ * Upgrade this margic instance.
  *
  * @param int $oldversion
  *            The old version of the margic module

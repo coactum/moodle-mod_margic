@@ -18,7 +18,7 @@
  * Privacy class for requesting user data.
  *
  * @package   mod_margic
- * @copyright 2019 AL Rachels <drachels@drachels.com>
+ * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 namespace mod_margic\privacy;
@@ -42,7 +42,7 @@ require_once($CFG->dirroot . '/mod/margic/lib.php');
  * Privacy class for requesting user data.
  *
  * @package   mod_margic
- * @copyright 2019 AL Rachels <drachels@drachels.com>
+ * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class provider implements \core_privacy\local\metadata\provider,

@@ -18,7 +18,7 @@
  * Capability definitions for this module.
  *
  * @package   mod_margic
- * @copyright 2020 AL Rachels <drachels@drachels.com>
+ * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die();

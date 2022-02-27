@@ -18,7 +18,7 @@
  * File containing the class definition for the annotate form for the margic.
  *
  * @package     mod_margic
- * @copyright   2021 coactum GmbH
+ * @copyright   2022 coactum GmbH
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -31,7 +31,7 @@ require_once("$CFG->libdir/formslib.php");
  * Form for annotations.
  *
  * @package   mod_margic
- * @copyright 2021 coactum GmbH
+ * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL Juv3 or later
  */
 class annotation_form extends moodleform {

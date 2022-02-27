@@ -18,7 +18,7 @@
  * Stats utilities for margic entries.
  *
  * @package   mod_margic
- * @copyright 2021 coactum GmbH
+ * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 namespace mod_margic\local;
@@ -30,7 +30,7 @@ use core_text;
  * Utility class for margic entry stats.
  *
  * @package   mod_margic
- * @copyright 2021 coactum GmbH
+ * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class entrystats {

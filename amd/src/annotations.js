@@ -18,7 +18,7 @@
  *
  * @module     mod_margic/annotations
  * @package    mod_margic
- * @copyright  2021 coactum GmbH
+ * @copyright  2022 coactum GmbH
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -68,10 +68,10 @@
                     var entry = annotations[annotationid].entry;
 
                     //console.log(entry);
-                    console.log('i should set select default to');
-                    console.log(annotations[annotationid].type);
-                    console.log('for');
-                    console.log($('.annotation-form-' + entry + 'select'));
+                    // console.log('i should set select default to');
+                    // console.log(annotations[annotationid].type);
+                    // console.log('for');
+                    // console.log($('.annotation-form-' + entry + 'select'));
 
                     $('.annotation-box-' + annotationid).hide(); // hide edited annotation-box
 
@@ -241,8 +241,8 @@
                 const highlightEl = document.createElement('span');
                 highlightEl.className = cssClass;
 
-                console.log('i should set background color of annotated text to');
-                console.log('#' + color);
+                // console.log('i should set background color of annotated text to');
+                // console.log('#' + color);
 
                 if (annotationid) {
                     highlightEl.className += ' ' + cssClass + '-' + annotationid;

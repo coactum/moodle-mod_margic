@@ -22,19 +22,6 @@
  * @copyright  2022 coactum GmbH
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later.
  */
-/* 20210502 Added in view.php about line 278.*/
-#page-mod-margic-view .sortandaggregate,
-#page-mod-margic-report .sortandaggregate {
-    width: 100%;
-    font-size: 1.0em;
-    /*font-weight: bold;*/
-}
-
-/* 20210502 Added in view.php about line 281 and 282.*/
-#page-mod-margic-view .sortandaggregate .cell {
-    float: right;
-    padding: 5px;
-}
 
 #page-mod-margic-view .feedbackbox { /* Used in renderer.php. */
     width: 85%;
@@ -47,16 +34,6 @@
 
 #page-mod-margic-view .picture { /* Used in renderer.php with left. */
     width: 35px;
-}
-
-#page-mod-margic-view .info { /* Cannot find this in use, anywhere. */
-    margin-bottom: 5px;
-    text-align: right;
-}
-
-#page-mod-margic-view .margicstart, /* Used in view.php. */
-#page-mod-margic-report .feedbacksave {
-    text-align: center;
 }
 
 #page-mod-margic-view .lastedit,
@@ -95,27 +72,15 @@
     text-align: right;
 }
 
-#page-mod-margic-index .cell { /* Cannot find this in use, anywhere. */
-    font-size: 0.8em;
-}
-
-/* 20210501 Added in view.php about line 381.*/
-/* 20210505 Added in report.php about lines 427 and 455.*/
-/* 20210505 Added in reportsingle.php about line 266.*/
-#page-mod-margic-view .entry,
-#page-mod-margic-report .entry,
-#page-mod-margic-reportsingle .entry {
+#page-mod-margic-view .entry {
     text-align: left;
     font-size: 1em;
-    /* font-weight: bold; */ /* [margic] removed */
     padding: 10px;
     margin-bottom: 10px;
-    /* background: #f9f5f0; */
-    border: 1px solid rgba(0,0,0,.125);
+    border: 1px solid rgba(0, 0, 0, .125);
     border-radius: 5px;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
-    /* border-style: double; */
 }
 
 #page-mod-margic-view .feedbackbox .left,
@@ -138,110 +103,45 @@
     -moz-border-radius-bottomright: 15px;
 }
 
-#page-mod-margic-view .reportlink,
-#page-mod-margic-report .reportlink {
-    float: right;
-    padding: 15px;
-}
-
-#page-mod-margic-report .margicuserentry {
-    /*border: 1px solid #000000;*/
-    border-collapse: collapse;
-    border-spacing: 0;
-}
-
-#page-mod-margic-report .margicuserentry td {
-    padding: 10px;
-    vertical-align: top;
-    width: 100%;
-}
-
-#page-mod-margic-report .margicuserentry td.userpix {
-    width: 35px;
-}
-
-#page-mod-margic-report .margicuserentry td.userfullname {
-    white-space: nowrap;
-}
-
-#page-mod-margic-report .margicuserentry td .lastedit {
-    font-size: 0.7em;
-    margin-left: 10px;
-}
-
-#page-mod-margic-report .margicuserentry td .needsedit {
-    font-size: 0.9em;
-    color: red;
-    margin-left: 10px;
-}
-
 #page-mod-margic-view .ratingform {
     padding: 5px;
 }
 
-#lastedit {
-    font-size: 0.7em;
-    margin: 5px;
-    text-align: center;
-}
-
-#page-mod-margic-view .annotationarea,
-#page-mod-margic-report .annotationarea,
-#page-mod-margic-reportsingle .annotationarea {
+#page-mod-margic-view .annotationarea {
     text-align: left;
     font-size: 1em;
-    /* font-weight: bold; */ /* [margic] removed */
     padding: 10px;
     margin-bottom: 10px;
     margin-left: 10px;
-    border: 1px solid rgba(0,0,0,.125);
+    border: 1px solid rgba(0, 0, 0, .125);
     border-radius: 5px;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
-    /* border-style: double; */
 }
 
-#page-mod-margic-view .annotationarea .annotation:hover,
-#page-mod-margic-report .annotationarea .annotation:hover,
-#page-mod-margic-reportsingle .annotationarea .annotation:hover {
+#page-mod-margic-view .annotationarea .annotation:hover {
     background-color: lightblue;
     cursor: pointer;
 }
 
 #page-mod-margic-view .annotated,
-#page-mod-margic-view .annotated_temp,
-#page-mod-margic-report .annotated,
-#page-mod-margic-reportsingle .annotated,
-#page-mod-margic-report .annotated_temp,
-#page-mod-margic-reportsingle .annotated_temp {
+#page-mod-margic-view .annotated_temp {
     background-color: yellow;
     cursor: pointer;
 }
 
 #page-mod-margic-view .hovered .annotated,
-#page-mod-margic-view .hovered .annotated_temp,
-#page-mod-margic-report .hovered .annotated,
-#page-mod-margic-reportsingle .hovered .annotated,
-#page-mod-margic-report .hovered .annotated_temp,
-#page-mod-margic-reportsingle .hovered .annotated_temp {
+#page-mod-margic-view .hovered .annotated_temp {
     background: none;
 }
 
 #page-mod-margic-view .annotated:hover,
 #page-mod-margic-view .annotated_temp:hover,
-#page-mod-margic-view .hovered,
-#page-mod-margic-report .annotated:hover,
-#page-mod-margic-reportsingle .annotated:hover,
-#page-mod-margic-report .annotated_temp:hover,
-#page-mod-margic-reportsingle .annotated_temp:hover,
-#page-mod-margic-report .hovered,
-#page-mod-margic-reportsingle .hovered {
+#page-mod-margic-view .hovered {
     background-color: lightblue !important;
 }
 
-#page-mod-margic-view .annotation-box,
-#page-mod-margic-report .annotation-box,
-#page-mod-margic-reportsingle .annotation-box {
+#page-mod-margic-view .annotation-box {
     background-color: white;
     border: 1px solid #dbdbdb;
     border-radius: 2px;
@@ -251,20 +151,14 @@
     box-shadow: 0 1px 1px rgba(0, 0, 0, .1);
 }
 
-#page-mod-margic-view .annotation-box:hover,
-#page-mod-margic-report .annotation-box:hover,
-#page-mod-margic-reportsingle .annotation-box:hover {
+#page-mod-margic-view .annotation-box:hover {
     box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, .15);
 }
 
-#page-mod-margic-view #id_submitbutton,
-#page-mod-margic-report #id_submitbutton,
-#page-mod-margic-reportsingle #id_submitbutton {
+#page-mod-margic-view #id_submitbutton {
     margin-right: 5px;
 }
 
-#page-mod-margic-view textarea,
-#page-mod-margic-report textarea,
-#page-mod-margic-reportsingle textarea {
+#page-mod-margic-view textarea {
     width: 100%;
 }

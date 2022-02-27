@@ -20,7 +20,7 @@
  * 2020071700 Moved these functions from lib.php to here.
  *
  * @package   mod_margic
- * @copyright AL Rachels (drachels@drachels.com)
+ * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 namespace mod_margic\local;
@@ -38,7 +38,7 @@ use calendar_event;
  * Utility class for margic results.
  *
  * @package   mod_margic
- * @copyright AL Rachels (drachels@drachels.com)
+ * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class results {
@@ -160,11 +160,11 @@ class results {
      *
      * @param var $margic
      */
-    public static function margic_available($margic) {
+    /* public static function margic_available($margic) {
         $timeopen = $margic->timeopen;
         $timeclose = $margic->timeclose;
         return (($timeopen == 0 || time() >= $timeopen) && ($timeclose == 0 || time() < $timeclose));
-    }
+    } */
 
     /**
      * Download entries in this margic activity.
@@ -297,205 +297,6 @@ class results {
     }
 
     /**
-     * Prints the currently selected margic entry of student identified as $user, on the report page.
-     *
-     * @param integer $course
-     * @param integer $margic
-     * @param integer $user
-     * @param integer $entry
-     * @param integer $teachers
-     * @param integer $grades
-     */
-    public static function margic_print_user_entry($course, $margic, $user, $entry, $teachers, $grades) {
-        global $USER, $OUTPUT, $DB, $CFG;
-        $id = required_param('id', PARAM_INT); // Course module.
-
-        // 20210605 Changed to this format.
-        require_once(__DIR__ .'/../../../../lib/gradelib.php');
-
-        $dcolor3 = get_config('mod_margic', 'entrybgc');
-        $dcolor4 = get_config('mod_margic', 'entrytextbgc');
-
-        // Create a table for the current users entry with area for teacher feedback.
-
-        // Move id.
-        // echo '<table class="margicuserentry" id="entry-'.$user->id.'">';
-        echo '<table class="margicuserentry">';
-
-        if ($entry) {
-            // Add an entry label followed by the date of the entry.
-            echo '<tr>';
-            echo '<td style="width:35px;">'.get_string('entry', 'margic').':</td><td>';
-            echo userdate($entry->timecreated);
-            // 20201202 Added link to all entries for a single user.
-            echo '  <a href="reportsingle.php?id='.$id
-            .'&user='.$user->id
-            .'&action=allentries">'.get_string('reportsingle', 'margic')
-            .'</a></td><td></td>';
-            echo '</tr>';
-        }
-
-        // Add first of two rows, this one containing details showing the user, timecreated, and time last edited.
-        echo '<tr>';
-        echo '<td class="userpix" rowspan="2">';
-        echo $OUTPUT->user_picture($user, array(
-            'courseid' => $course->id,
-            'alttext' => true
-        ));
-        echo '</td>';
-        echo '<td class="userfullname">'.fullname($user).'<br>';
-        if ($entry) {
-            // 20210606 Added word/character counts.
-            $rawwordcount = count_words($entry->text);
-            $rawwordcharcount = strlen($entry->text);
-            $rawwordspacecount = substr_count($entry->text, ' ');
-            $plaintxt = htmlspecialchars(trim(strip_tags($entry->text)));
-            $clnwordcount = count_words($plaintxt);
-            $clnwordspacecount = substr_count($plaintxt, ' ');
-            $clnwordcharcount = ((strlen($plaintxt)) - $clnwordspacecount);
-            $stdwordcount = (strlen($plaintxt)) / 5;
-            $stdwordcharcount = strlen($plaintxt);
-            $stdwordspacecount = substr_count($plaintxt, ' ');
-            // 20210604 Added for Details in each report entry.
-            echo '<div class="lastedit">'
-                .get_string('details', 'margic').' '
-                .get_string('numwordsraw', 'margic', ['wordscount' => $rawwordcount,
-                                                     'charscount' => $rawwordcharcount,
-                                                     'spacescount' => $rawwordspacecount]).'<br>'
-                .get_string('numwordscln', 'margic', ['one' => $clnwordcount,
-                                                     'two' => $clnwordcharcount,
-                                                     'three' => $clnwordspacecount]).'<br>'
-                .get_string('numwordsstd', 'margic', ['one' => $stdwordcount,
-                                                     'two' => $stdwordcharcount,
-                                                     'three' => $stdwordspacecount]).'<br>'
-                .get_string("timecreated", 'margic').':  '
-                .userdate($entry->timecreated).' '
-                .get_string("lastedited").': '
-                .userdate($entry->timemodified).' </div>';
-        }
-
-        echo '</td><td style="width:55px;"></td>';
-        echo '</tr>';
-
-        // Add the second of two rows, this one containing the users text for this entry.
-        echo '<tr><td>';
-
-        // [margic]
-        if (isset($entry->id)) {
-            echo '<div id="entry-'.$entry->id.'" class="entry originaltext" style="background: '.$dcolor4.';">';
-        } else {
-            echo '<div class="entry" style="background: '.$dcolor4.';">';
-        }
-
-        // If there is a user entry, format it and show it.
-        if ($entry) {
-            echo self::margic_format_entry_text($entry, $course);
-        } else {
-            print_string("noentry", "margic");
-        }
-        echo '</div></td><td style="width:55px;"></td></tr>';
-
-        // If there is a user entry, add a teacher feedback area for grade
-        // and comments. Add previous grades and comments, if available.
-        if ($entry) {
-            echo '<tr>';
-            echo '<td class="userpix">';
-            if (! $entry->teacher) {
-                $entry->teacher = $USER->id;
-            }
-            if (empty($teachers[$entry->teacher])) {
-                $teachers[$entry->teacher] = $DB->get_record('user', array(
-                    'id' => $entry->teacher
-                ));
-            }
-
-            // 20200816 Get the current rating for this user!
-            if ($margic->assessed != 0) {
-                $gradinginfo = grade_get_grades($course->id, 'mod', 'margic', $margic->id, $user->id);
-                $gradeitemgrademax = $gradinginfo->items[0]->grademax;
-                $userfinalgrade = $gradinginfo->items[0]->grades[$user->id];
-                $currentuserrating = $userfinalgrade->str_long_grade;
-            } else {
-                $currentuserrating = '';
-            }
-            $aggregatestr = self::get_margic_aggregation($margic->assessed);
-
-            echo $OUTPUT->user_picture($teachers[$entry->teacher], array(
-                'courseid' => $course->id,
-                'alttext' => true
-            ));
-            echo '</td>';
-            echo '<td>'.get_string('rating', 'margic').':  ';
-
-            $attrs = array();
-            $hiddengradestr = '';
-            $gradebookgradestr = '';
-            $feedbackdisabledstr = '';
-            $feedbacktext = $entry->entrycomment;
-
-            // If the grade was modified from the gradebook disable edition also skip if margic is not graded.
-            $gradinginfo = grade_get_grades($course->id, 'mod', 'margic', $entry->margic, array(
-                $user->id
-            ));
-
-            if (! empty($gradinginfo->items[0]->grades[$entry->userid]->str_long_grade)) {
-                if ($gradingdisabled = $gradinginfo->items[0]->grades[$user->id]->locked
-                    || $gradinginfo->items[0]->grades[$user->id]->overridden) {
-
-                    $attrs['disabled'] = 'disabled';
-                    $hiddengradestr = '<input type="hidden" name="r'.$entry->id.'" value="'.$entry->rating.'"/>';
-                    $gradebooklink = '<a href="'.$CFG->wwwroot.'/grade/report/grader/index.php?id='.$course->id.'">';
-                    $gradebooklink .= $gradinginfo->items[0]->grades[$user->id]->str_long_grade.'</a>';
-                    $gradebookgradestr = '<br/>'.get_string("gradeingradebook", "margic").':&nbsp;'.$gradebooklink;
-
-                    $feedbackdisabledstr = 'disabled="disabled"';
-                    $feedbacktext = $gradinginfo->items[0]->grades[$user->id]->str_feedback;
-                }
-            }
-
-            // 20210510 Modified Grade selector to check for Moodle version.
-            $attrs['id'] = 'r'.$entry->id;
-            if ($CFG->branch < 311) {
-                echo html_writer::label(fullname($user)." ".get_string('grade'),
-                    'r'.$entry->id, true, array('class' => 'accesshide'));
-            } else {
-                echo html_writer::label(fullname($user)." ".get_string('gradenoun'),
-                    'r'.$entry->id, true, array('class' => 'accesshide'));
-            }
-
-            if ($margic->assessed > 0) {
-                echo html_writer::select($grades, 'r'.$entry->id, $entry->rating, get_string("nograde").'...', $attrs);
-            }
-            echo $hiddengradestr;
-
-            // Rewrote next three lines to show entry needs to be regraded due to resubmission.
-            if (! empty($entry->timemarked) && $entry->timemodified > $entry->timemarked) {
-                echo ' <span class="needsedit">'.get_string("needsregrading", "margic").' </span>';
-            } else if ($entry->timemarked) {
-                echo ' <span class="lastedit">'.userdate($entry->timemarked).' </span>';
-            }
-            echo $gradebookgradestr;
-
-            // 20200816 Added overall rating type and rating.
-            echo '<br>'.$aggregatestr.' '.$currentuserrating;
-
-            // Feedback text.
-            echo html_writer::label(fullname($user)." ".get_string('feedback'), 'c'.$entry->id, true, array(
-                'class' => 'accesshide'
-            ));
-            echo '<p><textarea id="c'.$entry->id.'" name="c'.$entry->id.'" rows="6" cols="60" $feedbackdisabledstr>';
-            echo p($feedbacktext);
-            echo '</textarea></p>';
-
-            if ($feedbackdisabledstr != '') {
-                echo '<input type="hidden" name="c'.$entry->id.'" value="'.$feedbacktext.'"/>';
-            }
-            echo '</td></tr>';
-        }
-        echo '</table>';
-    }
-
-    /**
      * Return formatted text.
      *
      * @param array $entry
@@ -561,32 +362,6 @@ class results {
             $attachmentoptions
         );
     }
-
-    /**
-     * Get the latest entry in mdl_margic_entries for the current user.
-     *
-     * Used in lib.php.
-     *
-     * @param int $margic ID of the current margic activity.
-     * @param int $user ID of the current user.
-     * @param int $timecreated Unix time when margic entry was created.
-     * @param int $timemodified Unix time when margic entry was last changed.
-     */
-    /* public static function get_grade_entry($margic, $user, $timecreated, $timemodified) {
-        global $USER, $DB, $CFG;
-        $sql = "SELECT * FROM ".$CFG->prefix."margic_entries"
-                     ." WHERE margic = ".$margic
-                        ."AND userid = ".$user
-                        ."AND timecreated = ".$timecreated
-                        ."AND timemodified = ".$timemodified
-                        ."ORDER BY timecreated";
-
-        if ($rec = $DB->get_record_sql($sql, array())) {
-            return $rec;
-        } else {
-            return null;
-        }
-    } */
 
     /**
      * Check for existing rating entry in mdl_rating for the current user.
@@ -700,7 +475,7 @@ class results {
 
                 $gradingform .= '<h3>' . get_string('feedback') . '</h3>';
 
-                $gradingform .= '<form action="view_reworked.php" method="post">';
+                $gradingform .= '<form action="view.php" method="post">';
                 $gradingform .= '<input type="hidden" name="id" value="' . $cmid . '">';
                 $gradingform .= '<input type="hidden" name="sesskey" value="' . sesskey() . '">';
 

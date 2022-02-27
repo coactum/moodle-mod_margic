@@ -18,7 +18,7 @@
  * Define all the backup steps that will be used by the backup_margic_activity_task
  *
  * @package mod_margic
- * @copyright 2020 AL Rachels <drachels@drachels.com>
+ * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -26,7 +26,7 @@
  * Define the complete margic structure for backup, with file and id annotations.
  *
  * @package mod_margic
- * @copyright 2020 AL Rachels <drachels@drachels.com>
+ * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class backup_margic_activity_structure_step extends backup_activity_structure_step {

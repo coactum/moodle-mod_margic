@@ -18,7 +18,7 @@
  * Search area for mod_margic activities.
  *
  * @package   mod_margic
- * @copyright 2019 AL Rachels (drachels@drachels.com)
+ * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 namespace mod_margic\search;
@@ -27,7 +27,7 @@ namespace mod_margic\search;
  * Search area for mod_margic activities.
  *
  * @package   mod_margic
- * @copyright 2019 AL Rachels (drachels@drachels.com)
+ * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class activity extends \core_search\base_activity {

@@ -18,7 +18,7 @@
  * The form for editing existing or creating new entries in mod_margic.
  *
  * @package     mod_margic
- * @copyright   2021 coactum GmbH
+ * @copyright   2022 coactum GmbH
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -31,7 +31,7 @@ require_once("$CFG->libdir/formslib.php");
  * The form for editing existing or creating new entries in mod_margic.
  *
  * @package     mod_margic
- * @copyright   2021 coactum GmbH
+ * @copyright   2022 coactum GmbH
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class mod_margic_entry_form extends moodleform {

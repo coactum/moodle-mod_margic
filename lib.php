@@ -18,7 +18,7 @@
  * This page opens the current lib instance of margic.
  *
  * @package   mod_margic
- * @copyright 2019 AL Rachels (drachels@drachels.com)
+ * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -290,7 +290,7 @@ function margic_user_complete($course, $user, $mod, $margic) {
  *
  * @return boolean True if successful.
  */
-function margic_cron() {
+/* function margic_cron() {
     global $CFG, $USER, $DB;
 
     $cutofftime = time() - $CFG->maxeditingtime;
@@ -403,7 +403,7 @@ function margic_cron() {
     }
 
     return true;
-}
+} */
 
 /**
  * Given a course and a time, this module should find recent activity
@@ -514,36 +514,6 @@ function margic_print_recent_activity($course, $viewfullnames, $timestart) {
 }
 
 /**
- * Returns the users with data in one margic.
- * Users with records in margic_entries - students and teachers.
- *
- * @param int $margicid
- *            margic ID.
- * @return array Array of user ids.
- */
-function margic_get_participants($margicid) {
-    global $DB;
-
-    // Get students.
-    $students = $DB->get_records_sql("SELECT DISTINCT u.id
-                                        FROM {user} u, {margic_entries} d
-                                       WHERE d.margic = ? AND u.id = d.userid", array($margicid));
-    // Get teachers.
-    $teachers = $DB->get_records_sql("SELECT DISTINCT u.id
-                                        FROM {user} u, {margic_entries} d
-                                       WHERE d.margic = ? AND u.id = d.teacher", array($margicid));
-
-    // Add teachers to students.
-    if ($teachers) {
-        foreach ($teachers as $teacher) {
-            $students[$teacher->id] = $teacher;
-        }
-    }
-    // Return students array, (it contains an array of unique users).
-    return ($students);
-}
-
-/**
  * This function returns true if a scale is being used by one margic.
  *
  * @param int $margicid
@@ -640,70 +610,6 @@ function margic_reset_userdata($data) {
     }
 
     return $status;
-}
-
-/**
- * Print margic overview.
- *
- * @param object $courses
- * @param array $htmlarray
- */
-function margic_print_overview($courses, &$htmlarray) {
-    global $USER, $CFG, $DB;
-
-    if (! get_config('margic', 'overview')) {
-        return array();
-    }
-
-    if (empty($courses) || ! is_array($courses) || count($courses) == 0) {
-        return array();
-    }
-
-    if (! $margics = get_all_instances_in_courses('margic', $courses)) {
-        return array();
-    }
-
-    $strmargic = get_string('modulename', 'margic');
-
-    $timenow = time();
-    foreach ($margics as $margic) {
-
-        if (empty($courses[$margic->course]->format)) {
-            $courses[$margic->course]->format = $DB->get_field('course', 'format', array(
-                'id' => $margic->course
-            ));
-        }
-
-        if ($courses[$margic->course]->format == 'weeks' and $margic->days) {
-
-            $coursestartdate = $courses[$margic->course]->startdate;
-
-            $margic->timestart = $coursestartdate + (($margic->section - 1) * 608400);
-            if (! empty($margic->days)) {
-                $margic->timefinish = $margic->timestart + (3600 * 24 * $margic->days);
-            } else {
-                $margic->timefinish = 9999999999;
-            }
-            $margicopen = ($margic->timestart < $timenow && $timenow < $margic->timefinish);
-        } else {
-            $margicopen = true;
-        }
-
-        if ($margicopen) {
-            $str = '<div class="margic overview"><div class="name">'
-                .$strmargic.': <a '
-                .($margic->visible ? '' : ' class="dimmed"')
-                .' href="'.$CFG->wwwroot.'/mod/margic/view.php?id='
-                .$margic->coursemodule.'">'
-                .$margic->name.'</a></div></div>';
-
-            if (empty($htmlarray[$margic->course]['margic'])) {
-                $htmlarray[$margic->course]['margic'] = $str;
-            } else {
-                $htmlarray[$margic->course]['margic'] .= $str;
-            }
-        }
-    }
 }
 
 /**
@@ -822,7 +728,7 @@ function margic_grade_item_delete($margic) {
  * @param object $currentgroup
  * @param object $sortoption return object $margics
  */
-function margic_get_users_done($margic, $currentgroup, $sortoption) {
+/* function margic_get_users_done($margic, $currentgroup, $sortoption) {
     global $DB;
 
     $params = array();
@@ -860,7 +766,7 @@ function margic_get_users_done($margic, $currentgroup, $sortoption) {
         }
     }
     return $margics;
-}
+} */
 
 /**
  * Counts all the margic entries (optionally in a given group).

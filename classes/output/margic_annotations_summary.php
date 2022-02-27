@@ -18,7 +18,7 @@
  * Class containing data for margic annotations summary
  *
  * @package     mod_margic
- * @copyright   2021 coactum GmbH
+ * @copyright   2022 coactum GmbH
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 namespace mod_margic\output;
@@ -32,7 +32,7 @@ use stdClass;
  * Class containing data for margic annotations summary
  *
  * @package     mod_margic
- * @copyright   2021 coactum GmbH
+ * @copyright   2022 coactum GmbH
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class margic_annotations_summary implements renderable, templatable {

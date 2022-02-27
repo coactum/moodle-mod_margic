@@ -15,34 +15,48 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This page opens the current view instance of margic.
+ * Prints an instance of mod_margic.
  *
- * @package   mod_margic
- * @copyright 2019 AL Rachels (drachels@drachels.com)
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package     mod_margic
+ * @copyright   2022 coactum GmbH
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+use mod_margic\output\margic_view;
 use mod_margic\local\results;
-use mod_margic\local\margicstats;
-use core\output\notification; // [margic]
-// @codingStandardsIgnoreLine
-// use core_text;
+use core\output\notification;
 
-// 20210605 Changed to this format.
-require_once(__DIR__ .'/../../config.php');
-require_once(__DIR__ .'/lib.php');
-require_once(__DIR__ .'/../../lib/gradelib.php');
+require(__DIR__.'/../../config.php');
+require_once(__DIR__.'/lib.php');
+require_once($CFG->dirroot . '/mod/margic/locallib.php');
 
-$id = required_param('id', PARAM_INT); // Course Module ID (cmid).
-$cm = get_coursemodule_from_id('margic', $id, 0, false, MUST_EXIST); // Complete details for cmid.
-$course = $DB->get_record('course', array(
-    'id' => $cm->course
-), '*', MUST_EXIST); // Complete details about this course.
-$action = optional_param('action', 'currententry', PARAM_ACTION); // Action(default to current entry).
+// Course_module ID.
+$id = required_param('id', PARAM_INT);
 
-// [margic] Param if annotation mode is activated
+// Module instance ID as alternative.
+$m  = optional_param('m', null, PARAM_INT);
+
+// Param containing user id if only entries for one user should be displayed.
+$userid = optional_param('userid',  0, PARAM_INT); // User id.
+
+// Param containing the requested action.
+$action = optional_param('action',  'currententry', PARAM_ALPHANUMEXT);
+
+// Param containing the page count.
+$pagecount = optional_param('pagecount', 0, PARAM_INT);
+
+// Param containing the active page.
+$page = optional_param('page', 1, PARAM_INT);
+
+// Param if annotation mode is activated.
 $annotationmode = optional_param('annotationmode',  0, PARAM_BOOL); // Annotation mode.
-// [margic] Param if annotation should be deleted
-$deleteannotation = optional_param('deleteannotation',  0, PARAM_INT); // Annotation to be deleted.
+
+$margic = margic::get_margic_instance($id, $m, $userid, $action, $pagecount, $page);
+
+$moduleinstance = $margic->get_module_instance();
+$course = $margic->get_course();
+$context = $margic->get_context();
+$cm = $margic->get_course_module();
 
 if (! $cm) {
     throw new moodle_exception(get_string('incorrectmodule', 'margic'));
@@ -52,166 +66,151 @@ if (! $course) {
     throw new moodle_exception(get_string('incorrectcourseid', 'margic'));
 }
 
-$context = context_module::instance($cm->id);
-
-// Confirm login.
-require_login($course, true, $cm);
-
-$entriesmanager = has_capability('mod/margic:manageentries', $context);
-$canadd = has_capability('mod/margic:addentries', $context);
-
-if (! $entriesmanager && ! $canadd) {
-    throw new moodle_exception(get_string('accessdenied', 'margic'));
-}
-
-if (! $margic = $DB->get_record("margic", array(
-    "id" => $cm->instance
-))) {
+if (!$moduleinstance) {
     throw new moodle_exception(get_string('incorrectmodule', 'margic'));
 }
 
-if (! $cw = $DB->get_record("course_sections", array(
+if (! $coursesections = $DB->get_record("course_sections", array(
     "id" => $cm->section
 ))) {
     throw new moodle_exception(get_string('incorrectmodule', 'margic'));
 }
 
-// [margic] Delete annotation
-if (has_capability('mod/margic:makeannotations', $context) && $deleteannotation !== 0) {
-    $DB->delete_records('margic_annotations', array('id' => $deleteannotation, 'margic' => $margic->id, 'userid' => $USER->id));
+require_login($course, true, $cm);
 
-    redirect(new moodle_url('/mod/margic/view.php', array('id' => $id, 'annotationmode' => 1)), get_string('annotationdeleted', 'mod_margic'), null, notification::NOTIFY_SUCCESS);
+$canmanageentries = has_capability('mod/margic:manageentries', $context);
+$canaddentries = has_capability('mod/margic:addentries', $context);
+
+if (!$canaddentries) {
+    throw new moodle_exception(get_string('accessdenied', 'margic'));
+}
+
+// Process incoming data if there is any.
+if ($data = data_submitted()) {
+    confirm_sesskey();
+    $feedback = array();
+    $data = (array) $data;
+
+    if (isset($data["submitbutton"])) {
+        $entries = $margic->get_entries_with_keys();
+
+        foreach ($data as $key => $val) {
+            if (strpos($key, 'r') === 0 || strpos($key, 'c') === 0) {
+                $type = substr($key, 0, 1);
+                $num = substr($key, 1);
+                $feedback[$num][$type] = $val;
+            }
+        }
+
+        $timenow = time();
+        $count = 0;
+        foreach ($feedback as $num => $vals) {
+            $entry = $entries[$num];
+
+            // Only update entries where feedback has actually changed.
+            $ratingchanged = false;
+            if ($moduleinstance->assessed != 0) {
+                $studentrating = clean_param($vals['r'], PARAM_INT);
+            } else {
+                $studentrating = '';
+            }
+            $studentcomment = clean_text($vals['c'], FORMAT_PLAIN);
+
+            if ($studentrating != $entry->rating && ! ($studentrating == '' && $entry->rating == "0")) {
+                $ratingchanged = true;
+            }
+
+            if ($ratingchanged || $studentcomment != $entry->entrycomment) {
+                $newentry = new StdClass();
+                $newentry->rating = $studentrating;
+                $newentry->entrycomment = $studentcomment;
+                $newentry->teacher = $USER->id;
+                $newentry->timemarked = $timenow;
+                $newentry->mailed = 0; // Make sure mail goes out (again, even).
+                $newentry->id = $num;
+                if (! $DB->update_record("margic_entries", $newentry)) {
+                    notify("Failed to update the margic feedback for user $entry->userid");
+                } else {
+                    $count ++;
+                }
+
+                if ($moduleinstance->assessed != 0) {
+                    $ratingoptions = new stdClass();
+                    $ratingoptions->contextid = $context->id;
+                    $ratingoptions->component = 'mod_margic';
+                    $ratingoptions->ratingarea = 'entry';
+                    $ratingoptions->itemid = $entry->id;
+                    $ratingoptions->aggregate = $moduleinstance->assessed; // The aggregation method.
+                    $ratingoptions->scaleid = $moduleinstance->scale;
+                    $ratingoptions->rating = $studentrating;
+                    $ratingoptions->userid = $entry->userid;
+                    $ratingoptions->timecreated = $entry->timecreated;
+                    $ratingoptions->timemodified = $timenow;
+                    $ratingoptions->returnurl = $CFG->wwwroot . '/mod/margic/view.php?id' . $id;
+
+                    $ratingoptions->assesstimestart = $moduleinstance->assesstimestart;
+                    $ratingoptions->assesstimefinish = $moduleinstance->assesstimefinish;
+
+                    // Check if there is already a rating, and if so, just update it.
+                    if ($rec = results::check_rating_entry($ratingoptions)) {
+                        $ratingoptions->id = $rec->id;
+                        $DB->update_record('rating', $ratingoptions, false);
+                    } else {
+                        $DB->insert_record('rating', $ratingoptions, false);
+                    }
+                }
+
+                $record = $moduleinstance;
+                $record->cmidnumber = $cm->idnumber;
+
+                margic_update_grades($record, $entry->userid);
+            }
+        }
+
+        // Trigger module feedback updated event.
+        $event = \mod_margic\event\feedback_updated::create(array(
+            'objectid' => $moduleinstance->id,
+            'context' => $context
+        ));
+        $event->add_record_snapshot('course_modules', $cm);
+        $event->add_record_snapshot('course', $course);
+        $event->add_record_snapshot('margic', $moduleinstance);
+        $event->trigger();
+
+        // Redirect and display how many entries were updated with feedback and grades.
+        redirect(new moodle_url('/mod/margic/view.php', array('id' => $id)), get_string('feedbackupdated', 'mod_margic', $count), null, notification::NOTIFY_SUCCESS);
+    } else {
+        // Redirect if pagecount is updated.
+        redirect(new moodle_url('/mod/margic/view.php', array('id' => $id)), null, null, null);
+    }
+
+} else {
+
+    // Trigger course_module_viewed event.
+    $event = \mod_margic\event\course_module_viewed::create(array(
+        'objectid' => $moduleinstance->id,
+        'context' => $context
+    ));
+    $event->add_record_snapshot('course_modules', $cm);
+    $event->add_record_snapshot('course', $course);
+    $event->add_record_snapshot('margic', $moduleinstance);
+    $event->trigger();
+}
+
+// Toolbar action handler for download.
+if (!empty($action) && $action == 'download' && has_capability('mod/margic:addentries', $context)) {
+    // Call download entries function in lib.php.
+    results::download_entries($context, $course, $moduleinstance);
 }
 
 // Get the name for this margic activity.
-$margicname = format_string($margic->name, true, array(
+$margicname = format_string($moduleinstance->name, true, array(
     'context' => $context
 ));
 
-// Get local renderer.
-$output = $PAGE->get_renderer('mod_margic');
-$output->init($cm);
+$canmakeannotations = has_capability('mod/margic:makeannotations', $context);
 
-// Handle toolbar capabilities.
-if (! empty($action)) {
-    switch ($action) {
-        case 'download':
-            if (has_capability('mod/margic:addentries', $context)) {
-                // Call download entries function in results.php.
-                results::download_entries($context, $course, $margic);
-            }
-            break;
-
-        // Show the reload button for sorting from current entry to oldest entry.
-        case 'reload':
-            if (has_capability('mod/margic:addentries', $context)) {
-                // Reload the current page.
-                $sortorderinfo = (get_string('sortcurrententry', 'margic'));
-                $entrys = $DB->get_records('margic_entries', array(
-                    'userid' => $USER->id,
-                    'margic' => $margic->id
-                ), $sort = 'timecreated DESC');
-                $firstkey = ''; // Fixes error if user has no entries at all.
-                foreach ($entrys as $firstkey => $firstvalue) {
-                    break;
-                }
-            }
-            break;
-
-        // Show the edit button for editing the first entry in the current list of entries.
-        case 'currententry':
-            if (has_capability('mod/margic:addentries', $context)) {
-                // Reload the current page.
-                $sortorderinfo = (get_string('sortcurrententry', 'margic'));
-                $entrys = $DB->get_records('margic_entries', array(
-                    'userid' => $USER->id,
-                    'margic' => $margic->id
-                ), $sort = 'timecreated DESC');
-                $firstkey = ''; // Fixes error if user has no entries at all.
-                foreach ($entrys as $firstkey => $firstvalue) {
-                    break;
-                }
-            }
-            break;
-
-        // Sort the list of entries from oldest to newest based on timecreated.
-        case 'sortfirstentry':
-            if (has_capability('mod/margic:addentries', $context)) {
-                $sortorderinfo = (get_string('sortfirstentry', 'margic'));
-                $entrys = $DB->get_records("margic_entries", array(
-                    'userid' => $USER->id,
-                    'margic' => $margic->id
-                ), $sort = 'timecreated ASC');
-                $firstkey = ''; // Fixes error if user has no entries at all.
-                foreach ($entrys as $firstkey => $firstvalue) {
-                    break;
-                }
-            }
-            break;
-
-        // Sort the list from lowest grade to highest grade. Show ungraded first, from oldest to newest.
-        case 'lowestgradeentry':
-            if (has_capability('mod/margic:addentries', $context)) {
-                $sortorderinfo = (get_string('sortlowestentry', 'margic'));
-                $entrys = $DB->get_records("margic_entries", array(
-                    'userid' => $USER->id,
-                    'margic' => $margic->id
-                ), $sort = 'rating ASC, timemodified ASC');
-                $firstkey = ''; // Fixes error if user has no entries at all.
-                foreach ($entrys as $firstkey => $firstvalue) {
-                    break;
-                }
-            }
-            break;
-
-        // Sort list from highest grade to lowest grade. If tie grade, further sort from newest to oldest.
-        case 'highestgradeentry':
-            if (has_capability('mod/margic:addentries', $context)) {
-                $sortorderinfo = (get_string('sorthighestentry', 'margic'));
-                $entrys = $DB->get_records("margic_entries", array(
-                    'userid' => $USER->id,
-                    'margic' => $margic->id
-                ), $sort = 'rating DESC, timecreated DESC');
-                $firstkey = ''; // Fixes error if user has no entries at all.
-                foreach ($entrys as $firstkey => $firstvalue) {
-                    break;
-                }
-            }
-            break;
-
-        // Sort list from most recently modified to the one modified the longest time ago.
-        case 'latestmodifiedentry':
-            if (has_capability('mod/margic:addentries', $context)) {
-                $sortorderinfo = (get_string('sortlastentry', 'margic'));
-                // May be needed for future version if editing old entries is allowed.
-                $entrys = $DB->get_records("margic_entries", array(
-                    'userid' => $USER->id,
-                    'margic' => $margic->id
-                ), $sort = 'timemodified DESC');
-                $firstkey = ''; // Fixes error if user has no entries at all.
-                foreach ($entrys as $firstkey => $firstvalue) {
-                    break;
-                }
-            }
-            break;
-
-        default:
-            if (has_capability('mod/margic:addentries', $context)) {
-                // Reload the current page.
-                $sortorderinfo = (get_string('sortcurrententry', 'margic'));
-                $entrys = $DB->get_records('margic_entries', array(
-                    'userid' => $USER->id,
-                    'margic' => $margic->id
-                ), $sort = 'timecreated DESC');
-                $firstkey = ''; // Fixes error if user has no entries at all.
-                foreach ($entrys as $firstkey => $firstvalue) {
-                    break;
-                }
-            }
-    }
-}
-
-// [margic] Add javascript and navbar element if annotationmode is activated and user has capability.
+// Add javascript and navbar element if annotationmode is activated and user has capability.
 if ($annotationmode === 1 && has_capability('mod/margic:viewannotations', $context)) {
 
     $PAGE->set_url('/mod/margic/view.php', array(
@@ -219,409 +218,85 @@ if ($annotationmode === 1 && has_capability('mod/margic:viewannotations', $conte
         'annotationmode' => 1,
     ));
 
-    $redirecturl = new moodle_url('/mod/margic/view.php', array('id' => $cm->id, 'annotationmode' => 1));
-
     $PAGE->navbar->add(get_string("viewentries", "margic"), new moodle_url('/mod/margic/view.php', array('id' => $cm->id)));
     $PAGE->navbar->add(get_string('viewannotations', 'mod_margic'));
 
-    $PAGE->set_title($margicname);
-    $PAGE->set_heading($course->fullname);
-    $PAGE->force_settings_menu();
-
     $PAGE->requires->js_call_amd('mod_margic/annotations', 'init',
-        array('annotations' => $DB->get_records('margic_annotations', array('margic' => $cm->instance)),
-            'canmakeannotations' => has_capability('mod/margic:makeannotations', $context)));
+        array('annotations' => $margic->get_annotations(),
+            'canmakeannotations' => $canmakeannotations));
 } else {
     // Header.
     $PAGE->set_url('/mod/margic/view.php', array(
         'id' => $cm->id
     ));
     $PAGE->navbar->add(get_string("viewentries", "margic"));
-    $PAGE->set_title($margicname);
-    $PAGE->set_heading($course->fullname);
-
-    // 20190523 Added this to force editing cog to show for Boost based themes.
-    if ($CFG->branch > 31) {
-        $PAGE->force_settings_menu();
-    }
 }
+
+$PAGE->set_title(get_string('modulename', 'mod_margic').': ' . $margicname);
+$PAGE->set_heading(format_string($course->fullname));
+$PAGE->set_context($context);
+$PAGE->force_settings_menu();
 
 echo $OUTPUT->header();
 echo $OUTPUT->heading($margicname);
-echo $output->introduction($margic, $cm); // Ouput introduction in renderer.php.
 
-// If viewer is a manager, create a link to report.php showing margic entries made by users.
-if ($entriesmanager) {
-    // Check to see if groups are being used here.
-    $groupmode = groups_get_activity_groupmode($cm);
-    $currentgroup = groups_get_activity_group($cm, true);
-    $ouput = groups_print_activity_menu($cm, $CFG->wwwroot."/mod/margic/view.php?id=$cm->id");
-
-    $entrycount = margic_count_entries($margic, $currentgroup);
-
-    // 20200827 Add link to index.php page right after the report.php link. 20210501 modified to remove div.
-    $temp = '<span  class="reportlink"><a href="report.php?id='.$cm->id.'&action=currententry">';
-    $temp .= get_string('viewallentries', 'margic', $entrycount).'</a>&nbsp;&nbsp;|&nbsp;&nbsp;';
-    $temp .= '<a href="index.php?id='.$course->id.'">'.get_string('viewallmargics', 'margic').'</a></span>';
-    echo $temp;
-
-} else {
-    // 20200831 Added to show link to index.php page for students. 20210501 modified to remove div.
-    echo '<a class="reportlink" href="index.php?id='.$course->id.'">'.get_string('viewallmargics', 'margic').'</a>';
+if ($moduleinstance->intro) {
+    echo $OUTPUT->box(format_module_intro('margic', $moduleinstance, $cm->id), 'generalbox mod_introbox', 'newmoduleintro');
 }
 
-// 20200901 Visual separator between activity info and entries.
-echo '<hr>';
-
-// Check to see if margic is currently available.
+// Set start and finish time. Needs to be reworked/simplified?
 $timenow = time();
-if ($course->format == 'weeks' and $margic->days) {
-    $timestart = $course->startdate + (($cw->section - 1) * 604800);
-    if ($margic->days) {
-        $timefinish = $timestart + (3600 * 24 * $margic->days);
+if ($course->format == 'weeks' and $moduleinstance->days) {
+    $timestart = $course->startdate + (($coursesections->section - 1) * 604800);
+    if ($moduleinstance->days) {
+        $timefinish = $timestart + (3600 * 24 * $moduleinstance->days);
     } else {
         $timefinish = $course->enddate;
     }
-} else if (! (results::margic_available($margic))) {
-    // 20200904 If used, set calendar availability time limits on the margics.
-    $timestart = $margic->timeopen;
-    $timefinish = $margic->timeclose;
-    $margic->days = 0;
+} else if (! ((($moduleinstance->timeopen == 0 || time() >= $moduleinstance->timeopen)
+    && ($moduleinstance->timeclose == 0 || time() < $moduleinstance->timeclose)))) { // If margic is not available?
+    // If used, set calendar availability time limits on the margics.
+    $timestart = $moduleinstance->timeopen;
+    $timefinish = $moduleinstance->timeclose;
+    $moduleinstance->days = 0;
 } else {
     // Have no time limits on the margics.
-    $timestart = $timenow - 1;
-    $timefinish = $timenow + 1;
-    $margic->days = 0;
+    $timestart = false;
+    $timefinish = false;
 }
 
-// 20200815 Get the current rating for this user, if this margic is assessed.
-if ($margic->assessed != 0) {
-    $gradinginfo = grade_get_grades($course->id, 'mod', 'margic', $margic->id, $USER->id);
-    $gradeitemgrademax = $gradinginfo->items[0]->grademax;
+// Get grading of current user when margic is rated.
+if ($moduleinstance->assessed != 0) {
+    $ratingaggregationmode = results::get_margic_aggregation($moduleinstance->assessed) . ' ' . get_string('forallmyentries', 'mod_margic');
+    $gradinginfo = grade_get_grades($course->id, 'mod', 'margic', $moduleinstance->id, $USER->id);
     $userfinalgrade = $gradinginfo->items[0]->grades[$USER->id];
     $currentuserrating = $userfinalgrade->str_long_grade;
 } else {
-    $currentuserrating = '';
+    $ratingaggregationmode = false;
+    $currentuserrating = false;
 }
 
-$aggregatestr = results::get_margic_aggregation($margic->assessed);
 
-if ($timenow > $timestart) {
-    // Initialize now so it doesn't break if cannot edit.
-    $oldperpage = get_user_preferences('margic_perpage_'.$margic->id, 7);
-    $perpage = optional_param('perpage', $oldperpage, PARAM_INT);
-
-    echo $OUTPUT->box_start();
-    // 20200815 Create table and added sort order and type of rating and current rating. 20201004 Moved info here.
-    echo '<table class="sortandaggregate">'
-        .'<tr><td>'.get_string('sortorder', 'margic').'</td>'
-        .'<td> </td>'
-        .'<td class="cell">'.$aggregatestr.'</td></tr>'
-        . '<tr><td>'.$sortorderinfo.'</td><td> </td><td class="cell">'.$currentuserrating.' </td></tr></table>';
-
-    // Add Current entry Edit button and user toolbar.
-    if ($timenow < $timefinish) {
-        if ($canadd) {
-            echo $output->box_start();
-
-            if ($margic->editdates) {
-                // 20210425 Add button for starting a new entry.
-                echo $OUTPUT->single_button('edit.php?id='.$cm->id
-                    .'&firstkey='.$firstkey
-                    .'&action=currententry', get_string('startnewentry', 'margic'), 'get', array(
-                    "class" => "singlebutton margicstart"
-                ));
-            } else {
-                // Add button for editing current entry or starting a new entry.
-                echo $OUTPUT->single_button('edit.php?id='.$cm->id
-                    .'&firstkey='.$firstkey
-                    .'&action=currententry', get_string('startoreditentry', 'margic'), 'get', array(
-                    "class" => "singlebutton margicstart"
-                ));
-            }
-
-            // [margic] Add annotations menu if user has capability.
-            if (has_capability('mod/margic:viewannotations', $context)) {
-                if (!$annotationmode) {
-                    echo $OUTPUT->single_button('view.php?id='.$cm->id
-                        .'&annotationmode=1', get_string('viewannotations', 'margic'), null, array(
-                        "class" => "singlebutton margicstart"
-                    ));
-                } else {
-                    echo $OUTPUT->single_button('view.php?id='.$cm->id, get_string('hideannotations', 'margic'), null, array(
-                        "class" => "singlebutton margicstart"
-                    ));
-                }
-
-            }
-
-            // Print user toolbar icons only if there is at least one entry for this user.
-            if ($entrys) {
-                echo '<span style="float: right;">'.get_string('usertoolbar', 'margic');
-                echo $output->toolbar(has_capability('mod/margic:addentries', $context), $course, $id, $margic, $firstkey).'</span>';
-            }
-            // 20200709 Added selector for prefered number of entries per page. Default is 7.
-            echo '<form method="post">';
-
-            if ($perpage < 2) {
-                $perpage = 2;
-            }
-            if ($perpage != $oldperpage) {
-                set_user_preference('margic_perpage_'.$margic->id, $perpage);
-            }
-
-            $pagesizes = array(
-                2 => 2,
-                3 => 3,
-                4 => 4,
-                5 => 5,
-                6 => 6,
-                7 => 7,
-                8 => 8,
-                9 => 9,
-                10 => 10,
-                15 => 15,
-                20 => 20,
-                30 => 30,
-                40 => 40,
-                50 => 50,
-                100 => 100,
-                200 => 200,
-                300 => 300,
-                400 => 400,
-                500 => 500,
-                1000 => 1000
-            );
-            // This creates the dropdown list for how many entries to show on the page.
-            $selection = html_writer::select($pagesizes, 'perpage', $perpage, false, array(
-                'id' => 'pref_perpage',
-                'class' => 'custom-select'
-            ));
-
-            echo get_string('pagesize', 'margic').': <select onchange="this.form.submit()" name="perpage">';
-            echo '<option selected="true" value="'.$selection.'</option>';
-            // 20200905 Added count of all user entries.
-            echo '</select>'.get_string('outof', 'margic', (count($entrys)));
-            echo '</form>';
-
-            echo $output->box_end();
-        }
-    } else {
-        // 20201004 added Editing period has ended message.
-        echo '<div class="editend"><strong>'.get_string('editingended', 'margic').': </strong> ';
-        echo userdate($timefinish).'</div>';
-    }
-
-    // [margic] Add divs for annotations menu if annotationmode is activated and user has capability.
-    if ($annotationmode === 1 && has_capability('mod/margic:viewannotations', $context)) {
-        echo '<div class="container mw-100">';
-    }
-
-    // Display entry with the $DB portion supplied/set by the toolbar.
-    if ($entrys) {
-        // 20200905 Fixed Entries per page when activity is closed.
-        if ($timenow > $timefinish) {
-            // 20200905 If a margic is closed, show all entries to a user.
-            $perpage = (count($entrys));
-            $thispage = '1';
-        } else {
-            $thispage = '1';
-        }
-        foreach ($entrys as $entry) {
-            if (empty($entry->text)) {
-                echo '<p align="center"><b>'.get_string('blankentry', 'margic').'</b></p>';
-            } else if ($thispage <= $perpage) {
-                $thispage ++;
-                $color3 = get_config('mod_margic', 'entrybgc');
-                $color4 = get_config('mod_margic', 'entrytextbgc');
-
-                // [margic] Add divs for annotations menu if annotationmode is activated and user has capability.
-                if ($annotationmode === 1 && has_capability('mod/margic:viewannotations', $context)) {
-                    echo '<div class="row"><div class="col-sm-8">';
-                }
-
-                // 20210501 Changed to class, start a division to contain the overall entry.
-                echo '<div class="entry" style="background: '.$color3.';">';
-
-                $date1 = new DateTime(date('Y-m-d G:i:s', time()));
-                $date2 = new DateTime(date('Y-m-d G:i:s', $entry->timecreated));
-                $diff = date_diff($date1, $date2);
-
-                // Create edit entry toolbutton link to use for each individual entry.
-                $options['id'] = $cm->id;
-                $options['action'] = 'editentry';
-                $options['firstkey'] = $entry->id;
-                $url = new moodle_url('/mod/margic/edit.php', $options);
-                // 20200901 If editing time has expired, remove the edit toolbutton from the title.
-                // 20201015 Enable/disable check of the edit old entries editing tool.
-                if ($timenow < $timefinish && $margic->editall) {
-                    $editthisentry = html_writer::link($url, $output->pix_icon('i/edit', get_string('editthisentry', 'margic')),
-                        array('class' => 'toolbutton'));
-                } else {
-                    $editthisentry = ' ';
-                }
-
-                // Add, Entry, then date time group heading for each entry on the page.
-                echo $OUTPUT->heading(get_string('entry', 'margic').': '.userdate($entry->timecreated).'  '.$editthisentry);
-
-                // 20210511 Start an inner division for the user's text entry container.
-                // [margic] Added class and id.
-                if ($annotationmode === 1 && has_capability('mod/margic:viewannotations', $context)) {
-                    echo '<div id="entry-'.$entry->id.'" class="entry originaltext" style="background: '.$color4.';">';
-                } else {
-                    echo '<div class="entry" style="background: '.$color4.';">';
-                }
-
-                // This adds the actual entry text division close tag for each entry listed on the page.
-                echo results::margic_format_entry_text($entry, $course, $cm).'</div>';
-
-                // Info regarding entry details with simple word count, date when created, and date of last edit.
-                if ($timenow < $timefinish) {
-                    if (! empty($entry->timemodified)) {
-                        // 20210606 Calculate raw word/character counts.
-                        $rawwordcount = count_words($entry->text);
-                        $rawwordcharcount = strlen($entry->text);
-                        $rawwordspacecount = substr_count($entry->text, ' ');
-                        // Calculate cleaned text word/character counts.
-                        $plaintext = htmlspecialchars(trim(strip_tags($entry->text)));
-                        $clnwordcount = count_words($plaintext);
-                        $clnwordspacecount = substr_count($plaintext, ' ');
-                        $clnwordcharcount = ((strlen($plaintext)) - $clnwordspacecount);
-                        // Calculate standardized details from clean text.
-                        $stdwordcount = (strlen($plaintext)) / 5;
-                        $stdwordcharcount = strlen($plaintext);
-                        $stdwordspacecount = substr_count($plaintext, ' ');
-                        // @codingStandardsIgnoreLine
-                        // $newwordcount = str_word_count($entry->text, 0);
-                        $newwordcount = count_words($plaintext);
-                        $newcharcount = (core_text::strlen($plaintext) - $clnwordspacecount);
-                        // @codingStandardsIgnoreLine
-                        // $newcharcount = ((strlen($plaintext)) - $clnwordspacecount);
-                        // $newsentencecount = preg_split('/[!?.]+(?![0-9])/', $entry->text);
-                        $newsentencecount = preg_split('/[!?.]+(?![0-9])/', $plaintext);
-
-                        $newsentencecount = array_filter($newsentencecount);
-                        $newsentencecount = count($newsentencecount);
-
-
-                        $data = margicstats::get_margic_stats($entry->text);
-                        $temp = get_string('numwordsnew', 'margic', ['one' => $data['words'],
-                                                                    'two' => $data['chars'],
-                                                                    'three' => $data['sentences'],
-                                                                    'four' => $data['paragraphs']]);
-                        // @codingStandardsIgnoreLine
-                        // $entry->entrycomment .= " This is the margicstats: ";
-                        // $entry->entrycomment .= $data->chars;
-                        // $entry->teacher = 2;
-                        // $entry->timemarked = time();
-                        // $DB->update_record("margic_entries", $entry);
-                        // @codingStandardsIgnoreLine
-                        /*
-                        echo '<div class="lastedit"><strong>'
-                            .get_string('details', 'margic').'</strong> '
-                            .get_string('numwordsraw', 'margic', ['one' => $rawwordcount,
-                                                                 'two' => $rawwordcharcount,
-                                                                 'three' => $rawwordspacecount]).'<br>'
-                            .get_string('numwordscln', 'margic', ['one' => $clnwordcount,
-                                                                 'two' => $clnwordcharcount,
-                                                                 'three' => $clnwordspacecount]).'<br>'
-                            .get_string('numwordsstd', 'margic', ['one' => $stdwordcount,
-                                                                 'two' => $stdwordcharcount,
-                                                                 'three' => $stdwordspacecount]).'<br>'
-                            .get_string('created', 'margic', ['one' => $diff->days,
-                                                             'two' => $diff->h]).'<br>'
-                            .get_string('numwordsnew', 'margic', ['one' => $newwordcount,
-                                                                 'two' => $newcharcount,
-                                                                 'three' => $newsentencecount,
-                                                                 'four' => $data['paragraphs']]).'<br>' ;
-                            */
-
-                        echo '<div class="lastedit"><strong>'
-                            .get_string('details', 'margic').'</strong> '
-                            .get_string('numwordsraw', 'margic', ['wordscount' => $rawwordcount,
-                                                                 'charscount' => $rawwordcharcount,
-                                                                 'spacescount' => $rawwordspacecount]).'<br>'
-                            .get_string('numwordscln', 'margic', ['one' => $clnwordcount,
-                                                                 'two' => $clnwordcharcount,
-                                                                 'three' => $clnwordspacecount]).'<br>'
-                            .get_string('numwordsstd', 'margic', ['one' => $stdwordcount,
-                                                                 'two' => $stdwordcharcount,
-                                                                 'three' => $stdwordspacecount]).'<br>'
-                            .get_string('created', 'margic', ['days' => $diff->days,
-                                                             'hours' => $diff->h]).'<br>';
-
-                        echo '<strong>'.get_string('timecreated', 'margic').': </strong> ';
-                        echo userdate($entry->timecreated).' | ';
-
-                        echo '<strong> '.get_string('lastedited').': </strong> ';
-                        echo userdate($entry->timemodified).'<br>';
-
-                        echo "</div>";
-                    }
-
-                    // Added lines to mark entry as needing regrade.
-                    if (! empty($entry->timecreated) and ! empty($entry->timemodified) and empty($entry->timemarked)) {
-                        echo '<div class="needsedit">'.get_string('needsgrading', 'margic').'</div>';
-                    } else if (! empty($entry->timemodified) and ! empty($entry->timemarked)
-                              and $entry->timemodified > $entry->timemarked) {
-                        echo '<div class="needsedit">'.get_string('needsregrading', 'margic').'</div>';
-                    }
-
-                    if (! empty($margic->days)) {
-                        echo '<div class="editend"><strong>'.get_string('editingends', 'margic').': </strong> ';
-                        echo userdate($timefinish).'</div>';
-                    }
-
-                } else {
-                    echo '<div class="editend"><strong>'.get_string('editingended', 'margic').': </strong> ';
-                    echo userdate($timefinish).'</div>';
-                }
-
-                // Print feedback from the teacher for the current entry.
-                if (! empty($entry->entrycomment) or ! empty($entry->rating)) {
-                    // Get the rating for the current entry.
-                    $grades = $entry->rating;
-                    // Add a heading for each feedback on the page.
-                    echo $OUTPUT->heading(get_string('feedback'));
-                    // Format output using renderer.php.
-                    echo $output->margic_print_feedback($course, $entry, $grades);
-                }
-
-                // This adds blank space between entries.
-                echo '</div></p>';
-
-                // [margic] Add annotations menu if annotationmode is activated and user has capability.
-                if ($annotationmode === 1 && has_capability('mod/margic:viewannotations', $context)) {
-                    echo '</div>';
-                    $entryid = $entry->id;
-                    include(__DIR__ ."/classes/annotations/annotations_general.php"); // include annotation menu
-                    echo '</div>';
-                }
-            }
-        }
-    } else {
-        echo '<span class="warning">'.get_string('notstarted', 'margic').'.</span>';
-    }
-
-    // [margic] Finisch annotations menu if annotationmode is activated and user has capability.
-    if ($annotationmode === 1 && has_capability('mod/margic:viewannotations', $context)) {
-        echo '</div>';
-    }
-
-    echo $OUTPUT->box_end();
-} else {
-    echo '<div class="warning">'.get_string('notopenuntil', 'margic').': ';
-    echo userdate($timestart).'.</div>';
+if ($moduleinstance->editall || !$timefinish) {
+    $editentries = true;
+    $edittimeends = false;
+} else if (!$moduleinstance->editall && $timefinish && $timenow < $timefinish) {
+    $editentries = true;
+    $edittimeends = $timefinish;
+} else if (!$moduleinstance->editall && $timefinish && $timenow >= $timefinish) {
+    $editentries = false;
+    $edittimeends = $timefinish;
 }
 
-// Trigger module viewed event.
-$event = \mod_margic\event\course_module_viewed::create(array(
-    'objectid' => $margic->id,
-    'context' => $context
-));
-$event->add_record_snapshot('course_modules', $cm);
-$event->add_record_snapshot('course', $course);
-$event->add_record_snapshot('margic', $margic);
-$event->trigger();
+// Handle groups.
+echo groups_print_activity_menu($cm, $CFG->wwwroot . "/mod/margic/view.php?id=$id");
+
+// Output page.
+$page = new margic_view($cm, $margic->get_entries_grouped_by_pagecount(), $margic->get_sortmode(),
+    get_config('mod_margic', 'entrybgc'), get_config('mod_margic', 'entrytextbgc'), $editentries,
+    $edittimeends, $canmanageentries, sesskey(), $currentuserrating, $ratingaggregationmode, $course->id,
+    $userid, $margic->get_pagecountoptions(), $margic->get_pagebar(), count($margic->get_entries()), $annotationmode, $canmakeannotations, $margic->get_annotationtypes_for_form());
+
+echo $OUTPUT->render($page);
 
 echo $OUTPUT->footer();
