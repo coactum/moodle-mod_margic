@@ -168,11 +168,7 @@ if ($form->is_cancelled()) {
     $newentry->margic = $moduleinstance->id;
     $newentry->userid = $USER->id;
 
-    if ($moduleinstance->editdates && $fromform->timecreated) {
-        $newentry->timecreated = $fromform->timecreated;
-    } else {
-        $fromform->timecreated = $timenow;
-    }
+    $newentry->timecreated = $fromform->timecreated;
 
     $newentry->timemodified = 0;
 
