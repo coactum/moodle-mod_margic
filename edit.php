@@ -182,7 +182,6 @@ if ($form->is_cancelled()) {
         $newentry->teacher = $entry->teacher;
         $newentry->timemodified = $timenow;
         $newentry->timemarked = $entry->timemarked;
-        $newentry->timecreated = $entry->timecreated;
     } else {
         if (! $newentry->id = $DB->insert_record("margic_entries", $newentry)) {
             throw new moodle_exception(get_string('generalerrorinsert', 'margic'));

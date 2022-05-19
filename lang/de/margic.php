@@ -205,6 +205,11 @@ $string['editannotationtype'] = 'Fehlertypen anlegen oder bearbeiten';
 $string['annotationtypeaddedormodified'] = 'Fehlertyp angelegt oder bearbeitet';
 $string['annotationtypeinvalid'] = 'Fehlertyp ungültig';
 $string['nameofannotationtype'] = 'Name des Fehlertyps';
+$string['annotationcreated'] = 'Erstellt';
+$string['annotationmodified'] = 'Bearbeitet';
+$string['editannotation'] = 'Bearbeiten';
+$string['deleteannotation'] = 'Löschen';
+$string['annotationcolor'] = 'Farbe der Annotierung';
 
 // löschen
 $string['numwordscln'] = '{$a->one} bereinigte Wörter mit {$a->two} Zeichen, AUSSCHLIEßLICH {$a->three} Leerzeichen. ';

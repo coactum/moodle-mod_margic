@@ -248,7 +248,7 @@ class margic {
             if (!$currentgroups || ($allowedusers && in_array($this->entries[$i]->user, $allowedusers))) {
                 $this->entries[$i]->stats = entrystats::get_entry_stats($entry->text, $entry->timecreated);
 
-                if (!empty($entry->timecreated) && !empty($entry->timemodified) && empty($entry->timemarked)) {
+                if (!empty($entry->timecreated) && empty($entry->timemarked)) {
                     $this->entries[$i]->needsgrading = $gradingstr;
                 } else if (!empty($entry->timemodified) && !empty($entry->timemarked) && $entry->timemodified > $entry->timemarked) {
                     $this->entries[$i]->needsregrading = $regradingstr;

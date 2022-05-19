@@ -245,7 +245,6 @@ if ($moduleinstance->intro) {
 }
 
 // Set start and finish time. Needs to be reworked/simplified?
-$timenow = time();
 if ($course->format == 'weeks' and $moduleinstance->days) {
     $timestart = $course->startdate + (($coursesections->section - 1) * 604800);
     if ($moduleinstance->days) {
@@ -276,16 +275,16 @@ if ($moduleinstance->assessed != 0) {
     $currentuserrating = false;
 }
 
-
-if ($moduleinstance->editall || !$timefinish) {
+$timenow = time();
+if ($moduleinstance->editall || !$moduleinstance->timeclose) {
     $editentries = true;
     $edittimeends = false;
-} else if (!$moduleinstance->editall && $timefinish && $timenow < $timefinish) {
+} else if (!$moduleinstance->editall && $moduleinstance->timeclose && $timenow < $moduleinstance->timeclose) {
     $editentries = true;
-    $edittimeends = $timefinish;
-} else if (!$moduleinstance->editall && $timefinish && $timenow >= $timefinish) {
+    $edittimeends = $moduleinstance->timeclose;
+} else if (!$moduleinstance->editall && $moduleinstance->timeclose && $timenow >= $moduleinstance->timeclose) {
     $editentries = false;
-    $edittimeends = $timefinish;
+    $edittimeends = $moduleinstance->timeclose;
 }
 
 // Handle groups.

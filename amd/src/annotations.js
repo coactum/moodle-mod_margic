@@ -635,6 +635,16 @@
                 resetForms(); // remove old form contents
             });
 
+
+            // Listen for return key pressed to submit annotation form.
+            $('textarea').keypress(function (e) {
+                if (e.which == 13) {
+                    console.log($(this).parents(':eq(2)'));
+                    $(this).parents(':eq(2)').submit();
+                    e.preventDefault();
+                }
+              });
+
         }
     };
 });

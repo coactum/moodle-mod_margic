@@ -52,6 +52,9 @@ class annotation_types_form extends moodleform {
         $mform->setType('typename', PARAM_RAW);
         $mform->addRule('typename', null, 'required', null, 'client');
 
+        $mform->addElement('text', 'color', get_string('annotationcolor', 'mod_margic'));
+        $mform->setType('color', PARAM_ALPHANUM);
+        $mform->addRule('color', null, 'required', null, 'client');
         $this->add_action_buttons();
     }
 

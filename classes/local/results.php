@@ -274,20 +274,24 @@ class results {
         // Add the list of users and diaries to our data array.
         if ($ds = $DB->get_records_sql($sql, $fields)) {
             foreach ($ds as $d) {
+                if ($d->timemodified == '1970-01-01 00:00:00') {
+                    $d->timemodified = '';
+                }
+
                 $output = array(
                     $d->firstname,
                     $d->lastname,
                     $d->margic,
                     $d->userid,
                     $d->timecreated,
-                    $d->timemodified ?: '',
+                    $d->timemodified,
                     $d->format,
                     $d->rating,
                     $d->entrycomment,
                     $d->teacher,
                     $d->timemarked,
                     $d->mailed,
-                    $d->text
+                    format_text($d->text, $d->format, array('para' => false))
                 );
                 $csv->add_data($output);
             }

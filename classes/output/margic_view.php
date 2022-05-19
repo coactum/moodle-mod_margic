@@ -167,10 +167,16 @@ class margic_view implements renderable, templatable {
 
                     $this->entries[$key]->annotationform = $mform->render();
 
+                    foreach ($this->entries[$key]->annotations as $anr => $annotation) {
+                        $annotater = $DB->get_record('user', array('id' => $annotation->userid));
+                        $annotaterimage = $OUTPUT->user_picture($annotater, array('courseid' => $this->courseid, 'link' => true));
+
+                        $this->entries[$key]->annotations[$anr]->userpicturestr = $annotaterimage . fullname($annotater);
+                    }
+
                 } else {
                     $this->entries[$key]->annotationform = false;
                 }
-
             }
         }
 

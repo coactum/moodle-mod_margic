@@ -130,7 +130,7 @@ $string['notstarted'] = 'You have not started this margic yet';
 $string['overallrating'] = 'Overall rating';
 $string['pagesize'] = 'Entries per page';
 $string['pluginadministration'] = 'margic module administration';
-$string['pluginname'] = 'margic';
+$string['pluginname'] = 'Margic';
 $string['previousentry'] = 'Previous entry';
 $string['rate'] = 'Rate';
 $string['rating'] = 'Rating for this entry';
@@ -219,6 +219,11 @@ $string['editannotationtype'] = 'Add or edit annotation type';
 $string['annotationtypeaddedormodified'] = 'Annotation type added or edited';
 $string['annotationtypeinvalid'] = 'Annotation type invalid';
 $string['nameofannotationtype'] = 'Name of annotation type';
+$string['annotationcreated'] = 'Created';
+$string['annotationmodified'] = 'Modified';
+$string['editannotation'] = 'Edit';
+$string['deleteannotation'] = 'Delete';
+$string['annotationcolor'] = 'Color of the annotation';
 
 // Löschen.
 $string['numwordscln'] = '{$a->one} clean text words using {$a->two} characters, NOT including {$a->three} spaces. ';
