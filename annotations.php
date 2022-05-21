@@ -107,6 +107,11 @@ if ($fromform = $mform->get_data()) {
 
         if ($fromform->startcontainer != -1 && $fromform->endcontainer != -1 &&
             $fromform->startposition != -1 && $fromform->endposition != -1) {
+
+            if ($fromform->text == '') {
+                redirect($redirecturl, get_string('erremptyannotation', 'mod_margic'), null, notification::NOTIFY_ERROR);
+            }
+
             $annotation = new stdClass();
             $annotation->margic = (int) $cm->instance;
             $annotation->entry = (int) $fromform->entry;

@@ -31,8 +31,13 @@
 <table class="table table-striped">
     <thead>
         <th scope="col">{{#str}}participant, mod_margic{{/str}}</th>
-        {{#annotationtypes}}<th scope="col">{{.}}</th>{{/annotationtypes}}
-
+        {{#annotationtypes}}
+            <th scope="col">
+                {{name}}
+                {{#defaulttype}}<span style="background-color: #{{color}}" title="{{#str}}defaulttype, mod_margic{{/str}}">(S)</span>{{/defaulttype}}
+                {{^defaulttype}}<span style="background-color: #{{color}}" title="{{#str}}customtype, mod_margic{{/str}}">(M)</span>{{/defaulttype}}
+            </th>
+        {{/annotationtypes}}
     <thead>
     <tbody>
         {{#participants}}

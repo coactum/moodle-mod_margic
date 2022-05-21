@@ -210,6 +210,9 @@ $string['annotationmodified'] = 'Bearbeitet';
 $string['editannotation'] = 'Bearbeiten';
 $string['deleteannotation'] = 'Löschen';
 $string['annotationcolor'] = 'Farbe der Annotierung';
+$string['defaulttype'] = 'Standard Fehlertyp';
+$string['customtype'] = 'Eigener Fehlertyp';
+$string['erremptyannotation'] = 'Text fehlt. Annotierung nicht gespeichert.';
 
 // löschen
 $string['numwordscln'] = '{$a->one} bereinigte Wörter mit {$a->two} Zeichen, AUSSCHLIEßLICH {$a->three} Leerzeichen. ';

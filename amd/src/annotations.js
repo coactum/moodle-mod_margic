@@ -86,6 +86,7 @@
 
                     $('.annotation-form-' + entry + ' select').val(annotations[annotationid].type);
 
+                    $('.annotationarea-' + entry + ' .annotation-form').insertBefore('.annotation-box-' + annotationid);
                     $('.annotationarea-' + entry + ' .annotation-form').show();
                     $('.annotationarea-' + entry + ' #id_text').focus();
                 }
@@ -514,12 +515,13 @@
             function removeHighlights(highlights) {
                 for (var i = 0; i < highlights.length; i++) {
                     if (highlights[i].parentNode) {
+                        var pn = highlights[i].parentNode;
                         const children = Array.from(highlights[i].childNodes);
                         replaceWith(highlights[i], children);
+                        pn.normalize();
                     }
                 }
             }
-
 
             // If user selects text for new annotation
             $(document).on('mouseup', '.originaltext', function() {
@@ -533,22 +535,12 @@
                 // console.log(selectedrange);
 
                 if (selectedrange.cloneContents().textContent !== '' && canmakeannotations) {
+
                     removeAllTempHighlights(); // remove other temporary highlights
 
                     resetForms(); // remove old form contents
 
-                    //console.log('i should make concrete annotation');
-
-                    // console.log(addertoolbar);
-                    // console.log(addertoolbar.buildAdderToolbar());
-
                     var entry = this.id.replace(/entry-/, '');
-
-                    //getSelectionValues(entry);
-
-                    //createAnnotation(entry);
-                    //console.log('selectedrange.cloneContents().textContent');
-                    //console.log(selectedrange.cloneContents().textContent);
 
                     $('.annotation-form-' + entry + ' input[name="startcontainer"]').val(xpathFromNode(selectedrange.startContainer, this));
                     $('.annotation-form-' + entry + ' input[name="endcontainer"]').val(xpathFromNode(selectedrange.endContainer, this));
@@ -601,16 +593,12 @@
 
             // onclick listener for editing annotation
             $(document).on('click', '.annotated', function(){
-                //console.log('annotated text is clicked');
-                //console.log(this);
                 var id = this.id.replace('annotated-', '');
                 editAnnotation(id);
             });
 
             // onclick listener for editing annotation
             $(document).on('click', '.edit-annotation', function(){
-                //console.log('edit annotation button clicked');
-                //console.log(this);
                 var id = this.id.replace('edit-annotation-', '');
                 editAnnotation(id);
             });
@@ -627,9 +615,6 @@
             $(document).on('click', '#id_cancel', function(e){
                 e.preventDefault();
 
-                //console.log('form is canceled');
-                //console.log(e);
-
                 removeAllTempHighlights(); // remove other temporary highlights
 
                 resetForms(); // remove old form contents
@@ -639,7 +624,6 @@
             // Listen for return key pressed to submit annotation form.
             $('textarea').keypress(function (e) {
                 if (e.which == 13) {
-                    console.log($(this).parents(':eq(2)'));
                     $(this).parents(':eq(2)').submit();
                     e.preventDefault();
                 }

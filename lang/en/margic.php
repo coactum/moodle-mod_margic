@@ -224,6 +224,9 @@ $string['annotationmodified'] = 'Modified';
 $string['editannotation'] = 'Edit';
 $string['deleteannotation'] = 'Delete';
 $string['annotationcolor'] = 'Color of the annotation';
+$string['defaulttype'] = 'Default error type';
+$string['customtype'] = 'Custom error type';
+$string['erremptyannotation'] = 'Text missing. Annotation not saved.';
 
 // Löschen.
 $string['numwordscln'] = '{$a->one} clean text words using {$a->two} characters, NOT including {$a->three} spaces. ';

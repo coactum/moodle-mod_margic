@@ -106,6 +106,15 @@ foreach ($participants as $key => $participant) {
     $participants[$key]->errors = array_values($participants[$key]->errors);
 }
 
+$allannotations = $margic->get_all_annotationtypes();
+foreach ($annotationtypes as $i => $type) {
+    $obj = new stdClass();
+    $obj->name = $type;
+    $obj->color = $allannotations[$i]->color;
+    $obj->defaulttype = $allannotations[$i]->defaulttype;
+    $annotationtypes[$i] = $obj;
+}
+
 $annotationtypes = array_values($annotationtypes);
 
 // Output page.

@@ -154,7 +154,7 @@
             <h4 class="text-center">{{#str}} annotations, mod_margic {{/str}}</h4>
             {{#annotations}}
                 <div class="annotation-box annotation-box-{{id}}" style="background: {{entrytextbgc}};">
-                    <div class="d-flex justify-content-between">
+                    <div class="d-flex justify-content-between border-bottom solid m-b-1">
                         <span>
                             {{{userpicturestr}}}
                         </span>
@@ -163,7 +163,6 @@
                             {{#timemodified}}<i class="fa fa-pencil-square-o" aria-hidden="true" title="{{#str}}annotationmodified, margic {{/str}}"></i> {{#userdate}}{{timemodified}}, {{#str}} strftimedatetime, core_langconfig {{/str}}{{/userdate}}{{/timemodified}}
                         </span>
                     </div>
-                    <hr>
                     <span id="annotation-{{id}}" class="annotation annotation-{{id}}">{{text}}</span>
                     {{#canmakeannotations}}
                         <span class="pull-right"><a href="javascript:void(0);" title="{{#str}}editannotation, margic {{/str}}"><i id="edit-annotation-{{id}}" class="fa fa-lg fa-pencil m-r-1 edit-annotation" aria-hidden="true" ></i></a><a href="annotations.php?id={{cmid}}&deleteannotation={{id}}" title="{{#str}}deleteannotation, margic {{/str}}"><i id="delete-annotation-{{id}}" class="fa fa-lg fa-trash delete-annotation" aria-hidden="true"></i></a></span>
