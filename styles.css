@@ -161,3 +161,7 @@
 #page-mod-margic-view textarea {
     width: 100%;
 }
+
+#page-mod-margic-annotations_summary th {
+    min-width: 100px;
+}

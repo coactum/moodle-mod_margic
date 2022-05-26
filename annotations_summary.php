@@ -106,12 +106,25 @@ foreach ($participants as $key => $participant) {
     $participants[$key]->errors = array_values($participants[$key]->errors);
 }
 
+global $USER;
+
 $allannotations = $margic->get_all_annotationtypes();
+
 foreach ($annotationtypes as $i => $type) {
     $obj = new stdClass();
+    $obj->id = $allannotations[$i]->id;
     $obj->name = $type;
     $obj->color = $allannotations[$i]->color;
     $obj->defaulttype = $allannotations[$i]->defaulttype;
+
+    if ($obj->defaulttype == 1 && has_capability('mod/margic:editdefaultannotationtypes', $context)) {
+        $obj->canbeedited = true;
+    } else if ($allannotations[$i]->userid == $USER->id) {
+        $obj->canbeedited = true;
+    } else {
+        $obj->canbeedited = false;
+    }
+
     $annotationtypes[$i] = $obj;
 }
 

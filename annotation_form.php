@@ -76,7 +76,7 @@ class annotation_form extends moodleform {
         $mform->setType('type', PARAM_INT);
 
         $mform->addElement('textarea', 'text');
-        $mform->setType('text', PARAM_RAW);
+        $mform->setType('text', PARAM_TEXT);
 
         $this->add_action_buttons();
 

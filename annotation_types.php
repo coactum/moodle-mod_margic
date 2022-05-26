@@ -36,6 +36,12 @@ $id = required_param('id', PARAM_INT);
 // Module instance ID as alternative.
 $m  = optional_param('m', null, PARAM_INT);
 
+// Module instance ID as alternative.
+$edit  = optional_param('edit', 0, PARAM_INT);
+
+// Module instance ID as alternative.
+$delete  = optional_param('delete', 0, PARAM_INT);
+
 $margic = margic::get_margic_instance($id, $m, false, 'currententry', 0, 1);
 
 $moduleinstance = $margic->get_module_instance();
@@ -65,32 +71,91 @@ require_login($course, true, $cm);
 
 require_capability('mod/margic:makeannotations', $context);
 
-// Instantiate form.
-$mform = new annotation_types_form();
-$mform->set_data(array('id' => $id));
-
 $redirecturl = new moodle_url('/mod/margic/annotations_summary.php', array('id' => $id));
+
+// Delete annotation.
+if ($delete !== 0) {
+    /* global $USER;
+
+    $at = $DB->get_record('margic_annotation_types', array('id' => $delete));
+    if (($at->defaulttype == 1 && has_capability('mod/margic:editdefaultannotationtypes', $context))
+        || ($at->defaulttype == 0 && $at->userid == $USER->id)) {
+
+        $DB->delete_records('margic_annotation_types', array('id' => $delete));
+        redirect($redirecturl, get_string('annotationtypedeleted', 'mod_margic'), null, notification::NOTIFY_SUCCESS);
+    } */
+} else if ($edit !== 0) {
+    $editedtype = $DB->get_record('margic_annotation_types', array('id' => $edit));
+    if ($editedtype && (isset($editedtype->defaulttype) && $editedtype->defaulttype == 1 && has_capability('mod/margic:editdefaultannotationtypes', $context))
+        || (isset($editedtype->defaulttype) && isset($editedtype->userid) && $editedtype->defaulttype == 0 && $editedtype->userid == $USER->id)) {
+        $editedtypeid = $edit;
+        $editedtypename = $editedtype->name;
+        $editedcolor = $editedtype->color;
+        $editeddefaulttype = $editedtype->defaulttype;
+    }
+}
+
+// Instantiate form.
+$mform = new annotation_types_form(null, array('editdefaulttype' => has_capability('mod/margic:editdefaultannotationtypes', $context)));
+
+if (isset($editedtypeid)) {
+    $mform->set_data(array('id' => $id, 'typeid' => $editedtypeid, 'typename' => $editedtypename, 'color' => $editedcolor, 'defaulttype' => $editeddefaulttype));
+} else {
+    $mform->set_data(array('id' => $id));
+}
 
 if ($mform->is_cancelled()) {
     redirect($redirecturl);
 } else if ($fromform = $mform->get_data()) {
-
     // In this case you process validated data. $mform->get_data() returns data posted in form.
-    if (isset($fromform->typename)) { // Create new annotation type.
+    if ($fromform->typeid == 0 && isset($fromform->typename)) { // Create new annotation type.
 
         $annotationtype = new stdClass();
-        $annotationtype->userid = $USER->id;
+
+        if ($fromform->defaulttype === 1 && has_capability('mod/margic:editdefaultannotationtypes', $context)) {
+            $annotationtype->userid = 0;
+            $annotationtype->defaulttype = 1;
+        } else {
+            $annotationtype->userid = $USER->id;
+            $annotationtype->defaulttype = 0;
+        }
+
         $annotationtype->timecreated = time();
         $annotationtype->timemodified = 0;
         $annotationtype->name = format_text($fromform->typename, 1, array('para' => false));
         $annotationtype->color = $fromform->color;
-        $annotationtype->defaulttype = 0;
         $annotationtype->unused = 0;
         $annotationtype->replaces = null;
 
         $DB->insert_record('margic_annotation_types', $annotationtype);
 
-        redirect($redirecturl, get_string('annotationtypeaddedormodified', 'mod_margic'), null, notification::NOTIFY_SUCCESS);
+        redirect($redirecturl, get_string('annotationtypeadded', 'mod_margic'), null, notification::NOTIFY_SUCCESS);
+    } else if ($fromform->typeid !== 0 && isset($fromform->typename)) { // Update existing annotation type.
+        $annotationtype = $DB->get_record('margic_annotation_types', array('id' => $fromform->typeid));
+
+        if ($annotationtype && (isset($annotationtype->defaulttype) && $annotationtype->defaulttype == 1 && has_capability('mod/margic:editdefaultannotationtypes', $context))
+        || (isset($annotationtype->defaulttype) && isset($annotationtype->userid) && $annotationtype->defaulttype == 0 && $annotationtype->userid == $USER->id)) {
+            $annotationtype->timemodified = time();
+            $annotationtype->name = format_text($fromform->typename, 1, array('para' => false));
+            $annotationtype->color = $fromform->color;
+
+            if (has_capability('mod/margic:editdefaultannotationtypes', $context)) {
+                global $USER;
+                if ($fromform->defaulttype === 1 && $annotationtype->defaulttype !== $fromform->defaulttype) {
+                    $annotationtype->defaulttype = 1;
+                    $annotationtype->userid = 0;
+                } else if ($fromform->defaulttype === 0 && $annotationtype->defaulttype !== $fromform->defaulttype) {
+                    $annotationtype->defaulttype = 0;
+                    $annotationtype->userid = $USER->id;
+                }
+            }
+
+            $DB->update_record('margic_annotation_types', $annotationtype);
+            redirect($redirecturl, get_string('annotationtypeedited', 'mod_margic'), null, notification::NOTIFY_SUCCESS);
+        } else {
+            redirect($redirecturl, get_string('annotationtypecantbeedited', 'mod_margic'), null, notification::NOTIFY_ERROR);
+        }
+
     } else {
         redirect($redirecturl, get_string('annotationtypeinvalid', 'mod_margic'), null, notification::NOTIFY_ERROR);
     }
@@ -102,7 +167,12 @@ $margicname = format_string($moduleinstance->name, true, array(
 ));
 
 $PAGE->set_url('/mod/margic/annotation_types.php', array('id' => $cm->id));
-$PAGE->navbar->add(get_string('editannotationtype', 'mod_margic'));
+
+if (isset($editedtypeid)) {
+    $PAGE->navbar->add(get_string('editannotationtype', 'mod_margic'));
+} else {
+    $PAGE->navbar->add(get_string('addannotationtype', 'mod_margic'));
+}
 
 $PAGE->set_title(get_string('modulename', 'mod_margic').': ' . $margicname);
 $PAGE->set_heading(format_string($course->fullname));
@@ -114,6 +184,10 @@ echo $OUTPUT->heading($margicname);
 
 if ($moduleinstance->intro) {
     echo $OUTPUT->box(format_module_intro('margic', $moduleinstance, $cm->id), 'generalbox mod_introbox', 'newmoduleintro');
+}
+
+if (isset($editedtypeid)) {
+    echo $OUTPUT->notification(get_string('changesforall', 'mod_margic'), notification::NOTIFY_WARNING);
 }
 
 $mform->display();

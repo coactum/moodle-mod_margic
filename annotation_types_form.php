@@ -48,13 +48,30 @@ class annotation_types_form extends moodleform {
         $mform->addElement('hidden', 'id', null);
         $mform->setType('id', PARAM_INT);
 
+        $mform->addElement('hidden', 'typeid', null);
+        $mform->setType('typeid', PARAM_INT);
+
         $mform->addElement('text', 'typename', get_string('nameofannotationtype', 'mod_margic'));
-        $mform->setType('typename', PARAM_RAW);
+        $mform->setType('typename', PARAM_TEXT);
         $mform->addRule('typename', null, 'required', null, 'client');
+
+        if ($this->_customdata['editdefaulttype']) {
+            $mform->addHelpButton('typename', 'explanationtypename', 'mod_margic');
+        }
 
         $mform->addElement('text', 'color', get_string('annotationcolor', 'mod_margic'));
         $mform->setType('color', PARAM_ALPHANUM);
         $mform->addRule('color', null, 'required', null, 'client');
+        $mform->addHelpButton('color', 'explanationhexcolor', 'mod_margic');
+
+        if ($this->_customdata['editdefaulttype']) {
+            $mform->addElement('advcheckbox', 'defaulttype', get_string('defaulttype', 'mod_margic'), get_string('explanationdefaulttype', 'mod_margic'));
+        } else {
+            $mform->addElement('hidden', 'defaulttype', 0);
+        }
+
+        $mform->setType('defaulttype', PARAM_INT);
+
         $this->add_action_buttons();
     }
 
@@ -65,6 +82,12 @@ class annotation_types_form extends moodleform {
      * @return array Array with errors
      */
     public function validation($data, $files) {
-        return array();
+        $errors = array();
+
+        if (strlen($data['color']) !== 6 || preg_match("/[^a-fA-F0-9]/", $data['color'])) {
+            $errors['color'] = get_string('errnohexcolor', 'mod_margic');
+        }
+
+        return $errors;
     }
 }

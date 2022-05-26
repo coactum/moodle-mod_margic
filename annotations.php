@@ -112,6 +112,10 @@ if ($fromform = $mform->get_data()) {
                 redirect($redirecturl, get_string('erremptyannotation', 'mod_margic'), null, notification::NOTIFY_ERROR);
             }
 
+            if (preg_match("/[^a-zA-Z0-9()\/[\]]/", $fromform->startcontainer) || preg_match("/[^a-zA-Z0-9()\/[\]]/", $fromform->endcontainer)) {
+                redirect($redirecturl, get_string('annotationinvalid', 'mod_margic'), null, notification::NOTIFY_ERROR);
+            }
+
             $annotation = new stdClass();
             $annotation->margic = (int) $cm->instance;
             $annotation->entry = (int) $fromform->entry;

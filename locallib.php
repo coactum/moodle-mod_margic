@@ -114,7 +114,7 @@ class margic {
         $this->annotationtypes = (array) $DB->get_records_select('margic_annotation_types', $select);
 
         foreach ($this->annotations as $key => $annotation) {
-            if (!array_key_exists($annotation->type, $this->annotationtypes)) {
+            if (!array_key_exists($annotation->type, $this->annotationtypes) && $DB->record_exists('margic_annotation_types', array('id' => $annotation->type))) {
                 $this->annotationtypes[$annotation->type] = $DB->get_record('margic_annotation_types', array('id' => $annotation->type));
             }
 
@@ -388,6 +388,10 @@ class margic {
             } else {
                 $types[$key] = $type->name;
             }
+
+            // if (in_array($this->id, json_decode($types[$key]->unused))) {
+            //     unset($types[$key]);
+            // }
         }
 
         return $types;
