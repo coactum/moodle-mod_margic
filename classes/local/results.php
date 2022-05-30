@@ -505,6 +505,19 @@ class results {
                         }
                     }
 
+                    $aggregatestr = self::get_margic_aggregation($margic->assessed) . ' ' . get_string('forallentries', 'margic') . ' '. $userfullname;
+                    $gradingform .= '<div class="row">';
+                    $gradingform .= '<div class="col-md-3 col-form-label d-flex pb-0 pr-md-0">';
+
+                    $gradingform .= $aggregatestr.': ';
+
+                    $gradingform .= '</div>';
+
+                    $gradingform .= '<div class="col-md-9 form-inline align-items-start felement">';
+                    $gradingform .= $currentuserrating;
+                    $gradingform .= '</div>';
+                    $gradingform .= '</div>';
+
                     $gradingform .= '<div class="row">';
                     $gradingform .= '<div class="col-md-3 col-form-label d-flex pb-0 pr-md-0">';
                     $gradingform .= get_string('rating', 'margic') . ': ';
@@ -518,19 +531,6 @@ class results {
                     }
 
                     $gradingform .= $gradebookgradestr;
-                    $gradingform .= '</div>';
-                    $gradingform .= '</div>';
-
-                    $aggregatestr = self::get_margic_aggregation($margic->assessed) . ' ' . get_string('forallentries', 'margic') . ' '. $userfullname;
-                    $gradingform .= '<div class="row">';
-                    $gradingform .= '<div class="col-md-3 col-form-label d-flex pb-0 pr-md-0">';
-
-                    $gradingform .= $aggregatestr.': ';
-
-                    $gradingform .= '</div>';
-
-                    $gradingform .= '<div class="col-md-9 form-inline align-items-start felement">';
-                    $gradingform .= $currentuserrating;
                     $gradingform .= '</div>';
                     $gradingform .= '</div>';
                 }
@@ -568,7 +568,7 @@ class results {
                     throw new moodle_exception(get_string('generalerror', 'margic'));
                 }
 
-                $gradingform .= '<div class="ratingform"><h3>' . get_string('feedback') . '</h3>';
+                $gradingform .= '<div class="ratingform" style="background-color: ' . get_config('mod_margic', 'entrytextbgc') . '"><h3>' . get_string('feedback') . '</h3>';
 
                 $gradingform .= '<div class="entryheader">';
                 $gradingform .= '<span class="teacherpicture"></span>';

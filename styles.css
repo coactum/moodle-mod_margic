@@ -103,8 +103,17 @@
     -moz-border-radius-bottomright: 15px;
 }
 
+#page-mod-margic-view .gradingform,
 #page-mod-margic-view .ratingform {
-    padding: 5px;
+    padding: 10px;
+    text-align: left;
+    font-size: 1em;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border: 1px solid rgba(0, 0, 0, .125);
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
 }
 
 #page-mod-margic-view .annotationarea {

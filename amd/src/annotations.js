@@ -87,6 +87,9 @@
 
                     $('.annotation-form-' + entry + ' select').val(annotations[annotationid].type);
 
+                    $('#annotationpreview-temp-' + entry).html($('#annotationpreview-' + annotationid).html());
+                    $('#annotationpreview-temp-' + entry).css( 'border-color', '#' + annotations[annotationid].color);
+
                     $('.annotationarea-' + entry + ' .annotation-form').insertBefore('.annotation-box-' + annotationid);
                     $('.annotationarea-' + entry + ' .annotation-form').show();
                     $('.annotationarea-' + entry + ' #id_text').focus();
@@ -549,7 +552,11 @@
 
                     $('.annotation-form-' + entry + ' select').val(1);
 
-                    highlightRange(selectedrange, false, 'annotated_temp');
+                    var annotatedtext = highlightRange(selectedrange, false, 'annotated_temp');
+
+                    if (annotatedtext != '') {
+                        $('#annotationpreview-temp-' + entry).html(annotatedtext);
+                    }
 
                     $('.annotationarea-' + entry + ' .annotation-form').show();
                     $('.annotation-form-' + entry + ' #id_text').focus();
@@ -571,7 +578,7 @@
                 $('.annotated-'+id).removeClass('hovered');
             });
 
-            // Highlight annotated text if annotation is hovered
+            // Highlight annotated text if annotationpreview is hovered
             $('.annotatedtextpreview').mouseenter (function() {
                 var id = this.id.replace('annotationpreview-', '');
                 $('.annotated-'+id).addClass('hovered');
