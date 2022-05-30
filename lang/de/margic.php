@@ -225,6 +225,8 @@ $string['explanationtypename_help'] = 'Der Name des Fehlertypen. Für folgende S
 $string['explanationhexcolor'] = 'Farbe des Fehlertyps';
 $string['explanationhexcolor_help'] = 'Die Farbe des Fehlertypen als Hexadezimalwert. Dieser besteht aus genau 6 Zeichen (A-F sowie 0-9) und repräsentiert eine Farbe. Den Hexwert von beliebigen Farben kann man z. B. unter https://www.w3schools.com/colors/colors_picker.asp herausfinden.';
 $string['explanationdefaulttype'] = 'Hier kann ausgewählt werden, ob der Fehlertyp ein Standardtyp sein soll. In diesem Fall wird er allen Lehrenden in allen Margic-Instanzen angezeigt und kann von diesen verwendet werden. Andernfalls wird er ein normaler Fehlertyp und kann nur vom Ersteller verwendet werden.';
+$string['annotatedtextnotfound'] = 'Annotierter Text nicht gefunden';
+$string['annotatedtextinvalid'] = 'Der ursprünglich annotierte Text ist (z. B. durch eine nachträgliche Änderung des ursprünglichen Beitrags) ungültig geworden. Die Markierung für diese Annotierung muss deshalb neu gesetzt werden.';
 
 // löschen
 $string['numwordscln'] = '{$a->one} bereinigte Wörter mit {$a->two} Zeichen, AUSSCHLIEßLICH {$a->three} Leerzeichen. ';

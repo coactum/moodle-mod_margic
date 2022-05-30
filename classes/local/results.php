@@ -572,8 +572,7 @@ class results {
 
                 $gradingform .= '<div class="entryheader">';
                 $gradingform .= '<span class="teacherpicture"></span>';
-                $gradingform .= '<span class="author">' . fullname($teacher) . '</span> - ';
-                $gradingform .= '<span class="time">' . userdate($entry->timemarked) . '</span>';
+                $gradingform .= ' - <span class="time">' . userdate($entry->timemarked) . '</span>';
 
                 $gradingform .= '<span class="pull-right"><strong>';
 

@@ -242,6 +242,8 @@ class margic {
 
         $viewinguserid = $USER->id;
 
+        $strmanager = get_string_manager();
+
         foreach ($this->entries as $i => $entry) {
             $this->entries[$i]->user = $DB->get_record('user', array('id' => $entry->userid));
 
@@ -271,6 +273,13 @@ class margic {
 
                 foreach ($this->entries[$i]->annotations as $key => $annotation) {
                     $this->entries[$i]->annotations[$key]->color = $this->annotationtypes[$annotation->type]->color;
+                    $this->entries[$i]->annotations[$key]->defaulttype = $this->annotationtypes[$annotation->type]->defaulttype;
+
+                    if ($this->entries[$i]->annotations[$key]->defaulttype == 1 && $strmanager->string_exists($this->annotationtypes[$annotation->type]->name, 'mod_margic')) {
+                        $this->entries[$i]->annotations[$key]->type = get_string($this->annotationtypes[$annotation->type]->name, 'mod_margic');
+                    } else {
+                        $this->entries[$i]->annotations[$key]->type = $this->annotationtypes[$annotation->type]->name;
+                    }
                 }
 
             } else {

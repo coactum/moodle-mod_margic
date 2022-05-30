@@ -50,10 +50,11 @@
                         //console.log(e);
                      }
 
-                    //console.log('recreateAnnotations after setStart/End');
+                    var annotatedtext = highlightRange(newrange, annotation.id, 'annotated', annotation.color);
 
-                    highlightRange(newrange, annotation.id, 'annotated', annotation.color);
-
+                    if (annotatedtext != '') {
+                        $('#annotationpreview-' + annotation.id).html(annotatedtext);
+                    }
                 }
             }
 
@@ -207,6 +208,10 @@
 
                 const textNodes = wholeTextNodesInRange(range);
 
+                console.log('highlightRange');
+                console.log('textNodes');
+                console.log(textNodes);
+
                 // Group text nodes into spans of adjacent nodes. If a group of text nodes are
                 // adjacent, we only need to create one highlight element for the group.
                 let textNodeSpans = [];
@@ -214,13 +219,13 @@
                 let currentSpan = null;
 
                 textNodes.forEach(node => {
-                if (prevNode && prevNode.nextSibling === node) {
-                    currentSpan.push(node);
-                } else {
-                    currentSpan = [node];
-                    textNodeSpans.push(currentSpan);
-                }
-                prevNode = node;
+                    if (prevNode && prevNode.nextSibling === node) {
+                        currentSpan.push(node);
+                    } else {
+                        currentSpan = [node];
+                        textNodeSpans.push(currentSpan);
+                    }
+                    prevNode = node;
                 });
 
                 // Filter out text node spans that consist only of white space. This avoids
@@ -228,36 +233,31 @@
                 // subset of nodes such as table rows and lists.
                 const whitespace = /^\s*$/;
                 textNodeSpans = textNodeSpans.filter(span =>
-                // Check for at least one text node with non-space content.
-                span.some(node => !whitespace.test(node.nodeValue))
+                    // Check for at least one text node with non-space content.
+                    span.some(node => !whitespace.test(node.nodeValue))
                 );
 
-                // Wrap each text node span with a `<hypothesis-highlight>` element.
-                const highlights = [];
+                // Wrap each text node span with a `<span>` element.
+                var hihglightedtext = '';
+
                 textNodeSpans.forEach(nodes => {
-                // A custom element name is used here rather than `<span>` to reduce the
-                // likelihood of highlights being hidden by page styling.
+                    const highlightEl = document.createElement('span');
+                    highlightEl.className = cssClass;
 
-                /** @type {HighlightElement} */
-                const highlightEl = document.createElement('span');
-                highlightEl.className = cssClass;
+                    if (annotationid) {
+                        highlightEl.className += ' ' + cssClass + '-' + annotationid;
+                        highlightEl.id = cssClass + '-' + annotationid;
+                        highlightEl.style.backgroundColor = '#' + color;
+                    }
 
-                // console.log('i should set background color of annotated text to');
-                // console.log('#' + color);
+                    hihglightedtext += nodes[0].textContent;
 
-                if (annotationid) {
-                    highlightEl.className += ' ' + cssClass + '-' + annotationid;
-                    highlightEl.id = cssClass + '-' + annotationid;
-                    highlightEl.style.backgroundColor = '#' + color;
-                }
+                    nodes[0].parentNode.replaceChild(highlightEl, nodes[0]);
+                    nodes.forEach(node => highlightEl.appendChild(node));
 
-                nodes[0].parentNode.replaceChild(highlightEl, nodes[0]);
-                nodes.forEach(node => highlightEl.appendChild(node));
-
-                highlights.push(highlightEl);
                 });
 
-                return highlights;
+                return hihglightedtext;
             }
 
             /**
@@ -561,24 +561,24 @@
             // Highlight annotation and all annotated text if annotated text is hovered
             $('.annotated').mouseenter (function() {
                 var id = this.id.replace('annotated-', '');
-                $('.annotation-'+id).addClass('hovered');
+                $('.annotationpreview-'+id).addClass('hovered');
                 $('.annotated-'+id).addClass('hovered');
             });
 
             $('.annotated').mouseleave (function() {
                 var id = this.id.replace('annotated-', '');
-                $('.annotation-'+id).removeClass('hovered');
+                $('.annotationpreview-'+id).removeClass('hovered');
                 $('.annotated-'+id).removeClass('hovered');
             });
 
             // Highlight annotated text if annotation is hovered
-            $('.annotation').mouseenter (function() {
-                var id = this.id.replace('annotation-', '');
+            $('.annotatedtextpreview').mouseenter (function() {
+                var id = this.id.replace('annotationpreview-', '');
                 $('.annotated-'+id).addClass('hovered');
             });
 
-            $('.annotation').mouseleave (function() {
-                var id = this.id.replace('annotation-', '');
+            $('.annotatedtextpreview').mouseleave (function() {
+                var id = this.id.replace('annotationpreview-', '');
                 $('.annotated-'+id).removeClass('hovered');
             });
 

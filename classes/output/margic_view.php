@@ -142,15 +142,15 @@ class margic_view implements renderable, templatable {
 
             foreach ($this->entries as $key => $entry) {
                 if ($this->canmanageentries) {
-                    $this->entries[$key]->user->userpicture = $OUTPUT->user_picture($entry->user, array('courseid' => $this->courseid, 'link' => true));
+                    $this->entries[$key]->user->userpicture = $OUTPUT->user_picture($entry->user, array('courseid' => $this->courseid, 'link' => true, 'includefullname' => true));
                 }
 
                 if ($entry->teacher) {
                     $teacher = $DB->get_record('user', array('id' => $entry->teacher));
-                    $teacherimage = $OUTPUT->user_picture($teacher, array('courseid' => $this->courseid, 'link' => true));
+                    $teacherimage = $OUTPUT->user_picture($teacher, array('courseid' => $this->courseid, 'link' => true, 'includefullname' => true));
 
                     if ($this->canmanageentries) {
-                        $replace = str_replace('<span class="teacherpicture m-l-1">', '<br><span class="teacherpicture m-l-1">' .  $teacherimage . ' ' . fullname($teacher) . ' - ', $entry->gradingform);
+                        $replace = str_replace('<span class="teacherpicture m-l-1">', '<br><span class="teacherpicture m-l-1">' .  $teacherimage . ' - ', $entry->gradingform);
                     } else {
                         $replace = str_replace('<span class="teacherpicture"></span>', '<span class="teacherpicture">' .  $teacherimage, $entry->gradingform);
                     }
@@ -169,9 +169,9 @@ class margic_view implements renderable, templatable {
 
                     foreach ($this->entries[$key]->annotations as $anr => $annotation) {
                         $annotater = $DB->get_record('user', array('id' => $annotation->userid));
-                        $annotaterimage = $OUTPUT->user_picture($annotater, array('courseid' => $this->courseid, 'link' => true));
+                        $annotaterimage = $OUTPUT->user_picture($annotater, array('courseid' => $this->courseid, 'link' => true, 'includefullname' => true, 'size' => 20));
 
-                        $this->entries[$key]->annotations[$anr]->userpicturestr = $annotaterimage . fullname($annotater);
+                        $this->entries[$key]->annotations[$anr]->userpicturestr = $annotaterimage;
                     }
 
                 } else {
