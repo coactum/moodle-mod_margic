@@ -280,6 +280,12 @@ class margic {
                     } else {
                         $this->entries[$i]->annotations[$key]->type = $this->annotationtypes[$annotation->type]->name;
                     }
+
+                    if (has_capability('mod/margic:makeannotations', $this->context) && $annotation->userid == $USER->id) {
+                        $this->entries[$i]->annotations[$key]->canbeedited = true;
+                    } else {
+                        $this->entries[$i]->annotations[$key]->canbeedited = false;
+                    }
                 }
 
             } else {

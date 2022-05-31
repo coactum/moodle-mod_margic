@@ -80,9 +80,14 @@ $redirecturl = new moodle_url('/mod/margic/view.php', $urlparams);
 // Delete annotation.
 if (has_capability('mod/margic:makeannotations', $context) && $deleteannotation !== 0) {
     global $USER;
-    $DB->delete_records('margic_annotations', array('id' => $deleteannotation, 'margic' => $moduleinstance->id, 'userid' => $USER->id));
 
-    redirect($redirecturl, get_string('annotationdeleted', 'mod_margic'), null, notification::NOTIFY_SUCCESS);
+    if ($DB->record_exists('margic_annotations', array('id' => $deleteannotation, 'margic' => $moduleinstance->id, 'userid' => $USER->id))) {
+        $DB->delete_records('margic_annotations', array('id' => $deleteannotation, 'margic' => $moduleinstance->id, 'userid' => $USER->id));
+
+        redirect($redirecturl, get_string('annotationdeleted', 'mod_margic'), null, notification::NOTIFY_SUCCESS);
+    } else {
+        redirect($redirecturl, get_string('notallowedtodothis', 'mod_margic'), null, notification::NOTIFY_ERROR);
+    }
 }
 
 // Save annotation
@@ -96,6 +101,14 @@ if ($fromform = $mform->get_data()) {
     // In this case you process validated data. $mform->get_data() returns data posted in form.
     if ((isset($fromform->annotationid) && $fromform->annotationid !== 0) && isset($fromform->text)) { // Update existing annotation.
         $annotation = $DB->get_record('margic_annotations', array('margic' => $cm->instance, 'entry' => $fromform->entry, 'id' => $fromform->annotationid));
+
+        // Prevent changes by user in hidden form fields.
+        if (!$annotation) {
+            redirect($redirecturl, get_string('annotationinvalid', 'mod_margic'), null, notification::NOTIFY_ERROR);
+        } else if ($annotation->userid != $USER->id) {
+            redirect($redirecturl, get_string('notallowedtodothis', 'mod_margic'), null, notification::NOTIFY_ERROR);
+        }
+
         $annotation->timemodified = time();
         $annotation->text = format_text($fromform->text, 2, array('para' => false));
         $annotation->type = $fromform->type;
@@ -113,6 +126,10 @@ if ($fromform = $mform->get_data()) {
             }
 
             if (preg_match("/[^a-zA-Z0-9()\/[\]]/", $fromform->startcontainer) || preg_match("/[^a-zA-Z0-9()\/[\]]/", $fromform->endcontainer)) {
+                redirect($redirecturl, get_string('annotationinvalid', 'mod_margic'), null, notification::NOTIFY_ERROR);
+            }
+
+            if (!$DB->record_exists('margic_entries', array('margic' => $cm->instance, 'id' => $fromform->entry))) {
                 redirect($redirecturl, get_string('annotationinvalid', 'mod_margic'), null, notification::NOTIFY_ERROR);
             }
 

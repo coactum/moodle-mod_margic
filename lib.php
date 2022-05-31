@@ -152,7 +152,6 @@ function margic_delete_instance($id) {
  * @uses FEATURE_RATE
  * @uses FEATURE_GROUPS
  * @uses FEATURE_GROUPINGS
- * @uses FEATURE_GROUPMEMBERSONLY
  * @uses FEATURE_COMPLETION_TRACKS_VIEWS
  * @uses FEATURE__BACKUP_MOODLE2
  * @param string $feature
@@ -172,8 +171,6 @@ function margic_supports($feature) {
         case FEATURE_GROUPS:
             return true;
         case FEATURE_GROUPINGS:
-            return true;
-        case FEATURE_GROUPMEMBERSONLY:
             return true;
         case FEATURE_COMPLETION_TRACKS_VIEWS:
             return true;

@@ -46,8 +46,6 @@
                         newrange.setEnd(nodeFromXPath(annotation.endcontainer, $( "#entry-" + annotation.entry)[0]), annotation.endposition);
                      }
                      catch (e) {
-                        //console.log('try/catch');
-                        //console.log(e);
                      }
 
                     var annotatedtext = highlightRange(newrange, annotation.id, 'annotated', annotation.color);
@@ -63,16 +61,7 @@
                     removeAllTempHighlights();
                     resetForms();
 
-                    //console.log('annotations from js');
-                    //console.log(annotations);
-
                     var entry = annotations[annotationid].entry;
-
-                    //console.log(entry);
-                    // console.log('i should set select default to');
-                    // console.log(annotations[annotationid].type);
-                    // console.log('for');
-                    // console.log($('.annotation-form-' + entry + 'select'));
 
                     $('.annotation-box-' + annotationid).hide(); // hide edited annotation-box
 
@@ -95,29 +84,6 @@
                     $('.annotationarea-' + entry + ' #id_text').focus();
                 }
             }
-
-            // function deleteAnnotation(annotationid) { // for later with ajax use
-
-            //     //console.log('delete annotation');
-            //     //console.log(annotationid);
-
-            //     // removeAllTempHighlights();
-            //     // resetForms();
-
-            //     // var entry = annotations[annotationid].entry;
-
-            //     // console.log(entry);
-
-            //     // $('input[name="startcontainer[' + entry + ']"]').val(annotations[annotationid].startcontainer);
-            //     // $('input[name="endcontainer[' + entry + ']"]').val(annotations[annotationid].endcontainer);
-            //     // $('input[name="startposition[' + entry + ']"]').val(annotations[annotationid].startposition);
-            //     // $('input[name="endposition[' + entry + ']"]').val(annotations[annotationid].endposition);
-
-            //     // $('textarea[name="text[' + entry + ']"]').val(annotations[annotationid].text);
-
-            //     // $('.annotationarea-' + entry + ' .annotation-form').show();
-            //     // $('#id_text_' + entry).focus();
-            // }
 
             function resetForms(){
                 $('.annotation-form').hide();
@@ -210,10 +176,6 @@
             function highlightRange(range, annotationid = false, cssClass = 'annotated', color = 'FFFF00') {
 
                 const textNodes = wholeTextNodesInRange(range);
-
-                console.log('highlightRange');
-                console.log('textNodes');
-                console.log(textNodes);
 
                 // Group text nodes into spans of adjacent nodes. If a group of text nodes are
                 // adjacent, we only need to create one highlight element for the group.
@@ -530,13 +492,6 @@
             $(document).on('mouseup', '.originaltext', function() {
                 var selectedrange = window.getSelection().getRangeAt(0);
 
-                // console.log('i should make annotation');
-
-                // console.log('window.getSelection()');
-                // console.log(window.getSelection());
-                // console.log('selectedrange');
-                // console.log(selectedrange);
-
                 if (selectedrange.cloneContents().textContent !== '' && canmakeannotations) {
 
                     removeAllTempHighlights(); // remove other temporary highlights
@@ -610,14 +565,6 @@
                 editAnnotation(id);
             });
 
-            // onclick listener for deleting annotation
-            // $(document).on('click', '.delete-annotation', function(){
-            //     //console.log('delete annotation button clicked');
-            //     //console.log(this);
-            //     var id = this.id.replace('delete-annotation-', '');
-            //     deleteAnnotation(id);
-            // });
-
             // onclick listener if form is canceled
             $(document).on('click', '#id_cancel', function(e){
                 e.preventDefault();
@@ -626,7 +573,6 @@
 
                 resetForms(); // remove old form contents
             });
-
 
             // Listen for return key pressed to submit annotation form.
             $('textarea').keypress(function (e) {

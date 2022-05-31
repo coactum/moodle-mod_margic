@@ -241,6 +241,7 @@ $string['explanationhexcolor_help'] = 'The color of the annotation type as hexad
 $string['explanationdefaulttype'] = 'Here you can select whether the annotation type should be a default type. In this case it will be displayed to all teachers in all Margic instances and can be used by them. Otherwise, it becomes a normal error type and can only be used by its creator.';
 $string['annotatedtextnotfound'] = 'Annotated text not found';
 $string['annotatedtextinvalid'] = 'The originally annotated text has become invalid (e.g. due to a subsequent change to the original entry). The marking for this annotation must therefore be redone.';
+$string['notallowedtodothis'] = 'No permissions to do this.';
 
 // Löschen.
 $string['numwordscln'] = '{$a->one} clean text words using {$a->two} characters, NOT including {$a->three} spaces. ';
