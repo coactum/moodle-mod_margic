@@ -17,47 +17,47 @@
 /**
  * Definition of log events
  *
- * @package   mod_diary
- * @copyright 2020 AL Rachels <drachels@drachels.com>
+ * @package   mod_margic
+ * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die();
 
 $logs = array(
     array(
-        'module' => 'diary',
+        'module' => 'margic',
         'action' => 'view',
-        'mtable' => 'diary',
+        'mtable' => 'margic',
         'field' => 'name'
     ),
     array(
-        'module' => 'diary',
+        'module' => 'margic',
         'action' => 'view all',
-        'mtable' => 'diary',
+        'mtable' => 'margic',
         'field' => 'name'
     ),
     array(
-        'module' => 'diary',
+        'module' => 'margic',
         'action' => 'view responses',
-        'mtable' => 'diary',
+        'mtable' => 'margic',
         'field' => 'name'
     ),
     array(
-        'module' => 'diary',
+        'module' => 'margic',
         'action' => 'add entry',
-        'mtable' => 'diary',
+        'mtable' => 'margic',
         'field' => 'name'
     ),
     array(
-        'module' => 'diary',
+        'module' => 'margic',
         'action' => 'update entry',
-        'mtable' => 'diary',
+        'mtable' => 'margic',
         'field' => 'name'
     ),
     array(
-        'module' => 'diary',
+        'module' => 'margic',
         'action' => 'update feedback',
-        'mtable' => 'diary',
+        'mtable' => 'margic',
         'field' => 'name'
     )
 );

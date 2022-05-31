@@ -1,0 +1,57 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @copyright   2022 coactum GmbH
+    @template margic/margic_annotations_summary
+
+    Annotations summary.
+}}
+
+{{#js}}
+{{/js}}
+
+<div class="d-flex justify-content-end">
+    <a class="btn btn-primary m-1" href="annotation_types.php?id={{cmid}}"> {{#str}}addannotationtype, mod_margic{{/str}} </a>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <th scope="col">{{#str}}participant, mod_margic{{/str}}</th>
+        {{#annotationtypes}}
+            <th scope="col">
+                {{name}}
+                <div>
+                    {{#defaulttype}}<span style="background-color: #{{color}}" title="{{#str}}defaulttype, mod_margic{{/str}}">(S)</span>{{/defaulttype}}
+                    {{^defaulttype}}<span style="background-color: #{{color}}" title="{{#str}}customtype, mod_margic{{/str}}">(M)</span>{{/defaulttype}}
+                    {{#canbeedited}}
+                        <a href="annotation_types.php?id={{cmid}}&edit={{id}}" title="{{#str}}editannotationtype, margic {{/str}}"><i class="fa fa-lg fa-pencil" aria-hidden="true" ></i></a>
+                    {{/canbeedited}}
+                </div>
+            </th>
+        {{/annotationtypes}}
+    <thead>
+    <tbody>
+        {{#participants}}
+            <tr><td>{{firstname}} {{lastname}}</td>
+            {{#errors}}<td>{{.}}</td>{{/errors}}
+        {{/participants}}
+    </tbody>
+</table>
+
+<div class="d-flex justify-content-center">
+    <a class="btn btn-primary m-1" href="view.php?id={{cmid}}"> {{#str}}backtooverview, mod_margic{{/str}} </a>
+</div>

@@ -15,23 +15,21 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Define all the backup steps that will be used by the backup_diary_activity_task
+ * Define all the backup steps that will be used by the backup_margic_activity_task
  *
- * @package mod_diary
- * @copyright 2020 AL Rachels <drachels@drachels.com>
+ * @package mod_margic
+ * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-defined('MOODLE_INTERNAL') || die();
 
 /**
- * Define the complete diary structure for backup, with file and id annotations.
+ * Define the complete margic structure for backup, with file and id annotations.
  *
- * @package mod_diary
- * @copyright 2020 AL Rachels <drachels@drachels.com>
+ * @package mod_margic
+ * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class backup_diary_activity_structure_step extends backup_activity_structure_step {
+class backup_margic_activity_structure_step extends backup_activity_structure_step {
 
     /**
      * Define the complete data structure for backup, with file and id annotations
@@ -44,7 +42,7 @@ class backup_diary_activity_structure_step extends backup_activity_structure_ste
         $userinfo = $this->get_setting_value('userinfo');
 
         // Define each element separated.
-        $diary = new backup_nested_element('diary', array('id'),
+        $margic = new backup_nested_element('margic', array('id'),
                                            array('name',
                                                  'intro',
                                                  'introformat',
@@ -87,28 +85,28 @@ class backup_diary_activity_structure_step extends backup_activity_structure_ste
                                                   'timemodified'));
 
         // Build the tree.
-        $diary->add_child($entries);
+        $margic->add_child($entries);
         $entries->add_child($entry);
         $entry->add_child($ratings);
         $ratings->add_child($rating);
-        $diary->add_child($tags);
+        $margic->add_child($tags);
         $tags->add_child($tag);
 
         // Define sources.
-        $diary->set_source_table('diary', array('id' => backup::VAR_ACTIVITYID));
+        $margic->set_source_table('margic', array('id' => backup::VAR_ACTIVITYID));
 
         // All the rest of elements only happen if we are including user info.
         if ($this->get_setting_value('userinfo')) {
-            $entry->set_source_table('diary_entries', array('diary' => backup::VAR_PARENTID));
+            $entry->set_source_table('margic_entries', array('margic' => backup::VAR_PARENTID));
 
             $rating->set_source_table('rating', array('contextid'  => backup::VAR_CONTEXTID,
                                                       'itemid'     => backup::VAR_PARENTID,
-                                                      'component'  => backup_helper::is_sqlparam('mod_diary'),
+                                                      'component'  => backup_helper::is_sqlparam('mod_margic'),
                                                       'ratingarea' => backup_helper::is_sqlparam('entry')));
 
             $rating->set_source_alias('rating', 'value');
 
-            if (core_tag_tag::is_enabled('mod_diary', 'diary_entries')) {
+            if (core_tag_tag::is_enabled('mod_margic', 'margic_entries')) {
                 $tag->set_source_sql('SELECT t.id, ti.itemid, t.rawname
                                         FROM {tag} t
                                         JOIN {tag_instance} ti
@@ -116,24 +114,24 @@ class backup_diary_activity_structure_step extends backup_activity_structure_ste
                                        WHERE ti.itemtype = ?
                                          AND ti.component = ?
                                          AND ti.contextid = ?', array(
-                    backup_helper::is_sqlparam('diary_entries'),
-                    backup_helper::is_sqlparam('mod_diary'),
+                    backup_helper::is_sqlparam('margic_entries'),
+                    backup_helper::is_sqlparam('mod_margic'),
                     backup::VAR_CONTEXTID));
             }
         }
 
         // Define id annotations.
-        $diary->annotate_ids('scale', 'scale');
+        $margic->annotate_ids('scale', 'scale');
         $entry->annotate_ids('user', 'userid');
         $entry->annotate_ids('user', 'teacher');
         $rating->annotate_ids('scale', 'scaleid');
         $rating->annotate_ids('user', 'userid');
 
         // Define file annotations.
-        $diary->annotate_files('mod_diary', 'intro', null); // This file areas haven't itemid.
-        $entry->annotate_files('mod_diary_entries', 'entry', 'id');
-        $entry->annotate_files('mod_diary_entries', 'attachment', 'id');
+        $margic->annotate_files('mod_margic', 'intro', null); // This file areas haven't itemid.
+        $entry->annotate_files('mod_margic_entries', 'entry', 'id');
+        $entry->annotate_files('mod_margic_entries', 'attachment', 'id');
 
-        return $this->prepare_activity_structure($diary);
+        return $this->prepare_activity_structure($margic);
     }
 }

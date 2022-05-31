@@ -15,14 +15,14 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This page opens the current lib instance of diary.
+ * This page opens the current lib instance of margic.
  *
- * @package   mod_diary
- * @copyright 2019 AL Rachels (drachels@drachels.com)
+ * @package   mod_margic
+ * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-defined('MOODLE_INTERNAL') || die();
-use mod_diary\local\results;
+
+use mod_margic\local\results;
 
 /**
  * Given an object containing all the necessary data,
@@ -30,75 +30,75 @@ use mod_diary\local\results;
  * will create a new instance and return the id number
  * of the new instance.
  *
- * @param object $diary
- *            Object containing required diary properties.
- * @return int Diary ID.
+ * @param object $margic
+ *            Object containing required margic properties.
+ * @return int margic ID.
  */
-function diary_add_instance($diary) {
+function margic_add_instance($margic) {
     global $DB;
 
-    if (empty($diary->assessed)) {
-        $diary->assessed = 0;
+    if (empty($margic->assessed)) {
+        $margic->assessed = 0;
     }
     // 20190917 First one always true as ratingtime does not exist.
-    if (empty($diary->ratingtime) || empty($diary->assessed)) {
-        $diary->assesstimestart = 0;
-        $diary->assesstimefinish = 0;
+    if (empty($margic->ratingtime) || empty($margic->assessed)) {
+        $margic->assesstimestart = 0;
+        $margic->assesstimefinish = 0;
     }
-    $diary->timemodified = time();
-    $diary->id = $DB->insert_record('diary', $diary);
+    $margic->timemodified = time();
+    $margic->id = $DB->insert_record('margic', $margic);
 
     // 20200903 Added calendar dates.
-    results::diary_update_calendar($diary, $diary->coursemodule);
+    results::margic_update_calendar($margic, $margic->coursemodule);
 
     // 20200901 Added expected completion date.
-    if (! empty($diary->completionexpected)) {
-        \core_completion\api::update_completion_date_event($diary->coursemodule, 'diary', $diary->id, $diary->completionexpected);
+    if (! empty($margic->completionexpected)) {
+        \core_completion\api::update_completion_date_event($margic->coursemodule, 'margic', $margic->id, $margic->completionexpected);
     }
 
-    diary_grade_item_update($diary);
+    margic_grade_item_update($margic);
 
-    return $diary->id;
+    return $margic->id;
 }
 
 /**
  *
- * Given an object containing all the necessary diary data,
- * will update an existing instance with new diary data.
+ * Given an object containing all the necessary margic data,
+ * will update an existing instance with new margic data.
  *
- * @param object $diary
- *            Object containing required diary properties.
+ * @param object $margic
+ *            Object containing required margic properties.
  * @return boolean True if successful.
  */
-function diary_update_instance($diary) {
+function margic_update_instance($margic) {
     global $DB;
 
-    $diary->timemodified = time();
-    $diary->id = $diary->instance;
+    $margic->timemodified = time();
+    $margic->id = $margic->instance;
 
-    if (empty($diary->assessed)) {
-        $diary->assessed = 0;
+    if (empty($margic->assessed)) {
+        $margic->assessed = 0;
     }
 
-    if (empty($diary->ratingtime) or empty($diary->assessed)) {
-        $diary->assesstimestart = 0;
-        $diary->assesstimefinish = 0;
+    if (empty($margic->ratingtime) or empty($margic->assessed)) {
+        $margic->assesstimestart = 0;
+        $margic->assesstimefinish = 0;
     }
 
-    if (empty($diary->notification)) {
-        $diary->notification = 0;
+    if (empty($margic->notification)) {
+        $margic->notification = 0;
     }
 
-    $DB->update_record('diary', $diary);
+    $DB->update_record('margic', $margic);
 
     // 20200903 Added calendar dates.
-    results::diary_update_calendar($diary, $diary->coursemodule);
+    results::margic_update_calendar($margic, $margic->coursemodule);
 
     // 20200901 Added expected completion date.
-    $completionexpected = (! empty($diary->completionexpected)) ? $diary->completionexpected : null;
-    \core_completion\api::update_completion_date_event($diary->coursemodule, 'diary', $diary->id, $completionexpected);
+    $completionexpected = (! empty($margic->completionexpected)) ? $margic->completionexpected : null;
+    \core_completion\api::update_completion_date_event($margic->coursemodule, 'margic', $margic->id, $completionexpected);
 
-    diary_grade_item_update($diary);
+    margic_grade_item_update($margic);
 
     return true;
 }
@@ -110,28 +110,34 @@ function diary_update_instance($diary) {
  * and any data that depends on it.
  *
  * @param int $id
- *            Diary ID.
+ *            margic ID.
  * @return boolean True if successful.
  */
-function diary_delete_instance($id) {
+function margic_delete_instance($id) {
     global $DB;
 
     $result = true;
 
-    if (! $diary = $DB->get_record("diary", array(
+    if (! $margic = $DB->get_record("margic", array(
         "id" => $id
     ))) {
         return false;
     }
 
-    if (! $DB->delete_records("diary_entries", array(
-        "diary" => $diary->id
+    if (! $DB->delete_records("margic_entries", array(
+        "margic" => $margic->id
     ))) {
         $result = false;
     }
 
-    if (! $DB->delete_records("diary", array(
-        "id" => $diary->id
+    if (! $DB->delete_records("margic_annotations", array(
+        "margic" => $margic->id
+    ))) {
+        $result = false;
+    }
+
+    if (! $DB->delete_records("margic", array(
+        "id" => $margic->id
     ))) {
         $result = false;
     }
@@ -140,20 +146,19 @@ function diary_delete_instance($id) {
 }
 
 /**
- * Indicates API features that the diary supports.
+ * Indicates API features that the margic supports.
  *
  * @uses FEATURE_MOD_INTRO
  * @uses FEATURE_RATE
  * @uses FEATURE_GROUPS
  * @uses FEATURE_GROUPINGS
- * @uses FEATURE_GROUPMEMBERSONLY
  * @uses FEATURE_COMPLETION_TRACKS_VIEWS
  * @uses FEATURE__BACKUP_MOODLE2
  * @param string $feature
  *            FEATURE_xx constant for requested feature.
  * @return mixed True if module supports feature, null if doesn't know.
  */
-function diary_supports($feature) {
+function margic_supports($feature) {
     switch ($feature) {
         case FEATURE_MOD_INTRO:
             return true;
@@ -167,12 +172,10 @@ function diary_supports($feature) {
             return true;
         case FEATURE_GROUPINGS:
             return true;
-        case FEATURE_GROUPMEMBERSONLY:
-            return true;
         case FEATURE_COMPLETION_TRACKS_VIEWS:
             return true;
-        case FEATURE_BACKUP_MOODLE2:
-            return true;
+        /* case FEATURE_BACKUP_MOODLE2:
+            return true; */
         default:
             return null;
     }
@@ -188,7 +191,7 @@ function diary_supports($feature) {
  *
  * @return array
  */
-function diary_get_view_actions() {
+function margic_get_view_actions() {
     return array(
         'view',
         'view all',
@@ -206,7 +209,7 @@ function diary_get_view_actions() {
  *
  * @return array
  */
-function diary_get_post_actions() {
+function margic_get_post_actions() {
     return array(
         'add entry',
         'update entry',
@@ -222,15 +225,15 @@ function diary_get_post_actions() {
  * @param object $course
  * @param object $user
  * @param object $mod
- * @param object $diary
+ * @param object $margic
  * @return object|null
  */
-function diary_user_outline($course, $user, $mod, $diary) {
+function margic_user_outline($course, $user, $mod, $margic) {
     global $DB;
 
-    if ($entry = $DB->get_record("diary_entries", array(
+    if ($entry = $DB->get_record("margic_entries", array(
         "userid" => $user->id,
-        "diary" => $diary->id
+        "margic" => $margic->id
     ))) {
 
         $numwords = count(preg_split("/\w\b/", $entry->text)) - 1;
@@ -249,14 +252,14 @@ function diary_user_outline($course, $user, $mod, $diary) {
  * @param object $course
  * @param object $user
  * @param object $mod
- * @param object $diary
+ * @param object $margic
  */
-function diary_user_complete($course, $user, $mod, $diary) {
+function margic_user_complete($course, $user, $mod, $margic) {
     global $DB, $OUTPUT;
 
-    if ($entry = $DB->get_record("diary_entries", array(
+    if ($entry = $DB->get_record("margic_entries", array(
         "userid" => $user->id,
-        "diary" => $diary->id
+        "margic" => $margic->id
     ))) {
 
         echo $OUTPUT->box_start();
@@ -265,31 +268,31 @@ function diary_user_complete($course, $user, $mod, $diary) {
             echo "<p><font size=\"1\">" . get_string("lastedited") . ": " . userdate($entry->timemodified) . "</font></p>";
         }
         if ($entry->text) {
-            echo diary_format_entry_text($entry, $course, $mod);
+            echo margic_format_entry_text($entry, $course, $mod);
         }
         if ($entry->teacher) {
-            $grades = make_grades_menu($diary->grade);
-            diary_print_feedback($course, $entry, $grades);
+            $grades = make_grades_menu($margic->grade);
+            margic_print_feedback($course, $entry, $grades);
         }
 
         echo $OUTPUT->box_end();
     } else {
-        print_string("noentry", "diary");
+        print_string("noentry", "margic");
     }
 }
 
 /**
  * Function to be run periodically according to the moodle cron.
- * Finds all diary notifications that have yet to be mailed out, and mails them.
+ * Finds all margic notifications that have yet to be mailed out, and mails them.
  *
  * @return boolean True if successful.
  */
-function diary_cron() {
+/* function margic_cron() {
     global $CFG, $USER, $DB;
 
     $cutofftime = time() - $CFG->maxeditingtime;
 
-    if ($entries = diary_get_unmailed_graded($cutofftime)) {
+    if ($entries = margic_get_unmailed_graded($cutofftime)) {
         $timenow = time();
 
         $usernamefields = get_all_user_name_fields();
@@ -302,7 +305,7 @@ function diary_cron() {
 
         foreach ($entries as $entry) {
 
-            echo "Processing diary entry $entry->id\n";
+            echo "Processing margic entry $entry->id\n";
 
             if (! empty($users[$entry->userid])) {
                 $user = $users[$entry->userid];
@@ -341,54 +344,54 @@ function diary_cron() {
             }
 
             // All cached.
-            $coursediarys = get_fast_modinfo($course)->get_instances_of('diary');
-            if (empty($coursediarys) || empty($coursediarys[$entry->diary])) {
-                echo "Could not find course module for diary id $entry->diary\n";
+            $coursemargics = get_fast_modinfo($course)->get_instances_of('margic');
+            if (empty($coursemargics) || empty($coursemargics[$entry->margic])) {
+                echo "Could not find course module for margic id $entry->margic\n";
                 continue;
             }
-            $mod = $coursediarys[$entry->diary];
+            $mod = $coursemargics[$entry->margic];
 
             // This is already cached internally.
             $context = context_module::instance($mod->id);
-            $canadd = has_capability('mod/diary:addentries', $context, $user);
-            $entriesmanager = has_capability('mod/diary:manageentries', $context, $user);
+            $canadd = has_capability('mod/margic:addentries', $context, $user);
+            $entriesmanager = has_capability('mod/margic:manageentries', $context, $user);
 
             if (! $canadd and $entriesmanager) {
                 continue; // Not an active participant.
             }
 
-            $diaryinfo = new stdClass();
+            $margicinfo = new stdClass();
             // 20200829 Added users first and last name to message.
-            $diaryinfo->user = $user->firstname . ' ' . $user->lastname;
-            $diaryinfo->teacher = fullname($teacher);
-            $diaryinfo->diary = format_string($entry->name, true);
-            $diaryinfo->url = "$CFG->wwwroot/mod/diary/view.php?id=$mod->id";
-            $modnamepl = get_string('modulenameplural', 'diary');
-            $msubject = get_string('mailsubject', 'diary');
+            $margicinfo->user = $user->firstname . ' ' . $user->lastname;
+            $margicinfo->teacher = fullname($teacher);
+            $margicinfo->margic = format_string($entry->name, true);
+            $margicinfo->url = "$CFG->wwwroot/mod/margic/view.php?id=$mod->id";
+            $modnamepl = get_string('modulenameplural', 'margic');
+            $msubject = get_string('mailsubject', 'margic');
 
             $postsubject = "$course->shortname: $msubject: " . format_string($entry->name, true);
             $posttext = "$course->shortname -> $modnamepl -> " . format_string($entry->name, true) . "\n";
             $posttext .= "---------------------------------------------------------------------\n";
-            $posttext .= get_string("diarymail", "diary", $diaryinfo) . "\n";
+            $posttext .= get_string("margicmail", "margic", $margicinfo) . "\n";
             $posttext .= "---------------------------------------------------------------------\n";
             if ($user->mailformat == 1) { // HTML.
                 $posthtml = "<p><font face=\"sans-serif\">"
                     ."<a href=\"$CFG->wwwroot/course/view.php?id=$course->id\">$course->shortname</a> ->"
-                    ."<a href=\"$CFG->wwwroot/mod/diary/index.php?id=$course->id\">diarys</a> ->"
-                    ."<a href=\"$CFG->wwwroot/mod/diary/view.php?id=$mod->id\">"
+                    ."<a href=\"$CFG->wwwroot/mod/margic/index.php?id=$course->id\">margics</a> ->"
+                    ."<a href=\"$CFG->wwwroot/mod/margic/view.php?id=$mod->id\">"
                     .format_string($entry->name, true)
                     ."</a></font></p>";
                 $posthtml .= "<hr /><font face=\"sans-serif\">";
-                $posthtml .= "<p>" . get_string("diarymailhtml", "diary", $diaryinfo) . "</p>";
+                $posthtml .= "<p>" . get_string("margicmailhtml", "margic", $margicinfo) . "</p>";
                 $posthtml .= "</font><hr />";
             } else {
                 $posthtml = "";
             }
 
             if (! email_to_user($user, $teacher, $postsubject, $posttext, $posthtml)) {
-                echo "Error: Diary cron: Could not send out mail for id $entry->id to user $user->id ($user->email)\n";
+                echo "Error: margic cron: Could not send out mail for id $entry->id to user $user->id ($user->email)\n";
             }
-            if (! $DB->set_field("diary_entries", "mailed", "1", array(
+            if (! $DB->set_field("margic_entries", "mailed", "1", array(
                 "id" => $entry->id
             ))) {
                 echo "Could not update the mailed field for id $entry->id\n";
@@ -397,11 +400,11 @@ function diary_cron() {
     }
 
     return true;
-}
+} */
 
 /**
  * Given a course and a time, this module should find recent activity
- * that has occurred in diary activities and print it out.
+ * that has occurred in margic activities and print it out.
  * Return true if there was output, or false if there was none.
  *
  * @param stdClass $course
@@ -409,17 +412,17 @@ function diary_cron() {
  * @param int $timestart
  * @return bool
  */
-function diary_print_recent_activity($course, $viewfullnames, $timestart) {
+function margic_print_recent_activity($course, $viewfullnames, $timestart) {
     global $CFG, $USER, $DB, $OUTPUT;
 
-    if (! get_config('diary', 'showrecentactivity')) {
+    if (! get_config('margic', 'showrecentactivity')) {
         return false;
     }
 
     $dbparams = array(
         $timestart,
         $course->id,
-        'diary'
+        'margic'
     );
     // 20210611 Added Moodle branch check.
     if ($CFG->branch < 311) {
@@ -429,8 +432,8 @@ function diary_print_recent_activity($course, $viewfullnames, $timestart) {
         $namefields = $userfieldsapi->get_sql('u', false, '', 'userid', false)->selects;;
     }
     $sql = "SELECT de.id, de.timemodified, cm.id AS cmid, $namefields
-              FROM {diary_entries} de
-              JOIN {diary} d ON d.id = de.diary
+              FROM {margic_entries} de
+              JOIN {margic} d ON d.id = de.margic
               JOIN {course_modules} cm ON cm.instance = d.id
               JOIN {modules} md ON md.id = cm.module
               JOIN {user} u ON u.id = de.userid
@@ -460,7 +463,7 @@ function diary_print_recent_activity($course, $viewfullnames, $timestart) {
         $context = context_module::instance($anentry->cmid);
 
         // Only teachers can see other students entries.
-        if (! has_capability('mod/diary:manageentries', $context)) {
+        if (! has_capability('mod/margic:manageentries', $context)) {
             continue;
         }
 
@@ -492,15 +495,15 @@ function diary_print_recent_activity($course, $viewfullnames, $timestart) {
         return false;
     }
 
-    echo $OUTPUT->heading(get_string('newdiaryentries', 'diary') . ':', 3);
+    echo $OUTPUT->heading(get_string('newmargicentries', 'margic') . ':', 3);
 
     foreach ($show as $submission) {
         $cm = $modinfo->get_cm($submission->cmid);
         $context = context_module::instance($submission->cmid);
-        if (has_capability('mod/diary:manageentries', $context)) {
-            $link = $CFG->wwwroot . '/mod/diary/report.php?id=' . $cm->id;
+        if (has_capability('mod/margic:manageentries', $context)) {
+            $link = $CFG->wwwroot . '/mod/margic/report.php?id=' . $cm->id;
         } else {
-            $link = $CFG->wwwroot . '/mod/diary/view.php?id=' . $cm->id;
+            $link = $CFG->wwwroot . '/mod/margic/view.php?id=' . $cm->id;
         }
         print_recent_activity_note($submission->timemodified, $submission, $cm->name, $link, false, $viewfullnames);
     }
@@ -508,50 +511,20 @@ function diary_print_recent_activity($course, $viewfullnames, $timestart) {
 }
 
 /**
- * Returns the users with data in one diary.
- * Users with records in diary_entries - students and teachers.
+ * This function returns true if a scale is being used by one margic.
  *
- * @param int $diaryid
- *            Diary ID.
- * @return array Array of user ids.
- */
-function diary_get_participants($diaryid) {
-    global $DB;
-
-    // Get students.
-    $students = $DB->get_records_sql("SELECT DISTINCT u.id
-                                        FROM {user} u, {diary_entries} d
-                                       WHERE d.diary = ? AND u.id = d.userid", array($diaryid));
-    // Get teachers.
-    $teachers = $DB->get_records_sql("SELECT DISTINCT u.id
-                                        FROM {user} u, {diary_entries} d
-                                       WHERE d.diary = ? AND u.id = d.teacher", array($diaryid));
-
-    // Add teachers to students.
-    if ($teachers) {
-        foreach ($teachers as $teacher) {
-            $students[$teacher->id] = $teacher;
-        }
-    }
-    // Return students array, (it contains an array of unique users).
-    return ($students);
-}
-
-/**
- * This function returns true if a scale is being used by one diary.
- *
- * @param int $diaryid
- *            Diary ID.
+ * @param int $margicid
+ *            margic ID.
  * @param int $scaleid
  *            Scale ID.
- * @return boolean True if a scale is being used by one diary.
+ * @return boolean True if a scale is being used by one margic.
  */
-function diary_scale_used($diaryid, $scaleid) {
+function margic_scale_used($margicid, $scaleid) {
     global $DB;
     $return = false;
 
-    $rec = $DB->get_record("diary", array(
-        "id" => $diaryid,
+    $rec = $DB->get_record("margic", array(
+        "id" => $margicid,
         "grade" => - $scaleid
     ));
 
@@ -563,32 +536,32 @@ function diary_scale_used($diaryid, $scaleid) {
 }
 
 /**
- * Checks if scale is being used by any instance of diary.
+ * Checks if scale is being used by any instance of margic.
  *
  * This is used to find out if scale used anywhere.
  *
  * @param int $scaleid
- * @return boolean True if the scale is used by any diary.
+ * @return boolean True if the scale is used by any margic.
  */
-function diary_scale_used_anywhere($scaleid) {
+function margic_scale_used_anywhere($scaleid) {
     global $DB;
 
     if (empty($scaleid)) {
         return false;
     }
 
-    return $DB->record_exists('diary', ['scale' => $scaleid * - 1]);
+    return $DB->record_exists('margic', ['scale' => $scaleid * - 1]);
 }
 
 /**
  * Implementation of the function for printing the form elements that control
- * whether the course reset functionality affects the diary.
+ * whether the course reset functionality affects the margic.
  *
  * @param object $mform Form passed by reference.
  */
-function diary_reset_course_form_definition(&$mform) {
-    $mform->addElement('header', 'diaryheader', get_string('modulenameplural', 'diary'));
-    $mform->addElement('advcheckbox', 'reset_diary', get_string('removemessages', 'diary'));
+function margic_reset_course_form_definition(&$mform) {
+    $mform->addElement('header', 'margicheader', get_string('modulenameplural', 'margic'));
+    $mform->addElement('advcheckbox', 'reset_margic', get_string('removemessages', 'margic'));
 }
 
 /**
@@ -597,8 +570,8 @@ function diary_reset_course_form_definition(&$mform) {
  * @param object $course
  * @return array
  */
-function diary_reset_course_form_defaults($course) {
-    return array('reset_diary' => 1);
+function margic_reset_course_form_defaults($course) {
+    return array('reset_margic' => 1);
 }
 
 /**
@@ -608,27 +581,27 @@ function diary_reset_course_form_defaults($course) {
  * @param object $data the data submitted from the reset course.
  * @return array status array
  */
-function diary_reset_userdata($data) {
+function margic_reset_userdata($data) {
     global $CFG, $DB;
     require_once($CFG->libdir . '/filelib.php');
     require_once($CFG->dirroot . '/rating/lib.php');
 
     $status = array();
     // THIS FUNCTION NEEDS REWRITE!
-    if (! empty($data->reset_diary)) {
+    if (! empty($data->reset_margic)) {
 
         $sql = "SELECT d.id
-                FROM {diary} d
+                FROM {margic} d
                 WHERE d.course = ?";
         $params = array(
             $data->courseid
         );
 
-        $DB->delete_records_select('diary_entries', "diary IN ($sql)", $params);
+        $DB->delete_records_select('margic_entries', "margic IN ($sql)", $params);
 
         $status[] = array(
-            'component' => get_string('modulenameplural', 'diary'),
-            'item' => get_string('removeentries', 'diary'),
+            'component' => get_string('modulenameplural', 'margic'),
+            'item' => get_string('removeentries', 'margic'),
             'error' => false
         );
     }
@@ -637,92 +610,28 @@ function diary_reset_userdata($data) {
 }
 
 /**
- * Print diary overview.
+ * Get margic grades for a user.
  *
- * @param object $courses
- * @param array $htmlarray
- */
-function diary_print_overview($courses, &$htmlarray) {
-    global $USER, $CFG, $DB;
-
-    if (! get_config('diary', 'overview')) {
-        return array();
-    }
-
-    if (empty($courses) || ! is_array($courses) || count($courses) == 0) {
-        return array();
-    }
-
-    if (! $diarys = get_all_instances_in_courses('diary', $courses)) {
-        return array();
-    }
-
-    $strdiary = get_string('modulename', 'diary');
-
-    $timenow = time();
-    foreach ($diarys as $diary) {
-
-        if (empty($courses[$diary->course]->format)) {
-            $courses[$diary->course]->format = $DB->get_field('course', 'format', array(
-                'id' => $diary->course
-            ));
-        }
-
-        if ($courses[$diary->course]->format == 'weeks' and $diary->days) {
-
-            $coursestartdate = $courses[$diary->course]->startdate;
-
-            $diary->timestart = $coursestartdate + (($diary->section - 1) * 608400);
-            if (! empty($diary->days)) {
-                $diary->timefinish = $diary->timestart + (3600 * 24 * $diary->days);
-            } else {
-                $diary->timefinish = 9999999999;
-            }
-            $diaryopen = ($diary->timestart < $timenow && $timenow < $diary->timefinish);
-        } else {
-            $diaryopen = true;
-        }
-
-        if ($diaryopen) {
-            $str = '<div class="diary overview"><div class="name">'
-                .$strdiary.': <a '
-                .($diary->visible ? '' : ' class="dimmed"')
-                .' href="'.$CFG->wwwroot.'/mod/diary/view.php?id='
-                .$diary->coursemodule.'">'
-                .$diary->name.'</a></div></div>';
-
-            if (empty($htmlarray[$diary->course]['diary'])) {
-                $htmlarray[$diary->course]['diary'] = $str;
-            } else {
-                $htmlarray[$diary->course]['diary'] .= $str;
-            }
-        }
-    }
-}
-
-/**
- * Get diary grades for a user.
- *
- * @param object $diary
- *            if is null, all diarys
+ * @param object $margic
+ *            if is null, all margics
  * @param int $userid
  *            if is false all users
  * @return object $grades
  */
-function diary_get_user_grades($diary, $userid = 0) {
+function margic_get_user_grades($margic, $userid = 0) {
     global $CFG;
 
     require_once($CFG->dirroot . '/rating/lib.php');
     // 20200812 Fixed ratings.
     $ratingoptions = new stdClass();
-    $ratingoptions->component = 'mod_diary';
+    $ratingoptions->component = 'mod_margic';
     $ratingoptions->ratingarea = 'entry';
-    $ratingoptions->modulename = 'diary';
-    $ratingoptions->moduleid = $diary->id;
+    $ratingoptions->modulename = 'margic';
+    $ratingoptions->moduleid = $margic->id;
     $ratingoptions->userid = $userid;
-    $ratingoptions->aggregationmethod = $diary->assessed;
-    $ratingoptions->scaleid = $diary->scale;
-    $ratingoptions->itemtable = 'diary_entries';
+    $ratingoptions->aggregationmethod = $margic->assessed;
+    $ratingoptions->scaleid = $margic->scale;
+    $ratingoptions->itemtable = 'margic_entries';
     $ratingoptions->itemtableusercolumn = 'userid';
 
     $rm = new rating_manager();
@@ -731,57 +640,57 @@ function diary_get_user_grades($diary, $userid = 0) {
 }
 
 /**
- * Update diary activity grades.
+ * Update margic activity grades.
  *
  * @category grade
- * @param object $diary If is null, then all diaries.
+ * @param object $margic If is null, then all diaries.
  * @param int $userid If is false, then all users.
  * @param boolean $nullifnone Return null if grade does not exist.
  */
-function diary_update_grades($diary, $userid = 0, $nullifnone = true) {
+function margic_update_grades($margic, $userid = 0, $nullifnone = true) {
     global $CFG;
     require_once($CFG->libdir . '/gradelib.php');
-    $cm = get_coursemodule_from_instance('diary', $diary->id);
-    $diary->cmidnumber = $cm->idnumber;
-    if (! $diary->assessed) {
-        diary_grade_item_update($diary);
-    } else if ($grades = diary_get_user_grades($diary, $userid)) {
-        diary_grade_item_update($diary, $grades);
+    $cm = get_coursemodule_from_instance('margic', $margic->id);
+    $margic->cmidnumber = $cm->idnumber;
+    if (! $margic->assessed) {
+        margic_grade_item_update($margic);
+    } else if ($grades = margic_get_user_grades($margic, $userid)) {
+        margic_grade_item_update($margic, $grades);
     } else if ($userid and $nullifnone) {
         $grade = new stdClass();
         $grade->userid = $userid;
         $grade->rawgrade = null;
-        diary_grade_item_update($diary, $grade);
+        margic_grade_item_update($margic, $grade);
     } else {
-        diary_grade_item_update($diary);
+        margic_grade_item_update($margic);
     }
 }
 
 /**
- * Update or create grade item for given diary.
+ * Update or create grade item for given margic.
  *
- * @param stdClass $diary Object with extra cmidnumber.
+ * @param stdClass $margic Object with extra cmidnumber.
  * @param array $grades optional array/object of grade(s); 'reset' means reset grades in gradebook
  * @return int 0 if ok, error code otherwise.
  */
-function diary_grade_item_update($diary, $grades = null) {
+function margic_grade_item_update($margic, $grades = null) {
     global $CFG;
     require_once($CFG->libdir . '/gradelib.php');
 
     $params = array(
-        'itemname' => $diary->name,
-        'idnumber' => $diary->cmidnumber
+        'itemname' => $margic->name,
+        'idnumber' => $margic->cmidnumber
     );
 
-    if (! $diary->assessed or $diary->scale == 0) {
+    if (! $margic->assessed or $margic->scale == 0) {
         $params['gradetype'] = GRADE_TYPE_NONE;
-    } else if ($diary->scale > 0) {
+    } else if ($margic->scale > 0) {
         $params['gradetype'] = GRADE_TYPE_VALUE;
-        $params['grademax'] = $diary->scale;
+        $params['grademax'] = $margic->scale;
         $params['grademin'] = 0;
-    } else if ($diary->scale < 0) {
+    } else if ($margic->scale < 0) {
         $params['gradetype'] = GRADE_TYPE_SCALE;
-        $params['scaleid'] = - $diary->scale;
+        $params['scaleid'] = - $margic->scale;
     }
 
     if ($grades === 'reset') {
@@ -789,39 +698,39 @@ function diary_grade_item_update($diary, $grades = null) {
         $grades = null;
     }
 
-    return grade_update('mod/diary', $diary->course, 'mod', 'diary', $diary->id, 0, $grades, $params);
+    return grade_update('mod/margic', $margic->course, 'mod', 'margic', $margic->id, 0, $grades, $params);
 }
 
 /**
- * Delete grade item for given diary.
+ * Delete grade item for given margic.
  *
- * @param object $diary
+ * @param object $margic
  * @return object grade_item
  */
-function diary_grade_item_delete($diary) {
+function margic_grade_item_delete($margic) {
     global $CFG;
 
     require_once($CFG->libdir . '/gradelib.php');
 
-    return grade_update('mod/diary', $diary->course, 'mod', 'diary', $diary->id, 0, null, array(
+    return grade_update('mod/margic', $margic->course, 'mod', 'margic', $margic->id, 0, null, array(
         'deleted' => 1
     ));
 }
 
 /**
- * Return only the users that have entries in the specified diary activity.
+ * Return only the users that have entries in the specified margic activity.
  * Used by report.php.
  *
- * @param object $diary
+ * @param object $margic
  * @param object $currentgroup
- * @param object $sortoption return object $diarys
+ * @param object $sortoption return object $margics
  */
-function diary_get_users_done($diary, $currentgroup, $sortoption) {
+/* function margic_get_users_done($margic, $currentgroup, $sortoption) {
     global $DB;
 
     $params = array();
 
-    $sql = "SELECT DISTINCT u.* FROM {diary_entries} de
+    $sql = "SELECT DISTINCT u.* FROM {margic_entries} de
               JOIN {user} u ON de.userid = u.id ";
 
     // Group users.
@@ -830,81 +739,81 @@ function diary_get_users_done($diary, $currentgroup, $sortoption) {
         $params[] = $currentgroup;
     }
     // 20201014 Changed to a sort option preference to sort lastname ascending or descending.
-    $sql .= " WHERE de.diary = ? ORDER BY " . $sortoption;
+    $sql .= " WHERE de.margic = ? ORDER BY " . $sortoption;
 
-    $params[] = $diary->id;
+    $params[] = $margic->id;
 
-    $diarys = $DB->get_records_sql($sql, $params);
+    $margics = $DB->get_records_sql($sql, $params);
 
-    $cm = diary_get_coursemodule($diary->id);
-    if (! $diarys || ! $cm) {
+    $cm = margic_get_coursemodule($margic->id);
+    if (! $margics || ! $cm) {
         return null;
     }
 
     // Remove unenrolled participants.
-    foreach ($diarys as $key => $user) {
+    foreach ($margics as $key => $user) {
 
         $context = context_module::instance($cm->id);
 
-        $canadd = has_capability('mod/diary:addentries', $context, $user);
-        $entriesmanager = has_capability('mod/diary:manageentries', $context, $user);
+        $canadd = has_capability('mod/margic:addentries', $context, $user);
+        $entriesmanager = has_capability('mod/margic:manageentries', $context, $user);
 
         if (! $entriesmanager and ! $canadd) {
-            unset($diarys[$key]);
+            unset($margics[$key]);
         }
     }
-    return $diarys;
-}
+    return $margics;
+} */
 
 /**
- * Counts all the diary entries (optionally in a given group).
+ * Counts all the margic entries (optionally in a given group).
  *
- * @param array $diary
+ * @param array $margic
  * @param int $groupid
- * @return int count($diarys) Count of diary entries.
+ * @return int count($margics) Count of margic entries.
  */
-function diary_count_entries($diary, $groupid = 0) {
+function margic_count_entries($margic, $groupid = 0) {
     global $DB;
 
-    $cm = diary_get_coursemodule($diary->id);
+    $cm = margic_get_coursemodule($margic->id);
     $context = context_module::instance($cm->id);
 
     if ($groupid) { // How many in a particular group?
 
-        $sql = "SELECT DISTINCT u.id FROM {diary_entries} d
+        $sql = "SELECT DISTINCT u.id FROM {margic_entries} d
                   JOIN {groups_members} g ON g.userid = d.userid
                   JOIN {user} u ON u.id = g.userid
-                 WHERE d.diary = ? AND g.groupid = ?";
-        $diarys = $DB->get_records_sql($sql, array(
-            $diary->id,
+                 WHERE d.margic = ? AND g.groupid = ?";
+        $margics = $DB->get_records_sql($sql, array(
+            $margic->id,
             $groupid
         ));
     } else { // Count all the entries from the whole course.
 
-        $sql = "SELECT DISTINCT u.id FROM {diary_entries} d
+        $sql = "SELECT DISTINCT u.id FROM {margic_entries} d
                   JOIN {user} u ON u.id = d.userid
-                 WHERE d.diary = ?";
-        $diarys = $DB->get_records_sql($sql, array(
-            $diary->id
+                 WHERE d.margic = ?";
+        $margics = $DB->get_records_sql($sql, array(
+            $margic->id
         ));
     }
 
-    if (! $diarys) {
+    if (! $margics) {
         return 0;
     }
 
-    $canadd = get_users_by_capability($context, 'mod/diary:addentries', 'u.id');
-    $entriesmanager = get_users_by_capability($context, 'mod/diary:manageentries', 'u.id');
+    $canadd = get_users_by_capability($context, 'mod/margic:addentries', 'u.id');
+    $entriesmanager = get_users_by_capability($context, 'mod/margic:manageentries', 'u.id');
 
     // Remove unenrolled participants.
-    foreach ($diarys as $userid => $notused) {
+    foreach ($margics as $userid => $notused) {
 
         if (! isset($entriesmanager[$userid]) && ! isset($canadd[$userid])) {
-            unset($diarys[$userid]);
+            unset($margics[$userid]);
         }
     }
 
-    return count($diarys);
+    return count($margics);
 }
 
 /**
@@ -913,11 +822,11 @@ function diary_count_entries($diary, $groupid = 0) {
  * @param int $cutofftime
  * @return object
  */
-function diary_get_unmailed_graded($cutofftime) {
+function margic_get_unmailed_graded($cutofftime) {
     global $DB;
 
-    $sql = "SELECT de.*, d.course, d.name FROM {diary_entries} de
-              JOIN {diary} d ON de.diary = d.id
+    $sql = "SELECT de.*, d.course, d.name FROM {margic_entries} de
+              JOIN {margic} d ON de.margic = d.id
              WHERE de.mailed = '0' AND de.timemarked < ? AND de.timemarked > 0";
     return $DB->get_records_sql($sql, array(
         $cutofftime
@@ -925,17 +834,17 @@ function diary_get_unmailed_graded($cutofftime) {
 }
 
 /**
- * Return diary log info.
+ * Return margic log info.
  *
  * @param string $log
  * @return object
  */
-function diary_log_info($log) {
+function margic_log_info($log) {
     global $DB;
 
     $sql = "SELECT d.*, u.firstname, u.lastname
-              FROM {diary} d
-              JOIN {diary_entries} de ON de.diary = d.id
+              FROM {margic} d
+              JOIN {margic_entries} de ON de.margic = d.id
               JOIN {user} u ON u.id = de.userid
              WHERE de.id = ?";
     return $DB->get_record_sql($sql, array(
@@ -944,23 +853,23 @@ function diary_log_info($log) {
 }
 
 /**
- * Returns the diary instance course_module id.
+ * Returns the margic instance course_module id.
  *
- * @param integer $diaryid
+ * @param integer $margicid
  * @return object
  */
-function diary_get_coursemodule($diaryid) {
+function margic_get_coursemodule($margicid) {
     global $DB;
 
     return $DB->get_record_sql("SELECT cm.id FROM {course_modules} cm
                                   JOIN {modules} m ON m.id = cm.module
-                                 WHERE cm.instance = ? AND m.name = 'diary'", array(
-        $diaryid
+                                 WHERE cm.instance = ? AND m.name = 'margic'", array(
+        $margicid
     ));
 }
 
 /**
- * Serves the diary files.
+ * Serves the margic files.
  * THIS FUNCTION MAY BE ORPHANED. APPEARS TO BE SO IN JOURNAL.
  *
  * @param stdClass $course Course object.
@@ -972,7 +881,7 @@ function diary_get_coursemodule($diaryid) {
  * @param array $options Additional options affecting the file serving.
  * @return bool False if file not found, does not return if found - just send the file.
  */
-function diary_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options = array()) {
+function margic_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options = array()) {
     global $DB, $USER;
 
     if ($context->contextlevel != CONTEXT_MODULE) {
@@ -987,12 +896,12 @@ function diary_pluginfile($course, $cm, $context, $filearea, $args, $forcedownlo
 
     // Args[0] should be the entry id.
     $entryid = intval(array_shift($args));
-    $entry = $DB->get_record('diary_entries', array(
+    $entry = $DB->get_record('margic_entries', array(
         'id' => $entryid
     ), 'id, userid', MUST_EXIST);
 
-    $canmanage = has_capability('mod/diary:manageentries', $context);
-    if (! $canmanage && ! has_capability('mod/diary:addentries', $context)) {
+    $canmanage = has_capability('mod/margic:manageentries', $context);
+    if (! $canmanage && ! has_capability('mod/margic:addentries', $context)) {
         // Even if it is your own entry.
         return false;
     }
@@ -1008,9 +917,31 @@ function diary_pluginfile($course, $cm, $context, $filearea, $args, $forcedownlo
 
     $fs = get_file_storage();
     $relativepath = implode('/', $args);
-    $fullpath = "/$context->id/mod_diary/$filearea/$entryid/$relativepath";
+    $fullpath = "/$context->id/mod_margic/$filearea/$entryid/$relativepath";
     $file = $fs->get_file_by_hash(sha1($fullpath));
 
     // Finally send the file.
     send_stored_file($file, null, 0, $forcedownload, $options);
+}
+
+/**
+ * Extends the global navigation tree by adding mod_margic nodes if there is a relevant content.
+ *
+ * This can be called by an AJAX request so do not rely on $PAGE as it might not be set up properly.
+ *
+ * @param navigation_node $margicnode An object representing the navigation tree node.
+ * @param  stdClass $course Course object
+ * @param  context_course $coursecontext Course context
+ */
+function margic_extend_navigation_course($margicnode, $course, $coursecontext) {
+    $modinfo = get_fast_modinfo($course); // Get mod_fast_modinfo from $course.
+    $index = 1; // Set index.
+    foreach ($modinfo->get_cms() as $cmid => $cm) { // Search existing course modules for this course.
+        if ($index == 1 && $cm->modname == "margic" && $cm->uservisible && $cm->available) { // Look if module (in this case margic) exists, is uservisible and available.
+            $url = new moodle_url("/mod/" . $cm->modname . "/index.php", array("id" => $course->id)); // Set url for the link in the navigation node.
+            $node = navigation_node::create(get_string('viewallmargics', 'margic'), $url, navigation_node::TYPE_CUSTOM, null , null , null);
+            $margicnode->add_node($node);
+            $index++;
+        }
+    }
 }

@@ -1,0 +1,204 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @copyright   2022 coactum GmbH
+    @template margic/margic_view
+
+    Overview.
+}}
+
+{{#js}}
+{{/js}}
+
+{{#edittimeends}}{{^caneditentries}}<div class="alert alert-danger alert-block fade in" role="alert"><button type="button" class="close" data-dismiss="alert">×</button>{{#str}}editingended, mod_margic{{/str}}</div>{{/caneditentries}}{{/edittimeends}}
+
+{{#canmanageentries}}<h3>{{#str}}entries, mod_margic{{/str}}</h3>{{/canmanageentries}}
+{{^canmanageentries}}<h3>{{#str}}myentries, mod_margic{{/str}}</h3>{{/canmanageentries}}
+
+<div class="pb-2">
+    {{#ratingaggregationmode}}{{#entries.0}}
+            <strong>{{ratingaggregationmode}}: </strong>
+
+            {{#currentuserrating}}
+                {{currentuserrating}}
+            {{/currentuserrating}}
+    {{/entries.0}}{{/ratingaggregationmode}}
+    {{^ratingaggregationmode}}{{#str}}norating, mod_margic{{/str}}{{/ratingaggregationmode}}
+    {{#entries.0}}<span class="pull-right pr-5">
+        <strong>{{#str}}sorting, mod_margic{{/str}}</strong>{{#sortmode}}<strong>: </strong>{{sortmode}}{{/sortmode}}
+    </span>{{/entries.0}}
+</div>
+
+<div class="pb-1">
+    {{#caneditentries}}<a class="btn btn-primary mr-1" href="edit.php?id={{cmid}}"> {{#str}}startnewentry, mod_margic{{/str}} </a>{{/caneditentries}}
+    {{#entries.0}}
+        {{#canmanageentries}}<button class="btn btn-primary" data-toggle="collapse" data-target=".gradingform" aria-expanded="false" aria-controls=".gradingform" title="{{#str}}toggleratingform, mod_margic{{/str}}">{{#str}}toggleratingform, mod_margic{{/str}}</button>{{/canmanageentries}}
+        {{#canmanageentries}}{{#singleuser}}<a class="btn btn-primary m-1" href="view.php?id={{cmid}}"> {{#str}}viewallentries, mod_margic{{/str}} </a>{{/singleuser}}{{/canmanageentries}}
+        {{^annotationmode}}
+            {{#canmakeannotations}}<a class="btn btn-primary m-1" href="view.php?id={{cmid}}&annotationmode=1"> {{#str}}viewandmakeannotations, mod_margic{{/str}} </a>{{/canmakeannotations}}
+            {{^canmakeannotations}}<a class="btn btn-primary m-1" href="view.php?id={{cmid}}&annotationmode=1"> {{#str}}viewannotations, mod_margic{{/str}} </a>{{/canmakeannotations}}
+        {{/annotationmode}}
+        {{#annotationmode}}<a class="btn btn-primary m-1" href="view.php?id={{cmid}}"> {{#str}}hideannotations, mod_margic{{/str}} </a>{{/annotationmode}}
+    {{/entries.0}}
+    {{#canmanageentries}}<a class="btn btn-primary m-1" href="annotations_summary.php?id={{cmid}}"> {{#str}}annotationssummary, mod_margic{{/str}} </a>{{/canmanageentries}}
+
+    {{#entries.0}}<span class="pull-right p-1">
+        <a href="view.php?id={{cmid}}&action=download" class="p-1 pr-2 border-right solid"><i class="fa fa-2x fa-download" title="{{#str}}csvexport, mod_margic{{/str}}"></i></a>
+        <a href="view.php?id={{cmid}}&action=currenttooldest" class="p-1"><i class="fa fa-2x fa-arrow-down" title="{{#str}}currenttooldest, mod_margic{{/str}}"></i></a>
+        <a href="view.php?id={{cmid}}&action=oldesttocurrent" class="p-1"><i class="fa fa-2x fa-arrow-up" title="{{#str}}oldesttocurrent, mod_margic{{/str}}"></i></a>
+        <a href="view.php?id={{cmid}}&action=lowestgradetohighest" class="p-1"><i class="fa fa-2x fa-thumbs-down" title="{{#str}}lowestgradetohighest, mod_margic{{/str}}"></i></a>
+        <a href="view.php?id={{cmid}}&action=highestgradetolowest" class="p-1"><i class="fa fa-2x fa-thumbs-up" title="{{#str}}highestgradetolowest, mod_margic{{/str}}"></i></a>
+        <a href="view.php?id={{cmid}}&action=latestmodified" class="p-1"><i class="fa fa-2x fa-pencil" title="{{#str}}latestmodified, mod_margic{{/str}}"></i></a>
+    </span>{{/entries.0}}
+</div>
+
+{{#entries.0}}
+<form action="view.php?id={{cmid}}" method="post">
+    <input type="hidden" name="id" value="{{cmid}}">
+    <input type="hidden" name="sesskey" value="{{sesskey}}">
+
+    <div class="mt-1">
+        <ul class="pagination">
+            {{#pagebar}}
+                <li class="page-item">
+                    <a class="page-link" href="view.php?id={{cmid}}&page={{nr}}{{#annotationmode}}&annotationmode=1{{/annotationmode}}">{{{display}}}</a>
+                </li>
+            {{/pagebar}}
+
+            <div class="ml-auto">
+                <strong>{{#str}}pagesize, mod_margic{{/str}}:</strong>
+                <select onchange="this.form.submit()" aria-label="Select page count" name="pagecount">
+                    {{#pagecountoptions}}<option {{option}}>{{text}}</option>{{/pagecountoptions}}
+                </select>
+                <strong> / {{entriescount}}</strong>
+            </div>
+        </ul>
+    </div>
+</form>
+
+{{/entries.0}}
+
+{{#entries}}
+<div class="d-flex justify-content-between">
+    <div class="entry {{#annotationmode}}w-75{{/annotationmode}} {{^annotationmode}}w-100{{/annotationmode}}" style="background: {{entrybgc}};">
+        <h4>{{#str}}entry, mod_margic{{/str}}: {{#userdate}}{{timecreated}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}}
+            {{#entrycanbeedited}}{{#caneditentries}}<a href="edit.php?id={{cmid}}&entryid={{id}}"><i class="fa fa-pencil" title="{{#str}}editthisentry, mod_margic{{/str}}"></i></a>{{/caneditentries}}{{/entrycanbeedited}}
+        </h4>
+
+        {{#user}}
+            {{#canmanageentries}}
+                {{{userpicture}}} {{^singleuser}}<a href="view.php?id={{cmid}}&userid={{userid}}"><i class="fa fa-user fa-lg" title="{{#str}}getallentriesofuser, mod_margic{{/str}}"></i></a>{{/singleuser}}
+            {{/canmanageentries}}
+        {{/user}}
+
+        {{#text}}
+            <div id="entry-{{id}}" class="entry originaltext" style="background: {{entrytextbgc}};">
+                {{{text}}}
+            </div>
+        {{/text}}
+        {{^text}}<p class="text-center"><strong>{{#str}}blankentry, mod_margic{{/str}}</strong></p>{{/text}}
+        <div class="lastedit">
+            {{#stats}}
+                <strong>{{#str}}details, mod_margic{{/str}}:</strong> {{#str}}numwordsraw, mod_margic, { "wordscount": {{words}}, "charscount": {{chars}}, "spacescount": {{spaces}} } {{/str}}<br>
+                {{#datediff}}
+                    {{#str}}created, mod_margic, { "days": {{datediff.d}}, "hours": {{datediff.h}} } {{/str}}<br>
+                {{/datediff}}
+            {{/stats}}
+            <strong>{{#str}}timecreated, mod_margic{{/str}}: </strong> {{#userdate}}{{timecreated}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}}{{#timemodified}} | <strong> {{#str}} lastedited, mod_margic {{/str}}: </strong> {{#userdate}}{{timemodified}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}}{{/timemodified}}<br>
+        </div>
+
+        {{#edittimeends}}
+            <div class="editend"><span>
+                {{#caneditentries}}{{#str}}editingends, mod_margic{{/str}}: {{/caneditentries}}
+                {{^caneditentries}}{{#str}}editingended, mod_margic{{/str}}: {{/caneditentries}}
+                {{#userdate}}{{edittimeends}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}}
+            </span></div>
+        {{/edittimeends}}
+
+        {{#needsgrading}}
+            <div class="needsedit"><span>{{needsgrading}}</span></div>
+        {{/needsgrading}}
+
+        {{#needsregrading}}
+            <div class="needsedit"><span>{{needsregrading}}</span></div>
+        {{/needsregrading}}
+
+        {{#canmanageentries}}
+            {{#gradingform}}
+                <div class="gradingform collapse {{#gradingmode}}show{{/gradingmode}}" style="background: {{entrytextbgc}};">
+                    {{{gradingform}}}
+                </div>
+            {{/gradingform}}
+        {{/canmanageentries}}
+        {{^canmanageentries}}
+            {{#gradingform}}{{{gradingform}}}{{/gradingform}}
+        {{/canmanageentries}}
+
+    </div>
+    {{#annotationmode}}
+        <div class="annotationarea annotationarea-{{id}} w-25" style="background: {{entrybgc}};">
+            <h4 class="text-center">{{#str}} annotations, mod_margic {{/str}}</h4>
+            {{#annotations}}
+                <div class="annotation-box annotation-box-{{id}}" style="background: {{entrytextbgc}};">
+                    <div class="d-flex justify-content-between">
+                        <span>
+                            {{{userpicturestr}}}
+                        </span>
+                        <span class="align-self-center">
+                            {{^timemodified}}<i class="fa fa-pencil" aria-hidden="true" title="{{#str}}annotationcreated, margic {{/str}}"></i> {{#userdate}}{{timecreated}}, {{#str}} strftimedatetime, core_langconfig {{/str}}{{/userdate}} {{/timemodified}}
+                            {{#timemodified}}<i class="fa fa-pencil-square-o" aria-hidden="true" title="{{#str}}annotationmodified, margic {{/str}}"></i> {{#userdate}}{{timemodified}}, {{#str}} strftimedatetime, core_langconfig {{/str}}{{/userdate}}{{/timemodified}}
+                        </span>
+                    </div>
+                    <div class="annotationtype">
+                        <span>
+                            {{type}}
+                            {{#defaulttype}}
+                                <span style="background-color: #{{color}}" title="{{#str}}defaulttype, mod_margic{{/str}}"> (S)</span>
+                            {{/defaulttype}}
+                            {{^defaulttype}}
+                                <span style="background-color: #{{color}}" title="{{#str}}customtype, mod_margic{{/str}}"> (M)</span>
+                            {{/defaulttype}}
+                        </span>
+                    </div>
+                    <div class="annotatedtextpreviewdiv">
+                        <span id="annotationpreview-{{id}}" class="annotatedtextpreview annotationpreview-{{id}}" style="border-color: #{{color}};">{{#str}}annotatedtextnotfound, mod_margic {{/str}} <i class="fa fa-exclamation text-danger" aria-hidden="true" title="{{#str}}annotatedtextinvalid, margic {{/str}}"></i></span>
+                    </div>
+                    <span class="annotation">{{text}}</span>
+                    {{#canbeedited}}
+                        <span class="pull-right"><a href="javascript:void(0);" title="{{#str}}editannotation, margic {{/str}}"><i id="edit-annotation-{{id}}" class="fa fa-lg fa-pencil m-r-1 edit-annotation" aria-hidden="true" ></i></a><a href="annotations.php?id={{cmid}}&deleteannotation={{id}}" title="{{#str}}deleteannotation, margic {{/str}}"><i id="delete-annotation-{{id}}" class="fa fa-lg fa-trash delete-annotation" aria-hidden="true"></i></a></span>
+                    {{/canbeedited}}
+                </div>
+            {{/annotations}}
+
+            {{#annotationform}}
+                <div class="annotation-box annotation-form annotation-form-{{id}}" style="background: {{entrytextbgc}};">
+                    <div class="annotatedtextpreviewdiv">
+                        <span id="annotationpreview-temp-{{id}}" class="annotatedtextpreview">{{#str}}annotatedtextnotfound, mod_margic {{/str}} <i class="fa fa-exclamation text-danger" aria-hidden="true" title="{{#str}}annotatedtextinvalid, margic {{/str}}"></i></span>
+                    </div>
+                    {{{annotationform}}}
+                </div>
+            {{/annotationform}}
+        </div>
+    {{/annotationmode}}
+</div>
+{{/entries}}
+
+{{^entries}}
+    <br>
+    {{#canmanageentries}}{{#str}}noentriesfound, mod_margic{{/str}}{{/canmanageentries}}
+    {{^canmanageentries}}{{#str}}notstarted, mod_margic{{/str}}{{/canmanageentries}}
+{{/entries}}

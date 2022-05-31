@@ -15,24 +15,24 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Define all the backup steps that will be used by the backup_diary_activity_task
+ * Define all the backup steps that will be used by the backup_margic_activity_task
  *
- * @package   mod_diary
- * @copyright 2020 AL Rachels <drachels@drachels.com>
+ * @package   mod_margic
+ * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/diary/backup/moodle2/restore_diary_stepslib.php');
+require_once($CFG->dirroot . '/mod/margic/backup/moodle2/restore_margic_stepslib.php');
 
 /**
- * Diary restore task that provides all the settings and steps to perform one complete restore of the activity.
+ * margic restore task that provides all the settings and steps to perform one complete restore of the activity.
  *
- * @package   mod_diary
- * @copyright 2020 AL Rachels <drachels@drachels.com>
+ * @package   mod_margic
+ * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class restore_diary_activity_task extends restore_activity_task {
+class restore_margic_activity_task extends restore_activity_task {
 
     /**
      * Define (add) particular settings this activity can have.
@@ -45,7 +45,7 @@ class restore_diary_activity_task extends restore_activity_task {
      * Define (add) particular steps this activity can have.
      */
     protected function define_my_steps() {
-        $this->add_step(new restore_diary_activity_structure_step('diary_structure', 'diary.xml'));
+        $this->add_step(new restore_margic_activity_structure_step('margic_structure', 'margic.xml'));
     }
 
     /**
@@ -56,13 +56,13 @@ class restore_diary_activity_task extends restore_activity_task {
      */
     public static function define_decode_contents() {
         $contents = array();
-        $contents[] = new restore_decode_content('diary', array(
+        $contents[] = new restore_decode_content('margic', array(
             'intro'
-        ), 'diary');
-        $contents[] = new restore_decode_content('diary_entries', array(
+        ), 'margic');
+        $contents[] = new restore_decode_content('margic_entries', array(
             'text',
             'entrycomment'
-        ), 'diary_entry');
+        ), 'margic_entry');
 
         return $contents;
     }
@@ -75,14 +75,14 @@ class restore_diary_activity_task extends restore_activity_task {
      */
     public static function define_decode_rules() {
         $rules = array();
-        // List of Diary's in the course.
-        $rules[] = new restore_decode_rule('DIARYINDEX', '/mod/diary/index.php?id=$1', 'course');
-        // Diary views by cm->id.
-        $rules[] = new restore_decode_rule('DIARYVIEWBYID', '/mod/diary/view.php?id=$1', 'course_module');
-        // Diary reports by cm->id.
-        $rules[] = new restore_decode_rule('DIARYREPORT', '/mod/diary/report.php?id=$1', 'course_module');
-        // Diary user edits by cm->id.
-        $rules[] = new restore_decode_rule('DIARYEDIT', '/mod/diary/edit.php?id=$1', 'course_module');
+        // List of margic's in the course.
+        $rules[] = new restore_decode_rule('margicINDEX', '/mod/margic/index.php?id=$1', 'course');
+        // margic views by cm->id.
+        $rules[] = new restore_decode_rule('margicVIEWBYID', '/mod/margic/view.php?id=$1', 'course_module');
+        // margic reports by cm->id.
+        $rules[] = new restore_decode_rule('margicREPORT', '/mod/margic/report.php?id=$1', 'course_module');
+        // margic user edits by cm->id.
+        $rules[] = new restore_decode_rule('margicEDIT', '/mod/margic/edit.php?id=$1', 'course_module');
 
         return $rules;
     }
@@ -94,7 +94,7 @@ class restore_diary_activity_task extends restore_activity_task {
     /**
      * Define the restore log rules that will be applied
      * by the restore_logs_processor when restoring
-     * diary logs.
+     * margic logs.
      * It must return one array
      * of restore_log_rule objects.
      *
@@ -103,11 +103,11 @@ class restore_diary_activity_task extends restore_activity_task {
     public static function define_restore_log_rules() {
         $rules = array();
 
-        $rules[] = new restore_log_rule('diary', 'view', 'view.php?id={course_module}', '{diary}');
-        $rules[] = new restore_log_rule('diary', 'view responses', 'report.php?id={course_module}', '{diary}');
-        $rules[] = new restore_log_rule('diary', 'add entry', 'edit.php?id={course_module}', '{diary}');
-        $rules[] = new restore_log_rule('diary', 'update entry', 'edit.php?id={course_module}', '{diary}');
-        $rules[] = new restore_log_rule('diary', 'update feedback', 'report.php?id={course_module}', '{diary}');
+        $rules[] = new restore_log_rule('margic', 'view', 'view.php?id={course_module}', '{margic}');
+        $rules[] = new restore_log_rule('margic', 'view responses', 'report.php?id={course_module}', '{margic}');
+        $rules[] = new restore_log_rule('margic', 'add entry', 'edit.php?id={course_module}', '{margic}');
+        $rules[] = new restore_log_rule('margic', 'update entry', 'edit.php?id={course_module}', '{margic}');
+        $rules[] = new restore_log_rule('margic', 'update feedback', 'report.php?id={course_module}', '{margic}');
 
         return $rules;
     }
@@ -128,7 +128,7 @@ class restore_diary_activity_task extends restore_activity_task {
     public static function define_restore_log_rules_for_course() {
         $rules = array();
 
-        $rules[] = new restore_log_rule('diary', 'view all', 'index.php?id={course}', null);
+        $rules[] = new restore_log_rule('margic', 'view all', 'index.php?id={course}', null);
 
         return $rules;
     }

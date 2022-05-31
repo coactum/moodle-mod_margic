@@ -15,24 +15,24 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Diary entries search.
+ * margic entries search.
  *
- * @package   mod_diary
- * @copyright 2019 AL Rachels (drachels@drachels.com)
+ * @package   mod_margic
+ * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-namespace mod_diary\search;
+namespace mod_margic\search;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/diary/lib.php');
+require_once($CFG->dirroot . '/mod/margic/lib.php');
 require_once($CFG->dirroot . '/lib/grouplib.php');
 
 /**
- * Diary entries search.
+ * margic entries search.
  *
- * @package   mod_diary
- * @copyright 2019 AL Rachels (drachels@drachels.com)
+ * @package   mod_margic
+ * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class entry extends \core_search\base_mod {
@@ -44,7 +44,7 @@ class entry extends \core_search\base_mod {
     protected $entriesdata = array();
 
     /**
-     * Returns recordset containing required data for indexing diary entries.
+     * Returns recordset containing required data for indexing margic entries.
      *
      * @param int $modifiedfrom timestamp
      * @param \context|null $context Optional context to restrict scope of returned results
@@ -53,14 +53,14 @@ class entry extends \core_search\base_mod {
     public function get_document_recordset($modifiedfrom = 0, \context $context = null) {
         global $DB;
 
-        list ($contextjoin, $contextparams) = $this->get_context_restriction_sql($context, 'diary', 'd', SQL_PARAMS_NAMED);
+        list ($contextjoin, $contextparams) = $this->get_context_restriction_sql($context, 'margic', 'd', SQL_PARAMS_NAMED);
         if ($contextjoin === null) {
             return null;
         }
 
         $sql = "SELECT de.*, d.course
-                  FROM {diary_entries} de
-                  JOIN {diary} d ON d.id = de.diary
+                  FROM {margic_entries} de
+                  JOIN {margic} d ON d.id = de.margic
           $contextjoin
                  WHERE de.timemodified >= :timemodified
               ORDER BY de.timemodified ASC";
@@ -70,31 +70,31 @@ class entry extends \core_search\base_mod {
     }
 
     /**
-     * Returns the documents associated with this diary entry id.
+     * Returns the documents associated with this margic entry id.
      *
-     * @param stdClass $entry diary entry.
+     * @param stdClass $entry margic entry.
      * @param array $options
      * @return \core_search\document
      */
     public function get_document($entry, $options = array()) {
         try {
-            $cm = $this->get_cm('diary', $entry->diary, $entry->course);
+            $cm = $this->get_cm('margic', $entry->margic, $entry->course);
             $context = \context_module::instance($cm->id);
         } catch (\dml_missing_record_exception $ex) {
             // Notify it as we run here as admin, we should see everything.
-            debugging('Error retrieving mod_diary '.$entry->id.' document, not all required data is available: '
+            debugging('Error retrieving mod_margic '.$entry->id.' document, not all required data is available: '
                 .$ex->getMessage(), DEBUG_DEVELOPER);
             return false;
         } catch (\dml_exception $ex) {
             // Notify it as we run here as admin, we should see everything.
-            debugging('Error retrieving mod_diary' . $entry->id . ' document: ' . $ex->getMessage(), DEBUG_DEVELOPER);
+            debugging('Error retrieving mod_margic' . $entry->id . ' document: ' . $ex->getMessage(), DEBUG_DEVELOPER);
             return false;
         }
 
         // Prepare associative array with data from DB.
         $doc = \core_search\document_factory::instance($entry->id, $this->componentname, $this->areaname);
         // I am using the entry date (timecreated) for the title.
-        $doc->set('title', content_to_text((date(get_config('mod_diary', 'dateformat'), $entry->timecreated)), $entry->format));
+        $doc->set('title', content_to_text((date(get_config('mod_margic', 'dateformat'), $entry->timecreated)), $entry->format));
         $doc->set('content', content_to_text('Entry: ' . $entry->text, $entry->format));
         $doc->set('contextid', $context->id);
         $doc->set('courseid', $entry->course);
@@ -116,7 +116,7 @@ class entry extends \core_search\base_mod {
      *
      * @throws \dml_missing_record_exception
      * @throws \dml_exception
-     * @param int $id Diary entry id
+     * @param int $id margic entry id
      * @return bool
      */
     public function check_access($id) {
@@ -124,7 +124,7 @@ class entry extends \core_search\base_mod {
 
         try {
             $entry = $this->get_entry($id);
-            $cminfo = $this->get_cm('diary', $entry->diary, $entry->course);
+            $cminfo = $this->get_cm('margic', $entry->margic, $entry->course);
         } catch (\dml_missing_record_exception $ex) {
             return \core_search\manager::ACCESS_DELETED;
         } catch (\dml_exception $ex) {
@@ -135,7 +135,7 @@ class entry extends \core_search\base_mod {
             return \core_search\manager::ACCESS_DENIED;
         }
 
-        if ($entry->userid != $USER->id && ! has_capability('mod/diary:manageentries', $cminfo->context)) {
+        if ($entry->userid != $USER->id && ! has_capability('mod/margic:manageentries', $cminfo->context)) {
             return \core_search\manager::ACCESS_DENIED;
         }
 
@@ -143,7 +143,7 @@ class entry extends \core_search\base_mod {
     }
 
     /**
-     * Link to diary entry.
+     * Link to margic entry.
      *
      * @param \core_search\document $doc
      * @return \moodle_url
@@ -155,10 +155,10 @@ class entry extends \core_search\base_mod {
 
         $entryuserid = $doc->get('userid');
         if ($entryuserid == $USER->id) {
-            $url = '/mod/diary/view.php';
+            $url = '/mod/margic/view.php';
         } else {
             // Teachers see student's entries in the report page.
-            $url = '/mod/diary/report.php#entry-' . $entryuserid;
+            $url = '/mod/margic/report.php#entry-' . $entryuserid;
         }
         return new \moodle_url($url, array(
             'id' => $contextmodule->instanceid
@@ -166,20 +166,20 @@ class entry extends \core_search\base_mod {
     }
 
     /**
-     * Link to the diary.
+     * Link to the margic.
      *
      * @param \core_search\document $doc
      * @return \moodle_url
      */
     public function get_context_url(\core_search\document $doc) {
         $contextmodule = \context::instance_by_id($doc->get('contextid'));
-        return new \moodle_url('/mod/diary/view.php', array(
+        return new \moodle_url('/mod/margic/view.php', array(
             'id' => $contextmodule->instanceid
         ));
     }
 
     /**
-     * Returns the specified diary entry checking the internal cache.
+     * Returns the specified margic entry checking the internal cache.
      *
      * Store minimal information as this might grow.
      *
@@ -189,8 +189,8 @@ class entry extends \core_search\base_mod {
      */
     protected function get_entry($entryid) {
         global $DB;
-        return $DB->get_record_sql("SELECT de.*, d.course FROM {diary_entries} de
-                                      JOIN {diary} d ON d.id = de.diary
+        return $DB->get_record_sql("SELECT de.*, d.course FROM {margic_entries} de
+                                      JOIN {margic} d ON d.id = de.margic
                                      WHERE de.id = ?", array('id' => $entryid), MUST_EXIST);
     }
 }

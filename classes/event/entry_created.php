@@ -15,22 +15,20 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The mod_diary entry created event.
+ * The mod_margic entry created event.
  *
- * @package   mod_diary
- * @copyright 2015 David Monllao
+ * @package   mod_margic
+ * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-namespace mod_diary\event;
-
-defined('MOODLE_INTERNAL') || die();
+namespace mod_margic\event;
 
 /**
- * The mod_diary entry created class.
+ * The mod_margic entry created class.
  *
- * @package   mod_diary
+ * @package   mod_margic
  * @since     Moodle 3.1
- * @copyright 2015 David Monllao
+ * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class entry_created extends \core\event\base {
@@ -41,7 +39,7 @@ class entry_created extends \core\event\base {
     protected function init() {
         $this->data['crud'] = 'c';
         $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
-        $this->data['objecttable'] = 'diary';
+        $this->data['objecttable'] = 'margic';
     }
 
     /**
@@ -50,7 +48,7 @@ class entry_created extends \core\event\base {
      * @return string
      */
     public static function get_name() {
-        return get_string('evententrycreated', 'mod_diary');
+        return get_string('evententrycreated', 'mod_margic');
     }
 
     /**
@@ -59,7 +57,7 @@ class entry_created extends \core\event\base {
      * @return string
      */
     public function get_description() {
-        return "The user with id '$this->userid' has created an entry for the diary activity with " .
+        return "The user with id '$this->userid' has created an entry for the margic activity with " .
             "the course module id '$this->contextinstanceid'";
     }
 
@@ -69,7 +67,7 @@ class entry_created extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/diary/edit.php', array(
+        return new \moodle_url('/mod/margic/edit.php', array(
             'id' => $this->contextinstanceid
         ));
     }
@@ -85,7 +83,7 @@ class entry_created extends \core\event\base {
         ));
         return array(
             $this->courseid,
-            'diary',
+            'margic',
             'add entry',
             $url->out(),
             $this->objectid,

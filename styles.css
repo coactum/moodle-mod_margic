@@ -16,165 +16,181 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This is the css style sheet for Diary.
+ * This is the css style sheet for margic.
  *
- * @package    mod_diary
- * @copyright  2019 AL Rachels (drachels@drachels.com)
+ * @package    mod_margic
+ * @copyright  2022 coactum GmbH
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later.
  */
-/* 20210502 Added in view.php about line 278.*/
-#page-mod-diary-view .sortandaggregate,
-#page-mod-diary-report .sortandaggregate {
-    width: 100%;
-    font-size: 1.0em;
-    /*font-weight: bold;*/
-}
 
-/* 20210502 Added in view.php about line 281 and 282.*/
-#page-mod-diary-view .sortandaggregate .cell {
-    float: right;
-    padding: 5px;
-}
-
-#page-mod-diary-view .feedbackbox { /* Used in renderer.php. */
+#page-mod-margic-view .feedbackbox { /* Used in renderer.php. */
     width: 85%;
     border-collapse: separate;
 }
 
-#page-mod-diary-view .entrycontent { /* Used in renderer.php. */
+#page-mod-margic-view .entrycontent { /* Used in renderer.php. */
     padding: 3px;
 }
 
-#page-mod-diary-view .picture { /* Used in renderer.php with left. */
+#page-mod-margic-view .picture { /* Used in renderer.php with left. */
     width: 35px;
 }
 
-#page-mod-diary-view .info { /* Cannot find this in use, anywhere. */
-    margin-bottom: 5px;
-    text-align: right;
-}
-
-#page-mod-diary-view .diarystart, /* Used in view.php. */
-#page-mod-diary-report .feedbacksave {
-    text-align: center;
-}
-
-#page-mod-diary-view .lastedit,
-#page-mod-diary-view .editend {
+#page-mod-margic-view .lastedit,
+#page-mod-margic-view .editend {
     font-size: 0.7em;
     margin: 5px;
     text-align: center;
 }
 
-#page-mod-diary-view .needsedit,
-#page-mod-diary-view .editend {
-    font-size: 0.9em;
-    color: red;
+#page-mod-margic-view .needsedit,
+#page-mod-margic-view .editend {
+    color: darkred;
     text-align: center;
+    font-weight: bold;
 }
 
-#page-mod-diary-view .author { /* Used in renderer.php about line 191. */
+#page-mod-margic-view .needsedit span,
+#page-mod-margic-view .editend span {
+    background: white;
+    padding: 2px;
+}
+
+#page-mod-margic-view .author { /* Used in renderer.php about line 191. */
     font-size: 1em;
     font-weight: bold;
 }
 
-#page-mod-diary-view .time { /* Used in renderer.php about line 192. */
+#page-mod-margic-view .time { /* Used in renderer.php about line 192. */
     font-size: 0.7em;
     font-style: italic;
 }
 
-#page-mod-diary-view .grade { /* Used in renderer.php about line 200. */
+#page-mod-margic-view .grade { /* Used in renderer.php about line 200. */
     font-weight: bold;
     font-style: italic;
     text-align: right;
 }
 
-#page-mod-diary-index .cell { /* Cannot find this in use, anywhere. */
-    font-size: 0.8em;
-}
-
-/* 20210501 Added in view.php about line 381.*/
-/* 20210505 Added in report.php about lines 427 and 455.*/
-/* 20210505 Added in reportsingle.php about line 266.*/
-#page-mod-diary-view .entry,
-#page-mod-diary-report .entry,
-#page-mod-diary-reportsingle .entry {
+#page-mod-margic-view .entry {
     text-align: left;
     font-size: 1em;
-    padding: 5px;
-    font-weight: bold;
-    background: #f9f5f0;
-    /*border: 2px solid grey;*/
-    border-style: double;
-    -webkit-border-radius: 16px;
-    -moz-border-radius: 16px;
-    border-radius: 16px;
-
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid rgba(0, 0, 0, .125);
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
 }
 
-#page-mod-diary-view .feedbackbox .left,
-#page-mod-diary-view .feedbackbox .entryheader { /* Used in renderer.php about line 190. */
+#page-mod-margic-view .feedbackbox .left,
+#page-mod-margic-view .feedbackbox .entryheader { /* Used in renderer.php about line 190. */
     background-color: #ddd;
 }
 
-#page-mod-diary-view .feedbackbox {
+#page-mod-margic-view .feedbackbox {
     -moz-border-radius-bottomleft: 15px;
     -moz-border-radius-bottomright: 15px;
     border-spacing: 0;
     margin: 0 auto;
 }
 
-#page-mod-diary-view .feedbackbox .side {
+#page-mod-margic-view .feedbackbox .side {
     -moz-border-radius-bottomleft: 15px;
 }
 
-#page-mod-diary-view .feedbackbox .entrycontent {
+#page-mod-margic-view .feedbackbox .entrycontent {
     -moz-border-radius-bottomright: 15px;
 }
 
-#page-mod-diary-view .reportlink,
-#page-mod-diary-report .reportlink {
-    float: right;
-    padding: 15px;
-}
-
-#page-mod-diary-report .diaryuserentry {
-    /*border: 1px solid #000000;*/
-    border-collapse: collapse;
-    border-spacing: 0;
-}
-
-#page-mod-diary-report .diaryuserentry td {
+#page-mod-margic-view .gradingform,
+#page-mod-margic-view .ratingform {
     padding: 10px;
-    vertical-align: top;
+    text-align: left;
+    font-size: 1em;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border: 1px solid rgba(0, 0, 0, .125);
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+}
+
+#page-mod-margic-view .annotationarea {
+    text-align: left;
+    font-size: 1em;
+    padding: 10px;
+    margin-bottom: 10px;
+    margin-left: 10px;
+    border: 1px solid rgba(0, 0, 0, .125);
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+}
+
+#page-mod-margic-view .annotationarea .annotatedtextpreview:hover {
+    background-color: lightblue;
+    cursor: pointer;
+}
+
+#page-mod-margic-view .annotated,
+#page-mod-margic-view .annotated_temp {
+    background-color: yellow;
+    cursor: pointer;
+}
+
+#page-mod-margic-view .hovered .annotated,
+#page-mod-margic-view .hovered .annotated_temp {
+    background: none;
+}
+
+#page-mod-margic-view .annotated:hover,
+#page-mod-margic-view .annotated_temp:hover,
+#page-mod-margic-view .hovered {
+    background-color: lightblue !important;
+}
+
+#page-mod-margic-view .annotation-box {
+    background-color: white;
+    border: 1px solid #dbdbdb;
+    border-radius: 2px;
+    padding: 1em;
+    margin-bottom: 1em;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, .1);
+}
+
+#page-mod-margic-view .annotation-box:hover {
+    box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, .15);
+}
+
+#page-mod-margic-view #id_submitbutton {
+    margin-right: 5px;
+}
+
+#page-mod-margic-view textarea {
     width: 100%;
 }
 
-#page-mod-diary-report .diaryuserentry td.userpix {
-    width: 35px;
+#page-mod-margic-annotations_summary th {
+    min-width: 100px;
 }
 
-#page-mod-diary-report .diaryuserentry td.userfullname {
-    white-space: nowrap;
+#page-mod-margic-view .annotatedtextpreviewdiv {
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
-#page-mod-diary-report .diaryuserentry td .lastedit {
-    font-size: 0.7em;
-    margin-left: 10px;
+#page-mod-margic-view .annotatedtextpreview {
+    border-left: 5px solid yellow;
+    padding-left: 5px;
+    background-color: white;
+    margin-left: 5px;
+    display: inline-block;
+    width: 98%;
 }
 
-#page-mod-diary-report .diaryuserentry td .needsedit {
-    font-size: 0.9em;
-    color: red;
-    margin-left: 10px;
-}
-
-#page-mod-diary-report .mediaplugin {
-    width: 100%;
-}
-
-#lastedit {
-    font-size: 0.7em;
-    margin: 5px;
-    text-align: center;
+#page-mod-margic-view .annotationtype {
+    margin-top: 5px;
+    border-bottom: 1px solid #dbdbdb;
+    padding-bottom: 5px;
 }

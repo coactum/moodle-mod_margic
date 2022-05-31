@@ -15,24 +15,22 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The mod_diary download diary entries event.
+ * The mod_margic download margic entries event.
  *
- * @package   mod_diary
- * @copyright 2016 AL Rachels (drachels@drachels.com)
+ * @package   mod_margic
+ * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-namespace mod_diary\event;
-
-defined('MOODLE_INTERNAL') || die();
+namespace mod_margic\event;
 
 /**
- * The mod_diary download diary entries class.
+ * The mod_margic download margic entries class.
  *
- * @package   mod_diary
- * @copyright 2019 drachels@drachels.com
+ * @package   mod_margic
+ * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class download_diary_entries extends \core\event\base {
+class download_margic_entries extends \core\event\base {
 
     /**
      * Init method.
@@ -40,7 +38,7 @@ class download_diary_entries extends \core\event\base {
     protected function init() {
         $this->data['crud'] = 'u';
         $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
-        $this->data['objecttable'] = 'diary';
+        $this->data['objecttable'] = 'margic';
     }
 
     /**
@@ -49,7 +47,7 @@ class download_diary_entries extends \core\event\base {
      * @return string
      */
     public static function get_name() {
-        return get_string('eventdownloadentriess', 'mod_diary');
+        return get_string('eventdownloadentriess', 'mod_margic');
     }
 
     /**
@@ -58,7 +56,7 @@ class download_diary_entries extends \core\event\base {
      * @return string
      */
     public function get_description() {
-        return "The user with id '$this->userid' has downloaded diary entries for the diary activity with the course module id
+        return "The user with id '$this->userid' has downloaded margic entries for the margic activity with the course module id
             '$this->contextinstanceid'.";
     }
 
@@ -68,7 +66,7 @@ class download_diary_entries extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/diary/view.php', array(
+        return new \moodle_url('/mod/margic/view.php', array(
             'id' => $this->contextinstanceid
         ));
     }
@@ -84,7 +82,7 @@ class download_diary_entries extends \core\event\base {
         ));
         return array(
             $this->courseid,
-            'diary',
+            'margic',
             'view',
             $url->out(),
             $this->objectid,

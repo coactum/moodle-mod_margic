@@ -15,12 +15,13 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This page lists all the instances of diary in a particular course
+ * This page lists all the instances of margic in a particular course
  *
- * @package   mod_diary
- * @copyright 1999 onwards Martin Dougiamas {@link http://moodle.com}
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package     mod_margic
+ * @copyright   2022 coactum GmbH
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 require_once(__DIR__ . "/../../config.php");
 require_once("lib.php");
 
@@ -29,26 +30,26 @@ $id = required_param('id', PARAM_INT); // Course.
 if (! $course = $DB->get_record('course', array(
     'id' => $id
 ))) {
-    throw new moodle_exception(get_string('incorrectcourseid', 'diary'));
+    throw new moodle_exception(get_string('incorrectcourseid', 'margic'));
 }
 
 require_course_login($course);
 
 // Header.
-$strdiarys = get_string('modulenameplural', 'diary');
+$strmargics = get_string('modulenameplural', 'margic');
 $PAGE->set_pagelayout('incourse');
-$PAGE->set_url('/mod/diary/index.php', array(
+$PAGE->set_url('/mod/margic/index.php', array(
     'id' => $id
 ));
-$PAGE->navbar->add($strdiarys);
-$PAGE->set_title($strdiarys);
+$PAGE->navbar->add($strmargics);
+$PAGE->set_title($strmargics);
 $PAGE->set_heading($course->fullname);
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading($strdiarys);
+echo $OUTPUT->heading($strmargics);
 
-if (! $diarys = get_all_instances_in_course('diary', $course)) {
-    notice(get_string('thereareno', 'moodle', get_string('modulenameplural', 'diary')), '../../course/view.php?id=$course->id');
+if (! $margics = get_all_instances_in_course('margic', $course)) {
+    notice(get_string('thereareno', 'moodle', get_string('modulenameplural', 'margic')), '../../course/view.php?id=$course->id');
     die();
 }
 
@@ -79,66 +80,41 @@ $table->align[] = 'left';
 
 $currentsection = '';
 $i = 0;
-foreach ($diarys as $diary) {
 
-    $context = context_module::instance($diary->coursemodule);
-    $entriesmanager = has_capability('mod/diary:manageentries', $context);
+foreach ($margics as $margic) {
+
+    $context = context_module::instance($margic->coursemodule);
 
     // Section.
     $printsection = '';
-    if ($diary->section !== $currentsection) {
-        if ($diary->section) {
-            $printsection = get_section_name($course, $sections[$diary->section]);
+    if ($margic->section !== $currentsection) {
+        if ($margic->section) {
+            $printsection = get_section_name($course, $sections[$margic->section]);
         }
         if ($currentsection !== '') {
             $table->data[$i] = 'hr';
             $i ++;
         }
-        $currentsection = $diary->section;
+        $currentsection = $margic->section;
     }
     if ($usesections) {
         $table->data[$i][] = $printsection;
     }
 
     // Link.
-    $diaryname = format_string($diary->name, true, array(
+    $margicname = format_string($margic->name, true, array(
         'context' => $context
     ));
-    if (! $diary->visible) {
+    if (! $margic->visible) {
         // Show dimmed if the mod is hidden.
-        $table->data[$i][] = "<a class=\"dimmed\" href=\"view.php?id=$diary->coursemodule\">" . $diaryname . "</a>";
+        $table->data[$i][] = "<a class=\"dimmed\" href=\"view.php?id=$margic->coursemodule\">" . $margicname . "</a>";
     } else {
         // Show normal if the mod is visible.
-        $table->data[$i][] = "<a href=\"view.php?id=$diary->coursemodule\">" . $diaryname . "</a>";
+        $table->data[$i][] = "<a href=\"view.php?id=$margic->coursemodule\">" . $margicname . "</a>";
     }
 
     // Description.
-    $table->data[$i][] = format_text($diary->intro, $diary->introformat);
-
-    // Entries info.
-    if ($entriesmanager) {
-
-        // Display the report.php col only if is a entries manager in some CONTEXT_MODULE.
-        if (empty($managersomewhere)) {
-            $table->head[] = get_string('viewentries', 'diary');
-            $table->align[] = 'left';
-            $managersomewhere = true;
-
-            // Fill the previous col cells.
-            $manageentriescell = count($table->head) - 1;
-            for ($j = 0; $j < $i; $j ++) {
-                if (is_array($table->data[$j])) {
-                    $table->data[$j][$manageentriescell] = '';
-                }
-            }
-        }
-
-        $entrycount = diary_count_entries($diary, groups_get_all_groups($course->id, $USER->id));
-        $table->data[$i][] = "<a href=\"report.php?id=$diary->coursemodule\">"
-            . get_string("viewallentries", "diary", $entrycount) . "</a>";
-    } else if (! empty($managersomewhere)) {
-        $table->data[$i][] = "";
-    }
+    $table->data[$i][] = format_text($margic->intro, $margic->introformat);
 
     $i ++;
 }
@@ -151,7 +127,7 @@ echo html_writer::table($table);
 $params = array(
     'context' => context_course::instance($course->id)
 );
-$event = \mod_diary\event\course_module_instance_list_viewed::create($params);
+$event = \mod_margic\event\course_module_instance_list_viewed::create($params);
 $event->add_record_snapshot('course', $course);
 $event->trigger();
 

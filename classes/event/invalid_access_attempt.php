@@ -15,23 +15,22 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The mod_diary invalid access attempt event.
+ * The mod_margic invalid access attempt event.
  *
- * Logs invalid direct URL entry attempts to Diary php files.
+ * Logs invalid direct URL entry attempts to margic php files.
  *
- * @package     mod_diary
- * @copyright   2020 AL Rachels (drachels@drachels.com)
+ * @package     mod_margic
+ * @copyright   2022 coactum GmbH
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_diary\event;
-defined('MOODLE_INTERNAL') || die();
+namespace mod_margic\event;
 
 /**
- * The mod_diary invalid access attempt event class.
+ * The mod_margic invalid access attempt event class.
  *
- * @package    mod_diary
- * @copyright  2020 AL Rachels drachels@drachels.com
+ * @package    mod_margic
+ * @copyright  2022 coactum GmbH
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class invalid_access_attempt extends \core\event\base {
@@ -42,7 +41,7 @@ class invalid_access_attempt extends \core\event\base {
     protected function init() {
         $this->data['crud'] = 'd';
         $this->data['edulevel'] = self::LEVEL_TEACHING;
-        $this->data['objecttable'] = 'diary';
+        $this->data['objecttable'] = 'margic';
     }
 
     /**
@@ -51,7 +50,7 @@ class invalid_access_attempt extends \core\event\base {
      * @return string
      */
     public static function get_name() {
-        return get_string('invalidaccess', 'mod_diary');
+        return get_string('invalidaccess', 'mod_margic');
     }
 
     /**
@@ -60,7 +59,7 @@ class invalid_access_attempt extends \core\event\base {
      * @return string
      */
     public function get_description() {
-        return "The user with id '$this->userid' attempted direct URL access to 'diary' file
+        return "The user with id '$this->userid' attempted direct URL access to 'margic' file
            . '{$this->other['file']}' while in the course with id '$this->contextinstanceid'.";
     }
 
@@ -69,7 +68,7 @@ class invalid_access_attempt extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/diary/view.php', array('id' => $this->contextinstanceid));
+        return new \moodle_url('/mod/margic/view.php', array('id' => $this->contextinstanceid));
     }
 
     /**
@@ -79,6 +78,6 @@ class invalid_access_attempt extends \core\event\base {
      */
     protected function get_legacy_logdata() {
         $url = new \moodle_url('view.php', array('id' => $this->contextinstanceid));
-        return array($this->courseid, 'diary', 'view', $url->out(), $this->objectid, $this->contextinstanceid);
+        return array($this->courseid, 'margic', 'view', $url->out(), $this->objectid, $this->contextinstanceid);
     }
 }

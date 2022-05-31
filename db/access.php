@@ -17,16 +17,27 @@
 /**
  * Capability definitions for this module.
  *
- * @package   mod_diary
- * @copyright 2020 AL Rachels <drachels@drachels.com>
+ * @package   mod_margic
+ * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die();
 
 $capabilities = array(
 
-    'mod/diary:manageentries' => array(
+    'mod/margic:addinstance' => array(
+        'riskbitmask' => RISK_XSS,
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_COURSE,
+        'archetypes' => array(
+            'editingteacher' => CAP_ALLOW,
+            'manager' => CAP_ALLOW
+        ),
+        'clonepermissionsfrom' => 'moodle/course:manageactivities'
+    ),
 
+    'mod/margic:manageentries' => array(
+        'riskbitmask' => RISK_XSS | RISK_SPAM | RISK_PERSONAL,
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => array(
@@ -36,8 +47,8 @@ $capabilities = array(
         )
     ),
 
-    'mod/diary:rate' => array(
-
+    'mod/margic:rate' => array(
+        'riskbitmask' => RISK_XSS | RISK_SPAM,
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => array(
@@ -47,8 +58,8 @@ $capabilities = array(
         )
     ),
 
-    'mod/diary:addentries' => array(
-
+    'mod/margic:addentries' => array(
+        'riskbitmask' => RISK_XSS | RISK_SPAM,
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => array(
@@ -59,15 +70,35 @@ $capabilities = array(
         )
     ),
 
-    'mod/diary:addinstance' => array(
-        'riskbitmask' => RISK_XSS,
-
+    'mod/margic:makeannotations' => array(
+        'riskbitmask' => RISK_XSS | RISK_SPAM,
         'captype' => 'write',
-        'contextlevel' => CONTEXT_COURSE,
+        'contextlevel' => CONTEXT_MODULE,
         'archetypes' => array(
+            'teacher' => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
             'manager' => CAP_ALLOW
-        ),
-        'clonepermissionsfrom' => 'moodle/course:manageactivities'
+        )
+    ),
+
+    'mod/margic:viewannotations' => array(
+        'riskbitmask' => RISK_PERSONAL,
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_MODULE,
+        'archetypes' => array(
+            'student' => CAP_ALLOW,
+            'teacher' => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW,
+            'manager' => CAP_ALLOW
+        )
+    ),
+
+    'mod/margic:editdefaultannotationtypes' => array(
+        'riskbitmask' => RISK_XSS,
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_MODULE,
+        'archetypes' => array(
+            'manager' => CAP_ALLOW
+        )
     )
 );

@@ -15,21 +15,19 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Search area for mod_diary activities.
+ * Search area for mod_margic activities.
  *
- * @package   mod_diary
- * @copyright 2019 AL Rachels (drachels@drachels.com)
+ * @package   mod_margic
+ * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-namespace mod_diary\search;
-
-defined('MOODLE_INTERNAL') || die();
+namespace mod_margic\search;
 
 /**
- * Search area for mod_diary activities.
+ * Search area for mod_margic activities.
  *
- * @package   mod_diary
- * @copyright 2019 AL Rachels (drachels@drachels.com)
+ * @package   mod_margic
+ * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class activity extends \core_search\base_activity {
@@ -52,7 +50,7 @@ class activity extends \core_search\base_activity {
     public function get_search_fileareas() {
         $fileareas = array(
             'intro',
-            DIARY_INTROATTACHMENT_FILEAREA
+            MARGIC_INTROATTACHMENT_FILEAREA
         ); // Fileareas.
         return $fileareas;
     }

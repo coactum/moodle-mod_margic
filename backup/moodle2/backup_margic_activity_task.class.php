@@ -15,23 +15,22 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Defines backup_diary_activity_task class.
+ * Defines backup_margic_activity_task class.
  *
- * @package     mod_diary
+ * @package     mod_margic
  * @category    backup
- * @copyright   2020 AL Rachels <drachels@drachels.com>
+ * @copyright   2022 coactum GmbH
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/mod/diary/backup/moodle2/backup_diary_stepslib.php');
+require_once($CFG->dirroot.'/mod/margic/backup/moodle2/backup_margic_stepslib.php');
 
 /**
- * Provides the steps to perform one complete backup of the Diary instance.
+ * Provides the steps to perform one complete backup of the margic instance.
  */
-class backup_diary_activity_task extends backup_activity_task
-{
+class backup_margic_activity_task extends backup_activity_task {
 
     /**
      * No specific settings for this activity.
@@ -40,10 +39,10 @@ class backup_diary_activity_task extends backup_activity_task
     }
 
     /**
-     * Defines a backup step to store the instance data in the diary.xml file.
+     * Defines a backup step to store the instance data in the margic.xml file.
      */
     protected function define_my_steps() {
-        $this->add_step(new backup_diary_activity_structure_step('diary_structure', 'diary.xml'));
+        $this->add_step(new backup_margic_activity_structure_step('margic_structure', 'margic.xml'));
     }
 
     /**
@@ -56,23 +55,23 @@ class backup_diary_activity_task extends backup_activity_task
 
         global $CFG;
 
-        $base = preg_quote($CFG->wwwroot.'/mod/diary', '#');
+        $base = preg_quote($CFG->wwwroot.'/mod/margic', '#');
 
         // Link to the list of diaries.
         $pattern = "#(".$base."\/index.php\?id\=)([0-9]+)#";
-        $content = preg_replace($pattern, '$@DIARYINDEX*$2@$', $content);
+        $content = preg_replace($pattern, '$@margicINDEX*$2@$', $content);
 
-        // Link to diary view by moduleid.
+        // Link to margic view by moduleid.
         $pattern = "#(".$base."\/view.php\?id\=)([0-9]+)#";
-        $content = preg_replace($pattern, '$@DIARYVIEWBYID*$2@$', $content);
+        $content = preg_replace($pattern, '$@margicVIEWBYID*$2@$', $content);
 
-        // Link to diary report by moduleid.
+        // Link to margic report by moduleid.
         $pattern = "#(".$base."\/report.php\?id\=)([0-9]+)#";
-        $content = preg_replace($pattern, '$@DIARYREPORT*$2@$', $content);
+        $content = preg_replace($pattern, '$@margicREPORT*$2@$', $content);
 
-        // Link to diary entry by moduleid.
+        // Link to margic entry by moduleid.
         $pattern = "#(".$base."\/edit.php\?id\=)([0-9]+)#";
-        $content = preg_replace($pattern, '$@DIARYEDIT*$2@$', $content);
+        $content = preg_replace($pattern, '$@margicEDIT*$2@$', $content);
 
         return $content;
     }

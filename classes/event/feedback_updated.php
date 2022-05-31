@@ -15,22 +15,20 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The mod_diary feedback updated event.
+ * The mod_margic feedback updated event.
  *
- * @package   mod_diary
- * @copyright 2014 drachels@drachels.com
+ * @package   mod_margic
+ * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-namespace mod_diary\event;
-
-defined('MOODLE_INTERNAL') || die();
+namespace mod_margic\event;
 
 /**
- * The mod_diary feedback updated class.
+ * The mod_margic feedback updated class.
  *
- * @package   mod_diary
+ * @package   mod_margic
  * @since     Moodle 2.7
- * @copyright 2014 drachels@drachels.com
+ * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class feedback_updated extends \core\event\base {
@@ -41,7 +39,7 @@ class feedback_updated extends \core\event\base {
     protected function init() {
         $this->data['crud'] = 'u';
         $this->data['edulevel'] = self::LEVEL_TEACHING;
-        $this->data['objecttable'] = 'diary';
+        $this->data['objecttable'] = 'margic';
     }
 
     /**
@@ -50,7 +48,7 @@ class feedback_updated extends \core\event\base {
      * @return string
      */
     public static function get_name() {
-        return get_string('eventfeedbackupdated', 'mod_diary');
+        return get_string('eventfeedbackupdated', 'mod_margic');
     }
 
     /**
@@ -59,7 +57,7 @@ class feedback_updated extends \core\event\base {
      * @return string
      */
     public function get_description() {
-        return "The user with id '$this->userid' has updated feedback for the diary activity with the course module id
+        return "The user with id '$this->userid' has updated feedback for the margic activity with the course module id
             '$this->contextinstanceid'";
     }
 
@@ -69,7 +67,7 @@ class feedback_updated extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/diary/report.php', array(
+        return new \moodle_url('/mod/margic/report.php', array(
             'id' => $this->contextinstanceid
         ));
     }
@@ -85,7 +83,7 @@ class feedback_updated extends \core\event\base {
         ));
         return array(
             $this->courseid,
-            'diary',
+            'margic',
             'report',
             $url->out(),
             $this->objectid,
