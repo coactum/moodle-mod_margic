@@ -4,7 +4,7 @@
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
   <TABLES>
-    <TABLE NAME="margic" COMMENT="data for each margic">
+    <TABLE NAME="margic" COMMENT="Contains the data for all margics">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="course" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
@@ -30,7 +30,7 @@
         <INDEX NAME="course" UNIQUE="false" FIELDS="course"/>
       </INDEXES>
     </TABLE>
-    <TABLE NAME="margic_entries" COMMENT="All the margic entries of all people">
+    <TABLE NAME="margic_entries" COMMENT="Contains the user entries saved in all margics">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="margic" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
@@ -54,7 +54,7 @@
       </INDEXES>
     </TABLE>
 
-    <TABLE NAME="margic_annotations" COMMENT="Contains all annotations of margic entries">
+    <TABLE NAME="margic_annotations" COMMENT="Contains the annotations made in all margics.">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" COMMENT="Id of the annotation"/>
         <FIELD NAME="margic" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Id of the margic annotation belongs to"/>
@@ -77,7 +77,7 @@
       </INDEXES>
     </TABLE>
 
-    <TABLE NAME="margic_annotation_types" COMMENT="Contains all types of margic annotations">
+    <TABLE NAME="margic_annotation_types" COMMENT="Contains the annotation types of all margics">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" COMMENT="Id of the error type"/>
         <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Moodle id of the user that has created the error type"/>

@@ -243,6 +243,35 @@ $string['annotatedtextnotfound'] = 'Annotated text not found';
 $string['annotatedtextinvalid'] = 'The originally annotated text has become invalid (e.g. due to a subsequent change to the original entry). The marking for this annotation must therefore be redone.';
 $string['notallowedtodothis'] = 'No permissions to do this.';
 
+// Privacy.
+$string['privacy:metadata:margic_entries'] = 'Contains the user entries saved in all margics.';
+$string['privacy:metadata:margic_annotations'] = 'Contains the annotations made in all margics.';
+$string['privacy:metadata:margic_annotation_types'] = 'Contains the annotation types of all margics.';
+$string['privacy:metadata:margic_entries:margic'] = 'ID of the Margic the entry belongs to.';
+$string['privacy:metadata:margic_entries:userid'] = 'ID of the user the entry belongs to.';
+$string['privacy:metadata:margic_entries:timecreated'] = 'Date on which the entry was created.';
+$string['privacy:metadata:margic_entries:timemodified'] = 'Time the entry was last modified.';
+$string['privacy:metadata:margic_entries:text'] = 'The content of the entry.';
+$string['privacy:metadata:margic_entries:rating'] = 'The grade with which the entry was rated.';
+$string['privacy:metadata:margic_entries:entrycomment'] = 'The teachers comment for the entry.';
+$string['privacy:metadata:margic_annotations:margic'] = 'ID of the Margic the annotated entry belongs to.';
+$string['privacy:metadata:margic_annotations:entry'] = 'ID of the entry the annotation belongs to.';
+$string['privacy:metadata:margic_annotations:userid'] = 'ID of the user that made the annotation.';
+$string['privacy:metadata:margic_annotations:timecreated'] = 'Date on which the annotation was created.';
+$string['privacy:metadata:margic_annotations:timemodified'] = 'Time the annotation was last modified.';
+$string['privacy:metadata:margic_annotations:type'] = 'Id of the type of the annotation.';
+$string['privacy:metadata:margic_annotations:text'] = 'Content of the annotation.';
+$string['privacy:metadata:margic_annotation_types:userid'] = 'ID of the user that made the annotation type.';
+$string['privacy:metadata:margic_annotation_types:timecreated'] = 'Date on which the annotation type was created.';
+$string['privacy:metadata:margic_annotation_types:timemodified'] = 'Time the annotation type was last modified.';
+$string['privacy:metadata:margic_annotation_types:name'] = 'Name of the annotation type.';
+$string['privacy:metadata:margic_annotation_types:color'] = 'Color of the annotation type as hex value.';
+$string['privacy:metadata:core_rating'] = 'Ratings added to margic entries are stored using the core_rating system.';
+$string['privacy:metadata:core_files'] = 'Files linked to margic entries are stored using the core_files system.';
+$string['privacy:metadata:preference:sortoption'] = 'The preference for the sorting of each margic.';
+$string['privacy:metadata:preference:margic_pagecount'] = 'The number of entries that should be shown per page for each Margic.';
+$string['privacy:metadata:preference:margic_activepage'] = 'The number of the page currently opened in each Margic.';
+
 // Löschen.
 $string['numwordscln'] = '{$a->one} clean text words using {$a->two} characters, NOT including {$a->three} spaces. ';
 $string['numwordsstd'] = '{$a->one} standardized words using {$a->two} characters, including {$a->three} spaces. ';

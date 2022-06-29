@@ -229,6 +229,36 @@ $string['annotatedtextnotfound'] = 'Annotierter Text nicht gefunden';
 $string['annotatedtextinvalid'] = 'Der ursprünglich annotierte Text ist (z. B. durch eine nachträgliche Änderung des ursprünglichen Beitrags) ungültig geworden. Die Markierung für diese Annotierung muss deshalb neu gesetzt werden.';
 $string['notallowedtodothis'] = 'Vorgang nicht möglich.';
 
+
+// Privacy.
+$string['privacy:metadata:margic_entries'] = 'Enthält die gespeicherten Benutzereinträge aller Margics.';
+$string['privacy:metadata:margic_annotations'] = 'Enthält die in allen Margics gemacht Annotationen.';
+$string['privacy:metadata:margic_annotation_types'] = 'Enthält die Fehlertypen aus allen Margics.';
+$string['privacy:metadata:margic_entries:margic'] = 'ID des Margic, zu dem der Eintrag gehört.';
+$string['privacy:metadata:margic_entries:userid'] = 'ID des Benutzers, zu dem der Eintrag gehört.';
+$string['privacy:metadata:margic_entries:timecreated'] = 'Datum, an dem der Eintrag erstellt wurde.';
+$string['privacy:metadata:margic_entries:timemodified'] = 'Zeitpunkt der letzten Änderung des Eintrags.';
+$string['privacy:metadata:margic_entries:text'] = 'Der Inhalt des Eintrags.';
+$string['privacy:metadata:margic_entries:rating'] = 'Die Note, mit der der Eintrag bewertet wurde.';
+$string['privacy:metadata:margic_entries:entrycomment'] = 'Der Kommentar des Lehrers zu diesem Eintrag.';
+$string['privacy:metadata:margic_annotations:margic'] = 'ID des Margics, zu dem der annotierte Eintrag gehört.';
+$string['privacy:metadata:margic_annotations:entry'] = 'ID des Eintrags, zu dem die Annotation gehört.';
+$string['privacy:metadata:margic_annotations:userid'] = 'ID des Benutzers, der die Annotation angelegt hat.';
+$string['privacy:metadata:margic_annotations:timecreated'] = 'Datum, an dem die Annotation erstellt wurde.';
+$string['privacy:metadata:margic_annotations:timemodified'] = 'Zeitpunkt der letzten Änderung der Annotation.';
+$string['privacy:metadata:margic_annotations:type'] = 'ID des Typs der Annotation.';
+$string['privacy:metadata:margic_annotations:text'] = 'Inhalt der Annotation.';
+$string['privacy:metadata:margic_annotation_types:userid'] = 'ID des Benutzers, der den Fehlertyp erstellt hat.';
+$string['privacy:metadata:margic_annotation_types:timecreated'] = 'Datum, an dem der Fehlertyp erstellt wurde.';
+$string['privacy:metadata:margic_annotation_types:timemodified'] = 'Zeitpunkt der letzten Änderung des Fehlertyps.';
+$string['privacy:metadata:margic_annotation_types:name'] = 'Name des Fehlertyps.';
+$string['privacy:metadata:margic_annotation_types:color'] = 'Farbe des Fehlertyps als Hex-Wert.';
+$string['privacy:metadata:core_rating'] = 'Die zu den Margic-Einträgen hinzugefügten Bewertungen werden unter Verwendung des core_rating-Systems gespeichert.';
+$string['privacy:metadata:core_files'] = 'Dateien, die mit Margic-Einträgen verknüpft sind, werden mithilfe des Systems core_files gespeichert.';
+$string['privacy:metadata:preference:sortoption'] = 'Die Präferenz für die Sortierung jedes Margics.';
+$string['privacy:metadata:preference:margic_pagecount'] = 'Die Anzahl der Einträge, die pro Seite in jedem Margic angezeigt werden sollen.';
+$string['privacy:metadata:preference:margic_activepage'] = 'Die Nummer der aktuell geöffneten Seite in jedem Margic.';
+
 // löschen
 $string['numwordscln'] = '{$a->one} bereinigte Wörter mit {$a->two} Zeichen, AUSSCHLIEßLICH {$a->three} Leerzeichen. ';
 $string['numwordsstd'] = '{$a->one} standardisierte Wörter mit {$a->two} Zeichen, einschließlich {$a->three} Leerzeichen. ';
