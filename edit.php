@@ -87,7 +87,7 @@ if ($course->format == 'weeks' and $moduleinstance->days) {
     $timefinish = false;
 }
 
-if (!$moduleinstance->editall && $timefinish && (time() > $timefinish)) {
+if (($entryid && !$moduleinstance->editall) || ($timefinish && (time() >= $timefinish))) {
     // Trigger invalid_access_attempt with redirect to the view page.
     $params = array(
         'objectid' => $id,

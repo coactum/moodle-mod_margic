@@ -84,8 +84,9 @@ class margic_view implements renderable, templatable {
      * @param string $sortmode Sort mode for the margic instance
      * @param string $entrybgc Background color of the entries
      * @param string $entrytextbgc Background color of the texts in the entries
-     * @param bool $caneditentries If entries can be edited
-     * @param bool $edittimeends Time when entries cant be edited anymore
+     * @param bool $caneditentries If own entries can be edited
+     * @param int $edittimeends Time when entries cant be edited anymore
+     * @param bool $edittimehasended If edit time has ended
      * @param bool $canmanageentries If entries can be managed
      * @param string $sesskey The session key
      * @param string $currentuserrating The rating of the current user viewing the page
@@ -99,7 +100,7 @@ class margic_view implements renderable, templatable {
      * @param bool $canmakeannotations If user can make annotations
      * @param array $annotationtypes Array with annotation types for form
      */
-    public function __construct($cm, $entries, $sortmode, $entrybgc, $entrytextbgc, $caneditentries, $edittimeends, $canmanageentries,
+    public function __construct($cm, $entries, $sortmode, $entrybgc, $entrytextbgc, $caneditentries, $edittimeends, $edittimehasended, $canmanageentries,
         $sesskey, $currentuserrating, $ratingaggregationmode, $courseid, $singleuser, $pagecountoptions, $pagebar, $entriescount, $annotationmode, $canmakeannotations, $annotationtypes) {
 
         $this->cm = $cm;
@@ -110,6 +111,7 @@ class margic_view implements renderable, templatable {
         $this->entrytextbgc = $entrytextbgc;
         $this->caneditentries = $caneditentries;
         $this->edittimeends = $edittimeends;
+        $this->edittimehasended = $edittimehasended;
         $this->canmanageentries = $canmanageentries;
         $this->sesskey = $sesskey;
         $this->currentuserrating = $currentuserrating;
@@ -186,6 +188,7 @@ class margic_view implements renderable, templatable {
         $data->entrytextbgc = $this->entrytextbgc;
         $data->caneditentries = $this->caneditentries;
         $data->edittimeends = $this->edittimeends;
+        $data->edittimehasended = $this->edittimehasended;
         $data->canmanageentries = $this->canmanageentries;
         $data->sesskey = $this->sesskey;
         $data->currentuserrating = $this->currentuserrating;

@@ -276,14 +276,14 @@ if ($moduleinstance->assessed != 0) {
 }
 
 $timenow = time();
-if ($moduleinstance->editall || !$moduleinstance->timeclose) {
-    $editentries = true;
+if (!$moduleinstance->timeclose) {
+    $edittimehasended = false;
     $edittimeends = false;
-} else if (!$moduleinstance->editall && $moduleinstance->timeclose && $timenow < $moduleinstance->timeclose) {
-    $editentries = true;
+} else if ($moduleinstance->timeclose && $timenow < $moduleinstance->timeclose) {
+    $edittimehasended = false;
     $edittimeends = $moduleinstance->timeclose;
-} else if (!$moduleinstance->editall && $moduleinstance->timeclose && $timenow >= $moduleinstance->timeclose) {
-    $editentries = false;
+} else if ($moduleinstance->timeclose && $timenow >= $moduleinstance->timeclose) {
+    $edittimehasended = true;
     $edittimeends = $moduleinstance->timeclose;
 }
 
@@ -292,8 +292,8 @@ echo groups_print_activity_menu($cm, $CFG->wwwroot . "/mod/margic/view.php?id=$i
 
 // Output page.
 $page = new margic_view($cm, $margic->get_entries_grouped_by_pagecount(), $margic->get_sortmode(),
-    get_config('mod_margic', 'entrybgc'), get_config('mod_margic', 'entrytextbgc'), $editentries,
-    $edittimeends, $canmanageentries, sesskey(), $currentuserrating, $ratingaggregationmode, $course->id,
+    get_config('mod_margic', 'entrybgc'), get_config('mod_margic', 'entrytextbgc'), $moduleinstance->editall,
+    $edittimeends, $edittimehasended, $canmanageentries, sesskey(), $currentuserrating, $ratingaggregationmode, $course->id,
     $userid, $margic->get_pagecountoptions(), $margic->get_pagebar(), count($margic->get_entries()), $annotationmode, $canmakeannotations, $margic->get_annotationtypes_for_form());
 
 echo $OUTPUT->render($page);

@@ -24,7 +24,7 @@
 {{#js}}
 {{/js}}
 
-{{#edittimeends}}{{^caneditentries}}<div class="alert alert-danger alert-block fade in" role="alert"><button type="button" class="close" data-dismiss="alert">×</button>{{#str}}editingended, mod_margic{{/str}}</div>{{/caneditentries}}{{/edittimeends}}
+{{#edittimehasended}}{{#edittimeends}}<div class="alert alert-danger alert-block fade in" role="alert"><button type="button" class="close" data-dismiss="alert">×</button>{{#str}}editingended, mod_margic, {{#userdate}}{{edittimeends}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}}{{/str}}</div>{{/edittimeends}}{{/edittimehasended}}
 
 {{#canmanageentries}}<h3>{{#str}}entries, mod_margic{{/str}}</h3>{{/canmanageentries}}
 {{^canmanageentries}}<h3>{{#str}}myentries, mod_margic{{/str}}</h3>{{/canmanageentries}}
@@ -44,7 +44,7 @@
 </div>
 
 <div class="pb-1">
-    {{#caneditentries}}<a class="btn btn-primary mr-1" href="edit.php?id={{cmid}}"> {{#str}}startnewentry, mod_margic{{/str}} </a>{{/caneditentries}}
+    {{^edittimehasended}}<a class="btn btn-primary mr-1" href="edit.php?id={{cmid}}"> {{#str}}startnewentry, mod_margic{{/str}} </a>{{/edittimehasended}}
     {{#entries.0}}
         {{#canmanageentries}}<button class="btn btn-primary" data-toggle="collapse" data-target=".gradingform" aria-expanded="false" aria-controls=".gradingform" title="{{#str}}toggleratingform, mod_margic{{/str}}">{{#str}}toggleratingform, mod_margic{{/str}}</button>{{/canmanageentries}}
         {{#canmanageentries}}{{#singleuser}}<a class="btn btn-primary m-1" href="view.php?id={{cmid}}"> {{#str}}viewallentries, mod_margic{{/str}} </a>{{/singleuser}}{{/canmanageentries}}
@@ -96,7 +96,7 @@
 <div class="d-flex justify-content-between">
     <div class="entry {{#annotationmode}}w-75{{/annotationmode}} {{^annotationmode}}w-100{{/annotationmode}}" style="background: {{entrybgc}};">
         <h4>{{#str}}entry, mod_margic{{/str}}: {{#userdate}}{{timecreated}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}}
-            {{#entrycanbeedited}}{{#caneditentries}}<a href="edit.php?id={{cmid}}&entryid={{id}}"><i class="fa fa-pencil" title="{{#str}}editthisentry, mod_margic{{/str}}"></i></a>{{/caneditentries}}{{/entrycanbeedited}}
+            {{^edittimehasended}}{{#caneditentries}}{{#entrycanbeedited}}<a href="edit.php?id={{cmid}}&entryid={{id}}"><i class="fa fa-pencil" title="{{#str}}editthisentry, mod_margic{{/str}}"></i></a>{{/entrycanbeedited}}{{/caneditentries}}{{/edittimehasended}}
         </h4>
 
         {{#user}}
@@ -123,9 +123,8 @@
 
         {{#edittimeends}}
             <div class="editend"><span>
-                {{#caneditentries}}{{#str}}editingends, mod_margic{{/str}}: {{/caneditentries}}
-                {{^caneditentries}}{{#str}}editingended, mod_margic{{/str}}: {{/caneditentries}}
-                {{#userdate}}{{edittimeends}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}}
+                {{^edittimehasended}}{{#str}}editingends, mod_margic, {{#userdate}}{{edittimeends}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}}{{/str}}: {{/edittimehasended}}
+                {{#edittimehasended}}{{#str}}editingended, mod_margic, {{#userdate}}{{edittimeends}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}}{{/str}}: {{/edittimehasended}}
             </span></div>
         {{/edittimeends}}
 
