@@ -57,7 +57,6 @@ class provider implements \core_privacy\local\metadata\provider,
      * @return collection Returns the collection of metadata.
      */
     public static function get_metadata(collection $items): collection {
-        error_log('PRIVACY API: get_metadata');
 
         // The table 'margic_entries' stores the user entries saved in all margics.
         $items->add_database_table('margic_entries', [
@@ -112,9 +111,6 @@ class provider implements \core_privacy\local\metadata\provider,
     public static function get_contexts_for_userid(int $userid): contextlist {
         $contextlist = new contextlist();
 
-        error_log('MARGIC PRIVACY API: get_contexts_for_userid for user');
-        error_log(var_export($userid, true));
-
         $params = [
             'modulename' => 'margic',
             'contextlevel' => CONTEXT_MODULE,
@@ -147,8 +143,6 @@ class provider implements \core_privacy\local\metadata\provider,
 
         // Annotationtypes have no specific contexts.
 
-        error_log(var_export($contextlist, true));
-
         return $contextlist;
     }
 
@@ -159,8 +153,6 @@ class provider implements \core_privacy\local\metadata\provider,
      */
     public static function get_users_in_context(userlist $userlist) {
         $context = $userlist->get_context();
-
-        error_log('PRIVACY API: get_users_in_context');
 
         if (! is_a($context, \context_module::class)) {
             return;
@@ -192,9 +184,6 @@ class provider implements \core_privacy\local\metadata\provider,
         ";
 
         $userlist->add_from_sql('userid', $sql, $params);
-
-        error_log(var_export($userlist, true));
-
     }
 
     /**
@@ -204,10 +193,6 @@ class provider implements \core_privacy\local\metadata\provider,
      */
     public static function export_user_data(approved_contextlist $contextlist) {
         global $DB;
-
-        error_log('export_user_data');
-
-        error_log(var_export($contextlist, true));
 
         if (! count($contextlist)) {
             return;
@@ -236,22 +221,32 @@ class provider implements \core_privacy\local\metadata\provider,
         if ($margics->valid()) {
             foreach ($margics as $margic) {
 
-                error_log('Margic:');
-                error_log(var_export($margic->id, true));
-
                 if ($margic) {
                     $context = \context::instance_by_id($margic->contextid);
 
                     // Store the main margic data.
                     $contextdata = helper::get_context_data($context, $user);
+
                     // Write it.
                     writer::with_context($context)->export_data([], $contextdata);
+
+                    // Store related metadata.
+                    // $metadata = (object) [
+                    //     'sortoption' => get_user_preferences('sortoption['.$id.']'),
+                    //     'margic_pagecount' => get_user_preferences('margic_pagecount_'.$id),
+                    //     'margic_activepage' => get_user_preferences('margic_activepage_'.$id),
+                    // ];
+
+                    // writer::with_context($context)->export_metadata([], 'sortoption',
+                    //     get_user_preferences('sortoption['.$id.']'), get_string('privacy:sortoption', 'mod_margic')
+                    // );
+
                     // Write generic module intro files.
                     helper::export_context_files($context, $user);
 
                     self::export_entries_data($userid, $margic->id, $margic->contextid);
 
-                    // export_annotations_data($userid, $mappings)
+                    self::export_annotations_data($userid, $margic->id, $margic->contextid);
                 }
 
             }
@@ -261,7 +256,7 @@ class provider implements \core_privacy\local\metadata\provider,
     }
 
     /**
-     * Store all information about all entries off this user.
+     * Store all information about all entries made by this user.
      *
      * @param   int         $userid The userid of the user whose data is to be exported.
      * @param   int         $margicid The id of the margic.
@@ -270,18 +265,10 @@ class provider implements \core_privacy\local\metadata\provider,
     protected static function export_entries_data(int $userid, $margicid, $margiccontextid) {
         global $DB;
 
-        error_log('export_entries_data');
-
-        error_log('margicid:');
-        error_log(var_export($margicid, true));
-
-        error_log('margiccontextid:');
-        error_log(var_export($margiccontextid, true));
-
-
         // Find all entries for this margic written by the user.
         $sql = "SELECT
                     e.id,
+                    e.margic,
                     e.userid,
                     e.timecreated,
                     e.timemodified,
@@ -302,28 +289,12 @@ class provider implements \core_privacy\local\metadata\provider,
         // Get the margics from the entries.
         $entries = $DB->get_recordset_sql($sql, $params);
 
-        // $discussions = $DB->get_recordset_sql($sql, $params);
         if ($entries->valid()) {
             foreach ($entries as $entry) {
                 if ($entry) {
                     $context = \context::instance_by_id($margiccontextid);
 
-                    // // Store related metadata.
-
-                    // $metadata = (object) [
-                    //     'name' => format_string($discussion->name, true),
-                    //     'timemodified' => transform::datetime($discussion->timemodified),
-                    //     'creator_was_you' => transform::yesno($discussion->userid == $userid),
-                    // ];
-
-                    error_log('ENTRY:');
-                    error_log(var_export($entry->id, true));
-
-                    // Store the entries content.
-                    //writer::with_context($context)->export_data('test', $metadata);
-
                     self::export_entry_data($userid, $context, ['margic-entry-' . $entry->id], $entry);
-
                 }
             }
         }
@@ -341,21 +312,9 @@ class provider implements \core_privacy\local\metadata\provider,
      */
     protected static function export_entry_data(int $userid, \context $context, $subcontext, $entry) {
 
-        error_log('export_entry_data');
-
-        error_log('context:');
-        error_log(var_export($context, true));
-
-        error_log('subcontext:');
-        error_log(var_export($subcontext, true));
-
-        error_log('entry:');
-        error_log(var_export($entry, true));
-
-        unset($entrydata);
-
         // Store related metadata.
         $entrydata = (object) [
+            'margic' => $entry->margic,
             'userid' => $entry->userid,
             'timecreated' => transform::datetime($entry->timecreated),
             'timemodified' => transform::datetime($entry->timemodified),
@@ -380,6 +339,77 @@ class provider implements \core_privacy\local\metadata\provider,
     }
 
     /**
+     * Store all information about all annotations made by this user.
+     *
+     * @param   int         $userid The userid of the user whose data is to be exported.
+     * @param   int         $margicid The id of the margic.
+     * @param   int         $margiccontextid The context id of the margic.
+     */
+    protected static function export_annotations_data(int $userid, $margicid, $margiccontextid) {
+        global $DB;
+
+        // Find all annotations for this margic made by the user.
+        $sql = "SELECT
+                    a.id,
+                    a.margic,
+                    a.entry,
+                    a.userid,
+                    a.timecreated,
+                    a.timemodified,
+                    a.type,
+                    a.text
+                   FROM {margic_annotations} a
+                   WHERE (
+                    a.margic = :margicid AND
+                    a.userid = :userid
+                    )
+        ";
+
+        $params['userid'] = $userid;
+        $params['margicid'] = $margicid;
+
+        // Get the margics from the annotations.
+        $annotations = $DB->get_recordset_sql($sql, $params);
+
+        if ($annotations->valid()) {
+            foreach ($annotations as $annotation) {
+                if ($annotation) {
+                    $context = \context::instance_by_id($margiccontextid);
+
+                    self::export_annotation_data($userid, $context, ['margic-annotation-' . $annotation->id], $annotation);
+                }
+            }
+        }
+
+        $annotations->close();
+    }
+
+    /**
+     * Export all data of the annotation.
+     *
+     * @param   int         $userid The userid of the user whose data is to be exported.
+     * @param   \context    $context The instance of the margic context.
+     * @param   array       $subcontext The location within the current context that this data belongs.
+     * @param   \stdClass   $annotation The annotation.
+     */
+    protected static function export_annotation_data(int $userid, \context $context, $subcontext, $annotation) {
+
+        // Store related metadata.
+        $annotationdata = (object) [
+            'margic' => $annotation->margic,
+            'entry' => $annotation->entry,
+            'userid' => $annotation->userid,
+            'timecreated' => transform::datetime($annotation->timecreated),
+            'timemodified' => transform::datetime($annotation->timemodified),
+            'type' => $annotation->type,
+            'text' => format_text($annotation->text, 2, array('para' => false)),
+        ];
+
+        // Store the annotation data.
+        writer::with_context($context)->export_data($subcontext, $annotationdata);
+    }
+
+    /**
      * Delete all data for all users in the specified context.
      *
      * @param context $context The specific context to delete data for.
@@ -387,32 +417,38 @@ class provider implements \core_privacy\local\metadata\provider,
     public static function delete_data_for_all_users_in_context(\context $context) {
         global $DB;
 
-        // This should not happen, but just in case.
-        if ($context->contextlevel != CONTEXT_MODULE) {
+        // Check that this is a context_module.
+        if (!$context instanceof \context_module) {
             return;
         }
 
-        // Prepare SQL to gather all completed IDs.
+        // Get the course module.
+        if (!$cm = get_coursemodule_from_id('margic', $context->instanceid)) {
+            return;
+        }
 
-        $completedsql = "
-            SELECT fc.id
-              FROM {%s} fc
-              JOIN {modules} m
-                ON m.name = :margic
-              JOIN {course_modules} cm
-                ON cm.instance = fc.margic
-               AND cm.module = m.id
-             WHERE cm.id = :cmid";
-        $completedparams = [
-            'cmid' => $context->instanceid,
-            'margic' => 'margic'
-        ];
+        // Delete advanced grading information.
+        $gradingmanager = get_grading_manager($context, 'mod_margic', 'margic');
+        $controller = $gradingmanager->get_active_controller();
+        if (isset($controller)) {
+            \core_grading\privacy\provider::delete_instance_data($context);
+        }
 
-        // Delete margic entries.
-        $completedtmpids = $DB->get_fieldset_sql(sprintf($completedsql, 'margic_entries'), $completedparams);
-        if (! empty($completedtmpids)) {
-            list ($insql, $inparams) = $DB->get_in_or_equal($completedtmpids, SQL_PARAMS_NAMED);
-            $DB->delete_records_select('margic_entries', "id $insql", $inparams);
+        // Delete all ratings in the context.
+        \core_rating\privacy\provider::delete_ratings($context, 'mod_margic', 'entry');
+
+        // Delete all files from the entrie.
+        $fs = get_file_storage();
+        $fs->delete_area_files($context->id, 'mod_margic', 'entry');
+
+
+        // Delete all records.
+        if ($DB->record_exists('margic_entries', ['margic' => $cm->instance])) {
+            $DB->delete_records('margic_entries', ['margic' => $cm->instance]);
+        }
+
+        if ($DB->record_exists('margic_annotations', ['margic' => $cm->instance])) {
+            $DB->delete_records('margic_annotations', ['margic' => $cm->instance]);
         }
     }
 
@@ -423,37 +459,63 @@ class provider implements \core_privacy\local\metadata\provider,
      */
     public static function delete_data_for_user(approved_contextlist $contextlist) {
         global $DB;
+
         $userid = $contextlist->get_user()->id;
 
-        // Ensure that we only act on module contexts.
-        $contextids = array_map(function ($context) {
-            return $context->instanceid;
-        }, array_filter($contextlist->get_contexts(), function ($context) {
-            return $context->contextlevel == CONTEXT_MODULE;
-        }));
+        foreach ($contextlist->get_contexts() as $context) {
+            // Get the course module.
+            $cm = $DB->get_record('course_modules', ['id' => $context->instanceid]);
 
-        // Prepare SQL to gather all completed IDs.
-        list ($insql, $inparams) = $DB->get_in_or_equal($contextids, SQL_PARAMS_NAMED);
-        $completedsql = "
-            SELECT fc.id
-              FROM {%s} fc
-              JOIN {modules} m
-                ON m.name = :margic
-              JOIN {course_modules} cm
-                ON cm.instance = fc.margic
-               AND cm.module = m.id
-             WHERE fc.userid = :userid
-               AND cm.id $insql";
-        $completedparams = array_merge($inparams, [
-            'userid' => $userid,
-            'margic' => 'margic'
-        ]);
+            // Handle any advanced grading method data first.
+            $grades = $DB->get_records('margic_entries', ['margic' => $cm->instance, 'userid' => $userid]);
+            $gradingmanager = get_grading_manager($context, 'margic_entries', 'margic');
+            $controller = $gradingmanager->get_active_controller();
+            foreach ($grades as $grade) {
+                // Delete advanced grading information.
+                if (isset($controller)) {
+                    \core_grading\privacy\provider::delete_instance_data($context, $grade->id);
+                }
+            }
 
-        // Delete margic entries.
-        $completedtmpids = $DB->get_fieldset_sql(sprintf($completedsql, 'margic_entries'), $completedparams);
-        if (! empty($completedtmpids)) {
-            list ($insql, $inparams) = $DB->get_in_or_equal($completedtmpids, SQL_PARAMS_NAMED);
-            $DB->delete_records_select('margic_entries', "id $insql", $inparams);
+            // Delete ratings.
+            $entriessql = "SELECT
+                                e.id
+                                FROM {margic_entries} e
+                                WHERE (
+                                    e.margic = :margicid AND
+                                    e.userid = :userid
+                                )
+            ";
+
+            $entriesparams = [
+                'margicid' => $cm->instance,
+                'userid' => $userid,
+            ];
+
+            \core_rating\privacy\provider::delete_ratings_select($context, 'mod_margic', 'entry', "IN ($entriessql)", $entriesparams);
+
+
+            // Delete all files from the entries.
+            $fs = get_file_storage();
+            $fs->delete_area_files_select($context->id, 'mod_margic', 'entry', "IN ($entriessql)", $entriesparams);
+
+            // Delete entries.
+            if ($DB->record_exists('margic_entries', ['margic' => $cm->instance, 'userid' => $userid])) {
+
+                $DB->delete_records('margic_entries', [
+                    'margic' => $cm->instance,
+                    'userid' => $userid,
+                ]);
+            }
+
+            // Delete annotations.
+            if ($DB->record_exists('margic_annotations', ['margic' => $cm->instance, 'userid' => $userid])) {
+
+                $DB->delete_records('margic_annotations', [
+                    'margic' => $cm->instance,
+                    'userid' => $userid,
+                ]);
+            }
         }
     }
 
@@ -466,30 +528,46 @@ class provider implements \core_privacy\local\metadata\provider,
         global $DB;
 
         $context = $userlist->get_context();
-        $userids = $userlist->get_userids();
+        $cm = $DB->get_record('course_modules', ['id' => $context->instanceid]);
 
-        // Prepare SQL to gather all completed IDs.
-        list ($insql, $inparams) = $DB->get_in_or_equal($userids, SQL_PARAMS_NAMED);
-        $completedsql = "
-            SELECT fc.id
-              FROM {%s} fc
-              JOIN {modules} m
-                ON m.name = :margic
-              JOIN {course_modules} cm
-                ON cm.instance = fc.margic
-               AND cm.module = m.id
-             WHERE cm.id = :instanceid
-               AND fc.userid $insql";
-        $completedparams = array_merge($inparams, [
-            'instanceid' => $context->instanceid,
-            'margic' => 'margic'
-        ]);
+        list($userinsql, $userinparams) = $DB->get_in_or_equal($userlist->get_userids(), SQL_PARAMS_NAMED);
+        $params = array_merge(['margicid' => $cm->instance], $userinparams);
 
-        // Delete all margic entries.
-        $completedtmpids = $DB->get_fieldset_sql(sprintf($completedsql, 'margic_entries'), $completedparams);
-        if (! empty($completedtmpids)) {
-            list ($insql, $inparams) = $DB->get_in_or_equal($completedtmpids, SQL_PARAMS_NAMED);
-            $DB->delete_records_select('margic_entries', "id $insql", $inparams);
+        // Handle any advanced grading method data first.
+        $grades = $DB->get_records('margic_entries', ['margic' => $cm->instance, 'userid' => $userid]);
+        $gradingmanager = get_grading_manager($context, 'margic_entries', 'margic');
+        $controller = $gradingmanager->get_active_controller();
+        foreach ($grades as $grade) {
+            // Delete advanced grading information.
+            if (isset($controller)) {
+                \core_grading\privacy\provider::delete_instance_data($context, $grade->id);
+            }
+        }
+
+        // Delete ratings.
+        $entriessql = "SELECT
+                            e.id
+                            FROM {margic_entries} e
+                            WHERE (
+                                e.margic = :margicid AND
+                                userid {$userinsql}
+                            )
+        ";
+
+        \core_rating\privacy\provider::delete_ratings_select($context, 'mod_margic', 'entry', "IN ($entriessql)", $params);
+
+
+        // Delete all files from the entries.
+        $fs = get_file_storage();
+        $fs->delete_area_files_select($context->id, 'mod_margic', 'entry', "IN ($entriessql)", $params);
+
+        // Delete entries.
+        if ($DB->record_exists_select('margic_entries', "margic = :margicid AND userid {$userinsql}", $params)) {
+            $DB->delete_records_select('margic_entries', "margic = :margicid AND userid {$userinsql}", $params);
+        }
+
+        if ($DB->record_exists_select('margic_annotations', "margic = :margicid AND userid {$userinsql}", $params)) {
+            $DB->delete_records_select('margic_annotations', "margic = :margicid AND userid {$userinsql}", $params);
         }
     }
 }
