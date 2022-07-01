@@ -35,6 +35,9 @@ $id = required_param('id', PARAM_INT);
 // Module instance ID as alternative.
 $m  = optional_param('m', null, PARAM_INT);
 
+// ID of type that should be deleted.
+$delete  = optional_param('delete', 0, PARAM_INT);
+
 $margic = margic::get_margic_instance($id, $m, false, 'currententry', 0, 1);
 
 $moduleinstance = $margic->get_module_instance();
@@ -63,6 +66,28 @@ if (! $coursesections = $DB->get_record("course_sections", array(
 require_login($course, true, $cm);
 
 require_capability('mod/margic:makeannotations', $context);
+
+// Delete annotation.
+if ($delete !== 0) {
+    $redirecturl = new moodle_url('/mod/margic/annotations_summary.php', array('id' => $id));
+    if ($DB->record_exists('margic_annotation_types', array('id' => $delete))) {
+
+        global $USER;
+
+        $at = $DB->get_record('margic_annotation_types', array('id' => $delete));
+
+        if (($at->defaulttype == 1 && has_capability('mod/margic:editdefaultannotationtypes', $context))
+            || ($at->defaulttype == 0 && $at->userid == $USER->id)) {
+
+            $DB->delete_records('margic_annotation_types', array('id' => $delete));
+            redirect($redirecturl, get_string('annotationtypedeleted', 'mod_margic'), null, notification::NOTIFY_SUCCESS);
+        } else {
+            redirect($redirecturl, get_string('notallowedtodothis', 'mod_margic'), null, notification::NOTIFY_ERROR);
+        }
+    } else {
+        redirect($redirecturl, get_string('notallowedtodothis', 'mod_margic'), null, notification::NOTIFY_ERROR);
+    }
+}
 
 // Get the name for this margic activity.
 $margicname = format_string($moduleinstance->name, true, array(

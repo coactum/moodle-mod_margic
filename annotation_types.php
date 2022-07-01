@@ -36,11 +36,8 @@ $id = required_param('id', PARAM_INT);
 // Module instance ID as alternative.
 $m  = optional_param('m', null, PARAM_INT);
 
-// Module instance ID as alternative.
+// ID of type that should be edited.
 $edit  = optional_param('edit', 0, PARAM_INT);
-
-// Module instance ID as alternative.
-$delete  = optional_param('delete', 0, PARAM_INT);
 
 $margic = margic::get_margic_instance($id, $m, false, 'currententry', 0, 1);
 
@@ -73,18 +70,7 @@ require_capability('mod/margic:makeannotations', $context);
 
 $redirecturl = new moodle_url('/mod/margic/annotations_summary.php', array('id' => $id));
 
-// Delete annotation.
-if ($delete !== 0) {
-    /* global $USER;
-
-    $at = $DB->get_record('margic_annotation_types', array('id' => $delete));
-    if (($at->defaulttype == 1 && has_capability('mod/margic:editdefaultannotationtypes', $context))
-        || ($at->defaulttype == 0 && $at->userid == $USER->id)) {
-
-        $DB->delete_records('margic_annotation_types', array('id' => $delete));
-        redirect($redirecturl, get_string('annotationtypedeleted', 'mod_margic'), null, notification::NOTIFY_SUCCESS);
-    } */
-} else if ($edit !== 0) {
+if ($edit !== 0) {
     $editedtype = $DB->get_record('margic_annotation_types', array('id' => $edit));
     if ($editedtype && (isset($editedtype->defaulttype) && $editedtype->defaulttype == 1 && has_capability('mod/margic:editdefaultannotationtypes', $context))
         || (isset($editedtype->defaulttype) && isset($editedtype->userid) && $editedtype->defaulttype == 0 && $editedtype->userid == $USER->id)) {

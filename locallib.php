@@ -114,11 +114,15 @@ class margic {
         $this->annotationtypes = (array) $DB->get_records_select('margic_annotation_types', $select);
 
         foreach ($this->annotations as $key => $annotation) {
+
             if (!array_key_exists($annotation->type, $this->annotationtypes) && $DB->record_exists('margic_annotation_types', array('id' => $annotation->type))) {
                 $this->annotationtypes[$annotation->type] = $DB->get_record('margic_annotation_types', array('id' => $annotation->type));
             }
 
-            $this->annotations[$key]->color = $this->annotationtypes[$annotation->type]->color;
+            if (isset($this->annotationtypes[$annotation->type])) {
+                $this->annotations[$key]->color = $this->annotationtypes[$annotation->type]->color;
+            }
+
         }
 
         if ($canmanageentries = has_capability('mod/margic:manageentries', $context)) {
@@ -272,13 +276,20 @@ class margic {
                 $this->entries[$i]->annotations = array_values($DB->get_records('margic_annotations', array('margic' => $this->cm->instance, 'entry' => $entry->id)));
 
                 foreach ($this->entries[$i]->annotations as $key => $annotation) {
-                    $this->entries[$i]->annotations[$key]->color = $this->annotationtypes[$annotation->type]->color;
-                    $this->entries[$i]->annotations[$key]->defaulttype = $this->annotationtypes[$annotation->type]->defaulttype;
 
-                    if ($this->entries[$i]->annotations[$key]->defaulttype == 1 && $strmanager->string_exists($this->annotationtypes[$annotation->type]->name, 'mod_margic')) {
-                        $this->entries[$i]->annotations[$key]->type = get_string($this->annotationtypes[$annotation->type]->name, 'mod_margic');
+                    if(!$DB->record_exists('margic_annotation_types', array('id' => $annotation->type))) { // If annotation type does not exist.
+                        $this->entries[$i]->annotations[$key]->color = 'FFFF00';
+                        $this->entries[$i]->annotations[$key]->defaulttype = 0;
+                        $this->entries[$i]->annotations[$key]->type = get_string('deletedannotationtype', 'mod_margic');
                     } else {
-                        $this->entries[$i]->annotations[$key]->type = $this->annotationtypes[$annotation->type]->name;
+                        $this->entries[$i]->annotations[$key]->color = $this->annotationtypes[$annotation->type]->color;
+                        $this->entries[$i]->annotations[$key]->defaulttype = $this->annotationtypes[$annotation->type]->defaulttype;
+
+                        if ($this->entries[$i]->annotations[$key]->defaulttype == 1 && $strmanager->string_exists($this->annotationtypes[$annotation->type]->name, 'mod_margic')) {
+                            $this->entries[$i]->annotations[$key]->type = get_string($this->annotationtypes[$annotation->type]->name, 'mod_margic');
+                        } else {
+                            $this->entries[$i]->annotations[$key]->type = $this->annotationtypes[$annotation->type]->name;
+                        }
                     }
 
                     if (has_capability('mod/margic:makeannotations', $this->context) && $annotation->userid == $USER->id) {
@@ -407,6 +418,7 @@ class margic {
             // if (in_array($this->id, json_decode($types[$key]->unused))) {
             //     unset($types[$key]);
             // }
+
         }
 
         return $types;

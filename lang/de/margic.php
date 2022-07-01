@@ -228,7 +228,8 @@ $string['explanationdefaulttype'] = 'Hier kann ausgewählt werden, ob der Fehler
 $string['annotatedtextnotfound'] = 'Annotierter Text nicht gefunden';
 $string['annotatedtextinvalid'] = 'Der ursprünglich annotierte Text ist (z. B. durch eine nachträgliche Änderung des ursprünglichen Beitrags) ungültig geworden. Die Markierung für diese Annotierung muss deshalb neu gesetzt werden.';
 $string['notallowedtodothis'] = 'Vorgang nicht möglich.';
-
+$string['deletedannotationtype'] = 'Gelöschter Typ';
+$string['errtypedeleted'] = 'Fehlertyp nicht vorhanden.';
 
 // Privacy.
 $string['privacy:metadata:margic_entries'] = 'Enthält die gespeicherten Benutzereinträge aller Margics.';

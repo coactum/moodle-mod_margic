@@ -242,6 +242,8 @@ $string['explanationdefaulttype'] = 'Here you can select whether the annotation 
 $string['annotatedtextnotfound'] = 'Annotated text not found';
 $string['annotatedtextinvalid'] = 'The originally annotated text has become invalid (e.g. due to a subsequent change to the original entry). The marking for this annotation must therefore be redone.';
 $string['notallowedtodothis'] = 'No permissions to do this.';
+$string['deletedannotationtype'] = 'Deleted type';
+$string['errtypedeleted'] = 'Annotation type does not exists.';
 
 // Privacy.
 $string['privacy:metadata:margic_entries'] = 'Contains the user entries saved in all margics.';
