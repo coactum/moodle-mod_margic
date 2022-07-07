@@ -23,6 +23,9 @@
  */
 namespace mod_margic\output;
 
+use mod_margic\local\results;
+use mod_margic\annotation_form;
+
 use renderable;
 use renderer_base;
 use templatable;
@@ -41,6 +44,8 @@ class margic_view implements renderable, templatable {
     protected $cm;
     /** @var int */
     protected $cmid;
+    /** @var object */
+    protected $moduleinstance;
     /** @var object */
     protected $entries;
     /** @var string */
@@ -79,7 +84,8 @@ class margic_view implements renderable, templatable {
     protected $annotationtypes;
     /**
      * Construct this renderable.
-     * @param int $cmid The course module id
+     * @param int $cm The course module
+     * @param array $moduleinstance The moduleinstance for creating grading form
      * @param array $entries The accessible entries for the margic instance
      * @param string $sortmode Sort mode for the margic instance
      * @param string $entrybgc Background color of the entries
@@ -100,11 +106,12 @@ class margic_view implements renderable, templatable {
      * @param bool $canmakeannotations If user can make annotations
      * @param array $annotationtypes Array with annotation types for form
      */
-    public function __construct($cm, $entries, $sortmode, $entrybgc, $entrytextbgc, $caneditentries, $edittimeends, $edittimehasended, $canmanageentries,
+    public function __construct($cm, $moduleinstance, $entries, $sortmode, $entrybgc, $entrytextbgc, $caneditentries, $edittimeends, $edittimehasended, $canmanageentries,
         $sesskey, $currentuserrating, $ratingaggregationmode, $courseid, $singleuser, $pagecountoptions, $pagebar, $entriescount, $annotationmode, $canmakeannotations, $annotationtypes) {
 
         $this->cm = $cm;
         $this->cmid = $this->cm->id;
+        $this->moduleinstance = $moduleinstance;
         $this->entries = $entries;
         $this->sortmode = $sortmode;
         $this->entrybgc = $entrybgc;
@@ -138,28 +145,23 @@ class margic_view implements renderable, templatable {
 
         global $OUTPUT, $DB, $USER, $CFG;
 
-        require_once($CFG->dirroot . '/mod/margic/annotation_form.php');
-
         if ($this->entries) {
 
+            require_once($CFG->dirroot . '/mod/margic/annotation_form.php');
+            require_once($CFG->dirroot . '/mod/margic/classes/local/results.php');
+
+            $grades = make_grades_menu($this->moduleinstance->scale); // For select in grading_form.
+
             foreach ($this->entries as $key => $entry) {
-                if ($this->canmanageentries) {
+                if ($this->canmanageentries) { // Set user picture for teachers.
                     $this->entries[$key]->user->userpicture = $OUTPUT->user_picture($entry->user, array('courseid' => $this->courseid, 'link' => true, 'includefullname' => true));
                 }
 
-                if ($entry->teacher) {
-                    $teacher = $DB->get_record('user', array('id' => $entry->teacher));
-                    $teacherimage = $OUTPUT->user_picture($teacher, array('courseid' => $this->courseid, 'link' => true, 'includefullname' => true));
+                // Add feedback area to entry.
+                $this->entries[$key]->gradingform = results::margic_return_feedback_area_for_entry($this->cmid, $this->courseid, $this->moduleinstance,
+                $entry, $grades, $this->canmanageentries);
 
-                    if ($this->canmanageentries) {
-                        $replace = str_replace('<span class="teacherpicture m-l-1">', '<br><span class="teacherpicture m-l-1">' .  $teacherimage . ' - ', $entry->gradingform);
-                    } else {
-                        $replace = str_replace('<span class="teacherpicture"></span>', '<span class="teacherpicture">' .  $teacherimage, $entry->gradingform);
-                    }
-
-                    $this->entries[$key]->gradingform = $replace;
-                }
-
+                // Add annotation form to entry.
                 if ($this->annotationmode) {
 
                     $mform = new \annotation_form(new \moodle_url('/mod/margic/annotations.php', array('id' => $this->cmid)), array('types' => $this->annotationtypes));

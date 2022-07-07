@@ -87,7 +87,7 @@ class margic {
 
         global $DB, $USER;
 
-        if (isset($id)) {
+        if (isset($id) && $id != 0) {
             list ($course, $cm) = get_course_and_cm_from_cmid($id, 'margic');
             $context = context_module::instance($cm->id);
         } else if (isset($d)) {
@@ -262,11 +262,6 @@ class margic {
                     $this->entries[$i]->needsregrading = false;
                 }
 
-                $grades = make_grades_menu($this->instance->scale);
-
-                $this->entries[$i]->gradingform = results::margic_return_comment_and_grade_form_for_entry($this->cm->id, $this->context, $this->course, $this->instance,
-                    $entry, $grades, $canmanageentries);
-
                 if ($viewinguserid == $entry->userid) {
                     $this->entries[$i]->entrycanbeedited = true;
                 } else {
@@ -277,7 +272,7 @@ class margic {
 
                 foreach ($this->entries[$i]->annotations as $key => $annotation) {
 
-                    if(!$DB->record_exists('margic_annotation_types', array('id' => $annotation->type))) { // If annotation type does not exist.
+                    if (!$DB->record_exists('margic_annotation_types', array('id' => $annotation->type))) { // If annotation type does not exist.
                         $this->entries[$i]->annotations[$key]->color = 'FFFF00';
                         $this->entries[$i]->annotations[$key]->defaulttype = 0;
                         $this->entries[$i]->annotations[$key]->type = get_string('deletedannotationtype', 'mod_margic');
@@ -416,7 +411,7 @@ class margic {
             }
 
             // if (in_array($this->id, json_decode($types[$key]->unused))) {
-            //     unset($types[$key]);
+            // unset($types[$key]);
             // }
 
         }

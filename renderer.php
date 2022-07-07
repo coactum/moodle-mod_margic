@@ -61,7 +61,7 @@ class mod_margic_renderer extends plugin_renderer_base {
 
     /**
      * Print the teacher feedback.
-     * This renders the teacher feedback on the view.php page.
+     * This renders the teacher feedback for margic_user_complete (not used at the moment?).
      *
      * @param object $course
      * @param object $entry
@@ -75,7 +75,7 @@ class mod_margic_renderer extends plugin_renderer_base {
         if (! $teacher = $DB->get_record('user', array(
             'id' => $entry->teacher
         ))) {
-            throw new moodle_exception(get_string('generalerror', 'margic'));
+            throw new moodle_exception(get_string('errnograder', 'margic'));
         }
 
         echo '<table class="feedbackbox">';

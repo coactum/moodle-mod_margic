@@ -37,8 +37,6 @@ use core_privacy\local\request\user_preference_provider;
 
 use core_grades\component_gradeitem as gradeitem; // needed?
 
-defined('MOODLE_INTERNAL') || die(); // needed?
-
 /**
  * Privacy class for requesting user data.
  *
@@ -92,7 +90,6 @@ class provider implements \core_privacy\local\metadata\provider,
         // The margic uses the grading subsystem that saves personal data.
         $items->add_subsystem_link('core_files', [], 'privacy:metadata:core_files');
         $items->add_subsystem_link('core_rating', [], 'privacy:metadata:core_rating');
-
 
         // User preferences in the margic.
         $items->add_user_preference('sortoption', 'privacy:metadata:preference:sortoption');
@@ -232,13 +229,13 @@ class provider implements \core_privacy\local\metadata\provider,
 
                     // Store related metadata.
                     // $metadata = (object) [
-                    //     'sortoption' => get_user_preferences('sortoption['.$id.']'),
-                    //     'margic_pagecount' => get_user_preferences('margic_pagecount_'.$id),
-                    //     'margic_activepage' => get_user_preferences('margic_activepage_'.$id),
+                    // 'sortoption' => get_user_preferences('sortoption['.$id.']'),
+                    // 'margic_pagecount' => get_user_preferences('margic_pagecount_'.$id),
+                    // 'margic_activepage' => get_user_preferences('margic_activepage_'.$id),
                     // ];
 
                     // writer::with_context($context)->export_metadata([], 'sortoption',
-                    //     get_user_preferences('sortoption['.$id.']'), get_string('privacy:sortoption', 'mod_margic')
+                    // get_user_preferences('sortoption['.$id.']'), get_string('privacy:sortoption', 'mod_margic')
                     // );
 
                     // Write generic module intro files.
@@ -441,7 +438,6 @@ class provider implements \core_privacy\local\metadata\provider,
         $fs = get_file_storage();
         $fs->delete_area_files($context->id, 'mod_margic', 'entry');
 
-
         // Delete all records.
         if ($DB->record_exists('margic_entries', ['margic' => $cm->instance])) {
             $DB->delete_records('margic_entries', ['margic' => $cm->instance]);
@@ -493,7 +489,6 @@ class provider implements \core_privacy\local\metadata\provider,
             ];
 
             \core_rating\privacy\provider::delete_ratings_select($context, 'mod_margic', 'entry', "IN ($entriessql)", $entriesparams);
-
 
             // Delete all files from the entries.
             $fs = get_file_storage();
@@ -555,7 +550,6 @@ class provider implements \core_privacy\local\metadata\provider,
         ";
 
         \core_rating\privacy\provider::delete_ratings_select($context, 'mod_margic', 'entry', "IN ($entriessql)", $params);
-
 
         // Delete all files from the entries.
         $fs = get_file_storage();

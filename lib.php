@@ -149,18 +149,21 @@ function margic_delete_instance($id) {
  * Indicates API features that the margic supports.
  *
  * @uses FEATURE_MOD_INTRO
+ * @uses FEATURE_GRADE_HAS_GRADE
+ * @uses FEATURE_GRADE_OUTCOMES
  * @uses FEATURE_RATE
  * @uses FEATURE_GROUPS
  * @uses FEATURE_GROUPINGS
  * @uses FEATURE_COMPLETION_TRACKS_VIEWS
  * @uses FEATURE__BACKUP_MOODLE2
- * @param string $feature
- *            FEATURE_xx constant for requested feature.
- * @return mixed True if module supports feature, null if doesn't know.
+ * @param string $feature Constant for requested feature.
+ * @return mixed True if module supports feature, null if it doesn't.
  */
 function margic_supports($feature) {
     switch ($feature) {
         case FEATURE_MOD_INTRO:
+            return true;
+        case FEATURE_SHOW_DESCRIPTION:
             return true;
         case FEATURE_GRADE_HAS_GRADE:
             return true;
@@ -174,8 +177,8 @@ function margic_supports($feature) {
             return true;
         case FEATURE_COMPLETION_TRACKS_VIEWS:
             return true;
-        /* case FEATURE_BACKUP_MOODLE2:
-            return true; */
+        case FEATURE_BACKUP_MOODLE2:
+            return true;
         default:
             return null;
     }

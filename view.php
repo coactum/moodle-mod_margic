@@ -85,116 +85,9 @@ if (!$canaddentries) {
     throw new moodle_exception(get_string('accessdenied', 'margic'));
 }
 
-// Process incoming data if there is any.
-if ($data = data_submitted()) {
-    confirm_sesskey();
-    $feedback = array();
-    $data = (array) $data;
-
-    if (isset($data["submitbutton"])) {
-        $entries = $margic->get_entries_with_keys();
-
-        foreach ($data as $key => $val) {
-            if (strpos($key, 'r') === 0 || strpos($key, 'c') === 0) {
-                $type = substr($key, 0, 1);
-                $num = substr($key, 1);
-                $feedback[$num][$type] = $val;
-            }
-        }
-
-        $timenow = time();
-        $count = 0;
-        foreach ($feedback as $num => $vals) {
-            $entry = $entries[$num];
-
-            // Only update entries where feedback has actually changed.
-            $ratingchanged = false;
-            if ($moduleinstance->assessed != 0) {
-                $studentrating = clean_param($vals['r'], PARAM_INT);
-            } else {
-                $studentrating = '';
-            }
-            $studentcomment = clean_text($vals['c'], FORMAT_PLAIN);
-
-            if ($studentrating != $entry->rating && ! ($studentrating == '' && $entry->rating == "0")) {
-                $ratingchanged = true;
-            }
-
-            if ($ratingchanged || $studentcomment != $entry->entrycomment) {
-                $newentry = new StdClass();
-                $newentry->rating = $studentrating;
-                $newentry->entrycomment = $studentcomment;
-                $newentry->teacher = $USER->id;
-                $newentry->timemarked = $timenow;
-                $newentry->mailed = 0; // Make sure mail goes out (again, even).
-                $newentry->id = $num;
-                if (! $DB->update_record("margic_entries", $newentry)) {
-                    notify("Failed to update the margic feedback for user $entry->userid");
-                } else {
-                    $count ++;
-                }
-
-                if ($moduleinstance->assessed != 0) {
-                    $ratingoptions = new stdClass();
-                    $ratingoptions->contextid = $context->id;
-                    $ratingoptions->component = 'mod_margic';
-                    $ratingoptions->ratingarea = 'entry';
-                    $ratingoptions->itemid = $entry->id;
-                    $ratingoptions->aggregate = $moduleinstance->assessed; // The aggregation method.
-                    $ratingoptions->scaleid = $moduleinstance->scale;
-                    $ratingoptions->rating = $studentrating;
-                    $ratingoptions->userid = $entry->userid;
-                    $ratingoptions->timecreated = $entry->timecreated;
-                    $ratingoptions->timemodified = $timenow;
-                    $ratingoptions->returnurl = $CFG->wwwroot . '/mod/margic/view.php?id' . $id;
-
-                    $ratingoptions->assesstimestart = $moduleinstance->assesstimestart;
-                    $ratingoptions->assesstimefinish = $moduleinstance->assesstimefinish;
-
-                    // Check if there is already a rating, and if so, just update it.
-                    if ($rec = results::check_rating_entry($ratingoptions)) {
-                        $ratingoptions->id = $rec->id;
-                        $DB->update_record('rating', $ratingoptions, false);
-                    } else {
-                        $DB->insert_record('rating', $ratingoptions, false);
-                    }
-                }
-
-                $record = $moduleinstance;
-                $record->cmidnumber = $cm->idnumber;
-
-                margic_update_grades($record, $entry->userid);
-            }
-        }
-
-        // Trigger module feedback updated event.
-        $event = \mod_margic\event\feedback_updated::create(array(
-            'objectid' => $moduleinstance->id,
-            'context' => $context
-        ));
-        $event->add_record_snapshot('course_modules', $cm);
-        $event->add_record_snapshot('course', $course);
-        $event->add_record_snapshot('margic', $moduleinstance);
-        $event->trigger();
-
-        // Redirect and display how many entries were updated with feedback and grades.
-        redirect(new moodle_url('/mod/margic/view.php', array('id' => $id)), get_string('feedbackupdated', 'mod_margic', $count), null, notification::NOTIFY_SUCCESS);
-    } else {
-        // Redirect if pagecount is updated.
-        redirect(new moodle_url('/mod/margic/view.php', array('id' => $id)), null, null, null);
-    }
-
-} else {
-
-    // Trigger course_module_viewed event.
-    $event = \mod_margic\event\course_module_viewed::create(array(
-        'objectid' => $moduleinstance->id,
-        'context' => $context
-    ));
-    $event->add_record_snapshot('course_modules', $cm);
-    $event->add_record_snapshot('course', $course);
-    $event->add_record_snapshot('margic', $moduleinstance);
-    $event->trigger();
+if ($pagecount) {
+    // Redirect if pagecount is updated.
+    redirect(new moodle_url('/mod/margic/view.php', array('id' => $id)), null, null, null);
 }
 
 // Toolbar action handler for download.
@@ -202,6 +95,16 @@ if (!empty($action) && $action == 'download' && has_capability('mod/margic:adden
     // Call download entries function in lib.php.
     results::download_entries($context, $course, $moduleinstance);
 }
+
+// Trigger course_module_viewed event.
+$event = \mod_margic\event\course_module_viewed::create(array(
+    'objectid' => $moduleinstance->id,
+    'context' => $context
+));
+$event->add_record_snapshot('course_modules', $cm);
+$event->add_record_snapshot('course', $course);
+$event->add_record_snapshot('margic', $moduleinstance);
+$event->trigger();
 
 // Get the name for this margic activity.
 $margicname = format_string($moduleinstance->name, true, array(
@@ -291,7 +194,7 @@ if (!$moduleinstance->timeclose) {
 echo groups_print_activity_menu($cm, $CFG->wwwroot . "/mod/margic/view.php?id=$id");
 
 // Output page.
-$page = new margic_view($cm, $margic->get_entries_grouped_by_pagecount(), $margic->get_sortmode(),
+$page = new margic_view($cm, $moduleinstance, $margic->get_entries_grouped_by_pagecount(), $margic->get_sortmode(),
     get_config('mod_margic', 'entrybgc'), get_config('mod_margic', 'entrytextbgc'), $moduleinstance->editall,
     $edittimeends, $edittimehasended, $canmanageentries, sesskey(), $currentuserrating, $ratingaggregationmode, $course->id,
     $userid, $margic->get_pagecountoptions(), $margic->get_pagebar(), count($margic->get_entries()), $annotationmode, $canmakeannotations, $margic->get_annotationtypes_for_form());
