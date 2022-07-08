@@ -37,7 +37,7 @@ function xmldb_margic_upgrade($oldversion) {
 
         // Add the formatcomment field to the margic_entries table.
         $table = new xmldb_table('margic_entries');
-        $field = new xmldb_field('formatcomment', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, '0', 'entrycomment');
+        $field = new xmldb_field('formatcomment', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, '1', 'entrycomment');
 
         // Conditionally launch add field.
         if (!$dbman->field_exists($table, $field)) {

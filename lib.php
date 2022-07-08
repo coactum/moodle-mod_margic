@@ -914,7 +914,7 @@ function margic_pluginfile($course, $cm, $context, $filearea, $args, $forcedownl
         return false;
     }
 
-    if ($filearea !== 'entry') {
+    if ($filearea !== 'entry' && $filearea !== 'feedback') {
         return false;
     }
 

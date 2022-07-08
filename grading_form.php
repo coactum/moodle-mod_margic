@@ -110,15 +110,14 @@ class mod_margic_grading_form extends moodleform {
 
         // Feedback text.
         if ($feedbackdisabled) { // If override is set in the gradebook show feedback from there and dont show editor.
-            $mform->addElement('hidden', 'feedback_' . $this->_customdata['entry']->id, $feedbacktext);
-            $mform->setType('feedback_' . $this->_customdata['entry']->id, PARAM_RAW);
+            $mform->addElement('hidden', 'feedback_' . $this->_customdata['entry']->id . '_editor', $feedbacktext);
+            $mform->setType('feedback_' . $this->_customdata['entry']->id . '_editor', PARAM_RAW);
 
             $mform->addElement('static', 'gradebookfeedback', get_string('feedbackingradebook', 'margic') . ': ', $gradebooklinkfeedback);
 
         } else {
-            $mform->addElement('editor', 'feedback_' . $this->_customdata['entry']->id, get_string('entrycomment', 'mod_margic'), null, $this->_customdata['editoroptions']);
-            $mform->setType('feedback_' . $this->_customdata['entry']->id, PARAM_RAW);
-            $mform->setDefault('feedback_' . $this->_customdata['entry']->id, array('text' => $feedbacktext));
+            $mform->addElement('editor', 'feedback_' . $this->_customdata['entry']->id . '_editor', get_string('entrycomment', 'mod_margic'), null, $this->_customdata['editoroptions']);
+            $mform->setType('feedback_' . $this->_customdata['entry']->id . '_editor', PARAM_RAW);
 
             $this->add_action_buttons();
         }

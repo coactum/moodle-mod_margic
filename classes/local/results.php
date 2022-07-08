@@ -346,8 +346,6 @@ class results {
 
         // 20210613 Added more custom data to use in edit_form.php to prevent illegal access.
         $editoroptions = array(
-            'timeclose' => $margic->timeclose,
-            'editall' => $margic->editall,
             'editdates' => $margic->editdates,
             'trusttext' => true,
             'maxfiles' => $maxfiles,
@@ -489,7 +487,9 @@ class results {
 
                 list ($editoroptions, $attachmentoptions) = self::margic_get_editor_and_attachment_options($course, $context, $margic);
 
-                $data = file_prepare_standard_editor($data, 'feedback_' . $entry->id, $editoroptions, $context, 'mod_margic', 'entry', $data->entry);
+                $editoroptions['autosave'] = false;
+
+                $data = file_prepare_standard_editor($data, 'feedback_' . $entry->id, $editoroptions, $context, 'mod_margic', 'feedback', $data->entry);
                 $data = file_prepare_standard_filemanager($data, 'attachment', $attachmentoptions, $context, 'mod_margic', 'attachment', $data->entry);
 
                 $data->{'rating_' . $entry->id} = $entry->rating;

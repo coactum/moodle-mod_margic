@@ -95,16 +95,17 @@ if ($fromform = $mform->get_data()) { // If grading form is submitted.
         redirect(new moodle_url('/mod/margic/view.php', array('id' => $id)), get_string('errfeedbacknotupdated', 'mod_margic'), null, notification::NOTIFY_ERROR);
     }
 
-    $newrating = $fromform->{'rating_' . $entry->id};
-
-
     $fromform = file_postupdate_standard_editor($fromform, 'feedback_' . $entry->id, $editoroptions, $editoroptions['context'], 'mod_margic', 'feedback', $entry->id);
 
     $newfeedback = file_rewrite_pluginfile_urls($fromform->{'feedback_' . $entry->id}, 'pluginfile.php', $context->id, 'mod_margic', 'feedback', $entry->id);
 
-    $newfeedback = format_text($newfeedback, $fromform->{'feedback_' . $entry->id}['format'], array('para' => false));
+    $newfeedback = format_text($newfeedback, $fromform->{'feedback_' . $entry->id . '_editor'}['format'], array('para' => false));
 
-    if ($newrating != $entry->rating) {
+    if (isset($fromform->{'rating_' . $entry->id})) {
+        $newrating = $fromform->{'rating_' . $entry->id};
+    }
+
+    if (isset($newrating) && $newrating != $entry->rating) {
         $ratingchanged = true;
     } else {
         $ratingchanged = false;
@@ -121,7 +122,7 @@ if ($fromform = $mform->get_data()) { // If grading form is submitted.
 
         $entry->rating = $newrating;
         $entry->entrycomment = $newfeedback;
-        $entry->formatcomment = $fromform->{'feedback_' . $entry->id}['format'];
+        $entry->formatcomment = $fromform->{'feedback_' . $entry->id . '_editor'}['format'];
         $entry->teacher = $USER->id;
         $entry->timemarked = $timenow;
         $entry->mailed = 0; // Make sure mail goes out (again).

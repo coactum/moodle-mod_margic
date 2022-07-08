@@ -188,7 +188,6 @@ if ($form->is_cancelled()) {
         }
     }
 
-
     $fromform = file_postupdate_standard_editor($fromform, 'text', $editoroptions, $editoroptions['context'], 'mod_margic', 'entry', $newentry->id);
 
     $entrytext = file_rewrite_pluginfile_urls($fromform->text, 'pluginfile.php', $context->id, 'mod_margic', 'entry', $newentry->id);
