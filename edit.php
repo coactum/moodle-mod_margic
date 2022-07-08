@@ -148,7 +148,7 @@ $data = file_prepare_standard_editor($data, 'text', $editoroptions, $context, 'm
 $data = file_prepare_standard_filemanager($data, 'attachment', $attachmentoptions, $context, 'mod_margic', 'attachment', $data->entryid);
 
 // Create form.
-$form = new mod_margic_entry_form(null, array('margic' => $moduleinstance->editdates, 'editoroptions' => $editoroptions, 'attachmentoptions' => $attachmentoptions));
+$form = new mod_margic_entry_form(null, array('margic' => $moduleinstance->editdates, 'editoroptions' => $editoroptions));
 
 // Set existing data for this entry.
 $form->set_data($data);

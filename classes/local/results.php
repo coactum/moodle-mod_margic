@@ -341,21 +341,25 @@ class results {
      * @return array $attachmentoptions Array containing the editor and attachment options.
      */
     public static function margic_get_editor_and_attachment_options($course, $context, $margic) {
-        $maxfiles = 5;
         $maxbytes = $course->maxbytes;
 
-        // 20210613 Added more custom data to use in edit_form.php to prevent illegal access.
+        // For the editor.
         $editoroptions = array(
-            'editdates' => $margic->editdates,
             'trusttext' => true,
-            'maxfiles' => $maxfiles,
+            'maxfiles' => EDITOR_UNLIMITED_FILES,
             'maxbytes' => $maxbytes,
             'context' => $context,
-            'subdirs' => false
+            'subdirs' => false,
+
+            'editdates' => $margic->editdates, // Custom data (not really for editor).
         );
+
+        // If maxfiles would be set to an int and more files are given the editor saves them all but saves the overcouting incorrect so that white box is diaplayed.
+
+        // For a file attachements field (not really needed here?).
         $attachmentoptions = array(
             'subdirs' => false,
-            'maxfiles' => $maxfiles,
+            'maxfiles' => 1,
             'maxbytes' => $maxbytes
         );
 
@@ -494,7 +498,7 @@ class results {
 
                 $data->{'rating_' . $entry->id} = $entry->rating;
 
-                $mform = new \mod_margic_grading_form(new \moodle_url('/mod/margic/grade_entry.php', array('id' => $cmid, 'entryid' => $entry->id)), array('courseid' => $course->id, 'margic' => $margic, 'entry' => $entry, 'grades' => $grades, 'teacherimg' => $teacherimage, 'editoroptions' => $editoroptions, 'attachmentoptions' => $attachmentoptions));
+                $mform = new \mod_margic_grading_form(new \moodle_url('/mod/margic/grade_entry.php', array('id' => $cmid, 'entryid' => $entry->id)), array('courseid' => $course->id, 'margic' => $margic, 'entry' => $entry, 'grades' => $grades, 'teacherimg' => $teacherimage, 'editoroptions' => $editoroptions));
 
                 // Set default data.
                 $mform->set_data($data);

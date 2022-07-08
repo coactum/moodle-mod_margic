@@ -84,7 +84,7 @@ $data = file_prepare_standard_filemanager($data, 'attachment', $attachmentoption
 $data->{'rating_' . $entry->id} = $entry->rating;
 
 // Instantiate gradingform and save submitted data if it exists.
-$mform = new \mod_margic_grading_form(null, array('courseid' => $course->id, 'margic' => $moduleinstance, 'entry' => $entry, 'grades' => $grades, 'teacherimg' => '', 'editoroptions' => $editoroptions, 'attachmentoptions' => $attachmentoptions));
+$mform = new \mod_margic_grading_form(null, array('courseid' => $course->id, 'margic' => $moduleinstance, 'entry' => $entry, 'grades' => $grades, 'teacherimg' => '', 'editoroptions' => $editoroptions));
 
 $mform->set_data($data);
 
@@ -120,7 +120,10 @@ if ($fromform = $mform->get_data()) { // If grading form is submitted.
     if ($ratingchanged || $feedbackchanged) { // Only update entry if feedback has actually changed.
         $timenow = time();
 
-        $entry->rating = $newrating;
+        if (isset($newrating)) {
+            $entry->rating = $newrating;
+        }
+
         $entry->entrycomment = $newfeedback;
         $entry->formatcomment = $fromform->{'feedback_' . $entry->id . '_editor'}['format'];
         $entry->teacher = $USER->id;
