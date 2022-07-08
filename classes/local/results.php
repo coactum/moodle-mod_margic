@@ -441,13 +441,14 @@ class results {
      * Returns the feedback area for a specific margic entry.
      *
      * @param integer $cmid
-     * @param integer $courseid
-     * @param integer $margic
+     * @param object $context
+     * @param object $course
+     * @param object $margic
      * @param object $entry
      * @param array $grades
      * @param bool $canmanageentries
      */
-    public static function margic_return_feedback_area_for_entry($cmid, $courseid, $margic, $entry, $grades, $canmanageentries) {
+    public static function margic_return_feedback_area_for_entry($cmid, $context, $course, $margic, $entry, $grades, $canmanageentries) {
 
         $grade = false;
 
@@ -460,14 +461,14 @@ class results {
 
             if ($entry->teacher) {
                 $teacher = $DB->get_record('user', array('id' => $entry->teacher));
-                $teacherimage = $OUTPUT->user_picture($teacher, array('courseid' => $courseid, 'link' => true, 'includefullname' => true));
+                $teacherimage = $OUTPUT->user_picture($teacher, array('courseid' => $course->id, 'link' => true, 'includefullname' => true));
             } else {
                 $teacherimage = false;
             }
 
             $feedbackarea = '';
 
-            $feedbacktext = format_text($entry->entrycomment, $entry->entrycomment, array('para' => false));
+            $feedbacktext = format_text($entry->entrycomment, $entry->formatcomment, array('para' => false));
 
             if ($canmanageentries) { // If user is teacher.
                 if (! $entry->teacher) {
@@ -478,10 +479,25 @@ class results {
 
                 require_once($CFG->dirroot . '/mod/margic/grading_form.php');
 
-                $mform = new \mod_margic_grading_form(new \moodle_url('/mod/margic/grade_entry.php', array('id' => $cmid, 'entryid' => $entry->id)), array('courseid' => $courseid, 'margic' => $margic, 'entry' => $entry, 'grades' => $grades, 'teacherimg' => $teacherimage));
+                // Prepare editor for files.
+                $data = new stdClass();
+                $data->id = $cmid;
+                $data->entry = $entry->id;
+                $data->timecreated = $entry->timecreated;
+                $data->{'feedback_' . $entry->id} = $entry->entrycomment;
+                $data->{'feedback_' . $entry->id . 'format'} = $entry->formatcomment;
+
+                list ($editoroptions, $attachmentoptions) = self::margic_get_editor_and_attachment_options($course, $context, $margic);
+
+                $data = file_prepare_standard_editor($data, 'feedback_' . $entry->id, $editoroptions, $context, 'mod_margic', 'entry', $data->entry);
+                $data = file_prepare_standard_filemanager($data, 'attachment', $attachmentoptions, $context, 'mod_margic', 'attachment', $data->entry);
+
+                $data->{'rating_' . $entry->id} = $entry->rating;
+
+                $mform = new \mod_margic_grading_form(new \moodle_url('/mod/margic/grade_entry.php', array('id' => $cmid, 'entryid' => $entry->id)), array('courseid' => $course->id, 'margic' => $margic, 'entry' => $entry, 'grades' => $grades, 'teacherimg' => $teacherimage, 'editoroptions' => $editoroptions, 'attachmentoptions' => $attachmentoptions));
 
                 // Set default data.
-                $mform->set_data(array('id' => $cmid, 'entry' => $entry->id, 'rating_' . $entry->id => $entry->rating));
+                $mform->set_data($data);
 
                 $feedbackarea .= $mform->render();
             } else if ($feedbacktext || ! empty($entry->rating)) {  // If user is student and has rating or feedback text.
@@ -495,7 +511,7 @@ class results {
 
                 if ($margic->assessed > 0) {
                     // Gradebook preference.
-                    $gradinginfo = grade_get_grades($courseid, 'mod', 'margic', $entry->margic, array(
+                    $gradinginfo = grade_get_grades($course->id, 'mod', 'margic', $entry->margic, array(
                         $entry->userid
                     ));
 

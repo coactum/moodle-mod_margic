@@ -45,6 +45,8 @@ class margic_view implements renderable, templatable {
     /** @var int */
     protected $cmid;
     /** @var object */
+    protected $context;
+    /** @var object */
     protected $moduleinstance;
     /** @var object */
     protected $entries;
@@ -67,7 +69,7 @@ class margic_view implements renderable, templatable {
     /** @var int */
     protected $ratingaggregationmode;
     /** @var int */
-    protected $courseid;
+    protected $course;
     /** @var int */
     protected $singleuser;
     /** @var int */
@@ -84,7 +86,8 @@ class margic_view implements renderable, templatable {
     protected $annotationtypes;
     /**
      * Construct this renderable.
-     * @param int $cm The course module
+     * @param object $cm The course module
+     * @param object $context The context
      * @param array $moduleinstance The moduleinstance for creating grading form
      * @param array $entries The accessible entries for the margic instance
      * @param string $sortmode Sort mode for the margic instance
@@ -97,7 +100,7 @@ class margic_view implements renderable, templatable {
      * @param string $sesskey The session key
      * @param string $currentuserrating The rating of the current user viewing the page
      * @param string $ratingaggregationmode The mode of the aggregated grades
-     * @param int $courseid The course id for getting the user pictures
+     * @param int $course The course id for getting the user pictures
      * @param int $singleuser If only entries of one user are displayed
      * @param array $pagecountoptions Options for the pagecount select
      * @param array $pagebar Array with the bpages for the pagebar
@@ -106,11 +109,12 @@ class margic_view implements renderable, templatable {
      * @param bool $canmakeannotations If user can make annotations
      * @param array $annotationtypes Array with annotation types for form
      */
-    public function __construct($cm, $moduleinstance, $entries, $sortmode, $entrybgc, $entrytextbgc, $caneditentries, $edittimeends, $edittimehasended, $canmanageentries,
-        $sesskey, $currentuserrating, $ratingaggregationmode, $courseid, $singleuser, $pagecountoptions, $pagebar, $entriescount, $annotationmode, $canmakeannotations, $annotationtypes) {
+    public function __construct($cm, $context, $moduleinstance, $entries, $sortmode, $entrybgc, $entrytextbgc, $caneditentries, $edittimeends, $edittimehasended, $canmanageentries,
+        $sesskey, $currentuserrating, $ratingaggregationmode, $course, $singleuser, $pagecountoptions, $pagebar, $entriescount, $annotationmode, $canmakeannotations, $annotationtypes) {
 
         $this->cm = $cm;
         $this->cmid = $this->cm->id;
+        $this->context = $context;
         $this->moduleinstance = $moduleinstance;
         $this->entries = $entries;
         $this->sortmode = $sortmode;
@@ -123,7 +127,7 @@ class margic_view implements renderable, templatable {
         $this->sesskey = $sesskey;
         $this->currentuserrating = $currentuserrating;
         $this->ratingaggregationmode = $ratingaggregationmode;
-        $this->courseid = $courseid;
+        $this->course = $course;
         $this->singleuser = $singleuser;
         $this->pagecountoptions = $pagecountoptions;
         $this->pagebar = $pagebar;
@@ -154,11 +158,11 @@ class margic_view implements renderable, templatable {
 
             foreach ($this->entries as $key => $entry) {
                 if ($this->canmanageentries) { // Set user picture for teachers.
-                    $this->entries[$key]->user->userpicture = $OUTPUT->user_picture($entry->user, array('courseid' => $this->courseid, 'link' => true, 'includefullname' => true));
+                    $this->entries[$key]->user->userpicture = $OUTPUT->user_picture($entry->user, array('courseid' => $this->course->id, 'link' => true, 'includefullname' => true));
                 }
 
                 // Add feedback area to entry.
-                $this->entries[$key]->gradingform = results::margic_return_feedback_area_for_entry($this->cmid, $this->courseid, $this->moduleinstance,
+                $this->entries[$key]->gradingform = results::margic_return_feedback_area_for_entry($this->cmid, $this->context, $this->course, $this->moduleinstance,
                 $entry, $grades, $this->canmanageentries);
 
                 // Add annotation form to entry.
@@ -173,7 +177,7 @@ class margic_view implements renderable, templatable {
 
                     foreach ($this->entries[$key]->annotations as $anr => $annotation) {
                         $annotater = $DB->get_record('user', array('id' => $annotation->userid));
-                        $annotaterimage = $OUTPUT->user_picture($annotater, array('courseid' => $this->courseid, 'link' => true, 'includefullname' => true, 'size' => 20));
+                        $annotaterimage = $OUTPUT->user_picture($annotater, array('courseid' => $this->course->id, 'link' => true, 'includefullname' => true, 'size' => 20));
 
                         $this->entries[$key]->annotations[$anr]->userpicturestr = $annotaterimage;
                     }

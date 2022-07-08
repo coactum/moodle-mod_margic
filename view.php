@@ -194,9 +194,9 @@ if (!$moduleinstance->timeclose) {
 echo groups_print_activity_menu($cm, $CFG->wwwroot . "/mod/margic/view.php?id=$id");
 
 // Output page.
-$page = new margic_view($cm, $moduleinstance, $margic->get_entries_grouped_by_pagecount(), $margic->get_sortmode(),
+$page = new margic_view($cm, $context, $moduleinstance, $margic->get_entries_grouped_by_pagecount(), $margic->get_sortmode(),
     get_config('mod_margic', 'entrybgc'), get_config('mod_margic', 'entrytextbgc'), $moduleinstance->editall,
-    $edittimeends, $edittimehasended, $canmanageentries, sesskey(), $currentuserrating, $ratingaggregationmode, $course->id,
+    $edittimeends, $edittimehasended, $canmanageentries, sesskey(), $currentuserrating, $ratingaggregationmode, $course,
     $userid, $margic->get_pagecountoptions(), $margic->get_pagebar(), count($margic->get_entries()), $annotationmode, $canmakeannotations, $margic->get_annotationtypes_for_form());
 
 echo $OUTPUT->render($page);

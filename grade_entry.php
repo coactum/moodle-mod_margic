@@ -23,6 +23,7 @@
  */
 
 use core\output\notification;
+use mod_margic\local\results;
 
 require_once("../../config.php");
 require_once($CFG->dirroot . '/mod/margic/grading_form.php');
@@ -67,8 +68,25 @@ require_capability('mod/margic:addentries', $context);
 $entry = $DB->get_record('margic_entries', array('id' => $entryid, 'margic' => $cm->instance));
 $grades = make_grades_menu($moduleinstance->scale);
 
+// Prepare editor for files.
+$data = new stdClass();
+$data->id = $id;
+$data->entry = $entry->id;
+$data->timecreated = $entry->timecreated;
+$data->{'feedback_' . $entry->id} = $entry->entrycomment;
+$data->{'feedback_' . $entry->id . 'format'} = $entry->formatcomment;
+
+list ($editoroptions, $attachmentoptions) = results::margic_get_editor_and_attachment_options($course, $context, $moduleinstance);
+
+$data = file_prepare_standard_editor($data, 'feedback_' . $entry->id, $editoroptions, $context, 'mod_margic', 'feedback', $data->entry);
+$data = file_prepare_standard_filemanager($data, 'attachment', $attachmentoptions, $context, 'mod_margic', 'attachment', $data->entry);
+
+$data->{'rating_' . $entry->id} = $entry->rating;
+
 // Instantiate gradingform and save submitted data if it exists.
-$mform = new \mod_margic_grading_form(null, array('courseid' => $course->id, 'margic' => $moduleinstance, 'entry' => $entry, 'grades' => $grades, 'teacherimg' => ''));
+$mform = new \mod_margic_grading_form(null, array('courseid' => $course->id, 'margic' => $moduleinstance, 'entry' => $entry, 'grades' => $grades, 'teacherimg' => '', 'editoroptions' => $editoroptions, 'attachmentoptions' => $attachmentoptions));
+
+$mform->set_data($data);
 
 if ($fromform = $mform->get_data()) { // If grading form is submitted.
     // In this case you process validated data.
@@ -77,10 +95,14 @@ if ($fromform = $mform->get_data()) { // If grading form is submitted.
         redirect(new moodle_url('/mod/margic/view.php', array('id' => $id)), get_string('errfeedbacknotupdated', 'mod_margic'), null, notification::NOTIFY_ERROR);
     }
 
-    $propertyname = 'rating_' . $entryid;
-    $newrating = $fromform->$propertyname;
-    $propertyname = 'feedback_' . $entryid;
-    $newfeedback = format_text($fromform->{$propertyname}['text'], $fromform->{$propertyname}['format'], array('para' => false));
+    $newrating = $fromform->{'rating_' . $entry->id};
+
+
+    $fromform = file_postupdate_standard_editor($fromform, 'feedback_' . $entry->id, $editoroptions, $editoroptions['context'], 'mod_margic', 'feedback', $entry->id);
+
+    $newfeedback = file_rewrite_pluginfile_urls($fromform->{'feedback_' . $entry->id}, 'pluginfile.php', $context->id, 'mod_margic', 'feedback', $entry->id);
+
+    $newfeedback = format_text($newfeedback, $fromform->{'feedback_' . $entry->id}['format'], array('para' => false));
 
     if ($newrating != $entry->rating) {
         $ratingchanged = true;
@@ -99,6 +121,7 @@ if ($fromform = $mform->get_data()) { // If grading form is submitted.
 
         $entry->rating = $newrating;
         $entry->entrycomment = $newfeedback;
+        $entry->formatcomment = $fromform->{'feedback_' . $entry->id}['format'];
         $entry->teacher = $USER->id;
         $entry->timemarked = $timenow;
         $entry->mailed = 0; // Make sure mail goes out (again).
