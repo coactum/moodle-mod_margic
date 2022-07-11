@@ -247,6 +247,7 @@ $string['grader'] = 'Grader';
 $string['feedbackupdated'] = 'Feedback and / or rating updated';
 $string['errfeedbacknotupdated'] = 'Feedback and grade not updated';
 $string['errnograder'] = 'No grader.';
+$string['errnofeedbackorratingdisabled'] = 'No feedback or rating disabled.';
 
 // Privacy.
 $string['privacy:metadata:margic_entries'] = 'Contains the user entries saved in all margics.';
@@ -259,6 +260,8 @@ $string['privacy:metadata:margic_entries:timemodified'] = 'Time the entry was la
 $string['privacy:metadata:margic_entries:text'] = 'The content of the entry.';
 $string['privacy:metadata:margic_entries:rating'] = 'The grade with which the entry was rated.';
 $string['privacy:metadata:margic_entries:entrycomment'] = 'The teachers comment for the entry.';
+$string['privacy:metadata:margic_entries:teacher'] = 'ID of the grader.';
+$string['privacy:metadata:margic_entries:timemarked'] = 'Time the entry was graded.';
 $string['privacy:metadata:margic_annotations:margic'] = 'ID of the Margic the annotated entry belongs to.';
 $string['privacy:metadata:margic_annotations:entry'] = 'ID of the entry the annotation belongs to.';
 $string['privacy:metadata:margic_annotations:userid'] = 'ID of the user that made the annotation.';

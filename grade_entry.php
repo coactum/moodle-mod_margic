@@ -95,6 +95,10 @@ if ($fromform = $mform->get_data()) { // If grading form is submitted.
         redirect(new moodle_url('/mod/margic/view.php', array('id' => $id)), get_string('errfeedbacknotupdated', 'mod_margic'), null, notification::NOTIFY_ERROR);
     }
 
+    if (!$fromform->{'feedback_' . $entry->id . '_editor'}) {
+        redirect(new moodle_url('/mod/margic/view.php', array('id' => $id)), get_string('errnofeedbackorratingdisabled', 'mod_margic'), null, notification::NOTIFY_ERROR);
+    }
+
     $fromform = file_postupdate_standard_editor($fromform, 'feedback_' . $entry->id, $editoroptions, $editoroptions['context'], 'mod_margic', 'feedback', $entry->id);
 
     $newfeedback = file_rewrite_pluginfile_urls($fromform->{'feedback_' . $entry->id}, 'pluginfile.php', $context->id, 'mod_margic', 'feedback', $entry->id);

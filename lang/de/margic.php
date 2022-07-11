@@ -234,6 +234,7 @@ $string['grader'] = 'Bewerter';
 $string['feedbackupdated'] = 'Rückmeldung und / oder Note aktualisiert';
 $string['errfeedbacknotupdated'] = 'Rückmeldung und Note konnte nicht aktualisiert werden';
 $string['errnograder'] = 'Kein Bewerter.';
+$string['errnofeedbackorratingdisabled'] = 'Keine Rückmeldung oder Rückmeldung ist deaktiviert.';
 
 // Privacy.
 $string['privacy:metadata:margic_entries'] = 'Enthält die gespeicherten Benutzereinträge aller Margics.';
@@ -246,6 +247,8 @@ $string['privacy:metadata:margic_entries:timemodified'] = 'Zeitpunkt der letzten
 $string['privacy:metadata:margic_entries:text'] = 'Der Inhalt des Eintrags.';
 $string['privacy:metadata:margic_entries:rating'] = 'Die Note, mit der der Eintrag bewertet wurde.';
 $string['privacy:metadata:margic_entries:entrycomment'] = 'Der Kommentar des Lehrers zu diesem Eintrag.';
+$string['privacy:metadata:margic_entries:teacher'] = 'ID der Bewerterin oder des Bewerters.';
+$string['privacy:metadata:margic_entries:timemarked'] = 'Zeitpunkt der Bewertung.';
 $string['privacy:metadata:margic_annotations:margic'] = 'ID des Margics, zu dem der annotierte Eintrag gehört.';
 $string['privacy:metadata:margic_annotations:entry'] = 'ID des Eintrags, zu dem die Annotation gehört.';
 $string['privacy:metadata:margic_annotations:userid'] = 'ID des Benutzers, der die Annotation angelegt hat.';

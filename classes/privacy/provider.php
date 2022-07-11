@@ -64,7 +64,9 @@ class provider implements \core_privacy\local\metadata\provider,
             'timemodified' => 'privacy:metadata:margic_entries:timemodified',
             'text' => 'privacy:metadata:margic_entries:text',
             'rating' => 'privacy:metadata:margic_entries:rating',
-            'entrycomment' => 'privacy:metadata:margic_entries:entrycomment'
+            'entrycomment' => 'privacy:metadata:margic_entries:entrycomment',
+            'teacher' => 'privacy:metadata:margic_entries:teacher',
+            'timemarked' => 'privacy:metadata:margic_entries:timemarked',
         ], 'privacy:metadata:margic_entries');
 
         // The table 'margic_annotations' stores the annotations made in all margics.
@@ -87,7 +89,7 @@ class provider implements \core_privacy\local\metadata\provider,
             'color' => 'privacy:metadata:margic_annotation_types:color',
         ], 'privacy:metadata:margic_annotation_types');
 
-        // The margic uses the grading subsystem that saves personal data.
+        // The margic uses multiple subsystems that save personal data.
         $items->add_subsystem_link('core_files', [], 'privacy:metadata:core_files');
         $items->add_subsystem_link('core_rating', [], 'privacy:metadata:core_rating');
 
@@ -227,16 +229,7 @@ class provider implements \core_privacy\local\metadata\provider,
                     // Write it.
                     writer::with_context($context)->export_data([], $contextdata);
 
-                    // Store related metadata.
-                    // $metadata = (object) [
-                    // 'sortoption' => get_user_preferences('sortoption['.$id.']'),
-                    // 'margic_pagecount' => get_user_preferences('margic_pagecount_'.$id),
-                    // 'margic_activepage' => get_user_preferences('margic_activepage_'.$id),
-                    // ];
-
-                    // writer::with_context($context)->export_metadata([], 'sortoption',
-                    // get_user_preferences('sortoption['.$id.']'), get_string('privacy:sortoption', 'mod_margic')
-                    // );
+                    // Todo: Store related metadata.
 
                     // Write generic module intro files.
                     helper::export_context_files($context, $user);
@@ -272,7 +265,10 @@ class provider implements \core_privacy\local\metadata\provider,
                     e.text,
                     e.format,
                     e.rating,
-                    e.entrycomment
+                    e.entrycomment,
+                    e.formatcomment,
+                    e.teacher,
+                    e.timemarked
                    FROM {margic_entries} e
                    WHERE (
                     e.margic = :margicid AND
@@ -316,7 +312,8 @@ class provider implements \core_privacy\local\metadata\provider,
             'timecreated' => transform::datetime($entry->timecreated),
             'timemodified' => transform::datetime($entry->timemodified),
             'rating' => $entry->rating,
-            'entrycomment' => $entry->entrycomment,
+            'teacher' => $entry->teacher,
+            'timemarked' => transform::datetime($entry->timemarked),
         ];
 
         $entrydata->text = writer::with_context($context)->rewrite_pluginfile_urls($subcontext, 'mod_margic', 'entry', $entry->id, $entry->text);
@@ -326,10 +323,18 @@ class provider implements \core_privacy\local\metadata\provider,
             'context' => $context,
         ]);
 
+        $entrydata->entrycomment = writer::with_context($context)->rewrite_pluginfile_urls($subcontext, 'mod_margic', 'feedback', $entry->id, $entry->entrycomment);
+
+        $entrydata->entrycomment = format_text($entrydata->entrycomment, $entry->formatcomment, (object) [
+            'para'    => false,
+            'context' => $context,
+        ]);
+
         // Store the entry data.
         writer::with_context($context)
             ->export_data($subcontext, $entrydata)
-            ->export_area_files($subcontext, 'mod_margic', 'entry', $entry->id);
+            ->export_area_files($subcontext, 'mod_margic', 'entry', $entry->id)
+            ->export_area_files($subcontext, 'mod_margic', 'feedback', $entry->id);
 
         // Store all ratings against this entry as the entry belongs to the user. All ratings on it are ratings of their content.
         \core_rating\privacy\provider::export_area_ratings($userid, $context, $subcontext, 'mod_margic', 'entry', $entry->id, false);
@@ -414,6 +419,8 @@ class provider implements \core_privacy\local\metadata\provider,
     public static function delete_data_for_all_users_in_context(\context $context) {
         global $DB;
 
+        error_log('delete_data_for_all_users_in_context');
+
         // Check that this is a context_module.
         if (!$context instanceof \context_module) {
             return;
@@ -434,15 +441,17 @@ class provider implements \core_privacy\local\metadata\provider,
         // Delete all ratings in the context.
         \core_rating\privacy\provider::delete_ratings($context, 'mod_margic', 'entry');
 
-        // Delete all files from the entrie.
+        // Delete all files from the entry.
         $fs = get_file_storage();
         $fs->delete_area_files($context->id, 'mod_margic', 'entry');
+        $fs->delete_area_files($context->id, 'mod_margic', 'feedback');
 
-        // Delete all records.
+        // Delete all entries.
         if ($DB->record_exists('margic_entries', ['margic' => $cm->instance])) {
             $DB->delete_records('margic_entries', ['margic' => $cm->instance]);
         }
 
+        // Delete all annotations.
         if ($DB->record_exists('margic_annotations', ['margic' => $cm->instance])) {
             $DB->delete_records('margic_annotations', ['margic' => $cm->instance]);
         }
@@ -458,9 +467,16 @@ class provider implements \core_privacy\local\metadata\provider,
 
         $userid = $contextlist->get_user()->id;
 
+        error_log('delete_data_for_user');
+
+        error_log($userid);
+
         foreach ($contextlist->get_contexts() as $context) {
             // Get the course module.
             $cm = $DB->get_record('course_modules', ['id' => $context->instanceid]);
+
+            error_log('cm');
+            error_log(var_export($cm, true));
 
             // Handle any advanced grading method data first.
             $grades = $DB->get_records('margic_entries', ['margic' => $cm->instance, 'userid' => $userid]);
@@ -472,6 +488,8 @@ class provider implements \core_privacy\local\metadata\provider,
                     \core_grading\privacy\provider::delete_instance_data($context, $grade->id);
                 }
             }
+
+            error_log('after advancedgradings');
 
             // Delete ratings.
             $entriessql = "SELECT
@@ -488,30 +506,67 @@ class provider implements \core_privacy\local\metadata\provider,
                 'userid' => $userid,
             ];
 
+            error_log('$entriessql');
+            error_log($entriessql);
+
             \core_rating\privacy\provider::delete_ratings_select($context, 'mod_margic', 'entry', "IN ($entriessql)", $entriesparams);
+
+            error_log('after rating');
 
             // Delete all files from the entries.
             $fs = get_file_storage();
             $fs->delete_area_files_select($context->id, 'mod_margic', 'entry', "IN ($entriessql)", $entriesparams);
+            $fs->delete_area_files_select($context->id, 'mod_margic', 'feedback', "IN ($entriessql)", $entriesparams);
 
-            // Delete entries.
+            error_log('after file deletion');
+
+            $entriesselect = "entry IN (SELECT id FROM {margic_entries} e WHERE e.margic = :margicid AND e.userid = :userid)";
+
+            error_log('annotations from entries to be deleted');
+            error_log(var_export($DB->get_records_select('margic_annotations', $entriesselect, $entriesparams), true));
+
+
+            // Delete annotations for user entries that should be deleted.
+            if ($DB->record_exists_select('margic_annotations', $entriesselect, $entriesparams)) {
+                $DB->delete_records_select('margic_annotations', $entriesselect, $entriesparams);
+
+                error_log('should remove annotations for deleted entries');
+            }
+
+            error_log('entries to be deleted');
+            error_log(var_export($DB->delete_records('margic_entries', ['margic' => $cm->instance, 'userid' => $userid]), true));
+
+            // Delete entries for user.
             if ($DB->record_exists('margic_entries', ['margic' => $cm->instance, 'userid' => $userid])) {
 
                 $DB->delete_records('margic_entries', [
                     'margic' => $cm->instance,
                     'userid' => $userid,
                 ]);
+
+                error_log('should remove entries');
             }
 
-            // Delete annotations.
+            error_log('annotations to be deleted');
+            error_log(var_export($DB->delete_records('margic_annotations', ['margic' => $cm->instance, 'userid' => $userid]), true));
+
+            // Delete annotations for user.
             if ($DB->record_exists('margic_annotations', ['margic' => $cm->instance, 'userid' => $userid])) {
 
                 $DB->delete_records('margic_annotations', [
                     'margic' => $cm->instance,
                     'userid' => $userid,
                 ]);
+
+                error_log('should remove annotations from user');
             }
+
+            error_log('end of deletion for this cm');
+
         }
+
+        error_log('end of method');
+
     }
 
     /**
@@ -521,6 +576,8 @@ class provider implements \core_privacy\local\metadata\provider,
      */
     public static function delete_data_for_users(approved_userlist $userlist) {
         global $DB;
+
+        error_log('delete_data_for_users');
 
         $context = $userlist->get_context();
         $cm = $DB->get_record('course_modules', ['id' => $context->instanceid]);
@@ -540,7 +597,7 @@ class provider implements \core_privacy\local\metadata\provider,
         }
 
         // Delete ratings.
-        $entriessql = "SELECT
+        $entriesselect = "SELECT
                             e.id
                             FROM {margic_entries} e
                             WHERE (
@@ -549,17 +606,24 @@ class provider implements \core_privacy\local\metadata\provider,
                             )
         ";
 
-        \core_rating\privacy\provider::delete_ratings_select($context, 'mod_margic', 'entry', "IN ($entriessql)", $params);
+        \core_rating\privacy\provider::delete_ratings_select($context, 'mod_margic', 'entry', "IN ($entriesselect)", $params);
 
         // Delete all files from the entries.
         $fs = get_file_storage();
-        $fs->delete_area_files_select($context->id, 'mod_margic', 'entry', "IN ($entriessql)", $params);
+        $fs->delete_area_files_select($context->id, 'mod_margic', 'entry', "IN ($entriesselect)", $params);
+        $fs->delete_area_files_select($context->id, 'mod_margic', 'feedback', "IN ($entriesselect)", $params);
 
-        // Delete entries.
+        // Delete annotations for users entries that should be deleted.
+        if ($DB->record_exists_select('margic_annotations', "entry IN ({$entriesselect})", $params)) {
+            $DB->delete_records_select('margic_annotations', "entry IN ({$entriesselect})", $params);
+        }
+
+        // Delete entries for users.
         if ($DB->record_exists_select('margic_entries', "margic = :margicid AND userid {$userinsql}", $params)) {
             $DB->delete_records_select('margic_entries', "margic = :margicid AND userid {$userinsql}", $params);
         }
 
+        // Delete annotations for users.
         if ($DB->record_exists_select('margic_annotations', "margic = :margicid AND userid {$userinsql}", $params)) {
             $DB->delete_records_select('margic_annotations', "margic = :margicid AND userid {$userinsql}", $params);
         }

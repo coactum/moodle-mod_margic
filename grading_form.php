@@ -110,9 +110,6 @@ class mod_margic_grading_form extends moodleform {
 
         // Feedback text.
         if ($feedbackdisabled) { // If override is set in the gradebook show feedback from there and dont show editor.
-            $mform->addElement('hidden', 'feedback_' . $this->_customdata['entry']->id . '_editor', $feedbacktext);
-            $mform->setType('feedback_' . $this->_customdata['entry']->id . '_editor', PARAM_RAW);
-
             $mform->addElement('static', 'gradebookfeedback', get_string('feedbackingradebook', 'margic') . ': ', $gradebooklinkfeedback);
 
         } else {
