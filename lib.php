@@ -177,6 +177,7 @@ function margic_delete_instance($id) {
  * Indicates API features that the margic supports.
  *
  * @uses FEATURE_MOD_INTRO
+ * @uses FEATURE_SHOW_DESCRIPTION
  * @uses FEATURE_GRADE_HAS_GRADE
  * @uses FEATURE_GRADE_OUTCOMES
  * @uses FEATURE_RATE

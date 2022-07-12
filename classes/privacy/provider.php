@@ -419,8 +419,6 @@ class provider implements \core_privacy\local\metadata\provider,
     public static function delete_data_for_all_users_in_context(\context $context) {
         global $DB;
 
-        error_log('delete_data_for_all_users_in_context');
-
         // Check that this is a context_module.
         if (!$context instanceof \context_module) {
             return;
@@ -432,11 +430,12 @@ class provider implements \core_privacy\local\metadata\provider,
         }
 
         // Delete advanced grading information.
-        $gradingmanager = get_grading_manager($context, 'mod_margic', 'margic');
+        /* $gradingmanager = get_grading_manager($context, 'mod_margic', 'margic');
         $controller = $gradingmanager->get_active_controller();
+
         if (isset($controller)) {
             \core_grading\privacy\provider::delete_instance_data($context);
-        }
+        } */
 
         // Delete all ratings in the context.
         \core_rating\privacy\provider::delete_ratings($context, 'mod_margic', 'entry');
@@ -467,19 +466,12 @@ class provider implements \core_privacy\local\metadata\provider,
 
         $userid = $contextlist->get_user()->id;
 
-        error_log('delete_data_for_user');
-
-        error_log($userid);
-
         foreach ($contextlist->get_contexts() as $context) {
             // Get the course module.
             $cm = $DB->get_record('course_modules', ['id' => $context->instanceid]);
 
-            error_log('cm');
-            error_log(var_export($cm, true));
-
             // Handle any advanced grading method data first.
-            $grades = $DB->get_records('margic_entries', ['margic' => $cm->instance, 'userid' => $userid]);
+            /* $grades = $DB->get_records('margic_entries', ['margic' => $cm->instance, 'userid' => $userid]);
             $gradingmanager = get_grading_manager($context, 'margic_entries', 'margic');
             $controller = $gradingmanager->get_active_controller();
             foreach ($grades as $grade) {
@@ -487,9 +479,7 @@ class provider implements \core_privacy\local\metadata\provider,
                 if (isset($controller)) {
                     \core_grading\privacy\provider::delete_instance_data($context, $grade->id);
                 }
-            }
-
-            error_log('after advancedgradings');
+            } */
 
             // Delete ratings.
             $entriessql = "SELECT
@@ -506,35 +496,19 @@ class provider implements \core_privacy\local\metadata\provider,
                 'userid' => $userid,
             ];
 
-            error_log('$entriessql');
-            error_log($entriessql);
-
             \core_rating\privacy\provider::delete_ratings_select($context, 'mod_margic', 'entry', "IN ($entriessql)", $entriesparams);
-
-            error_log('after rating');
 
             // Delete all files from the entries.
             $fs = get_file_storage();
             $fs->delete_area_files_select($context->id, 'mod_margic', 'entry', "IN ($entriessql)", $entriesparams);
             $fs->delete_area_files_select($context->id, 'mod_margic', 'feedback', "IN ($entriessql)", $entriesparams);
 
-            error_log('after file deletion');
-
             $entriesselect = "entry IN (SELECT id FROM {margic_entries} e WHERE e.margic = :margicid AND e.userid = :userid)";
-
-            error_log('annotations from entries to be deleted');
-            error_log(var_export($DB->get_records_select('margic_annotations', $entriesselect, $entriesparams), true));
-
 
             // Delete annotations for user entries that should be deleted.
             if ($DB->record_exists_select('margic_annotations', $entriesselect, $entriesparams)) {
                 $DB->delete_records_select('margic_annotations', $entriesselect, $entriesparams);
-
-                error_log('should remove annotations for deleted entries');
             }
-
-            error_log('entries to be deleted');
-            error_log(var_export($DB->delete_records('margic_entries', ['margic' => $cm->instance, 'userid' => $userid]), true));
 
             // Delete entries for user.
             if ($DB->record_exists('margic_entries', ['margic' => $cm->instance, 'userid' => $userid])) {
@@ -544,11 +518,7 @@ class provider implements \core_privacy\local\metadata\provider,
                     'userid' => $userid,
                 ]);
 
-                error_log('should remove entries');
             }
-
-            error_log('annotations to be deleted');
-            error_log(var_export($DB->delete_records('margic_annotations', ['margic' => $cm->instance, 'userid' => $userid]), true));
 
             // Delete annotations for user.
             if ($DB->record_exists('margic_annotations', ['margic' => $cm->instance, 'userid' => $userid])) {
@@ -558,15 +528,9 @@ class provider implements \core_privacy\local\metadata\provider,
                     'userid' => $userid,
                 ]);
 
-                error_log('should remove annotations from user');
             }
 
-            error_log('end of deletion for this cm');
-
         }
-
-        error_log('end of method');
-
     }
 
     /**
@@ -577,8 +541,6 @@ class provider implements \core_privacy\local\metadata\provider,
     public static function delete_data_for_users(approved_userlist $userlist) {
         global $DB;
 
-        error_log('delete_data_for_users');
-
         $context = $userlist->get_context();
         $cm = $DB->get_record('course_modules', ['id' => $context->instanceid]);
 
@@ -586,7 +548,7 @@ class provider implements \core_privacy\local\metadata\provider,
         $params = array_merge(['margicid' => $cm->instance], $userinparams);
 
         // Handle any advanced grading method data first.
-        $grades = $DB->get_records('margic_entries', ['margic' => $cm->instance, 'userid' => $userid]);
+        /* $grades = $DB->get_records('margic_entries', ['margic' => $cm->instance, 'userid' => $userid]);
         $gradingmanager = get_grading_manager($context, 'margic_entries', 'margic');
         $controller = $gradingmanager->get_active_controller();
         foreach ($grades as $grade) {
@@ -594,7 +556,7 @@ class provider implements \core_privacy\local\metadata\provider,
             if (isset($controller)) {
                 \core_grading\privacy\provider::delete_instance_data($context, $grade->id);
             }
-        }
+        } */
 
         // Delete ratings.
         $entriesselect = "SELECT
