@@ -132,6 +132,7 @@ $string['pluginadministration'] = 'margic module administration';
 $string['pluginname'] = 'Margic';
 $string['previousentry'] = 'Previous entry';
 $string['rate'] = 'Rate';
+$string['rating'] = 'Rating';
 $string['savedrating'] = 'Rating saved for this entry';
 $string['newrating'] = 'New rating for this entry';
 $string['removeentries'] = 'Remove all entries';

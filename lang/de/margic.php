@@ -117,6 +117,7 @@ $string['pluginadministration'] = 'Administration zu Margic';
 $string['pluginname'] = 'Margic';
 $string['previousentry'] = 'Vorheriger Eintrag';
 $string['rate'] = 'Bewerten';
+$string['rating'] = 'Bewertung';
 $string['savedrating'] = 'Gespeicherte Bewertung für diesen Eintrag';
 $string['newrating'] = 'Neue Bewertung für diesen Eintrag';
 $string['removeentries'] = 'Alle Einträge entfernen';
