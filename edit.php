@@ -87,7 +87,7 @@ if ($course->format == 'weeks' and $moduleinstance->days) {
     $timefinish = false;
 }
 
-if (!$moduleinstance->editall && $timefinish && (time() > $timefinish)) {
+if (($entryid && !$moduleinstance->editall) || ($timefinish && (time() >= $timefinish))) {
     // Trigger invalid_access_attempt with redirect to the view page.
     $params = array(
         'objectid' => $id,
@@ -148,7 +148,7 @@ $data = file_prepare_standard_editor($data, 'text', $editoroptions, $context, 'm
 $data = file_prepare_standard_filemanager($data, 'attachment', $attachmentoptions, $context, 'mod_margic', 'attachment', $data->entryid);
 
 // Create form.
-$form = new mod_margic_entry_form(null, array('margic' => $moduleinstance->editdates, 'editoroptions' => $editoroptions, 'attachmentoptions' => $attachmentoptions));
+$form = new mod_margic_entry_form(null, array('margic' => $moduleinstance->editdates, 'editoroptions' => $editoroptions));
 
 // Set existing data for this entry.
 $form->set_data($data);
@@ -187,7 +187,6 @@ if ($form->is_cancelled()) {
             throw new moodle_exception(get_string('generalerrorinsert', 'margic'));
         }
     }
-
 
     $fromform = file_postupdate_standard_editor($fromform, 'text', $editoroptions, $editoroptions['context'], 'mod_margic', 'entry', $newentry->id);
 

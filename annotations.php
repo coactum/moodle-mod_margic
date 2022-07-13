@@ -109,6 +109,10 @@ if ($fromform = $mform->get_data()) {
             redirect($redirecturl, get_string('notallowedtodothis', 'mod_margic'), null, notification::NOTIFY_ERROR);
         }
 
+        if (!isset($fromform->type)) {
+            redirect($redirecturl, get_string('errtypedeleted', 'mod_margic'), null, notification::NOTIFY_ERROR);
+        }
+
         $annotation->timemodified = time();
         $annotation->text = format_text($fromform->text, 2, array('para' => false));
         $annotation->type = $fromform->type;
@@ -123,6 +127,10 @@ if ($fromform = $mform->get_data()) {
 
             if ($fromform->text == '') {
                 redirect($redirecturl, get_string('erremptyannotation', 'mod_margic'), null, notification::NOTIFY_ERROR);
+            }
+
+            if (!isset($fromform->type)) {
+                redirect($redirecturl, get_string('errtypedeleted', 'mod_margic'), null, notification::NOTIFY_ERROR);
             }
 
             if (preg_match("/[^a-zA-Z0-9()\/[\]]/", $fromform->startcontainer) || preg_match("/[^a-zA-Z0-9()\/[\]]/", $fromform->endcontainer)) {

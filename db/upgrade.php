@@ -15,25 +15,39 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Upgrade code for install
+ * Plugin upgrade steps are defined here.
  *
  * @package   mod_margic
  * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-defined('MOODLE_INTERNAL') || die();
-
-require_once($CFG->dirroot . '/mod/margic/lib.php');
 
 /**
- * Upgrade this margic instance.
+ * Upgrade this margic instance from the given old version.
  *
- * @param int $oldversion
- *            The old version of the margic module
+ * @param int $oldversion The old version of the margic module
  * @return bool
  */
 function xmldb_margic_upgrade($oldversion) {
-    global $CFG, $DB;
+    global $DB;
+
     $dbman = $DB->get_manager();
+
+    if ($oldversion < 2022070400) {
+
+        // Add the formatcomment field to the margic_entries table.
+        $table = new xmldb_table('margic_entries');
+        $field = new xmldb_field('formatcomment', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, '1', 'entrycomment');
+
+        // Conditionally launch add field.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Margic savepoint reached.
+        upgrade_mod_savepoint(true, 2022070400, 'margic');
+
+    }
+
     return true;
 }

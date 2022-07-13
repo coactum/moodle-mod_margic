@@ -80,7 +80,7 @@ function margic_update_instance($margic) {
         $margic->assessed = 0;
     }
 
-    if (empty($margic->ratingtime) or empty($margic->assessed)) {
+    if (empty($margic->ratingtime) || empty($margic->assessed)) {
         $margic->assesstimestart = 0;
         $margic->assesstimefinish = 0;
     }
@@ -89,15 +89,37 @@ function margic_update_instance($margic) {
         $margic->notification = 0;
     }
 
+    // If the aggregation type or scale (i.e. max grade) changes then recalculate the grades for the entire margic
+    // if scale changes - do we need to recheck the ratings, if ratings higher than scale how do we want to respond?
+    // for count and sum aggregation types the grade we check to make sure they do not exceed the scale (i.e. max score) when calculating the grade
+    $oldmargic = $DB->get_record('margic', array('id' => $margic->id));
+
+    $updategrades = false;
+
+    if ($oldmargic->assessed <> $margic->assessed) {
+        // Whether this margic is rated.
+        $updategrades = true;
+    }
+
+    if ($oldmargic->scale <> $margic->scale) {
+        // The scale currently in use.
+        $updategrades = true;
+    }
+
+    if ($updategrades) {
+        margic_update_grades($margic); // Recalculate grades for the margic.
+    }
+
     $DB->update_record('margic', $margic);
 
-    // 20200903 Added calendar dates.
+    // Update calendar.
     results::margic_update_calendar($margic, $margic->coursemodule);
 
-    // 20200901 Added expected completion date.
+    // Update completion date.
     $completionexpected = (! empty($margic->completionexpected)) ? $margic->completionexpected : null;
     \core_completion\api::update_completion_date_event($margic->coursemodule, 'margic', $margic->id, $completionexpected);
 
+    // Update grade.
     margic_grade_item_update($margic);
 
     return true;
@@ -109,58 +131,68 @@ function margic_update_instance($margic) {
  * this function will permanently delete the instance
  * and any data that depends on it.
  *
- * @param int $id
- *            margic ID.
+ * @param int $id margic id.
  * @return boolean True if successful.
  */
 function margic_delete_instance($id) {
     global $DB;
 
-    $result = true;
-
-    if (! $margic = $DB->get_record("margic", array(
-        "id" => $id
-    ))) {
+    if (!$margic = $DB->get_record("margic", array("id" => $id))) {
+        return false;
+    }
+    if (!$cm = get_coursemodule_from_instance('margic', $margic->id)) {
+        return false;
+    }
+    if (!$course = $DB->get_record('course', array('id' => $cm->course))) {
         return false;
     }
 
-    if (! $DB->delete_records("margic_entries", array(
-        "margic" => $margic->id
-    ))) {
-        $result = false;
+    $context = context_module::instance($cm->id);
+
+    // Delete files.
+    $fs = get_file_storage();
+    $fs->delete_area_files($context->id);
+
+    // Update completion for calendar events.
+    \core_completion\api::update_completion_date_event($cm->id, 'margic', $margic->id, null);
+
+    // Delete grades.
+    margic_grade_item_delete($margic);
+
+    // Delete entries.
+    $DB->delete_records("margic_entries", array("margic" => $margic->id));
+
+    // Delete annotations.
+    $DB->delete_records("margic_annotations", array("margic" => $margic->id));
+
+    // Delete margic, else return false.
+    if (!$DB->delete_records("margic", array("id" => $margic->id))) {
+        return false;
     }
 
-    if (! $DB->delete_records("margic_annotations", array(
-        "margic" => $margic->id
-    ))) {
-        $result = false;
-    }
-
-    if (! $DB->delete_records("margic", array(
-        "id" => $margic->id
-    ))) {
-        $result = false;
-    }
-
-    return $result;
+    return true;
 }
 
 /**
  * Indicates API features that the margic supports.
  *
  * @uses FEATURE_MOD_INTRO
+ * @uses FEATURE_SHOW_DESCRIPTION
+ * @uses FEATURE_GRADE_HAS_GRADE
+ * @uses FEATURE_GRADE_OUTCOMES
  * @uses FEATURE_RATE
  * @uses FEATURE_GROUPS
  * @uses FEATURE_GROUPINGS
  * @uses FEATURE_COMPLETION_TRACKS_VIEWS
  * @uses FEATURE__BACKUP_MOODLE2
- * @param string $feature
- *            FEATURE_xx constant for requested feature.
- * @return mixed True if module supports feature, null if doesn't know.
+ * @param string $feature Constant for requested feature.
+ * @return mixed True if module supports feature, null if it doesn't.
  */
 function margic_supports($feature) {
     switch ($feature) {
         case FEATURE_MOD_INTRO:
+            return true;
+        case FEATURE_SHOW_DESCRIPTION:
             return true;
         case FEATURE_GRADE_HAS_GRADE:
             return true;
@@ -174,8 +206,8 @@ function margic_supports($feature) {
             return true;
         case FEATURE_COMPLETION_TRACKS_VIEWS:
             return true;
-        /* case FEATURE_BACKUP_MOODLE2:
-            return true; */
+        case FEATURE_BACKUP_MOODLE2:
+            return true;
         default:
             return null;
     }
@@ -424,7 +456,7 @@ function margic_print_recent_activity($course, $viewfullnames, $timestart) {
         $course->id,
         'margic'
     );
-    // 20210611 Added Moodle branch check.
+    // Moodle branch check.
     if ($CFG->branch < 311) {
         $namefields = user_picture::fields('u', null, 'userid');
     } else {
@@ -511,49 +543,6 @@ function margic_print_recent_activity($course, $viewfullnames, $timestart) {
 }
 
 /**
- * This function returns true if a scale is being used by one margic.
- *
- * @param int $margicid
- *            margic ID.
- * @param int $scaleid
- *            Scale ID.
- * @return boolean True if a scale is being used by one margic.
- */
-function margic_scale_used($margicid, $scaleid) {
-    global $DB;
-    $return = false;
-
-    $rec = $DB->get_record("margic", array(
-        "id" => $margicid,
-        "grade" => - $scaleid
-    ));
-
-    if (! empty($rec) && ! empty($scaleid)) {
-        $return = true;
-    }
-
-    return $return;
-}
-
-/**
- * Checks if scale is being used by any instance of margic.
- *
- * This is used to find out if scale used anywhere.
- *
- * @param int $scaleid
- * @return boolean True if the scale is used by any margic.
- */
-function margic_scale_used_anywhere($scaleid) {
-    global $DB;
-
-    if (empty($scaleid)) {
-        return false;
-    }
-
-    return $DB->record_exists('margic', ['scale' => $scaleid * - 1]);
-}
-
-/**
  * Implementation of the function for printing the form elements that control
  * whether the course reset functionality affects the margic.
  *
@@ -622,7 +611,7 @@ function margic_get_user_grades($margic, $userid = 0) {
     global $CFG;
 
     require_once($CFG->dirroot . '/rating/lib.php');
-    // 20200812 Fixed ratings.
+
     $ratingoptions = new stdClass();
     $ratingoptions->component = 'mod_margic';
     $ratingoptions->ratingarea = 'entry';
@@ -650,13 +639,15 @@ function margic_get_user_grades($margic, $userid = 0) {
 function margic_update_grades($margic, $userid = 0, $nullifnone = true) {
     global $CFG;
     require_once($CFG->libdir . '/gradelib.php');
+
     $cm = get_coursemodule_from_instance('margic', $margic->id);
     $margic->cmidnumber = $cm->idnumber;
-    if (! $margic->assessed) {
+
+    if (!$margic->assessed) {
         margic_grade_item_update($margic);
     } else if ($grades = margic_get_user_grades($margic, $userid)) {
         margic_grade_item_update($margic, $grades);
-    } else if ($userid and $nullifnone) {
+    } else if ($userid && $nullifnone) {
         $grade = new stdClass();
         $grade->userid = $userid;
         $grade->rawgrade = null;
@@ -715,6 +706,24 @@ function margic_grade_item_delete($margic) {
     return grade_update('mod/margic', $margic->course, 'mod', 'margic', $margic->id, 0, null, array(
         'deleted' => 1
     ));
+}
+
+/**
+ * Checks if scale is being used by any instance of margic.
+ *
+ * This is used to find out if scale used anywhere.
+ *
+ * @param int $scaleid
+ * @return boolean True if the scale is used by any dimargicary.
+ */
+function margic_scale_used_anywhere($scaleid) {
+    global $DB;
+
+    if (empty($scaleid)) {
+        return false;
+    }
+
+    return $DB->record_exists_select('margic', "scale = ? and assessed > 0", [$scaleid * -1]);
 }
 
 /**
@@ -911,7 +920,7 @@ function margic_pluginfile($course, $cm, $context, $filearea, $args, $forcedownl
         return false;
     }
 
-    if ($filearea !== 'entry') {
+    if ($filearea !== 'entry' && $filearea !== 'feedback') {
         return false;
     }
 
