@@ -54,7 +54,7 @@ class mod_margic_mod_form extends moodleform_mod {
 
         $this->standard_intro_elements(get_string('margicdescription', 'margic'));
 
-        // Add the availability header.
+        // Add the header for availability.
         $mform->addElement('header', 'availibilityhdr', get_string('availability'));
 
         // 20200915 Moved check so daysavailable is hidden unless using weekly format.
@@ -89,17 +89,39 @@ class mod_margic_mod_form extends moodleform_mod {
         ));
         $mform->addHelpButton('timeclose', 'margicclosetime', 'margic');
 
-        // 20201015 Added Edit all, enable/disable setting.
+        // Edit all setting if user can edit its own entries.
         $mform->addElement('selectyesno', 'editall', get_string('editall', 'margic'));
         $mform->addHelpButton('editall', 'editall', 'margic');
 
-        // 20201119 Added Edit dates, enable/disable setting.
+        // Edit dates setting if user can modify entry date.
         $mform->addElement('selectyesno', 'editdates', get_string('editdates', 'margic'));
         $mform->addHelpButton('editdates', 'editdates', 'margic');
+
+        // Add the header for appearance.
+        $mform->addElement('header', 'appearancehdr', get_string('appearance'));
+
+        // Width of the annotation area.
+        $mform->addElement('text', 'annotationareawidth', get_string('annotationareawidth', 'margic'));
+        $mform->setType('annotationareawidth', PARAM_INT);
+        $mform->addHelpButton('annotationareawidth', 'annotationareawidth', 'margic');
+        $mform->setDefault('annotationareawidth', get_config('mod_margic', 'annotationareawidth'));
 
         // Add the rest of the common settings.
         $this->standard_grading_coursemodule_elements();
         $this->standard_coursemodule_elements();
         $this->add_action_buttons();
+    }
+
+    public function validation($data, $files) {
+        $errors = parent::validation($data, $files);
+
+        $minwidth = 20;
+        $maxwidth = 80;
+
+        if (!$data['annotationareawidth'] || $data['annotationareawidth'] < $minwidth || $data['annotationareawidth'] > $maxwidth) {
+            $errors['annotationareawidth'] = get_string('errannotationareawidthinvalid', 'margic', array('minwidth' => $minwidth, 'maxwidth' => $maxwidth));
+        }
+
+        return $errors;
     }
 }

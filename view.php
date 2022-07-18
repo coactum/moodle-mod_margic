@@ -190,14 +190,21 @@ if (!$moduleinstance->timeclose) {
     $edittimeends = $moduleinstance->timeclose;
 }
 
+if (isset($moduleinstance->annotationareawidth)) {
+    $annotationareawidth = $moduleinstance->annotationareawidth;
+} else {
+    $annotationareawidth = get_config('mod_margic', 'annotationareawidth');
+}
+
 // Handle groups.
 echo groups_print_activity_menu($cm, $CFG->wwwroot . "/mod/margic/view.php?id=$id");
 
 // Output page.
 $page = new margic_view($cm, $context, $moduleinstance, $margic->get_entries_grouped_by_pagecount(), $margic->get_sortmode(),
-    get_config('mod_margic', 'entrybgc'), get_config('mod_margic', 'entrytextbgc'), $moduleinstance->editall,
-    $edittimeends, $edittimehasended, $canmanageentries, sesskey(), $currentuserrating, $ratingaggregationmode, $course,
-    $userid, $margic->get_pagecountoptions(), $margic->get_pagebar(), count($margic->get_entries()), $annotationmode, $canmakeannotations, $margic->get_annotationtypes_for_form());
+    get_config('mod_margic', 'entrybgc'), get_config('mod_margic', 'entrytextbgc'), $annotationareawidth,
+    $moduleinstance->editall, $edittimeends, $edittimehasended, $canmanageentries, sesskey(), $currentuserrating,
+    $ratingaggregationmode, $course, $userid, $margic->get_pagecountoptions(), $margic->get_pagebar(), count($margic->get_entries()),
+    $annotationmode, $canmakeannotations, $margic->get_annotationtypes_for_form());
 
 echo $OUTPUT->render($page);
 

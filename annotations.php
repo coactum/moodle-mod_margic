@@ -125,10 +125,6 @@ if ($fromform = $mform->get_data()) {
         if ($fromform->startcontainer != -1 && $fromform->endcontainer != -1 &&
             $fromform->startposition != -1 && $fromform->endposition != -1) {
 
-            if ($fromform->text == '') {
-                redirect($redirecturl, get_string('erremptyannotation', 'mod_margic'), null, notification::NOTIFY_ERROR);
-            }
-
             if (!isset($fromform->type)) {
                 redirect($redirecturl, get_string('errtypedeleted', 'mod_margic'), null, notification::NOTIFY_ERROR);
             }

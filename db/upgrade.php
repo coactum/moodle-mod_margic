@@ -49,5 +49,21 @@ function xmldb_margic_upgrade($oldversion) {
 
     }
 
+    if ($oldversion < 2022071801) {
+
+        // Add the annotationareawidth field to the margic table.
+        $table = new xmldb_table('margic');
+        $field = new xmldb_field('annotationareawidth', XMLDB_TYPE_INTEGER, '3', null, null, null, null, 'editdates');
+
+        // Conditionally launch add field.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Margic savepoint reached.
+        upgrade_mod_savepoint(true, 2022071801, 'margic');
+
+    }
+
     return true;
 }

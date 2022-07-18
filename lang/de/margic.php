@@ -218,7 +218,6 @@ $string['deleteannotation'] = 'Löschen';
 $string['annotationcolor'] = 'Farbe des Fehlertyps';
 $string['defaulttype'] = 'Standard Fehlertyp';
 $string['customtype'] = 'Eigener Fehlertyp';
-$string['erremptyannotation'] = 'Text fehlt. Annotierung nicht gespeichert.';
 $string['errnohexcolor'] = 'Kein hexadezimaler Farbwert.';
 $string['changesforall'] = 'Die Änderung des Namens oder der Farbe des Fehlertypen wirkt sich sofort nach dem Speichern auf alle bereits Angelegten sowie alle zukünftigen Annotationen aus.';
 $string['explanationtypename'] = 'Name des Fehlertyps';
@@ -236,6 +235,10 @@ $string['feedbackupdated'] = 'Rückmeldung und / oder Note aktualisiert';
 $string['errfeedbacknotupdated'] = 'Rückmeldung und Note konnte nicht aktualisiert werden';
 $string['errnograder'] = 'Kein Bewerter.';
 $string['errnofeedbackorratingdisabled'] = 'Keine Rückmeldung oder Rückmeldung ist deaktiviert.';
+$string['annotationareawidth'] = 'Breite des Annotationsbereichs';
+$string['annotationareawidthall'] = 'Die Breite des Annotationsbereiches in Prozent für alle Margics. Kann von Lehrenden in den einzelnen Margics überschrieben werden.';
+$string['annotationareawidth_help'] = 'Die Breite des Annotationsbereiches in Prozent.';
+$string['errannotationareawidthinvalid'] = 'Breite ungültig (Minimum: {$a->minwidth}, Maximum: {$a->maxwidth}).';
 
 // Privacy.
 $string['privacy:metadata:margic_entries'] = 'Enthält die gespeicherten Benutzereinträge aller Margics.';

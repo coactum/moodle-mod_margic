@@ -62,6 +62,10 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_heading('mod_margic/appearance',
         get_string('appearance'), ''));
 
+    // Default width of annotation area.
+    $settings->add(new admin_setting_configtext('mod_margic/annotationareawidth', get_string('annotationareawidth', 'margic'),
+        get_string('annotationareawidthall', 'margic'), 40, '/^([2-7]\d|80)+$/')); // Range allowed: 20-80
+
     // Date format setting.
     $settings->add(new admin_setting_configtext('mod_margic/dateformat',
         get_string('dateformat', 'margic'),

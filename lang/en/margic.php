@@ -231,7 +231,6 @@ $string['deleteannotation'] = 'Delete';
 $string['annotationcolor'] = 'Color of the annotation type';
 $string['defaulttype'] = 'Default error type';
 $string['customtype'] = 'Custom error type';
-$string['erremptyannotation'] = 'Text missing. Annotation not saved.';
 $string['errnohexcolor'] = 'No hex value for color.';
 $string['changesforall'] = 'Changing the name or color of the annotation type will affect all already created annotations as well as all future annotations immediately after saving.';
 $string['explanationtypename'] = 'Name of annotation type';
@@ -249,6 +248,10 @@ $string['feedbackupdated'] = 'Feedback and / or rating updated';
 $string['errfeedbacknotupdated'] = 'Feedback and grade not updated';
 $string['errnograder'] = 'No grader.';
 $string['errnofeedbackorratingdisabled'] = 'No feedback or rating disabled.';
+$string['annotationareawidth'] = 'Width of the annotation area';
+$string['annotationareawidthall'] = 'The width of the annotation area in percent for all margics. Can be overridden by teachers in the individual margics.';
+$string['annotationareawidth_help'] = 'The width of the annotation area in percent.';
+$string['errannotationareawidthinvalid'] = 'Width invalid (minimum: {$a->minwidth}%, maximum: {$a->maxwidth}%).';
 
 // Privacy.
 $string['privacy:metadata:margic_entries'] = 'Contains the user entries saved in all margics.';
