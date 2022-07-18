@@ -158,8 +158,8 @@
                             {{{userpicturestr}}}
                         </span>
                         <span class="align-self-center">
-                            {{^timemodified}}<i class="fa fa-pencil" aria-hidden="true" title="{{#str}}annotationcreated, margic {{/str}}"></i> {{#userdate}}{{timecreated}}, {{#str}} strftimedatetime, core_langconfig {{/str}}{{/userdate}} {{/timemodified}}
-                            {{#timemodified}}<i class="fa fa-pencil-square-o" aria-hidden="true" title="{{#str}}annotationmodified, margic {{/str}}"></i> {{#userdate}}{{timemodified}}, {{#str}} strftimedatetime, core_langconfig {{/str}}{{/userdate}}{{/timemodified}}
+                            {{^timemodified}}{{#userdate}}{{timecreated}}, {{#str}} strftimedatetimeshort, core_langconfig {{/str}}{{/userdate}} <i class="fa fa-hourglass-start" aria-hidden="true" title="{{#str}}annotationcreated, margic, {{#userdate}}{{timecreated}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}} {{/str}}"></i> {{/timemodified}}
+                            {{#timemodified}}{{#userdate}}{{timemodified}}, {{#str}} strftimedatetimeshort, core_langconfig {{/str}}{{/userdate}} <i class="fa fa-hourglass-end" aria-hidden="true" title="{{#str}}annotationmodified, margic, {{#userdate}}{{timemodified}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}} {{/str}}"></i>{{/timemodified}}
                         </span>
                     </div>
                     <div class="annotationtype">
