@@ -73,6 +73,8 @@ class margic {
     /** @var array Array of error messages encountered during the execution of margic related operations. */
     private $errors = array();
 
+    /** @var array Temp helper array with entry nodes sorted by occurance */
+    private $nodepositions = array();
     /**
      * Constructor for the base margic class.
      *
@@ -248,6 +250,29 @@ class margic {
 
         $strmanager = get_string_manager();
 
+        // Custom sort function for annotations.
+        function sortannotation($a, $b) {
+            // var_dump($a);
+            // var_dump($b);
+
+            if (!isset($a->position)) {
+                var_dump('Fehler: keine Position an Element A');
+                var_dump($a->id);
+                return true;
+            } else if (!isset($b->position)) {
+                var_dump('Fehler: keine Position an Element B');
+                var_dump($b->id);
+                return false;
+            }
+
+
+            if ($a->position === $b->position) {
+                return $a->startposition > $b->startposition;
+            }
+
+            return $a->position > $b->position;
+        }
+
         foreach ($this->entries as $i => $entry) {
             $this->entries[$i]->user = $DB->get_record('user', array('id' => $entry->userid));
 
@@ -268,6 +293,28 @@ class margic {
                     $this->entries[$i]->entrycanbeedited = false;
                 }
 
+
+                // Index entry for annotation sorting.
+                $position = 0;
+
+                $doc = new DOMDocument();
+                $doc->loadHTML($this->entries[$i]->text);
+
+                $this->index_original($doc);
+
+                // var_dump('NEW ENTRY');
+                // var_dump($i);
+
+                // var_dump('<br>');
+                // var_dump('<br>');
+
+                // var_dump('NEW nodepositions');
+                // var_dump($this->nodepositions);
+
+                // var_dump('<br>');
+                // var_dump('<br>');
+
+                // Get annotations for entry.
                 $this->entries[$i]->annotations = array_values($DB->get_records('margic_annotations', array('margic' => $this->cm->instance, 'entry' => $entry->id)));
 
                 foreach ($this->entries[$i]->annotations as $key => $annotation) {
@@ -292,7 +339,43 @@ class margic {
                     } else {
                         $this->entries[$i]->annotations[$key]->canbeedited = false;
                     }
+
+
+                    // Get position of startcontainer.
+                    $xpath = new DOMXpath($doc);
+                    $nodelist = $xpath->query('/' . $annotation->startcontainer);
+
+                    echo('$annotation->id <br>');
+                    var_dump($annotation->id);
+                    echo "<br>";
+
+                    echo('$annotation->startcontainer <br>');
+                    var_dump($annotation->startcontainer);
+                    echo "<br>";
+
+
+                    // var_dump('$nodelist');
+                    // var_dump($nodelist);
+
+                    // var_dump('$nodepositions');
+                    // var_dump($this->nodepositions);
+
+                    foreach ($this->nodepositions as $position => $node) {
+                        if ($nodelist[0] === $node) { // Check if startcontainer node ($nodelist[0]) is same as node in nodepositions array.
+                            $this->entries[$i]->annotations[$key]->position = $position; // If so asssign its position to annotation.
+                            echo "POSITION OF ANNOTATION:  <br>";
+                            echo $this->entries[$i]->annotations[$key]->position;
+                            echo "<br>";
+                            break;
+                        }
+                    }
                 }
+
+                // Sort annotations by position and offset of startcontainer.
+                usort($this->entries[$i]->annotations, "sortannotation");
+
+                // Reset nodepositions with empty array for next entry.
+                $this->nodepositions = array();
 
             } else {
                 unset($this->entries[$i]);
@@ -514,5 +597,38 @@ class margic {
      */
     public function get_sortmode() {
         return $this->sortmode;
+    }
+
+    private function index_original($doc) {
+
+        // var_dump('index_original: $doc');
+        // var_dump($doc);
+
+        foreach ($doc->childNodes as $childnode) {
+            // var_dump('index_original: $childnode');
+            // var_dump($childnode);
+
+            $this->search_dom_node($childnode);
+        }
+    }
+
+    private function search_dom_node(DOMNode $domnode, &$position = 0) {
+        // var_dump('search_dom_node: $domnode');
+        // var_dump($domnode);
+
+        // var_dump('search_dom_node: $nodepositions');
+        // var_dump($nodepositions);
+
+        // var_dump('search_dom_node: $position');
+        // var_dump($position);
+
+        foreach ($domnode->childNodes as $node) {
+            $this->nodepositions[$position] = $node;
+            $position = $position + 1;
+
+            if ($node->hasChildNodes()) {
+                $this->search_dom_node($node, $position);
+            }
+        }
     }
 }
