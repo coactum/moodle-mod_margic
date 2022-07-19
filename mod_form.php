@@ -57,26 +57,6 @@ class mod_margic_mod_form extends moodleform_mod {
         // Add the header for availability.
         $mform->addElement('header', 'availibilityhdr', get_string('availability'));
 
-        // 20200915 Moved check so daysavailable is hidden unless using weekly format.
-        if ($COURSE->format == 'weeks') {
-            $options = array();
-            $options[0] = get_string('alwaysopen', 'margic');
-            for ($i = 1; $i <= 13; $i ++) {
-                $options[$i] = get_string('numdays', '', $i);
-            }
-            for ($i = 2; $i <= 16; $i ++) {
-                $days = $i * 7;
-                $options[$days] = get_string('numweeks', '', $i);
-            }
-            $options[365] = get_string('numweeks', '', 52);
-            $mform->addElement('select', 'days', get_string('daysavailable', 'margic'), $options);
-            $mform->addHelpButton('days', 'daysavailable', 'margic');
-
-            $mform->setDefault('days', '7');
-        } else {
-            $mform->setDefault('days', '0');
-        }
-
         $mform->addElement('date_time_selector', 'timeopen', get_string('margicopentime', 'margic'), array(
             'optional' => true,
             'step' => 1

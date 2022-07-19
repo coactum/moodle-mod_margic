@@ -17,8 +17,6 @@
 /**
  * Results utilities for margic.
  *
- * 2020071700 Moved these functions from lib.php to here.
- *
  * @package   mod_margic
  * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -27,6 +25,7 @@ namespace mod_margic\local;
 
 define('MARGIC_EVENT_TYPE_OPEN', 'open');
 define('MARGIC_EVENT_TYPE_CLOSE', 'close');
+
 use mod_margic\local\results;
 use stdClass;
 use csv_export_writer;
@@ -35,7 +34,7 @@ use context_module;
 use calendar_event;
 
 /**
- * Utility class for margic results.
+ * Utility class for mod_margic.
  *
  * @package   mod_margic
  * @copyright 2022 coactum GmbH
@@ -64,6 +63,7 @@ class results {
         // Margic start calendar events.
         $event = new stdClass();
         $event->eventtype = MARGIC_EVENT_TYPE_OPEN;
+
         // The MOOTYPER_EVENT_TYPE_OPEN event should only be an action event if no close time is specified.
         $event->type = empty($margic->timeclose) ? CALENDAR_EVENT_TYPE_ACTION : CALENDAR_EVENT_TYPE_STANDARD;
 
@@ -155,16 +155,16 @@ class results {
     }
 
     /**
-     * Returns availability status.
-     * Added 20200903.
+     * Returns if margic is available and entries are editable.
      *
      * @param var $margic
      */
-    /* public static function margic_available($margic) {
+    public static function margic_available($margic) {
         $timeopen = $margic->timeopen;
         $timeclose = $margic->timeclose;
+
         return (($timeopen == 0 || time() >= $timeopen) && ($timeclose == 0 || time() < $timeclose));
-    } */
+    }
 
     /**
      * Download entries in this margic activity.

@@ -63,7 +63,13 @@ class margic_view implements renderable, templatable {
     /** @var bool */
     protected $caneditentries;
     /** @var int */
+    protected $edittimestarts;
+    /** @var bool */
+    protected $edittimenotstarted;
+    /** @var int */
     protected $edittimeends;
+    /** @var bool */
+    protected $edittimehasended;
     /** @var bool */
     protected $canmanageentries;
     /** @var string */
@@ -100,6 +106,8 @@ class margic_view implements renderable, templatable {
      * @param int $entryareawidth Width of the entry area
      * @param int $annotationareawidth Width of the annotation area
      * @param bool $caneditentries If own entries can be edited
+     * @param int $edittimestarts Time when entries can be edited
+     * @param bool $edittimenotstarted If edit time has not started
      * @param int $edittimeends Time when entries cant be edited anymore
      * @param bool $edittimehasended If edit time has ended
      * @param bool $canmanageentries If entries can be managed
@@ -115,8 +123,10 @@ class margic_view implements renderable, templatable {
      * @param bool $canmakeannotations If user can make annotations
      * @param array $annotationtypes Array with annotation types for form
      */
-    public function __construct($cm, $context, $moduleinstance, $entries, $sortmode, $entrybgc, $entrytextbgc, $annotationareawidth, $caneditentries, $edittimeends, $edittimehasended, $canmanageentries,
-        $sesskey, $currentuserrating, $ratingaggregationmode, $course, $singleuser, $pagecountoptions, $pagebar, $entriescount, $annotationmode, $canmakeannotations, $annotationtypes) {
+    public function __construct($cm, $context, $moduleinstance, $entries, $sortmode, $entrybgc, $entrytextbgc, $annotationareawidth,
+        $caneditentries, $edittimestarts, $edittimenotstarted, $edittimeends, $edittimehasended, $canmanageentries, $sesskey,
+        $currentuserrating, $ratingaggregationmode, $course, $singleuser, $pagecountoptions, $pagebar, $entriescount, $annotationmode,
+        $canmakeannotations, $annotationtypes) {
 
         $this->cm = $cm;
         $this->cmid = $this->cm->id;
@@ -129,6 +139,8 @@ class margic_view implements renderable, templatable {
         $this->annotationareawidth = $annotationareawidth;
         $this->entryareawidth = 100 - $annotationareawidth;
         $this->caneditentries = $caneditentries;
+        $this->edittimestarts = $edittimestarts;
+        $this->edittimenotstarted = $edittimenotstarted;
         $this->edittimeends = $edittimeends;
         $this->edittimehasended = $edittimehasended;
         $this->canmanageentries = $canmanageentries;
@@ -203,6 +215,8 @@ class margic_view implements renderable, templatable {
         $data->entryareawidth = $this->entryareawidth;
         $data->annotationareawidth = $this->annotationareawidth;
         $data->caneditentries = $this->caneditentries;
+        $data->edittimestarts = $this->edittimestarts;
+        $data->edittimenotstarted = $this->edittimenotstarted;
         $data->edittimeends = $this->edittimeends;
         $data->edittimehasended = $this->edittimehasended;
         $data->canmanageentries = $this->canmanageentries;

@@ -147,26 +147,6 @@ if ($moduleinstance->intro) {
     echo $OUTPUT->box(format_module_intro('margic', $moduleinstance, $cm->id), 'generalbox mod_introbox', 'newmoduleintro');
 }
 
-// Set start and finish time. Needs to be reworked/simplified?
-if ($course->format == 'weeks' and $moduleinstance->days) {
-    $timestart = $course->startdate + (($coursesections->section - 1) * 604800);
-    if ($moduleinstance->days) {
-        $timefinish = $timestart + (3600 * 24 * $moduleinstance->days);
-    } else {
-        $timefinish = $course->enddate;
-    }
-} else if (! ((($moduleinstance->timeopen == 0 || time() >= $moduleinstance->timeopen)
-    && ($moduleinstance->timeclose == 0 || time() < $moduleinstance->timeclose)))) { // If margic is not available?
-    // If used, set calendar availability time limits on the margics.
-    $timestart = $moduleinstance->timeopen;
-    $timefinish = $moduleinstance->timeclose;
-    $moduleinstance->days = 0;
-} else {
-    // Have no time limits on the margics.
-    $timestart = false;
-    $timefinish = false;
-}
-
 // Get grading of current user when margic is rated.
 if ($moduleinstance->assessed != 0) {
     $ratingaggregationmode = results::get_margic_aggregation($moduleinstance->assessed) . ' ' . get_string('forallmyentries', 'mod_margic');
@@ -178,6 +158,19 @@ if ($moduleinstance->assessed != 0) {
     $currentuserrating = false;
 }
 
+// Calculate if edit time has started.
+if (!$moduleinstance->timeopen) {
+    $edittimenotstarted = false;
+    $edittimestarts = false;
+} else if ($moduleinstance->timeopen && $timenow >= $moduleinstance->timeopen) {
+    $edittimenotstarted = false;
+    $edittimestarts = $moduleinstance->timeopen;
+} else if ($moduleinstance->timeopen && $timenow < $moduleinstance->timeopen) {
+    $edittimenotstarted = true;
+    $edittimestarts = $moduleinstance->timeopen;
+}
+
+// Calculate if edit time has ended.
 $timenow = time();
 if (!$moduleinstance->timeclose) {
     $edittimehasended = false;
@@ -190,6 +183,7 @@ if (!$moduleinstance->timeclose) {
     $edittimeends = $moduleinstance->timeclose;
 }
 
+// Get width of annotation area.
 if (isset($moduleinstance->annotationareawidth)) {
     $annotationareawidth = $moduleinstance->annotationareawidth;
 } else {
@@ -202,7 +196,7 @@ echo groups_print_activity_menu($cm, $CFG->wwwroot . "/mod/margic/view.php?id=$i
 // Output page.
 $page = new margic_view($cm, $context, $moduleinstance, $margic->get_entries_grouped_by_pagecount(), $margic->get_sortmode(),
     get_config('mod_margic', 'entrybgc'), get_config('mod_margic', 'entrytextbgc'), $annotationareawidth,
-    $moduleinstance->editall, $edittimeends, $edittimehasended, $canmanageentries, sesskey(), $currentuserrating,
+    $moduleinstance->editall, $edittimestarts, $edittimenotstarted, $edittimeends, $edittimehasended, $canmanageentries, sesskey(), $currentuserrating,
     $ratingaggregationmode, $course, $userid, $margic->get_pagecountoptions(), $margic->get_pagebar(), count($margic->get_entries()),
     $annotationmode, $canmakeannotations, $margic->get_annotationtypes_for_form());
 

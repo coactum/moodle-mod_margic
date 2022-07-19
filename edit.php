@@ -66,28 +66,8 @@ require_login($course, true, $cm);
 
 require_capability('mod/margic:addentries', $context);
 
-// Prevent creating and editing of entries when activity is closed.
-$timenow = time();
-if ($course->format == 'weeks' and $moduleinstance->days) {
-    $timestart = $course->startdate + (($coursesections->section - 1) * 604800);
-    if ($moduleinstance->days) {
-        $timefinish = $timestart + (3600 * 24 * $moduleinstance->days);
-    } else {
-        $timefinish = $course->enddate;
-    }
-} else if (! ((($moduleinstance->timeopen == 0 || time() >= $moduleinstance->timeopen)
-    && ($moduleinstance->timeclose == 0 || time() < $moduleinstance->timeclose)))) { // If margic is not available?
-    // If used, set calendar availability time limits on the margics.
-    $timestart = $moduleinstance->timeopen;
-    $timefinish = $moduleinstance->timeclose;
-    $moduleinstance->days = 0;
-} else {
-    // Have no time limits on the margics.
-    $timestart = false;
-    $timefinish = false;
-}
-
-if (($entryid && !$moduleinstance->editall) || ($timefinish && (time() >= $timefinish))) {
+// Prevent creating and editing of entries if user is not allowed to edit entry or activity is not available.
+if (($entryid && !$moduleinstance->editall) || !results::margic_available($moduleinstance)) {
     // Trigger invalid_access_attempt with redirect to the view page.
     $params = array(
         'objectid' => $id,
@@ -158,11 +138,6 @@ if ($form->is_cancelled()) {
 } else if ($fromform = $form->get_data()) {
     $timenow = time();
 
-    // Prevent creation dates in the future.
-    if ($moduleinstance->editdates && $fromform->timecreated > $timenow) {
-        redirect('view.php?id='.$id, get_string('entrydateinfuture', 'margic'), null, notification::NOTIFY_ERROR);
-    }
-
     // Relink using the proper entryid because draft area didn't have an itemid associated when creating new entry.
     $newentry = new stdClass();
     $newentry->margic = $moduleinstance->id;
@@ -216,7 +191,13 @@ if ($form->is_cancelled()) {
     $event->add_record_snapshot('margic', $moduleinstance);
     $event->trigger();
 
-    redirect(new moodle_url('/mod/margic/view.php?id=' . $cm->id));
+    if ($moduleinstance->editdates && $fromform->timecreated > $timenow) {
+        redirect(new moodle_url('/mod/margic/view.php?id=' . $cm->id), get_string('entryadded', 'mod_margic') .
+            ' ' . get_string('editdateinfuture', 'mod_margic'), null, notification::NOTIFY_WARNING);
+    } else {
+        redirect(new moodle_url('/mod/margic/view.php?id=' . $cm->id), get_string('entryadded', 'mod_margic'), null, notification::NOTIFY_SUCCESS);
+    }
+
 }
 
 echo $OUTPUT->header();

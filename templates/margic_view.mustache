@@ -25,6 +25,7 @@
 {{/js}}
 
 {{#edittimehasended}}{{#edittimeends}}<div class="alert alert-danger alert-block fade in" role="alert"><button type="button" class="close" data-dismiss="alert">×</button>{{#str}}editingended, mod_margic, {{#userdate}}{{edittimeends}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}}{{/str}}</div>{{/edittimeends}}{{/edittimehasended}}
+{{#edittimenotstarted}}{{#edittimestarts}}<div class="alert alert-warning alert-block fade in" role="alert"><button type="button" class="close" data-dismiss="alert">×</button>{{#str}}editingstarts, mod_margic, {{#userdate}}{{edittimestarts}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}}{{/str}}</div>{{/edittimestarts}}{{/edittimenotstarted}}
 
 {{#canmanageentries}}<h3>{{#str}}entries, mod_margic{{/str}}</h3>{{/canmanageentries}}
 {{^canmanageentries}}<h3>{{#str}}myentries, mod_margic{{/str}}</h3>{{/canmanageentries}}
@@ -44,7 +45,7 @@
 </div>
 
 <div class="pb-1">
-    {{^edittimehasended}}<a class="btn btn-primary mr-1" href="edit.php?id={{cmid}}"> {{#str}}startnewentry, mod_margic{{/str}} </a>{{/edittimehasended}}
+    {{^edittimehasended}}{{^edittimenotstarted}}<a class="btn btn-primary mr-1" href="edit.php?id={{cmid}}"> {{#str}}startnewentry, mod_margic{{/str}} </a>{{/edittimenotstarted}}{{/edittimehasended}}
     {{#entries.0}}
         {{#canmanageentries}}<button class="btn btn-primary" data-toggle="collapse" data-target=".gradingform" aria-expanded="false" aria-controls=".gradingform" title="{{#str}}toggleratingform, mod_margic{{/str}}">{{#str}}toggleratingform, mod_margic{{/str}}</button>{{/canmanageentries}}
         {{#canmanageentries}}{{#singleuser}}<a class="btn btn-primary m-1" href="view.php?id={{cmid}}"> {{#str}}viewallentries, mod_margic{{/str}} </a>{{/singleuser}}{{/canmanageentries}}
@@ -52,10 +53,12 @@
             {{#canmakeannotations}}<a class="btn btn-primary m-1" href="view.php?id={{cmid}}&annotationmode=1"> {{#str}}viewandmakeannotations, mod_margic{{/str}} </a>{{/canmakeannotations}}
             {{^canmakeannotations}}<a class="btn btn-primary m-1" href="view.php?id={{cmid}}&annotationmode=1"> {{#str}}viewannotations, mod_margic{{/str}} </a>{{/canmakeannotations}}
         {{/annotationmode}}
-        {{#annotationmode}}<a class="btn btn-primary m-1" href="view.php?id={{cmid}}"> {{#str}}hideannotations, mod_margic{{/str}} </a>{{/annotationmode}}
+        {{#annotationmode}}
+            <a class="btn btn-primary m-1" href="view.php?id={{cmid}}"> {{#str}}hideannotations, mod_margic{{/str}} </a>
+            <a class="btn btn-primary m-1" href="" data-toggle="collapse" data-target=".collapseAnnotation" aria-expanded="false" aria-controls="collapseAnnotation" title="{{#str}}toggleallannotations, mod_margic{{/str}}"> {{#str}}toggleallannotations, mod_margic{{/str}} </a>
+        {{/annotationmode}}
     {{/entries.0}}
     {{#canmanageentries}}<a class="btn btn-primary m-1" href="annotations_summary.php?id={{cmid}}"> {{#str}}annotationssummary, mod_margic{{/str}} </a>{{/canmanageentries}}
-    <a class="btn btn-primary m-1" href="" data-toggle="collapse" data-target=".collapseAnnotation" aria-expanded="false" aria-controls="collapseAnnotation" title="{{#str}}toggleallannotations, mod_margic{{/str}}"> {{#str}}toggleallannotations, mod_margic{{/str}} </a>
 
     {{#entries.0}}<span class="pull-right p-1">
         <a href="view.php?id={{cmid}}&action=download" class="p-1 pr-2 border-right solid"><i class="fa fa-2x fa-download" title="{{#str}}csvexport, mod_margic{{/str}}"></i></a>
