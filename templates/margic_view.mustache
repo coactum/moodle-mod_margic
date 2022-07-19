@@ -55,6 +55,7 @@
         {{#annotationmode}}<a class="btn btn-primary m-1" href="view.php?id={{cmid}}"> {{#str}}hideannotations, mod_margic{{/str}} </a>{{/annotationmode}}
     {{/entries.0}}
     {{#canmanageentries}}<a class="btn btn-primary m-1" href="annotations_summary.php?id={{cmid}}"> {{#str}}annotationssummary, mod_margic{{/str}} </a>{{/canmanageentries}}
+    <a class="btn btn-primary m-1" href="" data-toggle="collapse" data-target=".collapseAnnotation" aria-expanded="false" aria-controls="collapseAnnotation" title="{{#str}}toggleallannotations, mod_margic{{/str}}"> {{#str}}toggleallannotations, mod_margic{{/str}} </a>
 
     {{#entries.0}}<span class="pull-right p-1">
         <a href="view.php?id={{cmid}}&action=download" class="p-1 pr-2 border-right solid"><i class="fa fa-2x fa-download" title="{{#str}}csvexport, mod_margic{{/str}}"></i></a>
@@ -153,38 +154,32 @@
             <h4 class="text-center">{{#str}} annotations, mod_margic {{/str}}</h4>
             {{#annotations}}
                 <div class="annotation-box annotation-box-{{id}}" style="background: {{entrytextbgc}};">
-                    <div class="d-flex justify-content-between">
-                        <span>
-                            {{{userpicturestr}}}
-                        </span>
-                        <span class="align-self-center">
-                            {{^timemodified}}{{#userdate}}{{timecreated}}, {{#str}} strftimedatetimeshort, core_langconfig {{/str}}{{/userdate}} <i class="fa fa-hourglass-start" aria-hidden="true" title="{{#str}}annotationcreated, margic, {{#userdate}}{{timecreated}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}} {{/str}}"></i> {{/timemodified}}
-                            {{#timemodified}}{{#userdate}}{{timemodified}}, {{#str}} strftimedatetimeshort, core_langconfig {{/str}}{{/userdate}} <i class="fa fa-hourglass-end" aria-hidden="true" title="{{#str}}annotationmodified, margic, {{#userdate}}{{timemodified}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}} {{/str}}"></i>{{/timemodified}}
-                        </span>
+                    <div class="annotationtypeheader">
+                        <span style="border-left: 10px solid #{{color}}; padding-left: 5px;"> </span>
+                        <strong class="annotationtype">{{type}}</strong>
+                        <button class="btn btn-secondary margic-btn-round-small pull-right" data-toggle="collapse" data-target=".collapseAnnotation{{id}}" aria-expanded="false" aria-controls="collapseAnnotation{{id}}" title="{{#str}}toggleannotation, mod_margic{{/str}}"><i class="fa fa-lg fa-caret-down"></i></button>
                     </div>
-                    <div class="annotationtype">
-                        <span>
-                            {{type}}
-                            {{#canmanageentries}}
-                                {{#defaulttype}}
-                                    <span style="background-color: #{{color}}" title="{{#str}}defaulttype, mod_margic{{/str}}"> (S)</span>
-                                {{/defaulttype}}
-                                {{^defaulttype}}
-                                    <span style="background-color: #{{color}}" title="{{#str}}customtype, mod_margic{{/str}}"> (M)</span>
-                                {{/defaulttype}}
-                            {{/canmanageentries}}
+                    <div class="collapse collapseAnnotation collapseAnnotation{{id}}">
+                        <div class="d-flex justify-content-between annotationauthor">
+                            <span>
+                                {{{userpicturestr}}}
+                            </span>
+                            <span class="align-self-center">
+                                {{^timemodified}}{{#userdate}}{{timecreated}}, {{#str}} strftimedatetimeshort, core_langconfig {{/str}}{{/userdate}} <i class="fa fa-hourglass-start" aria-hidden="true" title="{{#str}}annotationcreated, margic, {{#userdate}}{{timecreated}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}} {{/str}}"></i> {{/timemodified}}
+                                {{#timemodified}}{{#userdate}}{{timemodified}}, {{#str}} strftimedatetimeshort, core_langconfig {{/str}}{{/userdate}} <i class="fa fa-hourglass-end" aria-hidden="true" title="{{#str}}annotationmodified, margic, {{#userdate}}{{timemodified}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}} {{/str}}"></i>{{/timemodified}}
+                            </span>
+                        </div>
+                        <div class="annotatedtextpreviewdiv">
+                            <span id="annotationpreview-{{id}}" class="annotatedtextpreview annotationpreview-{{id}}" style="border-color: #{{color}};">{{#str}}annotatedtextnotfound, mod_margic {{/str}} <i class="fa fa-exclamation text-danger" aria-hidden="true" title="{{#str}}annotatedtextinvalid, margic {{/str}}"></i></span>
+                        </div>
+                        <span class="annotation">
+                            {{#text}}{{text}}{{/text}}
+                            {{^text}}-{{/text}}
                         </span>
+                        {{#canbeedited}}
+                            <span class="pull-right"><a href="javascript:void(0);" title="{{#str}}editannotation, margic {{/str}}"><i id="edit-annotation-{{id}}" class="fa fa-lg fa-pencil m-r-1 edit-annotation" aria-hidden="true" ></i></a><a href="annotations.php?id={{cmid}}&deleteannotation={{id}}" title="{{#str}}deleteannotation, margic {{/str}}"><i id="delete-annotation-{{id}}" class="fa fa-lg fa-trash delete-annotation" aria-hidden="true"></i></a></span>
+                        {{/canbeedited}}
                     </div>
-                    <div class="annotatedtextpreviewdiv">
-                        <span id="annotationpreview-{{id}}" class="annotatedtextpreview annotationpreview-{{id}}" style="border-color: #{{color}};">{{#str}}annotatedtextnotfound, mod_margic {{/str}} <i class="fa fa-exclamation text-danger" aria-hidden="true" title="{{#str}}annotatedtextinvalid, margic {{/str}}"></i></span>
-                    </div>
-                    <span class="annotation">
-                        {{#text}}{{text}}{{/text}}
-                        {{^text}}-{{/text}}
-                    </span>
-                    {{#canbeedited}}
-                        <span class="pull-right"><a href="javascript:void(0);" title="{{#str}}editannotation, margic {{/str}}"><i id="edit-annotation-{{id}}" class="fa fa-lg fa-pencil m-r-1 edit-annotation" aria-hidden="true" ></i></a><a href="annotations.php?id={{cmid}}&deleteannotation={{id}}" title="{{#str}}deleteannotation, margic {{/str}}"><i id="delete-annotation-{{id}}" class="fa fa-lg fa-trash delete-annotation" aria-hidden="true"></i></a></span>
-                    {{/canbeedited}}
                 </div>
             {{/annotations}}
 

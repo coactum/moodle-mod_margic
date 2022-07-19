@@ -239,6 +239,8 @@ $string['annotationareawidth'] = 'Breite des Annotationsbereichs';
 $string['annotationareawidthall'] = 'Die Breite des Annotationsbereiches in Prozent für alle Margics. Kann von Lehrenden in den einzelnen Margics überschrieben werden.';
 $string['annotationareawidth_help'] = 'Die Breite des Annotationsbereiches in Prozent.';
 $string['errannotationareawidthinvalid'] = 'Breite ungültig (Minimum: {$a->minwidth}, Maximum: {$a->maxwidth}).';
+$string['toggleannotation'] = 'Annotation aus- / einklappen';
+$string['toggleallannotations'] = 'Alle Annotation aus- / einklappen';
 
 // Privacy.
 $string['privacy:metadata:margic_entries'] = 'Enthält die gespeicherten Benutzereinträge aller Margics.';
