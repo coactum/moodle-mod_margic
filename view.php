@@ -159,6 +159,7 @@ if ($moduleinstance->assessed != 0) {
 }
 
 // Calculate if edit time has started.
+$timenow = time();
 if (!$moduleinstance->timeopen) {
     $edittimenotstarted = false;
     $edittimestarts = false;
@@ -171,7 +172,6 @@ if (!$moduleinstance->timeopen) {
 }
 
 // Calculate if edit time has ended.
-$timenow = time();
 if (!$moduleinstance->timeclose) {
     $edittimehasended = false;
     $edittimeends = false;

@@ -41,8 +41,6 @@ $string['aliases_help'] = 'Each margic entry can have an associated list of keyw
 
 Enter each keyword on a new line (not separated by commas).';
 $string['and'] = ' and ';
-$string['attachment'] = 'Attachment';
-$string['attachment_help'] = 'You can optionally attach one or more files to a margic entry.';
 $string['blankentry'] = 'Blank entry';
 $string['calendarend'] = '{$a} closes';
 $string['calendarstart'] = '{$a} opens';
@@ -133,10 +131,6 @@ $string['rate'] = 'Rate';
 $string['rating'] = 'Rating';
 $string['savedrating'] = 'Rating saved for this entry';
 $string['newrating'] = 'New rating for this entry';
-$string['removeentries'] = 'Remove all entries';
-$string['removemessages'] = 'Remove all margic entries';
-$string['reportsingle'] = 'Get all margic entries for this user.';
-$string['reportsingleallentries'] = 'All margic entries for this user.';
 $string['returnto'] = 'Return to {$a}';
 $string['returntoreport'] = 'Return to report page for - {$a}';
 $string['savesettings'] = 'Save settings';
@@ -253,6 +247,12 @@ $string['errannotationareawidthinvalid'] = 'Width invalid (minimum: {$a->minwidt
 $string['toggleannotation'] = 'Toggle annotation';
 $string['toggleallannotations'] = 'Toggle all annotations';
 $string['entryadded'] = 'Entry added or modified.';
+$string['deletealluserdata'] = 'Delete all entries, annotations, files, ratings and tags';
+$string['alluserdatadeleted'] = 'All entries, annotations, files, ratings and tags are deleted';
+$string['deletealltags'] = 'Delete only all tags';
+$string['tagsdeleted'] = 'All tags deleted';
+$string['deleteallratings'] = 'Delete only all ratings';
+$string['ratingsdeleted'] = 'All ratings deleted';
 
 // Privacy.
 $string['privacy:metadata:margic_entries'] = 'Contains the user entries saved in all margics.';

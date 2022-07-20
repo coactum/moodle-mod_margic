@@ -550,7 +550,15 @@ function margic_print_recent_activity($course, $viewfullnames, $timestart) {
  */
 function margic_reset_course_form_definition(&$mform) {
     $mform->addElement('header', 'margicheader', get_string('modulenameplural', 'margic'));
-    $mform->addElement('advcheckbox', 'reset_margic', get_string('removemessages', 'margic'));
+    $mform->addElement('checkbox', 'reset_margic_all', get_string('deletealluserdata', 'margic'));
+
+    $mform->addElement('checkbox', 'reset_margic_ratings', get_string('deleteallratings', 'margic'));
+    $mform->disabledIf('reset_margic_ratings', 'reset_margic_all', 'checked');
+    $mform->setAdvanced('reset_margic_ratings');
+
+    $mform->addElement('checkbox', 'reset_margic_tags', get_string('deletealltags', 'margic'));
+    $mform->disabledIf('reset_margic_tags', 'reset_margic_all', 'checked');
+    $mform->setAdvanced('reset_margic_tags');
 }
 
 /**
@@ -560,51 +568,158 @@ function margic_reset_course_form_definition(&$mform) {
  * @return array
  */
 function margic_reset_course_form_defaults($course) {
-    return array('reset_margic' => 1);
+    return array('reset_margic_all' => 1, 'reset_margic_ratings' => 0, 'reset_margic_tags' => 0);
 }
 
 /**
- * Actual implementation of the reset course functionality, delete all the
- * data responses for course $data->courseid.
+ * This function is used by the reset_course_userdata function in moodlelib.
+ * This function will remove all userdata from the specified margic.
  *
- * @param object $data the data submitted from the reset course.
- * @return array status array
+ * @param object $data The data submitted from the reset course.
+ * @return array $status Status array.
  */
 function margic_reset_userdata($data) {
     global $CFG, $DB;
+
     require_once($CFG->libdir . '/filelib.php');
     require_once($CFG->dirroot . '/rating/lib.php');
 
+    $modulename = get_string('modulenameplural', 'margic');
     $status = array();
-    // THIS FUNCTION NEEDS REWRITE!
-    if (! empty($data->reset_margic)) {
 
-        $sql = "SELECT d.id
-                FROM {margic} d
-                WHERE d.course = ?";
-        $params = array(
-            $data->courseid
-        );
+    // Get margics in course that should be resetted.
+    $sql = "SELECT m.id
+                FROM {margic} m
+                WHERE m.course = ?";
 
+    $params = array(
+        $data->courseid
+    );
+
+    $margics = $DB->get_records_sql($sql, $params);
+
+    // Get ratings manager.
+    if (!empty($data->reset_margic_all) || !empty($data->reset_margic_ratings)) {
+        $rm = new rating_manager();
+        $ratingdeloptions = new stdClass;
+        $ratingdeloptions->component = 'mod_margic';
+        $ratingdeloptions->ratingarea = 'entry';
+    }
+
+    // Delete entries and their annotations, files, ratings and tags.
+    if (!empty($data->reset_margic_all)) {
+
+        foreach ($margics as $margicid => $unused) {
+            if (!$cm = get_coursemodule_from_instance('margic', $margicid)) {
+                continue;
+            }
+
+            // Remove files.
+            $context = context_module::instance($cm->id);
+            $fs->delete_area_files($context->id, 'mod_margic', 'entry');
+            $fs->delete_area_files($context->id, 'mod_margic', 'feedback');
+
+            // Remove ratings.
+            $ratingdeloptions->contextid = $context->id;
+            $rm->delete_ratings($ratingdeloptions);
+
+            // Remove tags.
+            core_tag_tag::delete_instances('mod_margic', null, $context->id);
+        }
+
+        // Remove all grades from gradebook (if that is not already done by the reset_gradebook_grades).
+        if (empty($data->reset_gradebook_grades)) {
+            margic_reset_gradebook($data->courseid);
+        }
+
+        // Delete the annotations of all entries.
+        $DB->delete_records_select('margic_annotations', "margic IN ($sql)", $params);
+
+        // Delete all entries.
         $DB->delete_records_select('margic_entries', "margic IN ($sql)", $params);
 
         $status[] = array(
-            'component' => get_string('modulenameplural', 'margic'),
-            'item' => get_string('removeentries', 'margic'),
+            'component' => $modulename,
+            'item' => get_string('alluserdatadeleted', 'margic'),
             'error' => false
         );
+    }
+
+    // Delete ratings only.
+    if (!empty($data->reset_margic_ratings) ) {
+
+        if ($margics) {
+            foreach ($margics as $margicid => $unused) {
+                if (!$cm = get_coursemodule_from_instance('margic', $margicid)) {
+                    continue;
+                }
+
+                $context = context_module::instance($cm->id);
+                $ratingdeloptions->contextid = $context->id;
+                $rm->delete_ratings($ratingdeloptions);
+            }
+        }
+
+        // Remove all grades from gradebook (if that is not already done by the reset_gradebook_grades).
+        if (empty($data->reset_gradebook_grades)) {
+            margic_reset_gradebook($data->courseid);
+        }
+    }
+
+    // Delete tags only.
+    if (!empty($data->reset_margic_tags) ) {
+        if ($margics) {
+            foreach ($margics as $margicid => $unused) {
+                if (!$cm = get_coursemodule_from_instance('margic', $margicid)) {
+                    continue;
+                }
+
+                $context = context_module::instance($cm->id);
+                core_tag_tag::delete_instances('mod_margic', null, $context->id);
+            }
+        }
+
+        $status[] = array('component' => $modulename, 'item' => get_string('tagsdeleted', 'margic'), 'error' => false);
+    }
+
+    // Updating dates - shift may be negative too.
+    if ($data->timeshift) {
+        // Any changes to the list of dates that needs to be rolled should be same during course restore and course reset.
+        // See MDL-9367.
+        shift_course_mod_dates('margic', array('assesstimestart', 'assesstimefinish', 'timeopen', 'timeclose'), $data->timeshift, $data->courseid);
+        $status[] = array('component' => $modulename, 'item' => get_string('datechanged'), 'error' => false);
     }
 
     return $status;
 }
 
 /**
+ * Removes all grades in the margic gradebook
+ *
+ * @global object
+ * @param int $courseid
+ */
+function margic_reset_gradebook($courseid) {
+    global $DB;
+
+    $params = array($courseid);
+
+    $sql = "SELECT ma.*, cm.idnumber as cmidnumber, ma.course as courseid
+              FROM {margic} ma, {course_modules} cm, {modules} m
+             WHERE m.name='margic' AND m.id=cm.module AND cm.instance=ma.id AND ma.course=?";
+
+    if ($margics = $DB->get_records_sql($sql, $params)) {
+        foreach ($margics as $margic) {
+            margic_grade_item_update($margic, 'reset');
+        }
+    }
+}
+
+/**
  * Get margic grades for a user.
  *
- * @param object $margic
- *            if is null, all margics
- * @param int $userid
- *            if is false all users
+ * @param object $margic If null, all margics
+ * @param int $userid If false all users
  * @return object $grades
  */
 function margic_get_user_grades($margic, $userid = 0) {

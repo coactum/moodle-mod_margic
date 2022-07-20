@@ -125,7 +125,7 @@ if (isset($margic->get_entries_with_keys()[$entryid])) {
 list ($editoroptions, $attachmentoptions) = results::margic_get_editor_and_attachment_options($course, $context, $moduleinstance);
 
 $data = file_prepare_standard_editor($data, 'text', $editoroptions, $context, 'mod_margic', 'entry', $data->entryid);
-$data = file_prepare_standard_filemanager($data, 'attachment', $attachmentoptions, $context, 'mod_margic', 'attachment', $data->entryid);
+// $data = file_prepare_standard_filemanager($data, 'attachment', $attachmentoptions, $context, 'mod_margic', 'attachment', $data->entryid);
 
 // Create form.
 $form = new mod_margic_entry_form(null, array('margic' => $moduleinstance->editdates, 'editoroptions' => $editoroptions));

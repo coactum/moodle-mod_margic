@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Defines backup_margic_activity_task class.
+ * The task that provides all the steps to perform a complete backup is defined here.
  *
  * @package     mod_margic
  * @category    backup
@@ -28,50 +28,54 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot.'/mod/margic/backup/moodle2/backup_margic_stepslib.php');
 
 /**
- * Provides the steps to perform one complete backup of the margic instance.
+ * The class provides all the settings and steps to perform one complete backup of mod_margic.
  */
 class backup_margic_activity_task extends backup_activity_task {
 
     /**
-     * No specific settings for this activity.
+     * Defines particular settings for the plugin.
      */
     protected function define_my_settings() {
+        // No particular settings for this activity.
     }
 
     /**
-     * Defines a backup step to store the instance data in the margic.xml file.
+     * Defines particular steps for the backup process.
      */
     protected function define_my_steps() {
         $this->add_step(new backup_margic_activity_structure_step('margic_structure', 'margic.xml'));
     }
 
     /**
-     * Encodes URLs to the index.php and view.php scripts.
+     * Codes the transformations to perform in the activity in order to get transportable (encoded) links.
      *
-     * @param string $content some HTML text that eventually contains URLs to the activity instance scripts.
-     * @return string $content The content with the URLs encoded.
+     * @param string $content content.
+     * @return string $content content.
      */
     public static function encode_content_links($content) {
-
         global $CFG;
 
-        $base = preg_quote($CFG->wwwroot.'/mod/margic', '#');
+        $base = preg_quote($CFG->wwwroot, "/");
 
-        // Link to the list of diaries.
-        $pattern = "#(".$base."\/index.php\?id\=)([0-9]+)#";
-        $content = preg_replace($pattern, '$@margicINDEX*$2@$', $content);
+        // Link to the list of margics.
+        $search = "/(".$base."\/mod\/margic\/index.php\?id\=)([0-9]+)/";
+        $content = preg_replace($search, '$@MARGICINDEX*$2@$', $content);
 
-        // Link to margic view by moduleid.
-        $pattern = "#(".$base."\/view.php\?id\=)([0-9]+)#";
-        $content = preg_replace($pattern, '$@margicVIEWBYID*$2@$', $content);
+        // Link to margic view by moduleid with optional userid if only entries of one user should be shown.
+        $search = "/(".$base."\/mod\/margic\/view.php\?id\=)([0-9]+)(&|&amp;)userid=([0-9]+)/";
+        $content = preg_replace($search, '$@MARGICVIEWBYID*$2*$4@$', $content);
 
-        // Link to margic report by moduleid.
-        $pattern = "#(".$base."\/report.php\?id\=)([0-9]+)#";
-        $content = preg_replace($pattern, '$@margicREPORT*$2@$', $content);
+        // Link to the edit page with optional entryid of entry that should be edited.
+        $search = "/(".$base."\/mod\/margic\/edit.php\?id\=)([0-9]+)(&|&amp;)entryid=([0-9]+)/";
+        $content = preg_replace($search, '$@MARGICEDITVIEW*$2*$4@$', $content);
 
-        // Link to margic entry by moduleid.
-        $pattern = "#(".$base."\/edit.php\?id\=)([0-9]+)#";
-        $content = preg_replace($pattern, '$@margicEDIT*$2@$', $content);
+        // Link to the annotation summary by moduleid.
+        $search = "/(".$base."\/mod\/margic\/annotations_summary.php\?id\=)([0-9]+)/";
+        $content = preg_replace($search, '$@MARGICANNOTATIONSUMMARY*$2@$', $content);
+
+        // Link to the page for editing annotation types with optional id of tyoe that should be edited.
+        $search = "/(".$base."\/mod\/margic\/annotation_types.php\?id\=)([0-9]+)(&|&amp;)edit=([0-9]+)/";
+        $content = preg_replace($search, '$@MARGICANNOTATIONTYPES*$2*$4@$', $content);
 
         return $content;
     }

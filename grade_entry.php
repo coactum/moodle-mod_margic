@@ -79,7 +79,7 @@ $data->{'feedback_' . $entry->id . 'format'} = $entry->formatcomment;
 list ($editoroptions, $attachmentoptions) = results::margic_get_editor_and_attachment_options($course, $context, $moduleinstance);
 
 $data = file_prepare_standard_editor($data, 'feedback_' . $entry->id, $editoroptions, $context, 'mod_margic', 'feedback', $data->entry);
-$data = file_prepare_standard_filemanager($data, 'attachment', $attachmentoptions, $context, 'mod_margic', 'attachment', $data->entry);
+// $data = file_prepare_standard_filemanager($data, 'attachment', $attachmentoptions, $context, 'mod_margic', 'attachment', $data->entry);
 
 $data->{'rating_' . $entry->id} = $entry->rating;
 

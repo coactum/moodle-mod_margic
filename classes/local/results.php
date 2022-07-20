@@ -356,7 +356,7 @@ class results {
 
         // If maxfiles would be set to an int and more files are given the editor saves them all but saves the overcouting incorrect so that white box is diaplayed.
 
-        // For a file attachements field (not really needed here?).
+        // For a file attachments field (not really needed here?).
         $attachmentoptions = array(
             'subdirs' => false,
             'maxfiles' => 1,
@@ -494,7 +494,7 @@ class results {
                 $editoroptions['autosave'] = false;
 
                 $data = file_prepare_standard_editor($data, 'feedback_' . $entry->id, $editoroptions, $context, 'mod_margic', 'feedback', $data->entry);
-                $data = file_prepare_standard_filemanager($data, 'attachment', $attachmentoptions, $context, 'mod_margic', 'attachment', $data->entry);
+                // $data = file_prepare_standard_filemanager($data, 'attachment', $attachmentoptions, $context, 'mod_margic', 'attachment', $data->entry);
 
                 $data->{'rating_' . $entry->id} = $entry->rating;
 

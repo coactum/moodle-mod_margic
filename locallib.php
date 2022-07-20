@@ -256,12 +256,12 @@ class margic {
             // var_dump($b);
 
             if (!isset($a->position)) {
-                var_dump('Fehler: keine Position an Element A');
-                var_dump($a->id);
+                // var_dump('Fehler: keine Position an Element A');
+                // var_dump($a->id);
                 return true;
             } else if (!isset($b->position)) {
-                var_dump('Fehler: keine Position an Element B');
-                var_dump($b->id);
+                // var_dump('Fehler: keine Position an Element B');
+                // var_dump($b->id);
                 return false;
             }
 
@@ -345,13 +345,13 @@ class margic {
                     $xpath = new DOMXpath($doc);
                     $nodelist = $xpath->query('/' . $annotation->startcontainer);
 
-                    echo('$annotation->id <br>');
-                    var_dump($annotation->id);
-                    echo "<br>";
+                    // echo('$annotation->id <br>');
+                    // var_dump($annotation->id);
+                    // echo "<br>";
 
-                    echo('$annotation->startcontainer <br>');
-                    var_dump($annotation->startcontainer);
-                    echo "<br>";
+                    // echo('$annotation->startcontainer <br>');
+                    // var_dump($annotation->startcontainer);
+                    // echo "<br>";
 
 
                     // var_dump('$nodelist');
@@ -363,9 +363,9 @@ class margic {
                     foreach ($this->nodepositions as $position => $node) {
                         if ($nodelist[0] === $node) { // Check if startcontainer node ($nodelist[0]) is same as node in nodepositions array.
                             $this->entries[$i]->annotations[$key]->position = $position; // If so asssign its position to annotation.
-                            echo "POSITION OF ANNOTATION:  <br>";
-                            echo $this->entries[$i]->annotations[$key]->position;
-                            echo "<br>";
+                            // echo "POSITION OF ANNOTATION:  <br>";
+                            // echo $this->entries[$i]->annotations[$key]->position;
+                            // echo "<br>";
                             break;
                         }
                     }
