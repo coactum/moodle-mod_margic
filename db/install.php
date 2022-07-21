@@ -32,107 +32,91 @@ function xmldb_margic_install() {
 
     $errortype = new stdClass();
     $errortype->id = 1;
-    $errortype->userid = 0;
     $errortype->timecreated = time();
     $errortype->timemodified = 0;
     $errortype->name = 'grammar_verb';
     $errortype->color = 'FFFF00';
     $errortype->defaulttype = 1;
-    $errortype->unused = 0;
-    $errortype->replaces = null;
+    $errortype->userid = 0;
 
-    $DB->insert_record('margic_annotation_types', $errortype);
+    $DB->insert_record('margic_errortype_templates', $errortype);
 
     $errortype = new stdClass();
     $errortype->id = 2;
-    $errortype->userid = 0;
     $errortype->timecreated = time();
     $errortype->timemodified = 0;
     $errortype->name = 'grammar_syntax';
     $errortype->color = 'FFFF00';
     $errortype->defaulttype = 1;
-    $errortype->unused = 0;
-    $errortype->replaces = null;
+    $errortype->userid = 0;
 
-    $DB->insert_record('margic_annotation_types', $errortype);
+    $DB->insert_record('margic_errortype_templates', $errortype);
 
     $errortype = new stdClass();
     $errortype->id = 3;
-    $errortype->userid = 0;
     $errortype->timecreated = time();
     $errortype->timemodified = 0;
     $errortype->name = 'grammar_congruence';
     $errortype->color = 'FFFF00';
     $errortype->defaulttype = 1;
-    $errortype->unused = 0;
-    $errortype->replaces = null;
+    $errortype->userid = 0;
 
-    $DB->insert_record('margic_annotation_types', $errortype);
+    $DB->insert_record('margic_errortype_templates', $errortype);
 
     $errortype = new stdClass();
     $errortype->id = 4;
-    $errortype->userid = 0;
     $errortype->timecreated = time();
     $errortype->timemodified = 0;
     $errortype->name = 'grammar_other';
     $errortype->color = 'FFFF00';
     $errortype->defaulttype = 1;
-    $errortype->unused = 0;
-    $errortype->replaces = null;
+    $errortype->userid = 0;
 
-    $DB->insert_record('margic_annotation_types', $errortype);
+    $DB->insert_record('margic_errortype_templates', $errortype);
 
     $errortype = new stdClass();
     $errortype->id = 5;
-    $errortype->userid = 0;
     $errortype->timecreated = time();
     $errortype->timemodified = 0;
     $errortype->name = 'expression';
     $errortype->color = 'FFFF00';
     $errortype->defaulttype = 1;
-    $errortype->unused = 0;
-    $errortype->replaces = null;
+    $errortype->userid = 0;
 
-    $DB->insert_record('margic_annotation_types', $errortype);
+    $DB->insert_record('margic_errortype_templates', $errortype);
 
     $errortype = new stdClass();
     $errortype->id = 6;
-    $errortype->userid = 0;
     $errortype->timecreated = time();
     $errortype->timemodified = 0;
     $errortype->name = 'orthography';
     $errortype->color = 'FFFF00';
     $errortype->defaulttype = 1;
-    $errortype->unused = 0;
-    $errortype->replaces = null;
+    $errortype->userid = 0;
 
-    $DB->insert_record('margic_annotation_types', $errortype);
+    $DB->insert_record('margic_errortype_templates', $errortype);
 
     $errortype = new stdClass();
     $errortype->id = 7;
-    $errortype->userid = 0;
     $errortype->timecreated = time();
     $errortype->timemodified = 0;
     $errortype->name = 'punctuation';
     $errortype->color = 'FFFF00';
     $errortype->defaulttype = 1;
-    $errortype->unused = 0;
-    $errortype->replaces = null;
+    $errortype->userid = 0;
 
-    $DB->insert_record('margic_annotation_types', $errortype);
+    $DB->insert_record('margic_errortype_templates', $errortype);
 
     $errortype = new stdClass();
     $errortype->id = 8;
-    $errortype->userid = 0;
     $errortype->timecreated = time();
     $errortype->timemodified = 0;
     $errortype->name = 'other';
     $errortype->color = 'FFFF00';
     $errortype->defaulttype = 1;
-    $errortype->unused = 0;
-    $errortype->replaces = null;
+    $errortype->userid = 0;
 
-    $DB->insert_record('margic_annotation_types', $errortype);
+    $DB->insert_record('margic_errortype_templates', $errortype);
 
     return true;
 }

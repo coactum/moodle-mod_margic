@@ -74,8 +74,8 @@ class backup_margic_activity_task extends backup_activity_task {
         $content = preg_replace($search, '$@MARGICANNOTATIONSUMMARY*$2@$', $content);
 
         // Link to the page for editing annotation types with optional id of tyoe that should be edited.
-        $search = "/(".$base."\/mod\/margic\/annotation_types.php\?id\=)([0-9]+)(&|&amp;)edit=([0-9]+)/";
-        $content = preg_replace($search, '$@MARGICANNOTATIONTYPES*$2*$4@$', $content);
+        $search = "/(".$base."\/mod\/margic\/errortypes.php\?id\=)([0-9]+)(&|&amp;)edit=([0-9]+)/";
+        $content = preg_replace($search, '$@MARGICERRORTYPES*$2*$4@$', $content);
 
         return $content;
     }

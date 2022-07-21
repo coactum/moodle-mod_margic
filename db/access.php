@@ -93,7 +93,7 @@ $capabilities = array(
         )
     ),
 
-    'mod/margic:editdefaultannotationtypes' => array(
+    'mod/margic:editdefaulterrortypes' => array(
         'riskbitmask' => RISK_XSS,
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,

@@ -147,7 +147,7 @@
 #page-mod-margic-view .annotated:hover,
 #page-mod-margic-view .annotated_temp:hover,
 #page-mod-margic-view .hovered,
-#page-mod-margic-view .annotationtypeheader .hovered {
+#page-mod-margic-view .errortypeheader .hovered {
     background-color: lightblue !important;
 }
 

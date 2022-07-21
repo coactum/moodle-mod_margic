@@ -93,7 +93,7 @@ class margic_view implements renderable, templatable {
     /** @var bool */
     protected $canmakeannotations;
     /** @var object */
-    protected $annotationtypes;
+    protected $errortypes;
     /**
      * Construct this renderable.
      * @param object $cm The course module
@@ -121,12 +121,12 @@ class margic_view implements renderable, templatable {
      * @param int $entriescount The amount of all entries
      * @param bool $annotationmode If annotation mode is set
      * @param bool $canmakeannotations If user can make annotations
-     * @param array $annotationtypes Array with annotation types for form
+     * @param array $errortypes Array with annotation types for form
      */
     public function __construct($cm, $context, $moduleinstance, $entries, $sortmode, $entrybgc, $entrytextbgc, $annotationareawidth,
         $caneditentries, $edittimestarts, $edittimenotstarted, $edittimeends, $edittimehasended, $canmanageentries, $sesskey,
         $currentuserrating, $ratingaggregationmode, $course, $singleuser, $pagecountoptions, $pagebar, $entriescount, $annotationmode,
-        $canmakeannotations, $annotationtypes) {
+        $canmakeannotations, $errortypes) {
 
         $this->cm = $cm;
         $this->cmid = $this->cm->id;
@@ -154,7 +154,7 @@ class margic_view implements renderable, templatable {
         $this->entriescount = $entriescount;
         $this->annotationmode = $annotationmode;
         $this->canmakeannotations = $canmakeannotations;
-        $this->annotationtypes = $annotationtypes;
+        $this->errortypes = $errortypes;
     }
 
     /**
@@ -188,7 +188,7 @@ class margic_view implements renderable, templatable {
                 // Add annotation form to entry.
                 if ($this->annotationmode) {
 
-                    $mform = new \annotation_form(new \moodle_url('/mod/margic/annotations.php', array('id' => $this->cmid)), array('types' => $this->annotationtypes));
+                    $mform = new \annotation_form(new \moodle_url('/mod/margic/annotations.php', array('id' => $this->cmid)), array('types' => $this->errortypes));
 
                     // Set default data.
                     $mform->set_data(array('id' => $this->cmid, 'entry' => $entry->id));

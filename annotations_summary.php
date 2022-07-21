@@ -70,17 +70,17 @@ require_capability('mod/margic:makeannotations', $context);
 // Delete annotation.
 if ($delete !== 0) {
     $redirecturl = new moodle_url('/mod/margic/annotations_summary.php', array('id' => $id));
-    if ($DB->record_exists('margic_annotation_types', array('id' => $delete))) {
+    if ($DB->record_exists('margic_errortypes', array('id' => $delete))) {
 
         global $USER;
 
-        $at = $DB->get_record('margic_annotation_types', array('id' => $delete));
+        $at = $DB->get_record('margic_errortypes', array('id' => $delete));
 
-        if (($at->defaulttype == 1 && has_capability('mod/margic:editdefaultannotationtypes', $context))
+        if (($at->defaulttype == 1 && has_capability('mod/margic:editdefaulterrortypes', $context))
             || ($at->defaulttype == 0 && $at->userid == $USER->id)) {
 
-            $DB->delete_records('margic_annotation_types', array('id' => $delete));
-            redirect($redirecturl, get_string('annotationtypedeleted', 'mod_margic'), null, notification::NOTIFY_SUCCESS);
+            $DB->delete_records('margic_errortypes', array('id' => $delete));
+            redirect($redirecturl, get_string('errortypedeleted', 'mod_margic'), null, notification::NOTIFY_SUCCESS);
         } else {
             redirect($redirecturl, get_string('notallowedtodothis', 'mod_margic'), null, notification::NOTIFY_ERROR);
         }
@@ -110,12 +110,12 @@ if ($moduleinstance->intro) {
 }
 
 $participants = array_values(get_enrolled_users($context, 'mod/margic:addentries'));
-$annotationtypes = $margic->get_annotationtypes_for_form();
+$errortypes = $margic->get_errortypes_for_form();
 
 foreach ($participants as $key => $participant) {
     $participants[$key]->errors = array();
 
-    foreach ($annotationtypes as $i => $type) {
+    foreach ($errortypes as $i => $type) {
         $sql = "SELECT COUNT(*)
             FROM {margic_annotations} a
             JOIN {margic_entries} e ON e.id = a.entry
@@ -133,16 +133,16 @@ foreach ($participants as $key => $participant) {
 
 global $USER;
 
-$allannotations = $margic->get_all_annotationtypes();
+$allannotations = $margic->get_all_errortypes();
 
-foreach ($annotationtypes as $i => $type) {
+foreach ($errortypes as $i => $type) {
     $obj = new stdClass();
     $obj->id = $allannotations[$i]->id;
     $obj->name = $type;
     $obj->color = $allannotations[$i]->color;
     $obj->defaulttype = $allannotations[$i]->defaulttype;
 
-    if ($obj->defaulttype == 1 && has_capability('mod/margic:editdefaultannotationtypes', $context)) {
+    if ($obj->defaulttype == 1 && has_capability('mod/margic:editdefaulterrortypes', $context)) {
         $obj->canbeedited = true;
     } else if ($allannotations[$i]->userid == $USER->id) {
         $obj->canbeedited = true;
@@ -150,13 +150,13 @@ foreach ($annotationtypes as $i => $type) {
         $obj->canbeedited = false;
     }
 
-    $annotationtypes[$i] = $obj;
+    $errortypes[$i] = $obj;
 }
 
-$annotationtypes = array_values($annotationtypes);
+$errortypes = array_values($errortypes);
 
 // Output page.
-$page = new margic_annotations_summary($cm->id, $participants, $annotationtypes);
+$page = new margic_annotations_summary($cm->id, $participants, $errortypes);
 
 echo $OUTPUT->render($page);
 

@@ -68,7 +68,7 @@ class margic {
     private $annotations = array();
 
     /** @var array Array with all types of annotations */
-    private $annotationtypes = array();
+    private $errortypes = array();
 
     /** @var array Array of error messages encountered during the execution of margic related operations. */
     private $errors = array();
@@ -113,16 +113,16 @@ class margic {
 
         $select = "defaulttype = 1";
         $select .= " OR userid = " . $USER->id;
-        $this->annotationtypes = (array) $DB->get_records_select('margic_annotation_types', $select);
+        $this->errortypes = (array) $DB->get_records_select('margic_errortypes', $select);
 
         foreach ($this->annotations as $key => $annotation) {
 
-            if (!array_key_exists($annotation->type, $this->annotationtypes) && $DB->record_exists('margic_annotation_types', array('id' => $annotation->type))) {
-                $this->annotationtypes[$annotation->type] = $DB->get_record('margic_annotation_types', array('id' => $annotation->type));
+            if (!array_key_exists($annotation->type, $this->errortypes) && $DB->record_exists('margic_errortypes', array('id' => $annotation->type))) {
+                $this->errortypes[$annotation->type] = $DB->get_record('margic_errortypes', array('id' => $annotation->type));
             }
 
-            if (isset($this->annotationtypes[$annotation->type])) {
-                $this->annotations[$key]->color = $this->annotationtypes[$annotation->type]->color;
+            if (isset($this->errortypes[$annotation->type])) {
+                $this->annotations[$key]->color = $this->errortypes[$annotation->type]->color;
             }
 
         }
@@ -319,18 +319,18 @@ class margic {
 
                 foreach ($this->entries[$i]->annotations as $key => $annotation) {
 
-                    if (!$DB->record_exists('margic_annotation_types', array('id' => $annotation->type))) { // If annotation type does not exist.
+                    if (!$DB->record_exists('margic_errortypes', array('id' => $annotation->type))) { // If annotation type does not exist.
                         $this->entries[$i]->annotations[$key]->color = 'FFFF00';
                         $this->entries[$i]->annotations[$key]->defaulttype = 0;
-                        $this->entries[$i]->annotations[$key]->type = get_string('deletedannotationtype', 'mod_margic');
+                        $this->entries[$i]->annotations[$key]->type = get_string('deletederrortype', 'mod_margic');
                     } else {
-                        $this->entries[$i]->annotations[$key]->color = $this->annotationtypes[$annotation->type]->color;
-                        $this->entries[$i]->annotations[$key]->defaulttype = $this->annotationtypes[$annotation->type]->defaulttype;
+                        $this->entries[$i]->annotations[$key]->color = $this->errortypes[$annotation->type]->color;
+                        $this->entries[$i]->annotations[$key]->defaulttype = $this->errortypes[$annotation->type]->defaulttype;
 
-                        if ($this->entries[$i]->annotations[$key]->defaulttype == 1 && $strmanager->string_exists($this->annotationtypes[$annotation->type]->name, 'mod_margic')) {
-                            $this->entries[$i]->annotations[$key]->type = get_string($this->annotationtypes[$annotation->type]->name, 'mod_margic');
+                        if ($this->entries[$i]->annotations[$key]->defaulttype == 1 && $strmanager->string_exists($this->errortypes[$annotation->type]->name, 'mod_margic')) {
+                            $this->entries[$i]->annotations[$key]->type = get_string($this->errortypes[$annotation->type]->name, 'mod_margic');
                         } else {
-                            $this->entries[$i]->annotations[$key]->type = $this->annotationtypes[$annotation->type]->name;
+                            $this->entries[$i]->annotations[$key]->type = $this->errortypes[$annotation->type]->name;
                         }
                     }
 
@@ -470,23 +470,23 @@ class margic {
     }
 
     /**
-     * Returns all annotationtypes.
+     * Returns all errortypes.
      *
      * @return array action
      */
-    public function get_all_annotationtypes() {
-        return $this->annotationtypes;
+    public function get_all_errortypes() {
+        return $this->errortypes;
     }
 
     /**
-     * Returns annotationtype array for select form.
+     * Returns errortype array for select form.
      *
      * @return array action
      */
-    public function get_annotationtypes_for_form() {
+    public function get_errortypes_for_form() {
         $types = array();
         $strmanager = get_string_manager();
-        foreach ($this->annotationtypes as $key => $type) {
+        foreach ($this->errortypes as $key => $type) {
             if ($type->defaulttype == 1 && $strmanager->string_exists($type->name, 'mod_margic')) {
                 $types[$key] = get_string($type->name, 'mod_margic');
             } else {

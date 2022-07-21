@@ -198,7 +198,7 @@ $page = new margic_view($cm, $context, $moduleinstance, $margic->get_entries_gro
     get_config('mod_margic', 'entrybgc'), get_config('mod_margic', 'entrytextbgc'), $annotationareawidth,
     $moduleinstance->editall, $edittimestarts, $edittimenotstarted, $edittimeends, $edittimehasended, $canmanageentries, sesskey(), $currentuserrating,
     $ratingaggregationmode, $course, $userid, $margic->get_pagecountoptions(), $margic->get_pagebar(), count($margic->get_entries()),
-    $annotationmode, $canmakeannotations, $margic->get_annotationtypes_for_form());
+    $annotationmode, $canmakeannotations, $margic->get_errortypes_for_form());
 
 echo $OUTPUT->render($page);
 

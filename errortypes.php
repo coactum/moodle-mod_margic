@@ -28,7 +28,7 @@ use mod_margic\output\margic_annotations_summary;
 require(__DIR__.'/../../config.php');
 require_once(__DIR__.'/lib.php');
 require_once($CFG->dirroot . '/mod/margic/locallib.php');
-require_once($CFG->dirroot . '/mod/margic/annotation_types_form.php');
+require_once($CFG->dirroot . '/mod/margic/errortypes_form.php');
 
 // Course_module ID.
 $id = required_param('id', PARAM_INT);
@@ -71,8 +71,8 @@ require_capability('mod/margic:makeannotations', $context);
 $redirecturl = new moodle_url('/mod/margic/annotations_summary.php', array('id' => $id));
 
 if ($edit !== 0) {
-    $editedtype = $DB->get_record('margic_annotation_types', array('id' => $edit));
-    if ($editedtype && (isset($editedtype->defaulttype) && $editedtype->defaulttype == 1 && has_capability('mod/margic:editdefaultannotationtypes', $context))
+    $editedtype = $DB->get_record('margic_errortypes', array('id' => $edit));
+    if ($editedtype && (isset($editedtype->defaulttype) && $editedtype->defaulttype == 1 && has_capability('mod/margic:editdefaulterrortypes', $context))
         || (isset($editedtype->defaulttype) && isset($editedtype->userid) && $editedtype->defaulttype == 0 && $editedtype->userid == $USER->id)) {
         $editedtypeid = $edit;
         $editedtypename = $editedtype->name;
@@ -82,7 +82,7 @@ if ($edit !== 0) {
 }
 
 // Instantiate form.
-$mform = new annotation_types_form(null, array('editdefaulttype' => has_capability('mod/margic:editdefaultannotationtypes', $context)));
+$mform = new errortypes_form(null, array('editdefaulttype' => has_capability('mod/margic:editdefaulterrortypes', $context)));
 
 if (isset($editedtypeid)) {
     $mform->set_data(array('id' => $id, 'typeid' => $editedtypeid, 'typename' => $editedtypename, 'color' => $editedcolor, 'defaulttype' => $editeddefaulttype));
@@ -96,54 +96,54 @@ if ($mform->is_cancelled()) {
     // In this case you process validated data. $mform->get_data() returns data posted in form.
     if ($fromform->typeid == 0 && isset($fromform->typename)) { // Create new annotation type.
 
-        $annotationtype = new stdClass();
+        $errortype = new stdClass();
 
-        if ($fromform->defaulttype === 1 && has_capability('mod/margic:editdefaultannotationtypes', $context)) {
-            $annotationtype->userid = 0;
-            $annotationtype->defaulttype = 1;
+        if ($fromform->defaulttype === 1 && has_capability('mod/margic:editdefaulterrortypes', $context)) {
+            $errortype->userid = 0;
+            $errortype->defaulttype = 1;
         } else {
-            $annotationtype->userid = $USER->id;
-            $annotationtype->defaulttype = 0;
+            $errortype->userid = $USER->id;
+            $errortype->defaulttype = 0;
         }
 
-        $annotationtype->timecreated = time();
-        $annotationtype->timemodified = 0;
-        $annotationtype->name = format_text($fromform->typename, 1, array('para' => false));
-        $annotationtype->color = $fromform->color;
-        $annotationtype->unused = 0;
-        $annotationtype->replaces = null;
+        $errortype->timecreated = time();
+        $errortype->timemodified = 0;
+        $errortype->name = format_text($fromform->typename, 1, array('para' => false));
+        $errortype->color = $fromform->color;
+        $errortype->unused = 0;
+        $errortype->replaces = null;
 
-        $DB->insert_record('margic_annotation_types', $annotationtype);
+        $DB->insert_record('margic_errortypes', $errortype);
 
-        redirect($redirecturl, get_string('annotationtypeadded', 'mod_margic'), null, notification::NOTIFY_SUCCESS);
+        redirect($redirecturl, get_string('errortypeadded', 'mod_margic'), null, notification::NOTIFY_SUCCESS);
     } else if ($fromform->typeid !== 0 && isset($fromform->typename)) { // Update existing annotation type.
-        $annotationtype = $DB->get_record('margic_annotation_types', array('id' => $fromform->typeid));
+        $errortype = $DB->get_record('margic_errortypes', array('id' => $fromform->typeid));
 
-        if ($annotationtype && (isset($annotationtype->defaulttype) && $annotationtype->defaulttype == 1 && has_capability('mod/margic:editdefaultannotationtypes', $context))
-        || (isset($annotationtype->defaulttype) && isset($annotationtype->userid) && $annotationtype->defaulttype == 0 && $annotationtype->userid == $USER->id)) {
-            $annotationtype->timemodified = time();
-            $annotationtype->name = format_text($fromform->typename, 1, array('para' => false));
-            $annotationtype->color = $fromform->color;
+        if ($errortype && (isset($errortype->defaulttype) && $errortype->defaulttype == 1 && has_capability('mod/margic:editdefaulterrortypes', $context))
+        || (isset($errortype->defaulttype) && isset($errortype->userid) && $errortype->defaulttype == 0 && $errortype->userid == $USER->id)) {
+            $errortype->timemodified = time();
+            $errortype->name = format_text($fromform->typename, 1, array('para' => false));
+            $errortype->color = $fromform->color;
 
-            if (has_capability('mod/margic:editdefaultannotationtypes', $context)) {
+            if (has_capability('mod/margic:editdefaulterrortypes', $context)) {
                 global $USER;
-                if ($fromform->defaulttype === 1 && $annotationtype->defaulttype !== $fromform->defaulttype) {
-                    $annotationtype->defaulttype = 1;
-                    $annotationtype->userid = 0;
-                } else if ($fromform->defaulttype === 0 && $annotationtype->defaulttype !== $fromform->defaulttype) {
-                    $annotationtype->defaulttype = 0;
-                    $annotationtype->userid = $USER->id;
+                if ($fromform->defaulttype === 1 && $errortype->defaulttype !== $fromform->defaulttype) {
+                    $errortype->defaulttype = 1;
+                    $errortype->userid = 0;
+                } else if ($fromform->defaulttype === 0 && $errortype->defaulttype !== $fromform->defaulttype) {
+                    $errortype->defaulttype = 0;
+                    $errortype->userid = $USER->id;
                 }
             }
 
-            $DB->update_record('margic_annotation_types', $annotationtype);
-            redirect($redirecturl, get_string('annotationtypeedited', 'mod_margic'), null, notification::NOTIFY_SUCCESS);
+            $DB->update_record('margic_errortypes', $errortype);
+            redirect($redirecturl, get_string('errortypeedited', 'mod_margic'), null, notification::NOTIFY_SUCCESS);
         } else {
-            redirect($redirecturl, get_string('annotationtypecantbeedited', 'mod_margic'), null, notification::NOTIFY_ERROR);
+            redirect($redirecturl, get_string('errortypecantbeedited', 'mod_margic'), null, notification::NOTIFY_ERROR);
         }
 
     } else {
-        redirect($redirecturl, get_string('annotationtypeinvalid', 'mod_margic'), null, notification::NOTIFY_ERROR);
+        redirect($redirecturl, get_string('errortypeinvalid', 'mod_margic'), null, notification::NOTIFY_ERROR);
     }
 }
 
@@ -152,12 +152,12 @@ $margicname = format_string($moduleinstance->name, true, array(
     'context' => $context
 ));
 
-$PAGE->set_url('/mod/margic/annotation_types.php', array('id' => $cm->id));
+$PAGE->set_url('/mod/margic/errortypes.php', array('id' => $cm->id));
 
 if (isset($editedtypeid)) {
-    $PAGE->navbar->add(get_string('editannotationtype', 'mod_margic'));
+    $PAGE->navbar->add(get_string('editerrortype', 'mod_margic'));
 } else {
-    $PAGE->navbar->add(get_string('addannotationtype', 'mod_margic'));
+    $PAGE->navbar->add(get_string('adderrortype', 'mod_margic'));
 }
 
 $PAGE->set_title(get_string('modulename', 'mod_margic').': ' . $margicname);

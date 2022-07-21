@@ -525,7 +525,7 @@
                 var id = this.id.replace('annotated-', '');
                 $('.annotationpreview-'+id).addClass('hovered');
                 $('.annotated-'+id).addClass('hovered');
-                $('.annotation-box-' + id + ' .annotationtype').addClass('hovered');
+                $('.annotation-box-' + id + ' .errortype').addClass('hovered');
 
             });
 
@@ -533,7 +533,7 @@
                 var id = this.id.replace('annotated-', '');
                 $('.annotationpreview-'+id).removeClass('hovered');
                 $('.annotated-'+id).removeClass('hovered');
-                $('.annotation-box-' + id + ' .annotationtype').removeClass('hovered');
+                $('.annotation-box-' + id + ' .errortype').removeClass('hovered');
             });
 
             // Highlight annotated text if annotationpreview is hovered

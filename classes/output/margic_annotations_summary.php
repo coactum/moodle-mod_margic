@@ -42,19 +42,19 @@ class margic_annotations_summary implements renderable, templatable {
     /** @var object */
     protected $participants;
     /** @var object */
-    protected $annotationtypes;
+    protected $errortypes;
 
     /**
      * Construct this renderable.
      * @param int $cmid The course module id
      * @param array $participants The participants of the margic instance
-     * @param array $annotationtypes The annotation types of the margic instance
+     * @param array $errortypes The annotation types of the margic instance
      */
-    public function __construct($cmid, $participants, $annotationtypes) {
+    public function __construct($cmid, $participants, $errortypes) {
 
         $this->cmid = $cmid;
         $this->participants = $participants;
-        $this->annotationtypes = $annotationtypes;
+        $this->errortypes = $errortypes;
     }
 
     /**
@@ -67,7 +67,7 @@ class margic_annotations_summary implements renderable, templatable {
         $data = new stdClass();
         $data->cmid = $this->cmid;
         $data->participants = $this->participants;
-        $data->annotationtypes = $this->annotationtypes;
+        $data->errortypes = $this->errortypes;
 
         return $data;
     }

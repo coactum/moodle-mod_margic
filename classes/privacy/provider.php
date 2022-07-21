@@ -80,14 +80,14 @@ class provider implements \core_privacy\local\metadata\provider,
             'text' => 'privacy:metadata:margic_annotations:text',
         ], 'privacy:metadata:margic_annotations');
 
-        // The table 'margic_annotation_types' stores the annotation types of all margics.
-        $items->add_database_table('margic_annotation_types', [
-            'userid' => 'privacy:metadata:margic_annotation_types:userid',
-            'timecreated' => 'privacy:metadata:margic_annotation_types:timecreated',
-            'timemodified' => 'privacy:metadata:margic_annotation_types:timemodified',
-            'name' => 'privacy:metadata:margic_annotation_types:name',
-            'color' => 'privacy:metadata:margic_annotation_types:color',
-        ], 'privacy:metadata:margic_annotation_types');
+        // The table 'margic_errortypes' stores the annotation types of all margics.
+        $items->add_database_table('margic_errortypes', [
+            'userid' => 'privacy:metadata:margic_errortypes:userid',
+            'timecreated' => 'privacy:metadata:margic_errortypes:timecreated',
+            'timemodified' => 'privacy:metadata:margic_errortypes:timemodified',
+            'name' => 'privacy:metadata:margic_errortypes:name',
+            'color' => 'privacy:metadata:margic_errortypes:color',
+        ], 'privacy:metadata:margic_errortypes');
 
         // The margic uses multiple subsystems that save personal data.
         $items->add_subsystem_link('core_files', [], 'privacy:metadata:core_files');
@@ -140,7 +140,7 @@ class provider implements \core_privacy\local\metadata\provider,
 
         $contextlist->add_from_sql($sql, $params);
 
-        // Annotationtypes have no specific contexts.
+        // TODO: Get errortypes for margic.
 
         return $contextlist;
     }
