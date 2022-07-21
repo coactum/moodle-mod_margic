@@ -994,7 +994,6 @@ function margic_get_coursemodule($margicid) {
 
 /**
  * Serves the margic files.
- * THIS FUNCTION MAY BE ORPHANED. APPEARS TO BE SO IN JOURNAL.
  *
  * @param stdClass $course Course object.
  * @param stdClass $cm Course module object.
