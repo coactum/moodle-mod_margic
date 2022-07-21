@@ -97,6 +97,10 @@ if ($mform->is_cancelled()) {
     if ($fromform->typeid == 0 && isset($fromform->typename)) { // Create new annotation type.
 
         $errortype = new stdClass();
+        $errortype->timecreated = time();
+        $errortype->timemodified = 0;
+        $errortype->name = format_text($fromform->typename, 1, array('para' => false));
+        $errortype->color = $fromform->color;
 
         if ($fromform->defaulttype === 1 && has_capability('mod/margic:editdefaulterrortypes', $context)) {
             $errortype->userid = 0;
@@ -106,10 +110,7 @@ if ($mform->is_cancelled()) {
             $errortype->defaulttype = 0;
         }
 
-        $errortype->timecreated = time();
-        $errortype->timemodified = 0;
-        $errortype->name = format_text($fromform->typename, 1, array('para' => false));
-        $errortype->color = $fromform->color;
+        $errortype->order = 0; // Temp.
         $errortype->unused = 0;
         $errortype->replaces = null;
 
@@ -135,6 +136,11 @@ if ($mform->is_cancelled()) {
                     $errortype->userid = $USER->id;
                 }
             }
+
+            $errortype->order = 0; // Temp.
+            $errortype->unused = 0;
+            $errortype->replaces = null;
+
 
             $DB->update_record('margic_errortypes', $errortype);
             redirect($redirecturl, get_string('errortypeedited', 'mod_margic'), null, notification::NOTIFY_SUCCESS);
