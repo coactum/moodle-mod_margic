@@ -609,6 +609,8 @@ function margic_reset_userdata($data) {
     // Delete entries and their annotations, files, ratings and tags.
     if (!empty($data->reset_margic_all)) {
 
+        $fs = get_file_storage();
+
         foreach ($margics as $margicid => $unused) {
             if (!$cm = get_coursemodule_from_instance('margic', $margicid)) {
                 continue;
