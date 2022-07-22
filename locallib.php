@@ -111,8 +111,7 @@ class margic {
 
         $this->annotations = $DB->get_records('margic_annotations', array('margic' => $this->get_course_module()->instance));
 
-        $select = "defaulttype = 1";
-        $select .= " OR userid = " . $USER->id;
+        $select = "margic = " . $this->instance->id;
         $this->errortypes = (array) $DB->get_records_select('margic_errortypes', $select);
 
         foreach ($this->annotations as $key => $annotation) {
@@ -474,7 +473,7 @@ class margic {
      *
      * @return array action
      */
-    public function get_all_errortypes() {
+    public function get_margic_errortypes() {
         return $this->errortypes;
     }
 
@@ -492,14 +491,25 @@ class margic {
             } else {
                 $types[$key] = $type->name;
             }
-
-            // if (in_array($this->id, json_decode($types[$key]->unused))) {
-            // unset($types[$key]);
-            // }
-
         }
 
         return $types;
+    }
+
+    /**
+     * Returns all errortype templates.
+     *
+     * @return array action
+     */
+    public function get_all_errortype_templates() {
+        global $USER, $DB;
+
+        $select = "defaulttype = 1";
+        $select .= " OR userid = " . $USER->id;
+
+        $errortypetemplates = (array) $DB->get_records_select('margic_errortype_templates', $select);
+
+        return $errortypetemplates;
     }
 
     /**

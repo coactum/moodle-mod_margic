@@ -48,6 +48,9 @@ class errortypes_form extends moodleform {
         $mform->addElement('hidden', 'id', null);
         $mform->setType('id', PARAM_INT);
 
+        $mform->addElement('hidden', 'mode', 1);
+        $mform->setType('mode', PARAM_INT);
+
         $mform->addElement('hidden', 'typeid', null);
         $mform->setType('typeid', PARAM_INT);
 
@@ -64,13 +67,15 @@ class errortypes_form extends moodleform {
         $mform->addRule('color', null, 'required', null, 'client');
         $mform->addHelpButton('color', 'explanationhexcolor', 'mod_margic');
 
-        if ($this->_customdata['editdefaulttype']) {
-            $mform->addElement('advcheckbox', 'defaulttype', get_string('defaulttype', 'mod_margic'), get_string('explanationdefaulttype', 'mod_margic'));
-        } else {
-            $mform->addElement('hidden', 'defaulttype', 0);
-        }
+        if ($this->_customdata['mode'] == 1) { // If template error type.
+            if ($this->_customdata['editdefaulttype']) {
+                $mform->addElement('advcheckbox', 'standardtype', get_string('standardtype', 'mod_margic'), get_string('explanationstandardtype', 'mod_margic'));
+            } else {
+                $mform->addElement('hidden', 'standardtype', 0);
+            }
 
-        $mform->setType('defaulttype', PARAM_INT);
+            $mform->setType('standardtype', PARAM_INT);
+        }
 
         $this->add_action_buttons();
     }

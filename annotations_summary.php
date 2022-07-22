@@ -38,6 +38,12 @@ $m  = optional_param('m', null, PARAM_INT);
 // ID of type that should be deleted.
 $delete  = optional_param('delete', 0, PARAM_INT);
 
+// ID of type that should be deleted.
+$addtomargic  = optional_param('addtomargic', 0, PARAM_INT);
+
+// If template (1) or margic (2) error type.
+$mode  = optional_param('mode', null, PARAM_INT);
+
 $margic = margic::get_margic_instance($id, $m, false, 'currententry', 0, 1);
 
 $moduleinstance = $margic->get_module_instance();
@@ -67,19 +73,52 @@ require_login($course, true, $cm);
 
 require_capability('mod/margic:makeannotations', $context);
 
-// Delete annotation.
-if ($delete !== 0) {
+if ($addtomargic) {
     $redirecturl = new moodle_url('/mod/margic/annotations_summary.php', array('id' => $id));
-    if ($DB->record_exists('margic_errortypes', array('id' => $delete))) {
+
+    if ($DB->record_exists('margic_errortype_templates', array('id' => $addtomargic))) {
 
         global $USER;
 
-        $at = $DB->get_record('margic_errortypes', array('id' => $delete));
+        $type = $DB->get_record('margic_errortype_templates', array('id' => $addtomargic));
 
-        if (($at->defaulttype == 1 && has_capability('mod/margic:editdefaulterrortypes', $context))
-            || ($at->defaulttype == 0 && $at->userid == $USER->id)) {
+        if ($type->defaulttype == 1 || ($type->defaulttype == 0 && $type->userid == $USER->id)) {
+            $type->priority = count($margic->get_margic_errortypes()) + 1;
+            $type->margic = $moduleinstance->id;
 
-            $DB->delete_records('margic_errortypes', array('id' => $delete));
+            $DB->insert_record('margic_errortypes', $type);
+
+            redirect($redirecturl, get_string('errortypeadded', 'mod_margic'), null, notification::NOTIFY_SUCCESS);
+        } else {
+            redirect($redirecturl, get_string('notallowedtodothis', 'mod_margic'), null, notification::NOTIFY_ERROR);
+        }
+    } else {
+        redirect($redirecturl, get_string('notallowedtodothis', 'mod_margic'), null, notification::NOTIFY_ERROR);
+    }
+}
+
+// Delete annotation.
+if ($delete !== 0 && $mode) {
+
+    $redirecturl = new moodle_url('/mod/margic/annotations_summary.php', array('id' => $id));
+
+    if ($mode == 1) { // If type is template error type.
+        $table = 'margic_errortype_templates';
+    } else if ($mode == 2) { // If type is margic error type.
+        $table = 'margic_errortypes';
+    }
+
+    if ($DB->record_exists($table, array('id' => $delete))) {
+
+        global $USER;
+
+        $type = $DB->get_record($table, array('id' => $delete));
+
+        if ($mode == 2 ||
+            ($type->defaulttype == 1 && has_capability('mod/margic:editdefaulterrortypes', $context))
+            || ($type->defaulttype == 0 && $type->userid == $USER->id)) {
+
+            $DB->delete_records($table, array('id' => $delete));
             redirect($redirecturl, get_string('errortypedeleted', 'mod_margic'), null, notification::NOTIFY_SUCCESS);
         } else {
             redirect($redirecturl, get_string('notallowedtodothis', 'mod_margic'), null, notification::NOTIFY_ERROR);
@@ -131,32 +170,54 @@ foreach ($participants as $key => $participant) {
     $participants[$key]->errors = array_values($participants[$key]->errors);
 }
 
-global $USER;
+$margicerrortypes = $margic->get_margic_errortypes();
+$strmanager = get_string_manager();
 
-$allannotations = $margic->get_all_errortypes();
+foreach ($margicerrortypes as $i => $type) {
+    $margicerrortypes[$i]->canbeedited = true;
 
-foreach ($errortypes as $i => $type) {
-    $obj = new stdClass();
-    $obj->id = $allannotations[$i]->id;
-    $obj->name = $type;
-    $obj->color = $allannotations[$i]->color;
-    $obj->defaulttype = $allannotations[$i]->defaulttype;
-
-    if ($obj->defaulttype == 1 && has_capability('mod/margic:editdefaulterrortypes', $context)) {
-        $obj->canbeedited = true;
-    } else if ($allannotations[$i]->userid == $USER->id) {
-        $obj->canbeedited = true;
+    if ($type->defaulttype == 1 && $strmanager->string_exists($type->name, 'mod_margic')) {
+        $margicerrortypes[$i]->name = get_string($type->name, 'mod_margic');
     } else {
-        $obj->canbeedited = false;
+        $margicerrortypes[$i]->name = $type->name;
     }
-
-    $errortypes[$i] = $obj;
 }
 
-$errortypes = array_values($errortypes);
+$margicerrortypes = array_values($margicerrortypes);
+
+global $USER;
+
+$errortypetemplates = $margic->get_all_errortype_templates();
+foreach ($errortypetemplates as $id => $templatetype) {
+    if ($templatetype->defaulttype == 1) {
+        $errortypetemplates[$id]->type = get_string('standard', 'mod_margic');
+
+        if (has_capability('mod/margic:editdefaulterrortypes', $context)) {
+            $errortypetemplates[$id]->canbeedited = true;
+        } else {
+            $errortypetemplates[$id]->canbeedited = false;
+        }
+    } else {
+        $errortypetemplates[$id]->type = get_string('custom', 'mod_margic');
+
+        if ($templatetype->userid === $USER->id) {
+            $errortypetemplates[$id]->canbeedited = true;
+        } else {
+            $errortypetemplates[$id]->canbeedited = false;
+        }
+    }
+
+    if ($templatetype->defaulttype == 1 && $strmanager->string_exists($templatetype->name, 'mod_margic')) {
+        $errortypetemplates[$id]->name = get_string($templatetype->name, 'mod_margic');
+    } else {
+        $errortypetemplates[$id]->name = $templatetype->name;
+    }
+}
+
+$errortypetemplates = array_values($errortypetemplates);
 
 // Output page.
-$page = new margic_annotations_summary($cm->id, $participants, $errortypes);
+$page = new margic_annotations_summary($cm->id, $participants, $margicerrortypes, $errortypetemplates);
 
 echo $OUTPUT->render($page);
 

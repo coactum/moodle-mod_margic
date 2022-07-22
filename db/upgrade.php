@@ -91,7 +91,7 @@ function xmldb_margic_upgrade($oldversion) {
 
         // Add the order field to the table margic_errortypes.
         $table = new xmldb_table('margic_annotation_types');
-        $field = new xmldb_field('order', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'userid');
+        $field = new xmldb_field('order', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'userid');
 
         // Conditionally launch add field.
         if (!$dbman->field_exists($table, $field)) {
@@ -105,8 +105,6 @@ function xmldb_margic_upgrade($oldversion) {
         // Margic savepoint reached.
         upgrade_mod_savepoint(true, 2022072100, 'margic');
     }
-
-
 
     return true;
 }

@@ -30,8 +30,7 @@ use mod_margic\local\results;
  * will create a new instance and return the id number
  * of the new instance.
  *
- * @param object $margic
- *            Object containing required margic properties.
+ * @param object $margic Object containing required margic properties.
  * @return int margic ID.
  */
 function margic_add_instance($margic) {
@@ -40,7 +39,7 @@ function margic_add_instance($margic) {
     if (empty($margic->assessed)) {
         $margic->assessed = 0;
     }
-    // 20190917 First one always true as ratingtime does not exist.
+
     if (empty($margic->ratingtime) || empty($margic->assessed)) {
         $margic->assesstimestart = 0;
         $margic->assesstimefinish = 0;
@@ -48,15 +47,31 @@ function margic_add_instance($margic) {
     $margic->timemodified = time();
     $margic->id = $DB->insert_record('margic', $margic);
 
-    // 20200903 Added calendar dates.
+    // Add calendar dates.
     results::margic_update_calendar($margic, $margic->coursemodule);
 
-    // 20200901 Added expected completion date.
+    // Add expected completion date.
     if (! empty($margic->completionexpected)) {
         \core_completion\api::update_completion_date_event($margic->coursemodule, 'margic', $margic->id, $margic->completionexpected);
     }
 
     margic_grade_item_update($margic);
+
+    if (isset($margic->errortypes) && !empty($margic->errortypes)) {
+        // Add errortypes for margic.
+        $priority = 1;
+        foreach ($margic->errortypes as $id => $checked) {
+            if ($checked) {
+                $type = $DB->get_record('margic_errortype_templates', array('id' => $id));
+                $type->margic = $margic->id;
+                $type->priority = $priority;
+
+                $priority += 1;
+
+                $DB->insert_record('margic_errortypes', $type);
+            }
+        }
+    }
 
     return $margic->id;
 }
@@ -66,8 +81,7 @@ function margic_add_instance($margic) {
  * Given an object containing all the necessary margic data,
  * will update an existing instance with new margic data.
  *
- * @param object $margic
- *            Object containing required margic properties.
+ * @param object $margic Object containing required margic properties.
  * @return boolean True if successful.
  */
 function margic_update_instance($margic) {
@@ -164,6 +178,9 @@ function margic_delete_instance($id) {
 
     // Delete annotations.
     $DB->delete_records("margic_annotations", array("margic" => $margic->id));
+
+    // Delete error types for margic.
+    $DB->delete_records("margic_errortypes", array("margic" => $margic->id));
 
     // Delete margic, else return false.
     if (!$DB->delete_records("margic", array("id" => $margic->id))) {

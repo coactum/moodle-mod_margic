@@ -40,7 +40,7 @@ class mod_margic_mod_form extends moodleform_mod {
      * @return void
      */
     public function definition() {
-        global $COURSE;
+        global $COURSE, $DB, $USER;
 
         $mform = &$this->_form;
 
@@ -76,6 +76,33 @@ class mod_margic_mod_form extends moodleform_mod {
         // Edit dates setting if user can modify entry date.
         $mform->addElement('selectyesno', 'editdates', get_string('editdates', 'margic'));
         $mform->addHelpButton('editdates', 'editdates', 'margic');
+
+        // Add the header for the error types.
+        $mform->addElement('header', 'errortypeshdr', get_string('errortypes', 'margic'));
+
+        $select = "defaulttype = 1";
+        $select .= " OR userid = " . $USER->id;
+        $errortypetemplates = (array) $DB->get_records_select('margic_errortype_templates', $select);
+
+        $strmanager = get_string_manager();
+
+        $this->add_checkbox_controller(1);
+
+        foreach ($errortypetemplates as $id => $type) {
+            if ($type->defaulttype == 1) {
+                $name = '<span style="margin-right: 10px; background-color: #' . $type->color . '" title="' . get_string('standardtype', 'mod_margic') .'">(S)</span>';
+            } else {
+                $name = '<span style="margin-right: 10px; background-color: #' . $type->color . '" title="' . get_string('manualtype', 'mod_margic') .'">(M)</span>';
+            }
+
+            if ($type->defaulttype == 1 && $strmanager->string_exists($type->name, 'mod_margic')) {
+                $name .= '<span>' . get_string($type->name, 'mod_margic') . '</span>';
+            } else {
+                $name .= '<span>' . $type->name . '</span>';
+            }
+
+            $mform->addElement('advcheckbox', 'errortypes[' . $id . ']', $name, ' ', array('group' => 1), array(0, 1));
+        }
 
         // Add the header for appearance.
         $mform->addElement('header', 'appearancehdr', get_string('appearance'));

@@ -42,19 +42,22 @@ class margic_annotations_summary implements renderable, templatable {
     /** @var object */
     protected $participants;
     /** @var object */
-    protected $errortypes;
-
+    protected $margicerrortypes;
+    /** @var object */
+    protected $errortypetemplates;
     /**
      * Construct this renderable.
      * @param int $cmid The course module id
      * @param array $participants The participants of the margic instance
-     * @param array $errortypes The annotation types of the margic instance
+     * @param array $margicerrortypes The errortypes used in the margic instance
+     * @param array $errortypetemplates The errortype templates available for the current user
      */
-    public function __construct($cmid, $participants, $errortypes) {
+    public function __construct($cmid, $participants, $margicerrortypes, $errortypetemplates) {
 
         $this->cmid = $cmid;
         $this->participants = $participants;
-        $this->errortypes = $errortypes;
+        $this->margicerrortypes = $margicerrortypes;
+        $this->errortypetemplates = $errortypetemplates;
     }
 
     /**
@@ -67,7 +70,8 @@ class margic_annotations_summary implements renderable, templatable {
         $data = new stdClass();
         $data->cmid = $this->cmid;
         $data->participants = $this->participants;
-        $data->errortypes = $this->errortypes;
+        $data->margicerrortypes = $this->margicerrortypes;
+        $data->errortypetemplates = $this->errortypetemplates;
 
         return $data;
     }
