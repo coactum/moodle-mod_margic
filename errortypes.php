@@ -124,7 +124,7 @@ if ($mform->is_cancelled()) {
         }
 
         if ($mode == 2) { // If type is margic error type.
-            $errortype->priority = count($margic->get_margic_errortypes()) + 1;
+            $errortype->priority = $margic->get_margic_errortypes()[array_key_last($margic->get_margic_errortypes())]->priority + 1;
             $errortype->margic = $moduleinstance->id;
         }
 
@@ -162,9 +162,6 @@ if ($mform->is_cancelled()) {
                     $errortype->defaulttype = 0;
                     $errortype->userid = $USER->id;
                 }
-            } else {
-                $errortype->defaulttype = 0;
-                $errortype->userid = $USER->id;
             }
 
             if ($mode == 1) { // If type is template error type.

@@ -255,6 +255,10 @@ $string['addtomargic'] = 'Zum Margic hinzufügen';
 $string['switchtotemplatetypes'] = 'Zu den Fehlertyp-Vorlagen wechseln';
 $string['switchtomargictypes'] = 'Zu den Fehlertypen des Margics wechseln';
 $string['notemplatetypes'] = 'Keine Fehlertyp-Vorlagen verfügbar';
+$string['movefor'] = 'Weiter vorne anzeigen';
+$string['moveback'] = 'Weiter hinten anzeigen';
+$string['prioritychanged'] = 'Reihenfolge geändert';
+$string['prioritynotchanged'] = 'Reihenfolge konnte nicht geändert werden';
 
 // Privacy.
 $string['privacy:metadata:margic_entries'] = 'Enthält die gespeicherten Benutzereinträge aller Margics.';

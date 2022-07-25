@@ -33,16 +33,20 @@ require_once($CFG->dirroot . '/mod/margic/locallib.php');
 $id = required_param('id', PARAM_INT);
 
 // Module instance ID as alternative.
-$m  = optional_param('m', null, PARAM_INT);
+$m = optional_param('m', null, PARAM_INT);
 
 // ID of type that should be deleted.
-$delete  = optional_param('delete', 0, PARAM_INT);
+$delete = optional_param('delete', 0, PARAM_INT);
 
 // ID of type that should be deleted.
-$addtomargic  = optional_param('addtomargic', 0, PARAM_INT);
+$addtomargic = optional_param('addtomargic', 0, PARAM_INT);
+
+// ID of type where priority should be changed.
+$priority = optional_param('priority', 0, PARAM_INT);
+$action = optional_param('action', 0, PARAM_INT);
 
 // If template (1) or margic (2) error type.
-$mode  = optional_param('mode', null, PARAM_INT);
+$mode = optional_param('mode', null, PARAM_INT);
 
 $margic = margic::get_margic_instance($id, $m, false, 'currententry', 0, 1);
 
@@ -73,6 +77,7 @@ require_login($course, true, $cm);
 
 require_capability('mod/margic:makeannotations', $context);
 
+// Add type to margic.
 if ($addtomargic) {
     $redirecturl = new moodle_url('/mod/margic/annotations_summary.php', array('id' => $id));
 
@@ -94,6 +99,56 @@ if ($addtomargic) {
         }
     } else {
         redirect($redirecturl, get_string('notallowedtodothis', 'mod_margic'), null, notification::NOTIFY_ERROR);
+    }
+}
+
+// Change priority.
+if ($mode == 2 && $priority && $action && $DB->record_exists('margic_errortypes', array('id' => $priority))) {
+    $redirecturl = new moodle_url('/mod/margic/annotations_summary.php', array('id' => $id));
+
+    $type = $DB->get_record('margic_errortypes', array('margic' => $moduleinstance->id, 'id' => $priority));
+
+    $prioritychanged = false;
+    $oldpriority = 0;
+
+    if ($type && $action == 1 && $type->priority != 1) { // Increase priority (show more in front)
+        $oldpriority = $type->priority;
+        $type->priority -= 1;
+        $prioritychanged = true;
+
+        $typeswitched = $DB->get_record('margic_errortypes', array('margic' => $moduleinstance->id, 'priority' => $type->priority));
+
+        if (!$typeswitched) { // If no type with priority+1 search for types with hihgher priority values
+            $typeswitched = $DB->get_records_select('margic_errortypes', "margic = $moduleinstance->id AND priority < $type->priority", null, 'priority ASC');
+            $typeswitched = $typeswitched[array_key_last($typeswitched)];
+        }
+
+    } else if ($type && $action == 2 && $type->priority != $DB->count_records('margic_errortypes', array('margic' => $moduleinstance->id)) + 1) { // Decrease priority (move further back)
+        $oldpriority = $type->priority;
+        $type->priority += 1;
+        $prioritychanged = true;
+
+        $typeswitched = $DB->get_record('margic_errortypes', array('margic' => $moduleinstance->id, 'priority' => $type->priority));
+
+        if (!$typeswitched) { // If no type with priority+1 search for types with hihgher priority values
+            $typeswitched = $DB->get_records_select('margic_errortypes', "margic = $moduleinstance->id AND priority > $type->priority", null, 'priority ASC');
+            $typeswitched = $typeswitched[array_key_first($typeswitched)];
+        }
+    } else {
+        redirect($redirecturl, get_string('prioritynotchanged', 'mod_margic'), null, notification::NOTIFY_ERROR);
+    }
+
+    if ($typeswitched) {
+        // Update priority for type.
+        $DB->update_record('margic_errortypes', $type);
+
+        // Update priority for type that type is switched with.
+        $typeswitched->priority = $oldpriority;
+        $DB->update_record('margic_errortypes', $typeswitched);
+
+        redirect($redirecturl, get_string('prioritychanged', 'mod_margic'), null, notification::NOTIFY_SUCCESS);
+    } else {
+        redirect($redirecturl, get_string('prioritynotchanged', 'mod_margic'), null, notification::NOTIFY_ERROR);
     }
 }
 

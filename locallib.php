@@ -112,7 +112,7 @@ class margic {
         $this->annotations = $DB->get_records('margic_annotations', array('margic' => $this->get_course_module()->instance));
 
         $select = "margic = " . $this->instance->id;
-        $this->errortypes = (array) $DB->get_records_select('margic_errortypes', $select);
+        $this->errortypes = (array) $DB->get_records_select('margic_errortypes', $select, null, 'priority ASC');
 
         foreach ($this->annotations as $key => $annotation) {
 

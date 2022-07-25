@@ -461,7 +461,7 @@ function margic_user_complete($course, $user, $mod, $margic) {
  * @param int $timestart
  * @return bool
  */
-function margic_print_recent_activity($course, $viewfullnames, $timestart) {
+/* function margic_print_recent_activity($course, $viewfullnames, $timestart) {
     global $CFG, $USER, $DB, $OUTPUT;
 
     if (! get_config('margic', 'showrecentactivity')) {
@@ -557,7 +557,7 @@ function margic_print_recent_activity($course, $viewfullnames, $timestart) {
         print_recent_activity_note($submission->timemodified, $submission, $cm->name, $link, false, $viewfullnames);
     }
     return true;
-}
+} */
 
 /**
  * Implementation of the function for printing the form elements that control
@@ -915,7 +915,7 @@ function margic_scale_used_anywhere($scaleid) {
  * @param int $groupid
  * @return int count($margics) Count of margic entries.
  */
-function margic_count_entries($margic, $groupid = 0) {
+/* function margic_count_entries($margic, $groupid = 0) {
     global $DB;
 
     $cm = margic_get_coursemodule($margic->id);
@@ -957,7 +957,7 @@ function margic_count_entries($margic, $groupid = 0) {
     }
 
     return count($margics);
-}
+} */
 
 /**
  * Return entries that have not been emailed.
@@ -965,7 +965,7 @@ function margic_count_entries($margic, $groupid = 0) {
  * @param int $cutofftime
  * @return object
  */
-function margic_get_unmailed_graded($cutofftime) {
+/* function margic_get_unmailed_graded($cutofftime) {
     global $DB;
 
     $sql = "SELECT de.*, d.course, d.name FROM {margic_entries} de
@@ -974,7 +974,7 @@ function margic_get_unmailed_graded($cutofftime) {
     return $DB->get_records_sql($sql, array(
         $cutofftime
     ));
-}
+} */
 
 /**
  * Return margic log info.
@@ -982,7 +982,7 @@ function margic_get_unmailed_graded($cutofftime) {
  * @param string $log
  * @return object
  */
-function margic_log_info($log) {
+/* function margic_log_info($log) {
     global $DB;
 
     $sql = "SELECT d.*, u.firstname, u.lastname
@@ -993,7 +993,7 @@ function margic_log_info($log) {
     return $DB->get_record_sql($sql, array(
         $log->info
     ));
-}
+} */
 
 /**
  * Returns the margic instance course_module id.
@@ -1001,7 +1001,7 @@ function margic_log_info($log) {
  * @param integer $margicid
  * @return object
  */
-function margic_get_coursemodule($margicid) {
+/* function margic_get_coursemodule($margicid) {
     global $DB;
 
     return $DB->get_record_sql("SELECT cm.id FROM {course_modules} cm
@@ -1009,7 +1009,7 @@ function margic_get_coursemodule($margicid) {
                                  WHERE cm.instance = ? AND m.name = 'margic'", array(
         $margicid
     ));
-}
+} */
 
 /**
  * Serves the margic files.

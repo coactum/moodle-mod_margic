@@ -268,6 +268,10 @@ $string['addtomargic'] = 'Add to Margic';
 $string['switchtotemplatetypes'] = 'Switch to the errortype templates';
 $string['switchtomargictypes'] = 'Switch to the error types for the Margic';
 $string['notemplatetypes'] = 'No errortype templates available';
+$string['movefor'] = 'Display more in front';
+$string['moveback'] = 'Display further back';
+$string['prioritychanged'] = 'Order changed';
+$string['prioritynotchanged'] = 'Order could not be changed';
 
 // Privacy.
 $string['privacy:metadata:margic_entries'] = 'Contains the user entries saved in all margics.';
