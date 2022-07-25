@@ -80,14 +80,14 @@ class provider implements \core_privacy\local\metadata\provider,
             'text' => 'privacy:metadata:margic_annotations:text',
         ], 'privacy:metadata:margic_annotations');
 
-        // The table 'margic_errortypes' stores the annotation types of all margics.
-        $items->add_database_table('margic_errortypes', [
-            'userid' => 'privacy:metadata:margic_errortypes:userid',
-            'timecreated' => 'privacy:metadata:margic_errortypes:timecreated',
-            'timemodified' => 'privacy:metadata:margic_errortypes:timemodified',
-            'name' => 'privacy:metadata:margic_errortypes:name',
-            'color' => 'privacy:metadata:margic_errortypes:color',
-        ], 'privacy:metadata:margic_errortypes');
+        // The table 'margic_errortype_templates' stores the errirtype templatess of all margics.
+        $items->add_database_table('margic_errortype_templates', [
+            'timecreated' => 'privacy:metadata:margic_errortype_templates:timecreated',
+            'timemodified' => 'privacy:metadata:margic_errortype_templates:timemodified',
+            'name' => 'privacy:metadata:margic_errortype_templates:name',
+            'color' => 'privacy:metadata:margic_errortype_templates:color',
+            'userid' => 'privacy:metadata:margic_errortype_templates:userid',
+        ], 'privacy:metadata:margic_errortype_templates');
 
         // The margic uses multiple subsystems that save personal data.
         $items->add_subsystem_link('core_files', [], 'privacy:metadata:core_files');
@@ -139,8 +139,6 @@ class provider implements \core_privacy\local\metadata\provider,
          ";
 
         $contextlist->add_from_sql($sql, $params);
-
-        // TODO: Get errortypes for margic.
 
         return $contextlist;
     }
@@ -237,6 +235,7 @@ class provider implements \core_privacy\local\metadata\provider,
                     self::export_entries_data($userid, $margic->id, $margic->contextid);
 
                     self::export_annotations_data($userid, $margic->id, $margic->contextid);
+
                 }
 
             }

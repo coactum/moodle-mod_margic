@@ -569,6 +569,8 @@ function margic_reset_course_form_definition(&$mform) {
     $mform->addElement('header', 'margicheader', get_string('modulenameplural', 'margic'));
     $mform->addElement('checkbox', 'reset_margic_all', get_string('deletealluserdata', 'margic'));
 
+    $mform->addElement('checkbox', 'reset_margic_errortypes', get_string('deleteerrortypes', 'margic'));
+
     $mform->addElement('checkbox', 'reset_margic_ratings', get_string('deleteallratings', 'margic'));
     $mform->disabledIf('reset_margic_ratings', 'reset_margic_all', 'checked');
     $mform->setAdvanced('reset_margic_ratings');
@@ -585,7 +587,7 @@ function margic_reset_course_form_definition(&$mform) {
  * @return array
  */
 function margic_reset_course_form_defaults($course) {
-    return array('reset_margic_all' => 1, 'reset_margic_ratings' => 0, 'reset_margic_tags' => 0);
+    return array('reset_margic_all' => 1, 'reset_margic_errortypes' => 1, 'reset_margic_ratings' => 0, 'reset_margic_tags' => 0);
 }
 
 /**
@@ -664,6 +666,14 @@ function margic_reset_userdata($data) {
         );
     }
 
+    // Delete errortypes.
+    if (!empty($data->reset_margic_errortypes) ) {
+        $DB->delete_records_select('margic_errortypes', "margic IN ($sql)", $params);
+
+        $status[] = array('component' => $modulename, 'item' => get_string('errortypesdeleted', 'margic'), 'error' => false);
+
+    }
+
     // Delete ratings only.
     if (!empty($data->reset_margic_ratings) ) {
 
@@ -683,6 +693,9 @@ function margic_reset_userdata($data) {
         if (empty($data->reset_gradebook_grades)) {
             margic_reset_gradebook($data->courseid);
         }
+
+        $status[] = array('component' => $modulename, 'item' => get_string('ratingsdeleted', 'margic'), 'error' => false);
+
     }
 
     // Delete tags only.

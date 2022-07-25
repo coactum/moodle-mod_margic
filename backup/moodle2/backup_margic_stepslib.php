@@ -42,15 +42,17 @@ class backup_margic_activity_structure_step extends backup_activity_structure_st
             'scale', 'assessed', 'assesstimestart', 'assesstimefinish',
             'timeopen', 'timeclose', 'editall', 'editdates', 'annotationareawidth'));
 
-        $entries = new backup_nested_element('entries');
+        $errortypes = new backup_nested_element('errortypes');
+        $errortype = new backup_nested_element('errortype', array('id'), array(
+            'timecreated', 'timemodified', 'name', 'color', 'defaulttype', 'userid', 'priority'));
 
+        $entries = new backup_nested_element('entries');
         $entry = new backup_nested_element('entry', array('id'), array(
             'userid', 'timecreated', 'timemodified', 'text', 'format',
             'rating', 'entrycomment', 'formatcomment', 'teacher',
             'timemarked', 'mailed'));
 
         $annotations = new backup_nested_element('annotations');
-
         $annotation = new backup_nested_element('annotation', array('id'), array(
             'userid', 'timecreated', 'timemodified', 'type', 'startcontainer', 'endcontainer',
             'startposition', 'endposition', 'text'));
@@ -64,8 +66,14 @@ class backup_margic_activity_structure_step extends backup_activity_structure_st
             'timecreated', 'timemodified'));
 
         // Build the tree with these elements with $margic as the root of the backup tree.
+        $margic->add_child($errortypes);
+        $errortypes->add_child($errortype);
+
         $margic->add_child($entries);
         $entries->add_child($entry);
+
+        $margic->add_child($tags);
+        $tags->add_child($tag);
 
         $entry->add_child($annotations);
         $annotations->add_child($annotation);
@@ -73,12 +81,12 @@ class backup_margic_activity_structure_step extends backup_activity_structure_st
         $entry->add_child($ratings);
         $ratings->add_child($rating);
 
-        $margic->add_child($tags);
-        $tags->add_child($tag);
-
         // Define the source tables for the elements.
 
         $margic->set_source_table('margic', array('id' => backup::VAR_ACTIVITYID));
+
+        // Errortypes.
+        $errortype->set_source_table('margic_errortypes', array('margic' => backup::VAR_PARENTID));
 
         if ($userinfo) {
 
@@ -116,6 +124,7 @@ class backup_margic_activity_structure_step extends backup_activity_structure_st
         $margic->annotate_ids('scale', 'scale');
         $rating->annotate_ids('scale', 'scaleid');
         $rating->annotate_ids('user', 'userid');
+        $errortype->annotate_ids('user', 'userid');
 
         if ($userinfo) {
             $entry->annotate_ids('user', 'userid');

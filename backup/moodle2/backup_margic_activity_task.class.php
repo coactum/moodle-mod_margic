@@ -65,17 +65,17 @@ class backup_margic_activity_task extends backup_activity_task {
         $search = "/(".$base."\/mod\/margic\/view.php\?id\=)([0-9]+)(&|&amp;)userid=([0-9]+)/";
         $content = preg_replace($search, '$@MARGICVIEWBYID*$2*$4@$', $content);
 
-        // Link to the edit page with optional entryid of entry that should be edited.
-        $search = "/(".$base."\/mod\/margic\/edit.php\?id\=)([0-9]+)(&|&amp;)entryid=([0-9]+)/";
-        $content = preg_replace($search, '$@MARGICEDITVIEW*$2*$4@$', $content);
+        // Link to the edit page.
+        $search = "/(".$base."\/mod\/margic\/edit.php\?id\=)([0-9]+)/";
+        $content = preg_replace($search, '$@MARGICEDITVIEW*$2@$', $content);
 
         // Link to the annotation summary by moduleid.
         $search = "/(".$base."\/mod\/margic\/annotations_summary.php\?id\=)([0-9]+)/";
         $content = preg_replace($search, '$@MARGICANNOTATIONSUMMARY*$2@$', $content);
 
-        // Link to the page for editing annotation types with optional id of tyoe that should be edited.
-        $search = "/(".$base."\/mod\/margic\/errortypes.php\?id\=)([0-9]+)(&|&amp;)edit=([0-9]+)/";
-        $content = preg_replace($search, '$@MARGICERRORTYPES*$2*$4@$', $content);
+        // Link to the page for editing errortypes.
+        $search = "/(".$base."\/mod\/margic\/errortypes.php\?id\=)([0-9]+)/";
+        $content = preg_replace($search, '$@MARGICERRORTYPES*$2@$', $content);
 
         return $content;
     }

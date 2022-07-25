@@ -41,6 +41,7 @@ class restore_margic_activity_structure_step extends restore_activity_structure_
         $userinfo = $this->get_setting_value('userinfo');
 
         $paths[] = new restore_path_element('margic', '/activity/margic');
+        $paths[] = new restore_path_element('margic_errortype', '/activity/margic/errortypes/errortype');
 
         if ($userinfo) {
             $paths[] = new restore_path_element('margic_entry', '/activity/margic/entries/entry');
@@ -65,8 +66,6 @@ class restore_margic_activity_structure_step extends restore_activity_structure_
         $data = (object) $data;
         $oldid = $data->id;
         $data->course = $this->get_courseid();
-
-        error_log('process_margic');
 
         // Any changes to the list of dates that needs to be rolled should be same during course restore and course reset.
         // See MDL-9367.
@@ -117,6 +116,26 @@ class restore_margic_activity_structure_step extends restore_activity_structure_
 
         $newitemid = $DB->insert_record('margic_entries', $data);
         $this->set_mapping('margic_entry', $oldid, $newitemid);
+    }
+
+    /**
+     * Restore margic errortype.
+     *
+     * @param object $data data.
+     */
+    protected function process_margic_errortype($data) {
+        global $DB;
+
+        error_log('process_margic_errortype');
+
+        $data = (object) $data;
+        $oldid = $data->id;
+
+        $data->margic = $this->get_new_parentid('margic');
+        $data->userid = $this->get_mappingid('user', $data->userid);
+
+        $newitemid = $DB->insert_record('margic_errortypes', $data);
+        $this->set_mapping('margic_errortype', $oldid, $newitemid);
     }
 
     /**
