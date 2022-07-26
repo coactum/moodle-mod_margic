@@ -203,3 +203,15 @@
     margin-right: 5px;
     margin-bottom: 5px;
 }
+
+@media print {
+    .actionbuttons,
+    .activity-navigation,
+    #page-footer {
+        display: none;
+    }
+
+    #page {
+        margin-top: 0px !important;
+    }
+}

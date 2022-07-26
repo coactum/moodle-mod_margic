@@ -44,7 +44,7 @@
     </span>{{/entries.0}}
 </div>
 
-<div class="pb-1">
+<div class="pb-1 actionbuttons">
     {{^edittimehasended}}{{^edittimenotstarted}}<a class="btn btn-primary mr-1" href="edit.php?id={{cmid}}"> {{#str}}startnewentry, mod_margic{{/str}} </a>{{/edittimenotstarted}}{{/edittimehasended}}
     {{#entries.0}}
         {{#canmanageentries}}<button class="btn btn-primary" data-toggle="collapse" data-target=".gradingform" aria-expanded="false" aria-controls=".gradingform" title="{{#str}}toggleratingform, mod_margic{{/str}}">{{#str}}toggleratingform, mod_margic{{/str}}</button>{{/canmanageentries}}
