@@ -45,7 +45,7 @@ $string['blankentry'] = 'Blank entry';
 $string['calendarend'] = '{$a} closes';
 $string['calendarstart'] = '{$a} opens';
 $string['configdateformat'] = 'This defines how dates are shown in margic reports. The default value, "M d, Y G:i" is Month, day, year and 24 hour format time. Refer to Date in the PHP manual for more examples and predefined date constants.';
-$string['created'] = 'Created {$a->days} days and {$a->hours} hours ago.';
+$string['created'] = '{$a->years} years, {$a->month} months, {$a->days} days and {$a->hours} hours ago';
 $string['csvexport'] = 'Export to .csv';
 $string['deadline'] = 'Days Open';
 $string['dateformat'] = 'Default date format';
@@ -274,6 +274,7 @@ $string['movefor'] = 'Display more in front';
 $string['moveback'] = 'Display further back';
 $string['prioritychanged'] = 'Order changed';
 $string['prioritynotchanged'] = 'Order could not be changed';
+$string['revision'] = 'Revision';
 
 // Privacy.
 $string['privacy:metadata:margic_entries'] = 'Contains the user entries saved in all margics.';

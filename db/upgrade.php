@@ -106,5 +106,21 @@ function xmldb_margic_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2022072100, 'margic');
     }
 
+    if ($oldversion < 2022072600) {
+
+        // Add the preventry field to the margic_entries table.
+        $table = new xmldb_table('margic_entries');
+        $field = new xmldb_field('preventry', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'mailed');
+
+        // Conditionally launch add field.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Margic savepoint reached.
+        upgrade_mod_savepoint(true, 2022072600, 'margic');
+
+    }
+
     return true;
 }

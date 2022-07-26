@@ -33,7 +33,7 @@ $string['blankentry'] = 'Leerer Eintrag';
 $string['calendarend'] = '{$a} schließt';
 $string['calendarstart'] = '{$a} öffnet';
 $string['configdateformat'] = 'Damit wird festgelegt, wie Daten in Margic-Berichten angezeigt werden. Der Standardwert "M d, Y G:i" ist Monat, Tag, Jahr und Uhrzeit im 24-Stunden-Format. Weitere Beispiele und vordefinierte Datumskonstanten finden Sie unter Datum im PHP-Handbuch.';
-$string['created'] = 'Erstellt vor {$a->days} Tagen und {$a->hours} Stunden.';
+$string['created'] = 'vor {$a->years} Jahren, {$a->month} Monaten, {$a->days} Tagen und {$a->hours} Stunden';
 $string['csvexport'] = 'Exportieren nach .csv';
 $string['dateformat'] = 'Standard-Datumsformat';
 $string['deadline'] = 'Offene Tage';
@@ -261,6 +261,7 @@ $string['movefor'] = 'Weiter vorne anzeigen';
 $string['moveback'] = 'Weiter hinten anzeigen';
 $string['prioritychanged'] = 'Reihenfolge geändert';
 $string['prioritynotchanged'] = 'Reihenfolge konnte nicht geändert werden';
+$string['revision'] = 'Überarbeitung';
 
 // Privacy.
 $string['privacy:metadata:margic_entries'] = 'Enthält die gespeicherten Benutzereinträge aller Margics.';

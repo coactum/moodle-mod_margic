@@ -204,6 +204,11 @@
     margin-bottom: 5px;
 }
 
+#page-mod-margic-view .childentrywrapper {
+    margin-top: -10px;
+    margin-left: 20px;
+}
+
 @media print {
     .actionbuttons,
     .activity-navigation,

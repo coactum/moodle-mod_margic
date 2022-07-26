@@ -178,7 +178,8 @@ class margic_view implements renderable, templatable {
 
             foreach ($this->entries as $key => $entry) {
                 if ($this->canmanageentries) { // Set user picture for teachers.
-                    $this->entries[$key]->user->userpicture = $OUTPUT->user_picture($entry->user, array('courseid' => $this->course->id, 'link' => true, 'includefullname' => true));
+                    $this->entries[$key]->user->userpicture = $OUTPUT->user_picture($entry->user,
+                        array('courseid' => $this->course->id, 'link' => true, 'includefullname' => true));
                 }
 
                 // Add feedback area to entry.
@@ -204,6 +205,29 @@ class margic_view implements renderable, templatable {
 
                 } else {
                     $this->entries[$key]->annotationform = false;
+                }
+
+                // Add annotation form to child entries of entry.
+                foreach ($this->entries[$key]->childentries as $ck => $childentry) {
+                    if ($this->annotationmode) {
+
+                        $mform = new \annotation_form(new \moodle_url('/mod/margic/annotations.php', array('id' => $this->cmid)), array('types' => $this->errortypes));
+
+                        // Set default data.
+                        $mform->set_data(array('id' => $this->cmid, 'entry' => $childentry->id));
+
+                        $this->entries[$key]->childentries[$ck]->annotationform = $mform->render();
+
+                        foreach ($this->entries[$key]->childentries[$ck]->annotations as $anr => $annotation) {
+                            $annotater = $DB->get_record('user', array('id' => $annotation->userid));
+                            $annotaterimage = $OUTPUT->user_picture($annotater, array('courseid' => $this->course->id, 'link' => true, 'includefullname' => true, 'size' => 20));
+
+                            $this->entries[$key]->childentries[$ck]->annotations[$anr]->userpicturestr = $annotaterimage;
+                        }
+
+                    } else {
+                        $this->entries[$key]->childentries[$ck]->annotationform = false;
+                    }
                 }
             }
         }

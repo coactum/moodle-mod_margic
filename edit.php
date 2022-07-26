@@ -144,23 +144,30 @@ if ($form->is_cancelled()) {
     $newentry->userid = $USER->id;
 
     $newentry->timecreated = $fromform->timecreated;
-
     $newentry->timemodified = 0;
 
     $newentry->text = '';
     $newentry->format = 1;
-    if ($fromform->entryid != 0 && $entry != false) {
 
-        $newentry->id = $fromform->entryid;
-
+    if ($fromform->entryid != 0 && $entry != false) { // If existing entry is edited.
+        if (!isset($entry->preventry)) {
+            $newentry->preventry = $fromform->entryid;
+        } else {
+            $newentry->preventry = $entry->preventry;
+        }
         $newentry->entrycomment = $entry->entrycomment;
         $newentry->teacher = $entry->teacher;
-        $newentry->timemodified = $timenow;
+
+        $newentry->timecreated = $entry->timecreated;
         $newentry->timemarked = $entry->timemarked;
-    } else {
-        if (! $newentry->id = $DB->insert_record("margic_entries", $newentry)) {
-            throw new moodle_exception(get_string('generalerrorinsert', 'margic'));
-        }
+
+        // Update timemodified for parent entry.
+        $entry->timemodified = $timenow;;
+        $DB->update_record('margic_entries', $entry);
+    }
+
+    if (! $newentry->id = $DB->insert_record("margic_entries", $newentry)) {
+        throw new moodle_exception(get_string('generalerrorinsert', 'margic'));
     }
 
     $fromform = file_postupdate_standard_editor($fromform, 'text', $editoroptions, $editoroptions['context'], 'mod_margic', 'entry', $newentry->id);

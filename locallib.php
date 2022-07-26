@@ -87,6 +87,28 @@ class margic {
      */
     public function __construct($id, $m, $userid, $action, $pagecount, $page) {
 
+        // Custom sort function for annotations.
+        function sortannotation($a, $b) {
+            // var_dump($a);
+            // var_dump($b);
+
+            if (!isset($a->position)) {
+                // var_dump('Fehler: keine Position an Element A');
+                // var_dump($a->id);
+                return true;
+            } else if (!isset($b->position)) {
+                // var_dump('Fehler: keine Position an Element B');
+                // var_dump($b->id);
+                return false;
+            }
+
+            if ($a->position === $b->position) {
+                return $a->startposition > $b->startposition;
+            }
+
+            return $a->position > $b->position;
+        }
+
         global $DB, $USER;
 
         if (isset($id) && $id != 0) {
@@ -230,16 +252,17 @@ class margic {
             $allowedusers = true;
         }
 
+        // Get entries.
         if ($this->mode == 'allentries') {
 
             if ($userid && $userid != 0) {
-                $this->entries = $DB->get_records('margic_entries', array('margic' => $this->instance->id, 'userid' => $userid), $sortoptions);
+                $this->entries = $DB->get_records('margic_entries', array('margic' => $this->instance->id, 'userid' => $userid, 'preventry' => null), $sortoptions);
             } else {
-                $this->entries = $DB->get_records('margic_entries', array('margic' => $this->instance->id), $sortoptions);
+                $this->entries = $DB->get_records('margic_entries', array('margic' => $this->instance->id, 'preventry' => null), $sortoptions);
             }
 
         } else if ($this->mode == 'ownentries') {
-            $this->entries = $DB->get_records('margic_entries', array('margic' => $this->instance->id, 'userid' => $USER->id), $sortoptions);
+            $this->entries = $DB->get_records('margic_entries', array('margic' => $this->instance->id, 'userid' => $USER->id, 'preventry' => null), $sortoptions);
         }
 
         $gradingstr = get_string('needsgrading', 'margic');
@@ -249,34 +272,27 @@ class margic {
 
         $strmanager = get_string_manager();
 
-        // Custom sort function for annotations.
-        function sortannotation($a, $b) {
-            // var_dump($a);
-            // var_dump($b);
-
-            if (!isset($a->position)) {
-                // var_dump('Fehler: keine Position an Element A');
-                // var_dump($a->id);
-                return true;
-            } else if (!isset($b->position)) {
-                // var_dump('Fehler: keine Position an Element B');
-                // var_dump($b->id);
-                return false;
-            }
-
-            if ($a->position === $b->position) {
-                return $a->startposition > $b->startposition;
-            }
-
-            return $a->position > $b->position;
-        }
-
+        // Prepare entries.
         foreach ($this->entries as $i => $entry) {
             $this->entries[$i]->user = $DB->get_record('user', array('id' => $entry->userid));
 
             if (!$currentgroups || ($allowedusers && in_array($this->entries[$i]->user, $allowedusers))) {
+                // Get child entries for entry.
+                $this->entries[$i]->childentries = $DB->get_records('margic_entries', array('margic' => $this->instance->id, 'preventry' => $entry->id), 'timecreated ASC');
+
+                $revisionnr = 1;
+                foreach ($this->entries[$i]->childentries as $ci => $childentry) {
+                    $this->entries[$i]->childentries[$ci] = $this->prepare_entry_annotations($childentry, $strmanager);
+                    $this->entries[$i]->childentries[$ci]->revision = $revisionnr;
+                    $revisionnr += 1;
+                }
+
+                $this->entries[$i]->childentries = array_values($this->entries[$i]->childentries);
+
+                // Get entry stats.
                 $this->entries[$i]->stats = entrystats::get_entry_stats($entry->text, $entry->timecreated);
 
+                // Check entry grading.
                 if (!empty($entry->timecreated) && empty($entry->timemarked)) {
                     $this->entries[$i]->needsgrading = $gradingstr;
                 } else if (!empty($entry->timemodified) && !empty($entry->timemarked) && $entry->timemodified > $entry->timemarked) {
@@ -285,97 +301,18 @@ class margic {
                     $this->entries[$i]->needsregrading = false;
                 }
 
+                // Check if entry can be edited.
                 if ($viewinguserid == $entry->userid) {
                     $this->entries[$i]->entrycanbeedited = true;
                 } else {
                     $this->entries[$i]->entrycanbeedited = false;
                 }
 
-                // Index entry for annotation sorting.
-                $position = 0;
-
-                $doc = new DOMDocument();
-                $doc->loadHTML($this->entries[$i]->text);
-
-                $this->index_original($doc);
-
-                // var_dump('NEW ENTRY');
-                // var_dump($i);
-
-                // var_dump('<br>');
-                // var_dump('<br>');
-
-                // var_dump('NEW nodepositions');
-                // var_dump($this->nodepositions);
-
-                // var_dump('<br>');
-                // var_dump('<br>');
-
-                // Get annotations for entry.
-                $this->entries[$i]->annotations = array_values($DB->get_records('margic_annotations', array('margic' => $this->cm->instance, 'entry' => $entry->id)));
-
-                foreach ($this->entries[$i]->annotations as $key => $annotation) {
-
-                    if (!$DB->record_exists('margic_errortypes', array('id' => $annotation->type))) { // If annotation type does not exist.
-                        $this->entries[$i]->annotations[$key]->color = 'FFFF00';
-                        $this->entries[$i]->annotations[$key]->defaulttype = 0;
-                        $this->entries[$i]->annotations[$key]->type = get_string('deletederrortype', 'mod_margic');
-                    } else {
-                        $this->entries[$i]->annotations[$key]->color = $this->errortypes[$annotation->type]->color;
-                        $this->entries[$i]->annotations[$key]->defaulttype = $this->errortypes[$annotation->type]->defaulttype;
-
-                        if ($this->entries[$i]->annotations[$key]->defaulttype == 1 && $strmanager->string_exists($this->errortypes[$annotation->type]->name, 'mod_margic')) {
-                            $this->entries[$i]->annotations[$key]->type = get_string($this->errortypes[$annotation->type]->name, 'mod_margic');
-                        } else {
-                            $this->entries[$i]->annotations[$key]->type = $this->errortypes[$annotation->type]->name;
-                        }
-                    }
-
-                    if (has_capability('mod/margic:makeannotations', $this->context) && $annotation->userid == $USER->id) {
-                        $this->entries[$i]->annotations[$key]->canbeedited = true;
-                    } else {
-                        $this->entries[$i]->annotations[$key]->canbeedited = false;
-                    }
-
-                    // Get position of startcontainer.
-                    $xpath = new DOMXpath($doc);
-                    $nodelist = $xpath->query('/' . $annotation->startcontainer);
-
-                    // echo('$annotation->id <br>');
-                    // var_dump($annotation->id);
-                    // echo "<br>";
-
-                    // echo('$annotation->startcontainer <br>');
-                    // var_dump($annotation->startcontainer);
-                    // echo "<br>";
-
-                    // var_dump('$nodelist');
-                    // var_dump($nodelist);
-
-                    // var_dump('$nodepositions');
-                    // var_dump($this->nodepositions);
-
-                    foreach ($this->nodepositions as $position => $node) {
-                        if ($nodelist[0] === $node) { // Check if startcontainer node ($nodelist[0]) is same as node in nodepositions array.
-                            $this->entries[$i]->annotations[$key]->position = $position; // If so asssign its position to annotation.
-                            // echo "POSITION OF ANNOTATION:  <br>";
-                            // echo $this->entries[$i]->annotations[$key]->position;
-                            // echo "<br>";
-                            break;
-                        }
-                    }
-                }
-
-                // Sort annotations by position and offset of startcontainer.
-                usort($this->entries[$i]->annotations, "sortannotation");
-
-                // Reset nodepositions with empty array for next entry.
-                $this->nodepositions = array();
-
+                // Prepare entry annotations.
+                $this->entries[$i] = $this->prepare_entry_annotations($entry, $strmanager);
             } else {
                 unset($this->entries[$i]);
             }
-
         }
     }
 
@@ -636,5 +573,92 @@ class margic {
                 $this->search_dom_node($node, $position);
             }
         }
+    }
+
+    private function prepare_entry_annotations($entry, $strmanager) {
+        global $DB, $USER;
+
+        // Index entry for annotation sorting.
+        $position = 0;
+
+        $doc = new DOMDocument();
+        $doc->loadHTML($entry->text);
+
+        $this->index_original($doc);
+
+        // var_dump('NEW ENTRY');
+        // var_dump($i);
+
+        // var_dump('<br>');
+        // var_dump('<br>');
+
+        // var_dump('NEW nodepositions');
+        // var_dump($this->nodepositions);
+
+        // var_dump('<br>');
+        // var_dump('<br>');
+
+        // Get annotations for entry.
+        $entry->annotations = array_values($DB->get_records('margic_annotations', array('margic' => $this->cm->instance, 'entry' => $entry->id)));
+
+        foreach ($entry->annotations as $key => $annotation) {
+
+            if (!$DB->record_exists('margic_errortypes', array('id' => $annotation->type))) { // If annotation type does not exist.
+                $entry->annotations[$key]->color = 'FFFF00';
+                $entry->annotations[$key]->defaulttype = 0;
+                $entry->annotations[$key]->type = get_string('deletederrortype', 'mod_margic');
+            } else {
+                $entry->annotations[$key]->color = $this->errortypes[$annotation->type]->color;
+                $entry->annotations[$key]->defaulttype = $this->errortypes[$annotation->type]->defaulttype;
+
+                if ($entry->annotations[$key]->defaulttype == 1 && $strmanager->string_exists($this->errortypes[$annotation->type]->name, 'mod_margic')) {
+                    $entry->annotations[$key]->type = get_string($this->errortypes[$annotation->type]->name, 'mod_margic');
+                } else {
+                    $entry->annotations[$key]->type = $this->errortypes[$annotation->type]->name;
+                }
+            }
+
+            if (has_capability('mod/margic:makeannotations', $this->context) && $annotation->userid == $USER->id) {
+                $entry->annotations[$key]->canbeedited = true;
+            } else {
+                $entry->annotations[$key]->canbeedited = false;
+            }
+
+            // Get position of startcontainer.
+            $xpath = new DOMXpath($doc);
+            $nodelist = $xpath->query('/' . $annotation->startcontainer);
+
+            // echo('$annotation->id <br>');
+            // var_dump($annotation->id);
+            // echo "<br>";
+
+            // echo('$annotation->startcontainer <br>');
+            // var_dump($annotation->startcontainer);
+            // echo "<br>";
+
+            // var_dump('$nodelist');
+            // var_dump($nodelist);
+
+            // var_dump('$nodepositions');
+            // var_dump($this->nodepositions);
+
+            foreach ($this->nodepositions as $position => $node) {
+                if ($nodelist[0] === $node) { // Check if startcontainer node ($nodelist[0]) is same as node in nodepositions array.
+                    $entry->annotations[$key]->position = $position; // If so asssign its position to annotation.
+                    // echo "POSITION OF ANNOTATION:  <br>";
+                    // echo $entry->annotations[$key]->position;
+                    // echo "<br>";
+                    break;
+                }
+            }
+        }
+
+        // Sort annotations by position and offset of startcontainer.
+        usort($entry->annotations, "sortannotation");
+
+        // Reset nodepositions with empty array for next entry.
+        $this->nodepositions = array();
+
+        return $entry;
     }
 }

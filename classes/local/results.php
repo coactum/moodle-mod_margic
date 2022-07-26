@@ -224,7 +224,8 @@ class results {
             get_string('teacher', 'margic'),
             get_string('timemarked', 'margic'),
             get_string('mailed', 'margic'),
-            get_string('text', 'margic')
+            get_string('text', 'margic'),
+            get_string('preventry', 'margic')
         );
         // Add the headings to our data array.
         $csv->add_data($fields);
@@ -242,7 +243,8 @@ class results {
                            d.entrycomment AS entrycomment,
                            d.teacher AS teacher,
                            to_char(to_timestamp(d.timemarked), 'YYYY-MM-DD HH24:MI:SS') AS timemarked,
-                           d.mailed AS mailed
+                           d.mailed AS mailed,
+                           d.preventry AS preventry
                       FROM {margic_entries} d
                       JOIN {user} u ON u.id = d.userid
                      WHERE d.userid > 0 ";
@@ -260,7 +262,8 @@ class results {
                            d.entrycomment AS entrycomment,
                            d.teacher AS teacher,
                            FROM_UNIXTIME(d.timemarked) AS TIMEMARKED,
-                           d.mailed AS mailed
+                           d.mailed AS mailed,
+                           d.preventry AS preventry
                       FROM {margic_entries} d
                       JOIN {user} u ON u.id = d.userid
                      WHERE d.userid > 0 ";
@@ -291,6 +294,7 @@ class results {
                     $d->teacher,
                     $d->timemarked,
                     $d->mailed,
+                    $d->preventry,
                     format_text($d->text, $d->format, array('para' => false))
                 );
                 $csv->add_data($output);
