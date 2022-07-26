@@ -264,7 +264,6 @@ class margic {
                 return false;
             }
 
-
             if ($a->position === $b->position) {
                 return $a->startposition > $b->startposition;
             }
@@ -291,7 +290,6 @@ class margic {
                 } else {
                     $this->entries[$i]->entrycanbeedited = false;
                 }
-
 
                 // Index entry for annotation sorting.
                 $position = 0;
@@ -339,7 +337,6 @@ class margic {
                         $this->entries[$i]->annotations[$key]->canbeedited = false;
                     }
 
-
                     // Get position of startcontainer.
                     $xpath = new DOMXpath($doc);
                     $nodelist = $xpath->query('/' . $annotation->startcontainer);
@@ -351,7 +348,6 @@ class margic {
                     // echo('$annotation->startcontainer <br>');
                     // var_dump($annotation->startcontainer);
                     // echo "<br>";
-
 
                     // var_dump('$nodelist');
                     // var_dump($nodelist);

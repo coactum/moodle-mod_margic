@@ -123,7 +123,9 @@ if ($mode == 2 && $priority && $action && $DB->record_exists('margic_errortypes'
             $typeswitched = $typeswitched[array_key_last($typeswitched)];
         }
 
-    } else if ($type && $action == 2 && $type->priority != $DB->count_records('margic_errortypes', array('margic' => $moduleinstance->id)) + 1) { // Decrease priority (move further back)
+    } else if ($type && $action == 2 &&
+        $type->priority != $DB->count_records('margic_errortypes', array('margic' => $moduleinstance->id)) + 1) { // Decrease priority (move further back)
+
         $oldpriority = $type->priority;
         $type->priority += 1;
         $prioritychanged = true;

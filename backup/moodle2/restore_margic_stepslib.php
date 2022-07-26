@@ -170,7 +170,6 @@ class restore_margic_activity_structure_step extends restore_activity_structure_
 
         error_log('process_margic_entry_tag');
 
-
         if (! core_tag_tag::is_enabled('mod_margic', 'margic_entries')) { // Tags disabled in server, nothing to process.
             return;
         }
@@ -236,7 +235,6 @@ class restore_margic_activity_structure_step extends restore_activity_structure_
         $this->add_related_files('mod_margic_entries', 'feedback', null);
 
         error_log('margic restore after_execute AFTERFEEDBACK');
-
 
     }
 }

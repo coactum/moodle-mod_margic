@@ -17,7 +17,6 @@
  * Module for the annotation functions of the margic.
  *
  * @module     mod_margic/annotations
- * @package    mod_margic
  * @copyright  2022 coactum GmbH
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -26,26 +25,32 @@
     return {
         init: function(annotations, canmakeannotations) {
 
-            // Hide all Moodle forms
+            // Hide all Moodle forms.
             $('.annotation-form').hide();
 
-            // remove col-mds from moodle form
+            // Remove col-mds from moodle form.
             $('.annotation-form div.col-md-3').removeClass('col-md-3');
             $('.annotation-form div.col-md-9').removeClass('col-md-9');
             $('.annotation-form div.form-group').removeClass('form-group');
             $('.annotation-form div.row').removeClass('row');
 
-            function recreateAnnotations(){
+            /**
+             * Recreate annotations.
+             *
+             */
+            function recreateAnnotations() {
                 for (let annotation of Object.values(annotations)) {
 
-                    //recreate range from db
+                    // Recreate range from db.
                     var newrange = document.createRange();
 
                     try {
-                        newrange.setStart(nodeFromXPath(annotation.startcontainer, $( "#entry-" + annotation.entry)[0]), annotation.startposition);
-                        newrange.setEnd(nodeFromXPath(annotation.endcontainer, $( "#entry-" + annotation.entry)[0]), annotation.endposition);
-                     }
-                     catch (e) {
+                        newrange.setStart(
+                            nodeFromXPath(annotation.startcontainer, $("#entry-" + annotation.entry)[0]), annotation.startposition);
+                        newrange.setEnd(
+                            nodeFromXPath(annotation.endcontainer, $("#entry-" + annotation.entry)[0]), annotation.endposition);
+                     } catch (e) {
+                        // eslint-disable-line
                      }
 
                     var annotatedtext = highlightRange(newrange, annotation.id, 'annotated', annotation.color);
@@ -56,6 +61,11 @@
                 }
             }
 
+            /**
+             * Edit annotation.
+             *
+             * @param {int} annotationid
+             */
             function editAnnotation(annotationid) {
                 if (canmakeannotations) {
                     removeAllTempHighlights();
@@ -63,7 +73,7 @@
 
                     var entry = annotations[annotationid].entry;
 
-                    $('.annotation-box-' + annotationid).hide(); // hide edited annotation-box
+                    $('.annotation-box-' + annotationid).hide(); // Hide edited annotation-box.
 
                     $('.annotation-form-' + entry + ' input[name="startcontainer"]').val(annotations[annotationid].startcontainer);
                     $('.annotation-form-' + entry + ' input[name="endcontainer"]').val(annotations[annotationid].endcontainer);
@@ -77,7 +87,7 @@
                     $('.annotation-form-' + entry + ' select').val(annotations[annotationid].type);
 
                     $('#annotationpreview-temp-' + entry).html($('#annotationpreview-' + annotationid).html());
-                    $('#annotationpreview-temp-' + entry).css( 'border-color', '#' + annotations[annotationid].color);
+                    $('#annotationpreview-temp-' + entry).css('border-color', '#' + annotations[annotationid].color);
 
                     $('.annotationarea-' + entry + ' .annotation-form').insertBefore('.annotation-box-' + annotationid);
                     $('.annotationarea-' + entry + ' .annotation-form').show();
@@ -87,7 +97,10 @@
                 }
             }
 
-            function resetForms(){
+            /**
+             * Reset all annotation forms
+             */
+            function resetForms() {
                 $('.annotation-form').hide();
 
                 $('.annotation-form input[name^="annotationid"]').val(null);
@@ -99,7 +112,7 @@
 
                 $('.annotation-form textarea[name^="text"]').val('');
 
-                $('.annotation-box').not('.annotation-form').show(); // To show again edited annotation
+                $('.annotation-box').not('.annotation-form').show(); // To show again edited annotation.
             }
 
             /**
@@ -172,7 +185,9 @@
              * element of the specified class and returns the highlight Elements.
              *
              * @param {Range} range - Range to be highlighted
+             * @param {int} annotationid - ID of annotation
              * @param {string} cssClass - A CSS class to use for the highlight
+             * @param {string} color - Color of the highlighting
              * @return {HighlightElement[]} - Elements wrapping text in `normedRange` to add a highlight effect
              */
             function highlightRange(range, annotationid = false, cssClass = 'annotated', color = 'FFFF00') {
@@ -213,6 +228,7 @@
 
                     if (annotationid) {
                         highlightEl.className += ' ' + cssClass + '-' + annotationid;
+                        // highlightEl.tabIndex = 1;
                         highlightEl.id = cssClass + '-' + annotationid;
                         highlightEl.style.backgroundColor = '#' + color;
                     }
@@ -232,6 +248,7 @@
              *
              * @param {Range} range
              * @param {Node} node
+             * @return {bool} - If node is in range
              */
             function isNodeInRange(range, node) {
                 try {
@@ -245,34 +262,15 @@
                 } catch (e) {
                     // `comparePoint` may fail if the `range` and `node` do not share a common
                     // ancestor or `node` is a doctype.
-                return false;
+                    return false;
                 }
             }
-
-            /**
-             * CSS selector that will match the placeholder within a page/tile container.
-             */
-            //const placeholderSelector = '.annotator-placeholder';
-
-            /**
-             * Return true if `node` is inside a placeholder element created with `createPlaceholder`.
-             *
-             * This is typically used to test if a highlight element associated with an
-             * anchor is inside a placeholder.
-             *
-             * @param {Node} node
-             */
-            // function isInPlaceholder(node) {
-            //     if (!node.parentElement) {
-            //         return false;
-            //     }
-            //     return node.parentElement.closest(placeholderSelector) !== null;
-            // }
 
             /**
              * Get the node name for use in generating an xpath expression.
              *
              * @param {Node} node
+             * @return {string} - Name of the node
              */
             function getNodeName(node) {
                 const nodeName = node.nodeName.toLowerCase();
@@ -287,6 +285,7 @@
              * Get the index of the node as it appears in its parent's child list
              *
              * @param {Node} node
+             * @return {int} - Position of the node
              */
             function getNodePosition(node) {
                 let pos = 0;
@@ -301,6 +300,12 @@
                 return pos;
             }
 
+            /**
+             * Get the path segments to the node
+             *
+             * @param {Node} node
+             * @return {array} - Path segments
+             */
             function getPathSegment(node) {
                 const name = getNodeName(node);
                 const pos = getNodePosition(node);
@@ -313,6 +318,7 @@
              *
              * @param {Node} node - The node to generate a path to
              * @param {Node} root - Root node to which the returned path is relative
+             * @return {string} - The xpath of a node
              */
             function xpathFromNode(node, root) {
                 let xpath = '';
@@ -339,6 +345,7 @@
              * @param {Element} element
              * @param {string} nodeName
              * @param {number} index
+             * @return {Element|null} - The child element or null
              */
             function nthChildOfType(element, nodeName, index) {
                 nodeName = nodeName.toUpperCase();
@@ -438,11 +445,11 @@
                         '.' + xpath,
                         root,
 
-                        // nb. The `namespaceResolver` and `result` arguments are optional in the spec
+                        // The `namespaceResolver` and `result` arguments are optional in the spec
                         // but required in Edge Legacy.
-                        null /* namespaceResolver */,
+                        null /* NamespaceResolver */,
                         XPathResult.FIRST_ORDERED_NODE_TYPE,
-                        null /* result */
+                        null /* Result */
                     ).singleNodeValue;
                 }
             }
@@ -464,12 +471,10 @@
 
             /**
              * Remove all temporary highlights under a given root element.
-             *
-             * @param {HTMLElement} root
              */
             function removeAllTempHighlights() {
                 const highlights = Array.from($('body')[0].querySelectorAll('.annotated_temp'));
-                if (highlights !== undefined && highlights.length != 0){
+                if (highlights !== undefined && highlights.length != 0) {
                     removeHighlights(highlights);
                 }
             }
@@ -496,14 +501,16 @@
 
                 if (selectedrange.cloneContents().textContent !== '' && canmakeannotations) {
 
-                    removeAllTempHighlights(); // remove other temporary highlights
+                    removeAllTempHighlights(); // Remove other temporary highlights.
 
-                    resetForms(); // remove old form contents
+                    resetForms(); // Remove old form contents.
 
                     var entry = this.id.replace(/entry-/, '');
 
-                    $('.annotation-form-' + entry + ' input[name="startcontainer"]').val(xpathFromNode(selectedrange.startContainer, this));
-                    $('.annotation-form-' + entry + ' input[name="endcontainer"]').val(xpathFromNode(selectedrange.endContainer, this));
+                    $('.annotation-form-' + entry + ' input[name="startcontainer"]').val(
+                        xpathFromNode(selectedrange.startContainer, this));
+                    $('.annotation-form-' + entry + ' input[name="endcontainer"]').val(
+                        xpathFromNode(selectedrange.endContainer, this));
                     $('.annotation-form-' + entry + ' input[name="startposition"]').val(selectedrange.startOffset);
                     $('.annotation-form-' + entry + ' input[name="endposition"]').val(selectedrange.endOffset);
 
@@ -523,64 +530,70 @@
             recreateAnnotations();
 
             // Highlight annotation and all annotated text if annotated text is hovered
-            $('.annotated').mouseenter (function() {
+            $('.annotated').mouseenter(function() {
                 var id = this.id.replace('annotated-', '');
-                $('.annotationpreview-'+id).addClass('hovered');
-                $('.annotated-'+id).addClass('hovered');
+                $('.annotationpreview-' + id).addClass('hovered');
+                $('.annotated-' + id).addClass('hovered');
                 $('.annotation-box-' + id + ' .errortype').addClass('hovered');
 
             });
 
-            $('.annotated').mouseleave (function() {
+            $('.annotated').mouseleave(function() {
                 var id = this.id.replace('annotated-', '');
-                $('.annotationpreview-'+id).removeClass('hovered');
-                $('.annotated-'+id).removeClass('hovered');
+                $('.annotationpreview-' + id).removeClass('hovered');
+                $('.annotated-' + id).removeClass('hovered');
                 $('.annotation-box-' + id + ' .errortype').removeClass('hovered');
             });
 
             // Highlight annotated text if annotationpreview is hovered
-            $('.annotatedtextpreview').mouseenter (function() {
+            $('.annotatedtextpreview').mouseenter(function() {
                 var id = this.id.replace('annotationpreview-', '');
-                $('.annotated-'+id).addClass('hovered');
+                $('.annotated-' + id).addClass('hovered');
             });
 
-            $('.annotatedtextpreview').mouseleave (function() {
+            $('.annotatedtextpreview').mouseleave(function() {
                 var id = this.id.replace('annotationpreview-', '');
-                $('.annotated-'+id).removeClass('hovered');
+                $('.annotated-' + id).removeClass('hovered');
             });
 
             // Highlight whole temp annotation if part of temp annotation is hovered
-            $(document).on('mouseover', '.annotated_temp', function(){
+            $(document).on('mouseover', '.annotated_temp', function() {
                 $('.annotated_temp').addClass('hovered');
             });
 
-            $(document).on('mouseleave', '.annotated_temp', function(){
+            $(document).on('mouseleave', '.annotated_temp', function() {
                 $('.annotated_temp').removeClass('hovered');
             });
 
-            // onclick listener for editing annotation
-            $(document).on('click', '.annotated', function(){
+            // Onclick listener for editing annotation.
+            $(document).on('click', '.annotated', function() {
                 var id = this.id.replace('annotated-', '');
                 editAnnotation(id);
             });
 
-            // onclick listener for editing annotation
-            $(document).on('click', '.edit-annotation', function(){
+            // Onclick listener for editing annotation.
+            $(document).on('click', '.edit-annotation', function() {
                 var id = this.id.replace('edit-annotation-', '');
                 editAnnotation(id);
             });
 
+            // Onclick listener for click on annotation-box.
+            // $(document).on('click', '.annotation-box', function() {
+            //     var id = this.id.replace('annotation-box-', '');
+            //     $('#annotated-' + id).focus();
+            // });
+
             // onclick listener if form is canceled
-            $(document).on('click', '#id_cancel', function(e){
+            $(document).on('click', '#id_cancel', function(e) {
                 e.preventDefault();
 
-                removeAllTempHighlights(); // remove other temporary highlights
+                removeAllTempHighlights(); // Remove other temporary highlights.
 
-                resetForms(); // remove old form contents
+                resetForms(); // Remove old form contents.
             });
 
             // Listen for return key pressed to submit annotation form.
-            $('textarea').keypress(function (e) {
+            $('textarea').keypress(function(e) {
                 if (e.which == 13) {
                     $(this).parents(':eq(2)').submit();
                     e.preventDefault();

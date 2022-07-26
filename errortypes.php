@@ -95,7 +95,8 @@ $mform = new errortypes_form(null, array('editdefaulttype' => has_capability('mo
 
 if (isset($editedtypeid)) {
     if ($mode == 1) { // If type is template error type.
-        $mform->set_data(array('id' => $id, 'mode' => $mode, 'typeid' => $editedtypeid, 'typename' => $editedtypename, 'color' => $editedcolor, 'standardtype' => $editeddefaulttype));
+        $mform->set_data(array('id' => $id, 'mode' => $mode, 'typeid' => $editedtypeid,
+            'typename' => $editedtypename, 'color' => $editedcolor, 'standardtype' => $editeddefaulttype));
     } else if ($mode == 2) {
         $mform->set_data(array('id' => $id, 'mode' => $mode, 'typeid' => $editedtypeid, 'typename' => $editedtypename, 'color' => $editedcolor));
     }
