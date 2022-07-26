@@ -82,6 +82,8 @@
                     $('.annotationarea-' + entry + ' .annotation-form').insertBefore('.annotation-box-' + annotationid);
                     $('.annotationarea-' + entry + ' .annotation-form').show();
                     $('.annotationarea-' + entry + ' #id_text').focus();
+                } else {
+                    $('.annotation-box-' + annotationid).focus();
                 }
             }
 
