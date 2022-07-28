@@ -82,9 +82,15 @@ if (($entryid && !$moduleinstance->editall) || !results::margic_available($modul
 }
 
 // Header.
+if ($entryid) {
+    $title = get_string('editentry', 'mod_margic');
+} else {
+    $title = get_string('addentry', 'mod_margic');
+}
+
 $PAGE->set_url('/mod/margic/edit.php', array('id' => $id));
-$PAGE->navbar->add(get_string('startoreditentry', 'mod_margic'));
-$PAGE->set_title(format_string($moduleinstance->name) . ' - ' . get_string('startoreditentry', 'mod_margic'));
+$PAGE->navbar->add($title);
+$PAGE->set_title(format_string($moduleinstance->name) . ' - ' . $title);
 $PAGE->set_heading($course->fullname);
 
 $data = new stdClass();
@@ -94,8 +100,23 @@ $data->id = $cm->id;
 if ($DB->record_exists('margic_entries', array('margic' => $moduleinstance->id, "id" => $entryid))) {
     $entry = $DB->get_record('margic_entries', array('margic' => $moduleinstance->id, "id" => $entryid));
 
-    // Prevent editing of entries not started by this user.
-    if ($entry->userid != $USER->id) {
+    $notnewestentry = false;
+    // Prevent editing of entries that are not the newest version of a base entry or a unedited entry.
+    if (isset($entry->baseentry)) { // If entry has a base entry check if this entry is the newest childentry.
+        $otherchildentries = $DB->get_records('margic_entries', array('margic' => $moduleinstance->id, 'baseentry' => $entry->baseentry), 'timecreated DESC');
+
+        if ($entry->timecreated < $otherchildentries[array_key_first($otherchildentries)]->timecreated) {
+            $notnewestentry = true;
+        }
+    } else { // If this entry has no base entry check if it has childentries and cant therefore be edited.
+        $childentries = $DB->get_records('margic_entries', array('margic' => $moduleinstance->id, 'baseentry' => $entry->id), 'timecreated DESC');
+
+        if (!empty($childentries)) {
+            $notnewestentry = true;
+        }
+    }
+
+    if ($entry->userid != $USER->id || $notnewestentry) { // Prevent editing of entries not started by this user or if it is not the newest child entry.
         // Trigger invalid_access_attempt with redirect to the view page.
         $params = array(
             'objectid' => $id,
@@ -154,16 +175,13 @@ if ($form->is_cancelled()) {
             $newentry->baseentry = $fromform->entryid;
         } else {
             $newentry->baseentry = $entry->baseentry;
+
+            // Update timemodified for base entry.
+            $baseentry = $DB->get_record('margic_entries', array('margic' => $moduleinstance->id, "id" => $entry->baseentry));
+            $baseentry->timemodified = $fromform->timecreated;
+            $DB->update_record('margic_entries', $baseentry);
         }
         $newentry->entrycomment = $entry->entrycomment;
-        $newentry->teacher = $entry->teacher;
-
-        $newentry->timecreated = $entry->timecreated;
-        $newentry->timemarked = $entry->timemarked;
-
-        // Update timemodified for parent entry.
-        $entry->timemodified = $timenow;;
-        $DB->update_record('margic_entries', $entry);
     }
 
     if (! $newentry->id = $DB->insert_record("margic_entries", $newentry)) {
@@ -213,7 +231,7 @@ echo $OUTPUT->heading(format_string($moduleinstance->name));
 $intro = format_module_intro('margic', $moduleinstance, $cm->id);
 echo $OUTPUT->box($intro);
 
-echo $OUTPUT->heading(get_string('startoreditentry', 'mod_margic'), 3);
+echo $OUTPUT->heading($title, 3);
 
 // Otherwise fill and print the form.
 $form->display();

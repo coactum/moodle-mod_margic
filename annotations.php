@@ -69,8 +69,7 @@ require_capability('mod/margic:makeannotations', $context);
 
 // Header.
 $PAGE->set_url('/mod/margic/annotations.php', array('id' => $id));
-$PAGE->navbar->add(get_string('startoreditentry', 'mod_margic'));
-$PAGE->set_title(format_string($moduleinstance->name) . ' - ' . get_string('startoreditentry', 'mod_margic'));
+$PAGE->set_title(format_string($moduleinstance->name));
 $PAGE->set_heading($course->fullname);
 
 $urlparams = array('id' => $id, 'annotationmode' => 1);
