@@ -256,13 +256,13 @@ class margic {
         if ($this->mode == 'allentries') {
 
             if ($userid && $userid != 0) {
-                $this->entries = $DB->get_records('margic_entries', array('margic' => $this->instance->id, 'userid' => $userid, 'preventry' => null), $sortoptions);
+                $this->entries = $DB->get_records('margic_entries', array('margic' => $this->instance->id, 'userid' => $userid, 'baseentry' => null), $sortoptions);
             } else {
-                $this->entries = $DB->get_records('margic_entries', array('margic' => $this->instance->id, 'preventry' => null), $sortoptions);
+                $this->entries = $DB->get_records('margic_entries', array('margic' => $this->instance->id, 'baseentry' => null), $sortoptions);
             }
 
         } else if ($this->mode == 'ownentries') {
-            $this->entries = $DB->get_records('margic_entries', array('margic' => $this->instance->id, 'userid' => $USER->id, 'preventry' => null), $sortoptions);
+            $this->entries = $DB->get_records('margic_entries', array('margic' => $this->instance->id, 'userid' => $USER->id, 'baseentry' => null), $sortoptions);
         }
 
         $gradingstr = get_string('needsgrading', 'margic');
@@ -278,16 +278,42 @@ class margic {
 
             if (!$currentgroups || ($allowedusers && in_array($this->entries[$i]->user, $allowedusers))) {
                 // Get child entries for entry.
-                $this->entries[$i]->childentries = $DB->get_records('margic_entries', array('margic' => $this->instance->id, 'preventry' => $entry->id), 'timecreated ASC');
+                $this->entries[$i]->childentries = $DB->get_records('margic_entries', array('margic' => $this->instance->id, 'baseentry' => $entry->id), 'timecreated DESC');
 
-                $revisionnr = 1;
+                $revisionnr = count($this->entries[$i]->childentries);
                 foreach ($this->entries[$i]->childentries as $ci => $childentry) {
                     $this->entries[$i]->childentries[$ci] = $this->prepare_entry_annotations($childentry, $strmanager);
+                    $this->entries[$i]->childentries[$ci]->stats = entrystats::get_entry_stats($childentry->text, $childentry->timecreated);
                     $this->entries[$i]->childentries[$ci]->revision = $revisionnr;
-                    $revisionnr += 1;
+
+                    if ($ci == array_key_first($this->entries[$i]->childentries)) {
+                        $this->entries[$i]->childentries[$ci]->newestentry = true;
+                        if ($viewinguserid == $childentry->userid) {
+                            $this->entries[$i]->childentries[$ci]->entrycanbeedited = true;
+                        } else {
+                            $this->entries[$i]->childentries[$ci]->entrycanbeedited = false;
+                        }
+                    } else {
+                        $this->entries[$i]->childentries[$ci]->entrycanbeedited = false;
+                        $this->entries[$i]->childentries[$ci]->newestentry = false;
+                    }
+
+                    if ($viewinguserid == $entry->userid && empty($this->entries[$i]->childentries)) {
+                        $this->entries[$i]->entrycanbeedited = true;
+                    } else {
+                        $this->entries[$i]->entrycanbeedited = false;
+                    }
+
+                    $revisionnr -= 1;
                 }
 
                 $this->entries[$i]->childentries = array_values($this->entries[$i]->childentries);
+
+                if (empty($this->entries[$i]->childentries)) {
+                    $this->entries[$i]->haschildren = false;
+                } else {
+                    $this->entries[$i]->haschildren = true;
+                }
 
                 // Get entry stats.
                 $this->entries[$i]->stats = entrystats::get_entry_stats($entry->text, $entry->timecreated);
@@ -302,7 +328,7 @@ class margic {
                 }
 
                 // Check if entry can be edited.
-                if ($viewinguserid == $entry->userid) {
+                if ($viewinguserid == $entry->userid && empty($this->entries[$i]->childentries)) {
                     $this->entries[$i]->entrycanbeedited = true;
                 } else {
                     $this->entries[$i]->entrycanbeedited = false;
@@ -313,6 +339,12 @@ class margic {
             } else {
                 unset($this->entries[$i]);
             }
+
+            // Replace base entry with last child entry for displaying last child entry on top
+            // if (!empty($this->entries[$i]->childentries)) {
+            //     $baseentry = $this->entries[$i];
+            //     $this->entries[$i] = $this->entries[$i]->childentries[array_key_last($this->entries[$i]->childentries)];
+            // }
         }
     }
 
@@ -379,15 +411,6 @@ class margic {
      */
     public function get_entries() {
         return array_values($this->entries);
-    }
-
-    /**
-     * Returns the entries for the margic instance with intact keys.
-     *
-     * @return array action
-     */
-    public function get_entries_with_keys() {
-        return $this->entries;
     }
 
     /**

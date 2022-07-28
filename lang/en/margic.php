@@ -275,6 +275,11 @@ $string['moveback'] = 'Display further back';
 $string['prioritychanged'] = 'Order changed';
 $string['prioritynotchanged'] = 'Order could not be changed';
 $string['revision'] = 'Revision';
+$string['baseentry'] = 'Base entry';
+$string['id'] = 'ID';
+$string['overview'] = 'Overview';
+$string['at'] = 'at';
+$string['from'] = 'from';
 
 // Privacy.
 $string['privacy:metadata:margic_entries'] = 'Contains the user entries saved in all margics.';

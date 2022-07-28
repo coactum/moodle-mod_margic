@@ -179,7 +179,7 @@ class margic_view implements renderable, templatable {
             foreach ($this->entries as $key => $entry) {
                 if ($this->canmanageentries) { // Set user picture for teachers.
                     $this->entries[$key]->user->userpicture = $OUTPUT->user_picture($entry->user,
-                        array('courseid' => $this->course->id, 'link' => true, 'includefullname' => true));
+                        array('courseid' => $this->course->id, 'link' => true, 'includefullname' => true, 'size' => 25));
                 }
 
                 // Add feedback area to entry.

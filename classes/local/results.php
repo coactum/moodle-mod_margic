@@ -212,6 +212,7 @@ class results {
 
         $fields = array();
         $fields = array(
+            get_string('id', 'margic'),
             get_string('firstname'),
             get_string('lastname'),
             get_string('pluginname', 'margic'),
@@ -224,8 +225,8 @@ class results {
             get_string('teacher', 'margic'),
             get_string('timemarked', 'margic'),
             get_string('mailed', 'margic'),
-            get_string('text', 'margic'),
-            get_string('preventry', 'margic')
+            get_string('baseentry', 'margic'),
+            get_string('text', 'margic')
         );
         // Add the headings to our data array.
         $csv->add_data($fields);
@@ -244,7 +245,7 @@ class results {
                            d.teacher AS teacher,
                            to_char(to_timestamp(d.timemarked), 'YYYY-MM-DD HH24:MI:SS') AS timemarked,
                            d.mailed AS mailed,
-                           d.preventry AS preventry
+                           d.baseentry AS baseentry
                       FROM {margic_entries} d
                       JOIN {user} u ON u.id = d.userid
                      WHERE d.userid > 0 ";
@@ -263,7 +264,7 @@ class results {
                            d.teacher AS teacher,
                            FROM_UNIXTIME(d.timemarked) AS TIMEMARKED,
                            d.mailed AS mailed,
-                           d.preventry AS preventry
+                           d.baseentry AS baseentry
                       FROM {margic_entries} d
                       JOIN {user} u ON u.id = d.userid
                      WHERE d.userid > 0 ";
@@ -282,6 +283,7 @@ class results {
                 }
 
                 $output = array(
+                    $d->entry,
                     $d->firstname,
                     $d->lastname,
                     $d->margic,
@@ -294,7 +296,7 @@ class results {
                     $d->teacher,
                     $d->timemarked,
                     $d->mailed,
-                    $d->preventry,
+                    $d->baseentry,
                     format_text($d->text, $d->format, array('para' => false))
                 );
                 $csv->add_data($output);
@@ -375,8 +377,6 @@ class results {
 
     /**
      * Check for existing rating entry in mdl_rating for the current user.
-     *
-     * Used in report.php.
      *
      * @param array $ratingoptions An array of current entry data.
      * @return array $rec An entry was found, so return it for update.
@@ -467,7 +467,7 @@ class results {
 
             if ($entry->teacher) {
                 $teacher = $DB->get_record('user', array('id' => $entry->teacher));
-                $teacherimage = $OUTPUT->user_picture($teacher, array('courseid' => $course->id, 'link' => true, 'includefullname' => true));
+                $teacherimage = $OUTPUT->user_picture($teacher, array('courseid' => $course->id, 'link' => true, 'includefullname' => true, 'size' => 30));
             } else {
                 $teacherimage = false;
             }
@@ -481,7 +481,7 @@ class results {
                     $entry->teacher = $USER->id;
                 }
 
-                $feedbackarea .= '<h3>' . get_string('feedback') . '</h3>';
+                $feedbackarea .= '<h5>' . get_string('feedback') . '</h5>';
 
                 require_once($CFG->dirroot . '/mod/margic/grading_form.php');
 
@@ -502,20 +502,19 @@ class results {
 
                 $data->{'rating_' . $entry->id} = $entry->rating;
 
-                $mform = new \mod_margic_grading_form(new \moodle_url('/mod/margic/grade_entry.php', array('id' => $cmid, 'entryid' => $entry->id)), array('courseid' => $course->id, 'margic' => $margic, 'entry' => $entry, 'grades' => $grades, 'teacherimg' => $teacherimage, 'editoroptions' => $editoroptions));
+                $mform = new \mod_margic_grading_form(new \moodle_url('/mod/margic/grade_entry.php', array('id' => $cmid, 'entryid' => $entry->id)),
+                   array('courseid' => $course->id, 'margic' => $margic, 'entry' => $entry, 'grades' => $grades, 'teacherimg' => $teacherimage, 'editoroptions' => $editoroptions));
 
                 // Set default data.
                 $mform->set_data($data);
 
                 $feedbackarea .= $mform->render();
             } else if ($feedbacktext || ! empty($entry->rating)) {  // If user is student and has rating or feedback text.
-                $feedbackarea .= '<div class="ratingform" style="background-color: ' . get_config('mod_margic', 'entrytextbgc') . '"><h3>' . get_string('feedback') . '</h3>';
+                $feedbackarea .= '<div class="ratingform" style="background-color: ' . get_config('mod_margic', 'entrytextbgc') . '">';
+                $feedbackarea .= '<h5 class="d-flex justify-content-between"><span>' . get_string('feedback') . ' ' . get_string('from', 'mod_margic') . ' ' . $teacherimage . ' ';
+                $feedbackarea .= get_string('at', 'mod_margic') . ' ' . userdate($entry->timemarked) . '</span>';
 
-                $feedbackarea .= '<div class="entryheader">';
-                $feedbackarea .= '<span class="teacherpicture">' . $teacherimage . '</span>';
-                $feedbackarea .= ' - <span class="time">' . userdate($entry->timemarked) . '</span>';
-
-                $feedbackarea .= '<span class="pull-right"><strong>';
+                $feedbackarea .= '<span><strong>';
 
                 if ($margic->assessed > 0) {
                     // Gradebook preference.
@@ -537,11 +536,11 @@ class results {
                 }
 
                 $feedbackarea .= '</strong></span>';
-                $feedbackarea .= '</div>';
+                $feedbackarea .= '</h5>';
 
                 // Feedback text.
                 if ($feedbacktext) {
-                    $feedbackarea .= '<hr>' . $feedbacktext;
+                    $feedbackarea .= $feedbacktext;
                 }
 
                 $feedbackarea .= '</div>';

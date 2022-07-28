@@ -25,17 +25,29 @@
 {{/js}}
 
 <div class="wrapper">
-    <div class="d-flex justify-content-between">
-        <div class="entry {{^annotationmode}}w-100{{/annotationmode}}" style="background: {{entrybgc}}; {{#annotationmode}}width: {{entryareawidth}}% {{/annotationmode}}">
-            <h4>{{#str}}entry, mod_margic{{/str}}: {{#userdate}}{{timecreated}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}}
-                {{^edittimehasended}}{{#caneditentries}}{{#entrycanbeedited}}<a href="edit.php?id={{cmid}}&entryid={{id}}"><i class="fa fa-pencil" title="{{#str}}editthisentry, mod_margic{{/str}}"></i></a>{{/entrycanbeedited}}{{/caneditentries}}{{/edittimehasended}}
-            </h4>
 
-            {{#user}}
-                {{#canmanageentries}}
-                    {{{userpicture}}} {{^singleuser}}<a href="view.php?id={{cmid}}&userid={{userid}}"><i class="fa fa-user fa-lg" title="{{#str}}getallentriesofuser, mod_margic{{/str}}"></i></a>{{/singleuser}}
-                {{/canmanageentries}}
-            {{/user}}
+    {{#childentries}}
+        {{> margic/margic_childentry }}
+    {{/childentries}}
+    <div class="d-flex justify-content-between {{#haschildren}}ml-5{{/haschildren}}">
+        <div class="entry {{^annotationmode}}w-100{{/annotationmode}}" style="background: {{entrybgc}}; {{#annotationmode}}width: {{entryareawidth}}% {{/annotationmode}}">
+            <h5>
+                {{^haschildren}}
+                    {{#str}}entry, mod_margic{{/str}}
+                {{/haschildren}}
+                {{#haschildren}}
+                    {{#str}}baseentry, mod_margic{{/str}}
+                {{/haschildren}}
+
+                {{#user}}{{#userpicture}}
+                    {{#str}}from, mod_margic {{/str}}
+                    {{#canmanageentries}}{{{userpicture}}}{{/canmanageentries}}
+                {{/userpicture}}{{/user}}
+                {{#str}}at, mod_margic {{/str}}
+                {{#userdate}}{{timecreated}} ,{{#str}} strftimedatetimeshort, core_langconfig {{/str}}{{/userdate}}
+                 {{#canmanageentries}}{{^singleuser}}<a class="ml-2" href="view.php?id={{cmid}}&userid={{userid}}"><i class="fa fa-user fa-lg" title="{{#str}}getallentriesofuser, mod_margic{{/str}}"></i></a>{{/singleuser}}{{/canmanageentries}}
+                {{^edittimehasended}}{{#caneditentries}}{{#entrycanbeedited}}<a class="ml-2" href="edit.php?id={{cmid}}&entryid={{id}}"><i class="fa fa-pencil fa-lg" title="{{#str}}editthisentry, mod_margic{{/str}}"></i></a>{{/entrycanbeedited}}{{/caneditentries}}{{/edittimehasended}}
+            </h5>
 
             {{#text}}
                 <div id="entry-{{id}}" class="entry originaltext" style="background: {{entrytextbgc}};">
@@ -53,36 +65,9 @@
                 </strong>
                 {{#timemodified}}<strong>{{#str}}lastedited, mod_margic {{/str}}: </strong> {{#userdate}}{{timemodified}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}}</strong><br>{{/timemodified}}
             </div>
-
-            {{#edittimeends}}
-                <div class="editend"><span>
-                    {{^edittimehasended}}{{#str}}editingends, mod_margic, {{#userdate}}{{edittimeends}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}}{{/str}}: {{/edittimehasended}}
-                    {{#edittimehasended}}{{#str}}editingended, mod_margic, {{#userdate}}{{edittimeends}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}}{{/str}}: {{/edittimehasended}}
-                </span></div>
-            {{/edittimeends}}
-
-            {{#needsgrading}}
-                <div class="needsedit"><span>{{needsgrading}}</span></div>
-            {{/needsgrading}}
-
-            {{#needsregrading}}
-                <div class="needsedit"><span>{{needsregrading}}</span></div>
-            {{/needsregrading}}
-
-            {{#canmanageentries}}
-                {{#gradingform}}
-                    <div class="gradingform collapse {{#gradingmode}}show{{/gradingmode}}" style="background: {{entrytextbgc}};">
-                        {{{gradingform}}}
-                    </div>
-                {{/gradingform}}
-            {{/canmanageentries}}
-            {{^canmanageentries}}
-                {{#gradingform}}{{{gradingform}}}{{/gradingform}}
-            {{/canmanageentries}}
         </div>
         {{#annotationmode}}
             <div class="annotationarea annotationarea-{{id}}" style="background: {{entrybgc}}; width: {{annotationareawidth}}%">
-                <h4 class="text-center">{{#str}} annotations, mod_margic {{/str}}</h4>
                 {{#annotations}}
                     <div id="annotation-box-{{id}}" class="annotation-box annotation-box-{{id}}" style="background: {{entrytextbgc}};" tabindex="{{position}}">
                         <div class="errortypeheader">
@@ -125,7 +110,31 @@
             </div>
         {{/annotationmode}}
     </div>
-    {{#childentries}}
-        {{> margic/margic_childentry }}
-    {{/childentries}}
+    <div class="entryfooter mb-2" style="background: {{entrybgc}};">
+        {{#canmanageentries}}
+            {{#gradingform}}
+                <div class="gradingform collapse {{#gradingmode}}show{{/gradingmode}}" style="background: {{entrytextbgc}};">
+                    {{{gradingform}}}
+                </div>
+            {{/gradingform}}
+        {{/canmanageentries}}
+        {{^canmanageentries}}
+            {{#gradingform}}{{{gradingform}}}{{/gradingform}}
+        {{/canmanageentries}}
+
+        {{#edittimeends}}
+            <div class="editend"><span>
+                {{^edittimehasended}}{{#str}}editingends, mod_margic, {{#userdate}}{{edittimeends}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}}{{/str}}{{/edittimehasended}}
+                {{#edittimehasended}}{{#str}}editingended, mod_margic, {{#userdate}}{{edittimeends}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}}{{/str}}{{/edittimehasended}}
+            </span></div>
+        {{/edittimeends}}
+
+        {{#needsgrading}}
+            <div class="needsedit"><span>{{needsgrading}}</span></div>
+        {{/needsgrading}}
+
+        {{#needsregrading}}
+            <div class="needsedit"><span>{{needsregrading}}</span></div>
+        {{/needsregrading}}
+    </div>
 </div>

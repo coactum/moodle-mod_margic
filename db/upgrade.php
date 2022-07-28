@@ -108,9 +108,9 @@ function xmldb_margic_upgrade($oldversion) {
 
     if ($oldversion < 2022072600) {
 
-        // Add the preventry field to the margic_entries table.
+        // Add the baseentry field to the margic_entries table.
         $table = new xmldb_table('margic_entries');
-        $field = new xmldb_field('preventry', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'mailed');
+        $field = new xmldb_field('baseentry', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'mailed');
 
         // Conditionally launch add field.
         if (!$dbman->field_exists($table, $field)) {

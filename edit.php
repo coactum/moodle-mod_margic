@@ -91,8 +91,8 @@ $data = new stdClass();
 $data->id = $cm->id;
 
 // Get the single record specified by firstkey.
-if (isset($margic->get_entries_with_keys()[$entryid])) {
-    $entry = $margic->get_entries_with_keys()[$entryid];
+if ($DB->record_exists('margic_entries', array('margic' => $moduleinstance->id, "id" => $entryid))) {
+    $entry = $DB->get_record('margic_entries', array('margic' => $moduleinstance->id, "id" => $entryid));
 
     // Prevent editing of entries not started by this user.
     if ($entry->userid != $USER->id) {
@@ -150,10 +150,10 @@ if ($form->is_cancelled()) {
     $newentry->format = 1;
 
     if ($fromform->entryid != 0 && $entry != false) { // If existing entry is edited.
-        if (!isset($entry->preventry)) {
-            $newentry->preventry = $fromform->entryid;
+        if (!isset($entry->baseentry)) {
+            $newentry->baseentry = $fromform->entryid;
         } else {
-            $newentry->preventry = $entry->preventry;
+            $newentry->baseentry = $entry->baseentry;
         }
         $newentry->entrycomment = $entry->entrycomment;
         $newentry->teacher = $entry->teacher;

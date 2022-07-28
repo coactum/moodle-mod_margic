@@ -27,8 +27,7 @@
 {{#edittimehasended}}{{#edittimeends}}<div class="alert alert-danger alert-block fade in" role="alert"><button type="button" class="close" data-dismiss="alert">×</button>{{#str}}editingended, mod_margic, {{#userdate}}{{edittimeends}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}}{{/str}}</div>{{/edittimeends}}{{/edittimehasended}}
 {{#edittimenotstarted}}{{#edittimestarts}}<div class="alert alert-warning alert-block fade in" role="alert"><button type="button" class="close" data-dismiss="alert">×</button>{{#str}}editingstarts, mod_margic, {{#userdate}}{{edittimestarts}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}}{{/str}}</div>{{/edittimestarts}}{{/edittimenotstarted}}
 
-{{#canmanageentries}}<h3>{{#str}}entries, mod_margic{{/str}}</h3>{{/canmanageentries}}
-{{^canmanageentries}}<h3>{{#str}}myentries, mod_margic{{/str}}</h3>{{/canmanageentries}}
+<h3>{{#str}}overview, mod_margic{{/str}}</h3>
 
 <div class="pb-2">
     {{#ratingaggregationmode}}{{#entries.0}}
@@ -94,6 +93,19 @@
     </div>
 </form>
 
+<div class="d-flex justify-content-between">
+    <div class="align-self-center entriesheader {{^annotationmode}}w-100{{/annotationmode}}" style="background: {{entrybgc}}; {{#annotationmode}}width: {{entryareawidth}}% {{/annotationmode}}">
+        <h4 class="text-center">
+            {{#canmanageentries}}{{#str}}entries, mod_margic{{/str}}{{/canmanageentries}}
+            {{^canmanageentries}}{{#str}}myentries, mod_margic{{/str}}{{/canmanageentries}}
+        </h4>
+    </div>
+    {{#annotationmode}}
+        <div class="align-self-center annotationsheader" style="background: {{entrybgc}}; width: {{annotationareawidth}}%">
+            <h4 class="text-center">{{#str}} annotations, mod_margic {{/str}}</h4>
+        </div>
+    {{/annotationmode}}
+</div>
 {{/entries.0}}
 
 {{#entries}}

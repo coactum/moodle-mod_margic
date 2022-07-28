@@ -262,6 +262,11 @@ $string['moveback'] = 'Weiter hinten anzeigen';
 $string['prioritychanged'] = 'Reihenfolge geändert';
 $string['prioritynotchanged'] = 'Reihenfolge konnte nicht geändert werden';
 $string['revision'] = 'Überarbeitung';
+$string['baseentry'] = 'Originaleintrag';
+$string['id'] = 'ID';
+$string['overview'] = 'Übersicht';
+$string['at'] = 'am';
+$string['from'] = 'von';
 
 // Privacy.
 $string['privacy:metadata:margic_entries'] = 'Enthält die gespeicherten Benutzereinträge aller Margics.';

@@ -23,11 +23,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later.
  */
 
-#page-mod-margic-view .feedbackbox { /* Used in renderer.php. */
-    width: 85%;
-    border-collapse: separate;
-}
-
 #page-mod-margic-view .entrycontent { /* Used in renderer.php. */
     padding: 3px;
 }
@@ -37,16 +32,19 @@
 }
 
 #page-mod-margic-view .lastedit,
+#page-mod-margic-view .needsedit,
 #page-mod-margic-view .editend {
-    font-size: 0.7em;
     margin: 5px;
     text-align: center;
+}
+
+#page-mod-margic-view .lastedit {
+    font-size: 0.7em;
 }
 
 #page-mod-margic-view .needsedit,
 #page-mod-margic-view .editend {
     color: darkred;
-    text-align: center;
     font-weight: bold;
 }
 
@@ -61,21 +59,13 @@
     font-weight: bold;
 }
 
-#page-mod-margic-view .time { /* Used in renderer.php about line 192. */
-    font-size: 0.7em;
-    font-style: italic;
-}
-
 #page-mod-margic-view .grade { /* Used in renderer.php about line 200. */
     font-weight: bold;
     font-style: italic;
     text-align: right;
 }
 
-#page-mod-margic-view .entry {
-    text-align: left;
-    font-size: 1em;
-    padding: 10px;
+#page-mod-margic-view .entriesheader {
     margin-bottom: 10px;
     border: 1px solid rgba(0, 0, 0, .125);
     border-radius: 5px;
@@ -83,24 +73,28 @@
     -moz-border-radius: 5px;
 }
 
-#page-mod-margic-view .feedbackbox .left,
-#page-mod-margic-view .feedbackbox .entryheader { /* Used in renderer.php about line 190. */
-    background-color: #ddd;
+#page-mod-margic-view .entriesheader h4 {
+    margin-bottom: 5px;
+    margin-top: 5px;
 }
 
-#page-mod-margic-view .feedbackbox {
-    -moz-border-radius-bottomleft: 15px;
-    -moz-border-radius-bottomright: 15px;
-    border-spacing: 0;
-    margin: 0 auto;
+#page-mod-margic-view .entryfooter {
+    width: 100%;
+    border: 1px solid rgba(0, 0, 0, .125);
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
 }
 
-#page-mod-margic-view .feedbackbox .side {
-    -moz-border-radius-bottomleft: 15px;
-}
-
-#page-mod-margic-view .feedbackbox .entrycontent {
-    -moz-border-radius-bottomright: 15px;
+#page-mod-margic-view .entry {
+    text-align: left;
+    font-size: 1em;
+    padding: 10px;
+    padding-bottom: 0px;
+    border: 1px solid rgba(0, 0, 0, .125);
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
 }
 
 #page-mod-margic-view .gradingform,
@@ -108,20 +102,36 @@
     padding: 10px;
     text-align: left;
     font-size: 1em;
-    margin-top: 5px;
-    margin-bottom: 5px;
+    margin: 10px;
     border: 1px solid rgba(0, 0, 0, .125);
     border-radius: 5px;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
 }
 
+#page-mod-margic-view .ratingform h5 {
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid rgba(0,0,0,.125);
+}
+
+#page-mod-margic-view .annotationsheader {
+    margin-bottom: 10px;
+    border: 1px solid rgba(0, 0, 0, .125);
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+}
+
+#page-mod-margic-view .annotationsheader h4 {
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+
 #page-mod-margic-view .annotationarea {
     text-align: left;
     font-size: 1em;
     padding: 10px;
-    margin-bottom: 10px;
-    margin-left: 10px;
     border: 1px solid rgba(0, 0, 0, .125);
     border-radius: 5px;
     -webkit-border-radius: 5px;
@@ -205,7 +215,6 @@
 }
 
 #page-mod-margic-view .childentrywrapper {
-    margin-top: -10px;
     margin-left: 20px;
 }
 
