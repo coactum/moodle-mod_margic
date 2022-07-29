@@ -273,79 +273,79 @@ class margic {
         $strmanager = get_string_manager();
 
         // Prepare entries.
-        foreach ($this->entries as $i => $entry) {
-            $this->entries[$i]->user = $DB->get_record('user', array('id' => $entry->userid));
+        // foreach ($this->entries as $i => $entry) {
+        //     $this->entries[$i]->user = $DB->get_record('user', array('id' => $entry->userid));
 
-            if (!$currentgroups || ($allowedusers && in_array($this->entries[$i]->user, $allowedusers))) {
-                // Get child entries for entry.
-                $this->entries[$i]->childentries = $DB->get_records('margic_entries', array('margic' => $this->instance->id, 'baseentry' => $entry->id), 'timecreated DESC');
+        //     if (!$currentgroups || ($allowedusers && in_array($this->entries[$i]->user, $allowedusers))) {
+        //         // Get child entries for entry.
+        //         $this->entries[$i]->childentries = $DB->get_records('margic_entries', array('margic' => $this->instance->id, 'baseentry' => $entry->id), 'timecreated DESC');
 
-                $revisionnr = count($this->entries[$i]->childentries);
-                foreach ($this->entries[$i]->childentries as $ci => $childentry) {
-                    $this->entries[$i]->childentries[$ci] = $this->prepare_entry_annotations($childentry, $strmanager);
-                    $this->entries[$i]->childentries[$ci]->stats = entrystats::get_entry_stats($childentry->text, $childentry->timecreated);
-                    $this->entries[$i]->childentries[$ci]->revision = $revisionnr;
+        //         $revisionnr = count($this->entries[$i]->childentries);
+        //         foreach ($this->entries[$i]->childentries as $ci => $childentry) {
+        //             $this->entries[$i]->childentries[$ci] = $this->prepare_entry_annotations($childentry, $strmanager);
+        //             $this->entries[$i]->childentries[$ci]->stats = entrystats::get_entry_stats($childentry->text, $childentry->timecreated);
+        //             $this->entries[$i]->childentries[$ci]->revision = $revisionnr;
 
-                    if ($ci == array_key_first($this->entries[$i]->childentries)) {
-                        $this->entries[$i]->childentries[$ci]->newestentry = true;
-                        if ($viewinguserid == $childentry->userid) {
-                            $this->entries[$i]->childentries[$ci]->entrycanbeedited = true;
-                        } else {
-                            $this->entries[$i]->childentries[$ci]->entrycanbeedited = false;
-                        }
-                    } else {
-                        $this->entries[$i]->childentries[$ci]->entrycanbeedited = false;
-                        $this->entries[$i]->childentries[$ci]->newestentry = false;
-                    }
+        //             if ($ci == array_key_first($this->entries[$i]->childentries)) {
+        //                 $this->entries[$i]->childentries[$ci]->newestentry = true;
+        //                 if ($viewinguserid == $childentry->userid) {
+        //                     $this->entries[$i]->childentries[$ci]->entrycanbeedited = true;
+        //                 } else {
+        //                     $this->entries[$i]->childentries[$ci]->entrycanbeedited = false;
+        //                 }
+        //             } else {
+        //                 $this->entries[$i]->childentries[$ci]->entrycanbeedited = false;
+        //                 $this->entries[$i]->childentries[$ci]->newestentry = false;
+        //             }
 
-                    if ($viewinguserid == $entry->userid && empty($this->entries[$i]->childentries)) {
-                        $this->entries[$i]->entrycanbeedited = true;
-                    } else {
-                        $this->entries[$i]->entrycanbeedited = false;
-                    }
+        //             if ($viewinguserid == $entry->userid && empty($this->entries[$i]->childentries)) {
+        //                 $this->entries[$i]->entrycanbeedited = true;
+        //             } else {
+        //                 $this->entries[$i]->entrycanbeedited = false;
+        //             }
 
-                    $revisionnr -= 1;
-                }
+        //             $revisionnr -= 1;
+        //         }
 
-                $this->entries[$i]->childentries = array_values($this->entries[$i]->childentries);
+        //         $this->entries[$i]->childentries = array_values($this->entries[$i]->childentries);
 
-                if (empty($this->entries[$i]->childentries)) {
-                    $this->entries[$i]->haschildren = false;
-                } else {
-                    $this->entries[$i]->haschildren = true;
-                }
+        //         if (empty($this->entries[$i]->childentries)) {
+        //             $this->entries[$i]->haschildren = false;
+        //         } else {
+        //             $this->entries[$i]->haschildren = true;
+        //         }
 
-                // Get entry stats.
-                $this->entries[$i]->stats = entrystats::get_entry_stats($entry->text, $entry->timecreated);
+        //         // Get entry stats.
+        //         $this->entries[$i]->stats = entrystats::get_entry_stats($entry->text, $entry->timecreated);
 
-                // Check entry grading.
-                if (!empty($entry->timecreated) && empty($entry->timemarked)) {
-                    $this->entries[$i]->needsgrading = $gradingstr;
-                } else if (!empty($entry->timemodified) && !empty($entry->timemarked) && $entry->timemodified > $entry->timemarked) {
-                    $this->entries[$i]->needsregrading = $regradingstr;
-                } else {
-                    $this->entries[$i]->needsregrading = false;
-                }
+        //         // Check entry grading.
+        //         if (!empty($entry->timecreated) && empty($entry->timemarked)) {
+        //             $this->entries[$i]->needsgrading = $gradingstr;
+        //         } else if (!empty($entry->timemodified) && !empty($entry->timemarked) && $entry->timemodified > $entry->timemarked) {
+        //             $this->entries[$i]->needsregrading = $regradingstr;
+        //         } else {
+        //             $this->entries[$i]->needsregrading = false;
+        //         }
 
-                // Check if entry can be edited.
-                if ($viewinguserid == $entry->userid && empty($this->entries[$i]->childentries)) {
-                    $this->entries[$i]->entrycanbeedited = true;
-                } else {
-                    $this->entries[$i]->entrycanbeedited = false;
-                }
+        //         // Check if entry can be edited.
+        //         if ($viewinguserid == $entry->userid && empty($this->entries[$i]->childentries)) {
+        //             $this->entries[$i]->entrycanbeedited = true;
+        //         } else {
+        //             $this->entries[$i]->entrycanbeedited = false;
+        //         }
 
-                // Prepare entry annotations.
-                $this->entries[$i] = $this->prepare_entry_annotations($entry, $strmanager);
-            } else {
-                unset($this->entries[$i]);
-            }
+        //         // Prepare entry annotations.
+        //         $this->entries[$i] = $this->prepare_entry_annotations($entry, $strmanager);
+        //     } else {
+        //         unset($this->entries[$i]);
+        //     }
 
             // Replace base entry with last child entry for displaying last child entry on top
             // if (!empty($this->entries[$i]->childentries)) {
             //     $baseentry = $this->entries[$i];
             //     $this->entries[$i] = $this->entries[$i]->childentries[array_key_last($this->entries[$i]->childentries)];
             // }
-        }
+        //}
     }
 
     /**
@@ -422,6 +422,21 @@ class margic {
         global $DB, $USER;
 
         return $this->annotations;
+    }
+
+    /**
+     * Returns the width of the annotation area.
+     *
+     * @return int annotationareawidth
+     */
+    public function get_annotationarea_width() {
+        if (isset($this->instance->annotationareawidth)) {
+            $annotationareawidth = $this->instance->annotationareawidth;
+        } else {
+            $annotationareawidth = get_config('mod_margic', 'annotationareawidth');
+        }
+
+        return $annotationareawidth;
     }
 
     /**
@@ -598,8 +613,89 @@ class margic {
         }
     }
 
-    private function prepare_entry_annotations($entry, $strmanager) {
-        global $DB, $USER;
+    public function prepare_entry($entry, $strmanager, $currentgroups, $allowedusers, $gradingstr, $regradingstr, $readonly, $grades, $canmanageentries, $annotationmode) {
+        global $DB, $USER, $CFG, $OUTPUT;
+
+        $entry->user = $DB->get_record('user', array('id' => $entry->userid));
+
+        if (!$currentgroups || ($allowedusers && in_array($entry->user, $allowedusers))) {
+            // Get child entries for entry.
+            $entry->childentries = $DB->get_records('margic_entries', array('margic' => $this->instance->id, 'baseentry' => $entry->id), 'timecreated DESC');
+
+            $revisionnr = count($entry->childentries);
+            foreach ($entry->childentries as $ci => $childentry) {
+                $entry->childentries[$ci] = $this->prepare_entry_annotations($childentry, $strmanager, $annotationmode, $readonly);
+                $entry->childentries[$ci]->stats = entrystats::get_entry_stats($childentry->text, $childentry->timecreated);
+                $entry->childentries[$ci]->revision = $revisionnr;
+
+                if ($ci == array_key_first($entry->childentries)) {
+                    $entry->childentries[$ci]->newestentry = true;
+                    if ($USER->id == $childentry->userid && !$readonly) {
+                        $entry->childentries[$ci]->entrycanbeedited = true;
+                    } else {
+                        $entry->childentries[$ci]->entrycanbeedited = false;
+                    }
+                } else {
+                    $entry->childentries[$ci]->entrycanbeedited = false;
+                    $entry->childentries[$ci]->newestentry = false;
+                }
+
+                if ($USER->id == $entry->userid && empty($entry->childentries) && !$readonly) {
+                    $entry->entrycanbeedited = true;
+                } else {
+                    $entry->entrycanbeedited = false;
+                }
+
+                $revisionnr -= 1;
+            }
+
+            $entry->childentries = array_values($entry->childentries);
+
+            if (empty($entry->childentries)) {
+                $entry->haschildren = false;
+            } else {
+                $entry->haschildren = true;
+            }
+
+            // Get entry stats.
+            $entry->stats = entrystats::get_entry_stats($entry->text, $entry->timecreated);
+
+            // Check entry grading.
+            if (!empty($entry->timecreated) && empty($entry->timemarked)) {
+                $entry->needsgrading = $gradingstr;
+            } else if (!empty($entry->timemodified) && !empty($entry->timemarked) && $entry->timemodified > $entry->timemarked) {
+                $entry->needsregrading = $regradingstr;
+            } else {
+                $entry->needsregrading = false;
+            }
+
+            // Check if entry can be edited.
+            if ($USER->id == $entry->userid && empty($entry->childentries)) {
+                $entry->entrycanbeedited = true;
+            } else {
+                $entry->entrycanbeedited = false;
+            }
+
+            require_once($CFG->dirroot . '/mod/margic/annotation_form.php');
+            require_once($CFG->dirroot . '/mod/margic/classes/local/results.php');
+
+            $entry->user->userpicture = $OUTPUT->user_picture($entry->user,
+            array('courseid' => $this->course->id, 'link' => true, 'includefullname' => true, 'size' => 25));
+
+            // Add feedback area to entry.
+            $entry->gradingform = results::margic_return_feedback_area_for_entry($this->cm->id, $this->context, $this->course, $this->instance,
+            $entry, $grades, $canmanageentries);
+
+            $entry = $this->prepare_entry_annotations($entry, $strmanager, $annotationmode, $readonly);
+
+            return $entry;
+        } else {
+            return false;
+        }
+    }
+
+    private function prepare_entry_annotations($entry, $strmanager, $annotationmode = false, $readonly = false) {
+        global $DB, $USER, $CFG, $OUTPUT;
 
         // Index entry for annotation sorting.
         $position = 0;
@@ -647,6 +743,16 @@ class margic {
                 $entry->annotations[$key]->canbeedited = false;
             }
 
+            if ($annotationmode) {
+                // Add annotater images to annotations.
+                $annotater = $DB->get_record('user', array('id' => $annotation->userid));
+                $annotaterimage = $OUTPUT->user_picture($annotater, array('courseid' => $this->course->id, 'link' => true, 'includefullname' => true, 'size' => 20));
+                $entry->annotations[$key]->userpicturestr = $annotaterimage;
+
+            } else {
+                $entry->annotationform = false;
+            }
+
             // Get position of startcontainer.
             $xpath = new DOMXpath($doc);
             $nodelist = $xpath->query('/' . $annotation->startcontainer);
@@ -681,6 +787,18 @@ class margic {
 
         // Reset nodepositions with empty array for next entry.
         $this->nodepositions = array();
+
+        if ($annotationmode) {
+            // Add annotation form.
+            if (!$readonly) {
+                require_once($CFG->dirroot . '/mod/margic/annotation_form.php');
+                $mform = new annotation_form(new moodle_url('/mod/margic/annotations.php', array('id' => $this->cm->id)), array('types' => $this->get_errortypes_for_form()));
+                // Set default data.
+                $mform->set_data(array('id' => $this->cm->id, 'entry' => $entry->id));
+
+                $entry->annotationform = $mform->render();
+            }
+        }
 
         return $entry;
     }

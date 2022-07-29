@@ -25,6 +25,7 @@
 use mod_margic\local\results;
 use \mod_margic\event\invalid_access_attempt;
 use core\output\notification;
+use mod_margic\output\margic_entry;
 
 require_once("../../config.php");
 require_once('./edit_form.php');
@@ -134,6 +135,10 @@ if ($DB->record_exists('margic_entries', array('margic' => $moduleinstance->id, 
     $data->timecreated = $entry->timecreated;
     $data->text = $entry->text;
     $data->textformat = $entry->format;
+
+    $PAGE->requires->js_call_amd('mod_margic/annotations', 'init',
+        array('annotations' => $margic->get_annotations(),
+            'canmakeannotations' => false));
 } else {
     $entry = false;
 
@@ -175,12 +180,13 @@ if ($form->is_cancelled()) {
             $newentry->baseentry = $fromform->entryid;
         } else {
             $newentry->baseentry = $entry->baseentry;
-
-            // Update timemodified for base entry.
-            $baseentry = $DB->get_record('margic_entries', array('margic' => $moduleinstance->id, "id" => $entry->baseentry));
-            $baseentry->timemodified = $fromform->timecreated;
-            $DB->update_record('margic_entries', $baseentry);
         }
+
+        // Update timemodified for base entry.
+        $baseentry = $DB->get_record('margic_entries', array('margic' => $moduleinstance->id, "id" => $newentry->baseentry));
+        $baseentry->timemodified = $fromform->timecreated;
+        $DB->update_record('margic_entries', $baseentry);
+
         $newentry->entrycomment = $entry->entrycomment;
     }
 
@@ -232,6 +238,57 @@ $intro = format_module_intro('margic', $moduleinstance, $cm->id);
 echo $OUTPUT->box($intro);
 
 echo $OUTPUT->heading($title, 3);
+
+// Calculate if edit time has started.
+$timenow = time();
+if (!$moduleinstance->timeopen) {
+    $edittimenotstarted = false;
+    $edittimestarts = false;
+} else if ($moduleinstance->timeopen && $timenow >= $moduleinstance->timeopen) {
+    $edittimenotstarted = false;
+    $edittimestarts = $moduleinstance->timeopen;
+} else if ($moduleinstance->timeopen && $timenow < $moduleinstance->timeopen) {
+    $edittimenotstarted = true;
+    $edittimestarts = $moduleinstance->timeopen;
+}
+
+// Calculate if edit time has ended.
+if (!$moduleinstance->timeclose) {
+    $edittimehasended = false;
+    $edittimeends = false;
+} else if ($moduleinstance->timeclose && $timenow < $moduleinstance->timeclose) {
+    $edittimehasended = false;
+    $edittimeends = $moduleinstance->timeclose;
+} else if ($moduleinstance->timeclose && $timenow >= $moduleinstance->timeclose) {
+    $edittimehasended = true;
+    $edittimeends = $moduleinstance->timeclose;
+}
+
+$grades = make_grades_menu($moduleinstance->scale); // For select in grading_form.
+
+$currentgroups = groups_get_activity_group($cm, true);    // Get a list of the currently allowed groups for this course.
+
+if ($currentgroups) {
+    $allowedusers = get_users_by_capability($context, 'mod/margic:addentries', '', $sort = 'lastname ASC, firstname ASC', '', '', $currentgroups);
+} else {
+    $allowedusers = true;
+}
+
+$strmanager = get_string_manager();
+
+$gradingstr = get_string('needsgrading', 'margic');
+$regradingstr = get_string('needsregrading', 'margic');
+
+if ($entry->baseentry) { // If edited entry is child entry get base entry for rendering.
+    $entry = $DB->get_record('margic_entries', array('margic' => $moduleinstance->id, "id" => $entry->baseentry));
+}
+
+$page = new margic_entry($margic, $cm, $context, $moduleinstance, $entry, $margic->get_annotationarea_width(),
+    $moduleinstance->editall, $edittimestarts, $edittimenotstarted, $edittimeends, $edittimehasended,
+    has_capability('mod/margic:manageentries', $context), $course, false, true, false, false, true, $grades,
+    $currentgroups, $allowedusers, $strmanager, $gradingstr, $regradingstr);
+
+echo $OUTPUT->render($page);
 
 // Otherwise fill and print the form.
 $form->display();

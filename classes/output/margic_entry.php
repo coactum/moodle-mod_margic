@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Class containing data for margic main page
+ * Class containing data for a margic entry
  *
  * @package     mod_margic
  * @copyright   2022 coactum GmbH
@@ -32,13 +32,13 @@ use templatable;
 use stdClass;
 
 /**
- * Class containing data for margic_view
+ * Class containing data for a margic entry
  *
  * @package     mod_margic
  * @copyright   2022 coactum GmbH
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class margic_view implements renderable, templatable {
+class margic_entry implements renderable, templatable {
 
     /** @var object */
     protected $margic;
@@ -51,9 +51,7 @@ class margic_view implements renderable, templatable {
     /** @var object */
     protected $moduleinstance;
     /** @var object */
-    protected $entries;
-    /** @var string */
-    protected $sortmode;
+    protected $entry;
     /** @var string */
     protected $entrybgc;
     /** @var string */
@@ -74,38 +72,37 @@ class margic_view implements renderable, templatable {
     protected $edittimehasended;
     /** @var bool */
     protected $canmanageentries;
-    /** @var string */
-    protected $sesskey;
-    /** @var string */
-    protected $currentuserrating;
-    /** @var int */
-    protected $ratingaggregationmode;
     /** @var int */
     protected $course;
     /** @var int */
     protected $singleuser;
-    /** @var int */
-    protected $pagecountoptions;
-    /** @var array */
-    protected $pagebar;
-    /** @var int */
-    protected $entriescount;
     /** @var bool */
     protected $annotationmode;
     /** @var bool */
     protected $canmakeannotations;
     /** @var object */
     protected $errortypes;
+    /** @var bool */
+    protected $readonly;
+    /** @var object */
+    protected $grades;
+    /** @var object */
+    protected $currentgroups;
+    /** @var object */
+    protected $allowedusers;
+    /** @var object */
+    protected $strmanager;
+    /** @var string */
+    protected $gradingstr;
+    /** @var string */
+    protected $regradingstr;
     /**
      * Construct this renderable.
      * @param object $margic The margic obj
      * @param object $cm The course module
      * @param object $context The context
      * @param array $moduleinstance The moduleinstance for creating grading form
-     * @param array $entries The accessible entries for the margic instance
-     * @param string $sortmode Sort mode for the margic instance
-     * @param string $entrybgc Background color of the entries
-     * @param string $entrytextbgc Background color of the texts in the entries
+     * @param object $entry The entry
      * @param int $entryareawidth Width of the entry area
      * @param int $annotationareawidth Width of the annotation area
      * @param bool $caneditentries If own entries can be edited
@@ -114,32 +111,30 @@ class margic_view implements renderable, templatable {
      * @param int $edittimeends Time when entries cant be edited anymore
      * @param bool $edittimehasended If edit time has ended
      * @param bool $canmanageentries If entries can be managed
-     * @param string $sesskey The session key
-     * @param string $currentuserrating The rating of the current user viewing the page
-     * @param string $ratingaggregationmode The mode of the aggregated grades
      * @param int $course The course id for getting the user pictures
      * @param int $singleuser If only entries of one user are displayed
-     * @param array $pagecountoptions Options for the pagecount select
-     * @param array $pagebar Array with the bpages for the pagebar
-     * @param int $entriescount The amount of all entries
      * @param bool $annotationmode If annotation mode is set
      * @param bool $canmakeannotations If user can make annotations
      * @param array $errortypes Array with annotation types for form
+     * @param bool $readonly If entry and annotations should only be readable
+     * @param object $grades The grades
+     * @param object $currentgroups The current groups
+     * @param object $allowedusers The allowed users
+     * @param object $strmanager The strmanager
+     * @param string $gradingstr The gradingstr
+     * @param string $regradingstr The regradingstr
      */
-    public function __construct($margic, $cm, $context, $moduleinstance, $entries, $sortmode, $entrybgc, $entrytextbgc, $annotationareawidth,
-        $caneditentries, $edittimestarts, $edittimenotstarted, $edittimeends, $edittimehasended, $canmanageentries, $sesskey,
-        $currentuserrating, $ratingaggregationmode, $course, $singleuser, $pagecountoptions, $pagebar, $entriescount, $annotationmode,
-        $canmakeannotations, $errortypes) {
+    public function __construct($margic, $cm, $context, $moduleinstance, $entry, $annotationareawidth,
+        $caneditentries, $edittimestarts, $edittimenotstarted, $edittimeends, $edittimehasended, $canmanageentries,
+        $course, $singleuser, $annotationmode, $canmakeannotations, $errortypes, $readonly, $grades, $currentgroups, $allowedusers,
+        $strmanager, $gradingstr, $regradingstr) {
 
         $this->margic = $margic;
         $this->cm = $cm;
         $this->cmid = $this->cm->id;
         $this->context = $context;
         $this->moduleinstance = $moduleinstance;
-        $this->entries = $entries;
-        $this->sortmode = $sortmode;
-        $this->entrybgc = $entrybgc;
-        $this->entrytextbgc = $entrytextbgc;
+        $this->entry = $entry;
         $this->annotationareawidth = $annotationareawidth;
         $this->entryareawidth = 100 - $annotationareawidth;
         $this->caneditentries = $caneditentries;
@@ -148,17 +143,18 @@ class margic_view implements renderable, templatable {
         $this->edittimeends = $edittimeends;
         $this->edittimehasended = $edittimehasended;
         $this->canmanageentries = $canmanageentries;
-        $this->sesskey = $sesskey;
-        $this->currentuserrating = $currentuserrating;
-        $this->ratingaggregationmode = $ratingaggregationmode;
         $this->course = $course;
         $this->singleuser = $singleuser;
-        $this->pagecountoptions = $pagecountoptions;
-        $this->pagebar = $pagebar;
-        $this->entriescount = $entriescount;
         $this->annotationmode = $annotationmode;
         $this->canmakeannotations = $canmakeannotations;
         $this->errortypes = $errortypes;
+        $this->readonly = $readonly;
+        $this->grades = $grades;
+        $this->currentgroups = $currentgroups;
+        $this->allowedusers = $allowedusers;
+        $this->strmanager = $strmanager;
+        $this->gradingstr = $gradingstr;
+        $this->regradingstr = $regradingstr;
     }
 
     /**
@@ -171,43 +167,9 @@ class margic_view implements renderable, templatable {
         $data = new stdClass();
         $data->cmid = $this->cmid;
 
-        global $OUTPUT, $DB, $USER, $CFG;
+        $data->entry = $this->margic->prepare_entry($this->entry, $this->strmanager, $this->currentgroups, $this->allowedusers,
+            $this->gradingstr, $this->regradingstr, $this->readonly, $this->grades, $this->canmanageentries, $this->annotationmode);
 
-        if ($this->entries) {
-
-            require_once($CFG->dirroot . '/mod/margic/annotation_form.php');
-            require_once($CFG->dirroot . '/mod/margic/classes/local/results.php');
-
-            $grades = make_grades_menu($this->moduleinstance->scale); // For select in grading_form.
-            $currentgroups = groups_get_activity_group($this->cm, true);    // Get a list of the currently allowed groups for this course.
-            if ($currentgroups) {
-                $allowedusers = get_users_by_capability($this->context, 'mod/margic:addentries', '', $sort = 'lastname ASC, firstname ASC', '', '', $currentgroups);
-            } else {
-                $allowedusers = true;
-            }
-
-            $strmanager = get_string_manager();
-
-            $gradingstr = get_string('needsgrading', 'margic');
-            $regradingstr = get_string('needsregrading', 'margic');
-
-            $readonly = false;
-
-            foreach ($this->entries as $key => $entry) {
-                if ($entry) { // Set user picture for teachers.
-                    $this->entries[$key]->entry = $OUTPUT->render(new margic_entry($this->margic, $this->cm, $this->context, $this->moduleinstance,
-                        $entry, $this->annotationareawidth, $this->moduleinstance->editall, $this->edittimestarts, $this->edittimenotstarted,
-                        $this->edittimeends, $this->edittimehasended, $this->canmanageentries, $this->course, $this->singleuser, $this->annotationmode,
-                        $this->canmakeannotations, $this->errortypes, $readonly, $grades, $currentgroups, $allowedusers, $strmanager, $gradingstr, $regradingstr));
-                }
-            }
-        }
-
-
-        $data->entries = $this->entries;
-        $data->sortmode = $this->sortmode;
-        $data->entrybgc = $this->entrybgc;
-        $data->entrytextbgc = $this->entrytextbgc;
         $data->entryareawidth = $this->entryareawidth;
         $data->annotationareawidth = $this->annotationareawidth;
         $data->caneditentries = $this->caneditentries;
@@ -216,16 +178,13 @@ class margic_view implements renderable, templatable {
         $data->edittimeends = $this->edittimeends;
         $data->edittimehasended = $this->edittimehasended;
         $data->canmanageentries = $this->canmanageentries;
-        $data->sesskey = $this->sesskey;
-        $data->currentuserrating = $this->currentuserrating;
-        $data->ratingaggregationmode = $this->ratingaggregationmode;
         $data->singleuser = $this->singleuser;
-        $data->pagecountoptions = $this->pagecountoptions;
-        $data->pagebar = $this->pagebar;
-        $data->entriescount = $this->entriescount;
         $data->annotationmode = $this->annotationmode;
         $data->canmakeannotations = $this->canmakeannotations;
-
+        $data->entrybgc = get_config('mod_margic', 'entrybgc');
+        $data->entrytextbgc = get_config('mod_margic', 'entrytextbgc');
+        $data->errortypes = $this->errortypes;
+        $data->readonly = $this->readonly;
         return $data;
     }
 }

@@ -19,122 +19,190 @@
     @template margic/margic_entry
 
     Template for single entry.
+
+    Context variables required for this template:
+    *
+
+    Example context (json):
+    {
+        "cmid": 145,
+        "childentries": [
+            {
+                "id": 1,
+                ...
+            },
+            {
+                "id": 2,
+                ...
+            }
+        ],
+        "haschildren": true,
+        "annotationmode": false,
+        "entrybgc": FFFFFF,
+        "entryareawidth" 40%,
+        "canmanageentries": false,
+        "edittimeends": false,
+        "edittimehasended": false,
+        "caneditentries": true,
+        "entrycanbeedited": true
+        "user": ...
+        "userpicture": ...
+        "singleuser": false,
+        "timecreated": 1658849477,
+        "timemodified": 0,
+        "needsgrading": true,
+        "needsregrading": false,
+        "stats": {
+            "words": 10,
+            "chars": 20,
+            "spaces": 4,
+            "datediff": [
+                {
+                    "d": 10,
+                    "chars": 20,
+                    "spaces": 4,
+                    "datediff":
+                },
+                {
+                    "name": "Quiz 1",
+                    "instructorchoiceacceptgrades": 1,
+                    "grade_modgrade_point": 20.5
+                }
+            ],
+        }
+        ],
+        "gradingform": "<form>string with grading form</form>",
+        "annotations": [
+            {
+                "id": 1,
+                ...
+            },
+            {
+                "id": 2,
+                ...
+            }
+        ],
+    }
 }}
 
 {{#js}}
 {{/js}}
 
-<div class="wrapper">
+{{#entry}}
+    <div class="wrapper">
 
-    {{#childentries}}
-        {{> margic/margic_childentry }}
-    {{/childentries}}
-    <div class="d-flex justify-content-between {{#haschildren}}ml-5{{/haschildren}}">
-        <div class="entry {{^annotationmode}}w-100{{/annotationmode}}" style="background: {{entrybgc}}; {{#annotationmode}}width: {{entryareawidth}}% {{/annotationmode}}">
-            <h5>
-                {{^haschildren}}
-                    {{#str}}entry, mod_margic{{/str}}
-                {{/haschildren}}
-                {{#haschildren}}
-                    {{#str}}baseentry, mod_margic{{/str}}
-                {{/haschildren}}
+        {{#childentries}}
+            {{> margic/margic_childentry }}
+        {{/childentries}}
+        <div class="d-flex justify-content-between {{#haschildren}}ml-5{{/haschildren}}">
+            <div class="entry {{^annotationmode}}w-100{{/annotationmode}}" style="background: {{entrybgc}}; {{#annotationmode}}width: {{entryareawidth}}% {{/annotationmode}}">
+                <h5>
+                    {{^haschildren}}
+                        {{#str}}entry, mod_margic{{/str}}
+                    {{/haschildren}}
+                    {{#haschildren}}
+                        {{#str}}baseentry, mod_margic{{/str}}
+                    {{/haschildren}}
 
-                {{#user}}{{#userpicture}}
-                    {{#str}}from, mod_margic {{/str}}
-                    {{#canmanageentries}}{{{userpicture}}}{{/canmanageentries}}
-                {{/userpicture}}{{/user}}
-                {{#str}}at, mod_margic {{/str}}
-                {{#userdate}}{{timecreated}} ,{{#str}} strftimedatetimeshort, core_langconfig {{/str}}{{/userdate}}
-                 {{#canmanageentries}}{{^singleuser}}<a class="ml-2" href="view.php?id={{cmid}}&userid={{userid}}"><i class="fa fa-user fa-lg" title="{{#str}}getallentriesofuser, mod_margic{{/str}}"></i></a>{{/singleuser}}{{/canmanageentries}}
-                {{^edittimehasended}}{{#caneditentries}}{{#entrycanbeedited}}<a class="ml-2" href="edit.php?id={{cmid}}&entryid={{id}}"><i class="fa fa-pencil fa-lg" title="{{#str}}editthisentry, mod_margic{{/str}}"></i></a>{{/entrycanbeedited}}{{/caneditentries}}{{/edittimehasended}}
-            </h5>
+                    {{#user}}{{#userpicture}}
+                        {{#str}}from, mod_margic {{/str}}
+                        {{#canmanageentries}}{{{userpicture}}}{{/canmanageentries}}
+                    {{/userpicture}}{{/user}}
+                    {{#str}}at, mod_margic {{/str}}
+                    {{#userdate}}{{timecreated}} ,{{#str}} strftimedatetimeshort, core_langconfig {{/str}}{{/userdate}}
+                    {{^readonly}}
+                        {{#canmanageentries}}{{^singleuser}}<a class="ml-2" href="view.php?id={{cmid}}&userid={{userid}}"><i class="fa fa-user fa-lg" title="{{#str}}getallentriesofuser, mod_margic{{/str}}"></i></a>{{/singleuser}}{{/canmanageentries}}
+                        {{^edittimehasended}}{{#caneditentries}}{{#entrycanbeedited}}<a class="ml-2" href="edit.php?id={{cmid}}&entryid={{id}}"><i class="fa fa-pencil fa-lg" title="{{#str}}editthisentry, mod_margic{{/str}}"></i></a>{{/entrycanbeedited}}{{/caneditentries}}{{/edittimehasended}}
+                    {{/readonly}}
+                </h5>
 
-            {{#text}}
-                <div id="entry-{{id}}" class="entry originaltext" style="background: {{entrytextbgc}};">
-                    {{{text}}}
+                {{#text}}
+                    <div id="entry-{{id}}" class="entry originaltext" style="background: {{entrytextbgc}};">
+                        {{{text}}}
+                    </div>
+                {{/text}}
+                {{^text}}<p class="text-center"><strong>{{#str}}blankentry, mod_margic{{/str}}</strong></p>{{/text}}
+                <div class="lastedit">
+                    {{#stats}}
+                        <strong>{{#str}}details, mod_margic{{/str}}:</strong> {{#str}}numwordsraw, mod_margic, { "wordscount": {{words}}, "charscount": {{chars}}, "spacescount": {{spaces}} } {{/str}}
+                        <br>
+                    {{/stats}}
+                    <strong>{{#str}}timecreated, mod_margic{{/str}}: </strong> {{#userdate}}{{timecreated}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}}
+                        {{#stats}}{{#datediff}}({{#str}}created, mod_margic, {"years": {{datediff.y}}, "month": {{datediff.m}}, "days": {{datediff.d}}, "hours": {{datediff.h}} } {{/str}})<br>{{/datediff}}{{/stats}}
+                    </strong>
+                    {{#timemodified}}<strong>{{#str}}lastedited, mod_margic {{/str}}: </strong> {{#userdate}}{{timemodified}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}}</strong><br>{{/timemodified}}
                 </div>
-            {{/text}}
-            {{^text}}<p class="text-center"><strong>{{#str}}blankentry, mod_margic{{/str}}</strong></p>{{/text}}
-            <div class="lastedit">
-                {{#stats}}
-                    <strong>{{#str}}details, mod_margic{{/str}}:</strong> {{#str}}numwordsraw, mod_margic, { "wordscount": {{words}}, "charscount": {{chars}}, "spacescount": {{spaces}} } {{/str}}
-                    <br>
-                {{/stats}}
-                <strong>{{#str}}timecreated, mod_margic{{/str}}: </strong> {{#userdate}}{{timecreated}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}}
-                    {{#stats}}{{#datediff}}({{#str}}created, mod_margic, {"years": {{datediff.y}}, "month": {{datediff.m}}, "days": {{datediff.d}}, "hours": {{datediff.h}} } {{/str}})<br>{{/datediff}}{{/stats}}
-                </strong>
-                {{#timemodified}}<strong>{{#str}}lastedited, mod_margic {{/str}}: </strong> {{#userdate}}{{timemodified}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}}</strong><br>{{/timemodified}}
             </div>
-        </div>
-        {{#annotationmode}}
-            <div class="annotationarea annotationarea-{{id}}" style="background: {{entrybgc}}; width: {{annotationareawidth}}%">
-                {{#annotations}}
-                    <div id="annotation-box-{{id}}" class="annotation-box annotation-box-{{id}}" style="background: {{entrytextbgc}};" tabindex="{{position}}">
-                        <div class="errortypeheader">
-                            <span style="border-left: 10px solid #{{color}}; padding-left: 5px;"> </span>
-                            <strong class="errortype">{{type}}</strong>
-                            <button class="btn btn-secondary margic-btn-round-small pull-right" data-toggle="collapse" data-target=".collapseAnnotation{{id}}" aria-expanded="false" aria-controls="collapseAnnotation{{id}}" title="{{#str}}toggleannotation, mod_margic{{/str}}"><i class="fa fa-lg fa-caret-down"></i></button>
-                        </div>
-                        <div class="collapse collapseAnnotation collapseAnnotation{{id}}">
-                            <div class="d-flex justify-content-between annotationauthor">
-                                <span>
-                                    {{{userpicturestr}}}
-                                </span>
-                                <span class="align-self-center">
-                                    {{^timemodified}}{{#userdate}}{{timecreated}}, {{#str}} strftimedatetimeshort, core_langconfig {{/str}}{{/userdate}} <i class="fa fa-hourglass-start" aria-hidden="true" title="{{#str}}annotationcreated, margic, {{#userdate}}{{timecreated}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}} {{/str}}"></i> {{/timemodified}}
-                                    {{#timemodified}}{{#userdate}}{{timemodified}}, {{#str}} strftimedatetimeshort, core_langconfig {{/str}}{{/userdate}} <i class="fa fa-hourglass-end" aria-hidden="true" title="{{#str}}annotationmodified, margic, {{#userdate}}{{timemodified}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}} {{/str}}"></i>{{/timemodified}}
-                                </span>
+            {{#annotationmode}}
+                <div class="annotationarea annotationarea-{{id}}" style="background: {{entrybgc}}; width: {{annotationareawidth}}%">
+                    {{#annotations}}
+                        <div id="annotation-box-{{id}}" class="annotation-box annotation-box-{{id}}" style="background: {{entrytextbgc}};" tabindex="{{position}}">
+                            <div class="errortypeheader">
+                                <span style="border-left: 10px solid #{{color}}; padding-left: 5px;"> </span>
+                                <strong class="errortype">{{type}}</strong>
+                                <button class="btn btn-secondary margic-btn-round-small pull-right" data-toggle="collapse" data-target=".collapseAnnotation{{id}}" aria-expanded="false" aria-controls="collapseAnnotation{{id}}" title="{{#str}}toggleannotation, mod_margic{{/str}}"><i class="fa fa-lg fa-caret-down"></i></button>
                             </div>
+                            <div class="collapse collapseAnnotation collapseAnnotation{{id}}">
+                                <div class="d-flex justify-content-between annotationauthor">
+                                    <span>
+                                        {{{userpicturestr}}}
+                                    </span>
+                                    <span class="align-self-center">
+                                        {{^timemodified}}{{#userdate}}{{timecreated}}, {{#str}} strftimedatetimeshort, core_langconfig {{/str}}{{/userdate}} <i class="fa fa-hourglass-start" aria-hidden="true" title="{{#str}}annotationcreated, margic, {{#userdate}}{{timecreated}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}} {{/str}}"></i> {{/timemodified}}
+                                        {{#timemodified}}{{#userdate}}{{timemodified}}, {{#str}} strftimedatetimeshort, core_langconfig {{/str}}{{/userdate}} <i class="fa fa-hourglass-end" aria-hidden="true" title="{{#str}}annotationmodified, margic, {{#userdate}}{{timemodified}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}} {{/str}}"></i>{{/timemodified}}
+                                    </span>
+                                </div>
+                                <div class="annotatedtextpreviewdiv">
+                                    <span id="annotationpreview-{{id}}" class="annotatedtextpreview annotationpreview-{{id}}" style="border-color: #{{color}};">{{#str}}annotatedtextnotfound, mod_margic {{/str}} <i class="fa fa-exclamation text-danger" aria-hidden="true" title="{{#str}}annotatedtextinvalid, margic {{/str}}"></i></span>
+                                </div>
+                                <span class="annotation">
+                                    {{#text}}{{text}}{{/text}}
+                                    {{^text}}-{{/text}}
+                                </span>
+                                {{#canbeedited}}
+                                    <span class="pull-right"><a href="javascript:void(0);" title="{{#str}}editannotation, margic {{/str}}"><i id="edit-annotation-{{id}}" class="fa fa-lg fa-pencil m-r-1 edit-annotation" aria-hidden="true" ></i></a><a href="annotations.php?id={{cmid}}&deleteannotation={{id}}" title="{{#str}}deleteannotation, margic {{/str}}"><i id="delete-annotation-{{id}}" class="fa fa-lg fa-trash delete-annotation" aria-hidden="true"></i></a></span>
+                                {{/canbeedited}}
+                            </div>
+                        </div>
+                    {{/annotations}}
+
+                    {{#annotationform}}
+                        <div class="annotation-box annotation-form annotation-form-{{id}}" style="background: {{entrytextbgc}};">
                             <div class="annotatedtextpreviewdiv">
-                                <span id="annotationpreview-{{id}}" class="annotatedtextpreview annotationpreview-{{id}}" style="border-color: #{{color}};">{{#str}}annotatedtextnotfound, mod_margic {{/str}} <i class="fa fa-exclamation text-danger" aria-hidden="true" title="{{#str}}annotatedtextinvalid, margic {{/str}}"></i></span>
+                                <span id="annotationpreview-temp-{{id}}" class="annotatedtextpreview">{{#str}}annotatedtextnotfound, mod_margic {{/str}} <i class="fa fa-exclamation text-danger" aria-hidden="true" title="{{#str}}annotatedtextinvalid, margic {{/str}}"></i></span>
                             </div>
-                            <span class="annotation">
-                                {{#text}}{{text}}{{/text}}
-                                {{^text}}-{{/text}}
-                            </span>
-                            {{#canbeedited}}
-                                <span class="pull-right"><a href="javascript:void(0);" title="{{#str}}editannotation, margic {{/str}}"><i id="edit-annotation-{{id}}" class="fa fa-lg fa-pencil m-r-1 edit-annotation" aria-hidden="true" ></i></a><a href="annotations.php?id={{cmid}}&deleteannotation={{id}}" title="{{#str}}deleteannotation, margic {{/str}}"><i id="delete-annotation-{{id}}" class="fa fa-lg fa-trash delete-annotation" aria-hidden="true"></i></a></span>
-                            {{/canbeedited}}
+                            {{{annotationform}}}
                         </div>
-                    </div>
-                {{/annotations}}
-
-                {{#annotationform}}
-                    <div class="annotation-box annotation-form annotation-form-{{id}}" style="background: {{entrytextbgc}};">
-                        <div class="annotatedtextpreviewdiv">
-                            <span id="annotationpreview-temp-{{id}}" class="annotatedtextpreview">{{#str}}annotatedtextnotfound, mod_margic {{/str}} <i class="fa fa-exclamation text-danger" aria-hidden="true" title="{{#str}}annotatedtextinvalid, margic {{/str}}"></i></span>
-                        </div>
-                        {{{annotationform}}}
-                    </div>
-                {{/annotationform}}
-            </div>
-        {{/annotationmode}}
-    </div>
-    <div class="entryfooter mb-2" style="background: {{entrybgc}};">
-        {{#canmanageentries}}
-            {{#gradingform}}
-                <div class="gradingform collapse {{#gradingmode}}show{{/gradingmode}}" style="background: {{entrytextbgc}};">
-                    {{{gradingform}}}
+                    {{/annotationform}}
                 </div>
-            {{/gradingform}}
-        {{/canmanageentries}}
-        {{^canmanageentries}}
-            {{#gradingform}}{{{gradingform}}}{{/gradingform}}
-        {{/canmanageentries}}
+            {{/annotationmode}}
+        </div>
+        <div class="entryfooter mb-2" style="background: {{entrybgc}};">
+            {{#canmanageentries}}
+                {{#gradingform}}
+                    <div class="gradingform collapse {{#gradingmode}}show{{/gradingmode}}" style="background: {{entrytextbgc}};">
+                        {{{gradingform}}}
+                    </div>
+                {{/gradingform}}
+            {{/canmanageentries}}
+            {{^canmanageentries}}
+                {{#gradingform}}{{{gradingform}}}{{/gradingform}}
+            {{/canmanageentries}}
 
-        {{#edittimeends}}
-            <div class="editend"><span>
-                {{^edittimehasended}}{{#str}}editingends, mod_margic, {{#userdate}}{{edittimeends}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}}{{/str}}{{/edittimehasended}}
-                {{#edittimehasended}}{{#str}}editingended, mod_margic, {{#userdate}}{{edittimeends}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}}{{/str}}{{/edittimehasended}}
-            </span></div>
-        {{/edittimeends}}
+            {{#edittimeends}}
+                <div class="editend"><span>
+                    {{^edittimehasended}}{{#str}}editingends, mod_margic, {{#userdate}}{{edittimeends}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}}{{/str}}{{/edittimehasended}}
+                    {{#edittimehasended}}{{#str}}editingended, mod_margic, {{#userdate}}{{edittimeends}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}}{{/str}}{{/edittimehasended}}
+                </span></div>
+            {{/edittimeends}}
 
-        {{#needsgrading}}
-            <div class="needsedit"><span>{{needsgrading}}</span></div>
-        {{/needsgrading}}
+            {{#needsgrading}}
+                <div class="needsedit"><span>{{needsgrading}}</span></div>
+            {{/needsgrading}}
 
-        {{#needsregrading}}
-            <div class="needsedit"><span>{{needsregrading}}</span></div>
-        {{/needsregrading}}
+            {{#needsregrading}}
+                <div class="needsedit"><span>{{needsregrading}}</span></div>
+            {{/needsregrading}}
+        </div>
     </div>
-</div>
+{{/entry}}

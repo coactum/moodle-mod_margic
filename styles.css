@@ -23,49 +23,49 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later.
  */
 
-#page-mod-margic-view .entrycontent { /* Used in renderer.php. */
+.path-mod-margic .entrycontent { /* Used in renderer.php. */
     padding: 3px;
 }
 
-#page-mod-margic-view .picture { /* Used in renderer.php with left. */
+.path-mod-margic .picture { /* Used in renderer.php with left. */
     width: 35px;
 }
 
-#page-mod-margic-view .lastedit,
-#page-mod-margic-view .needsedit,
-#page-mod-margic-view .editend {
+.path-mod-margic .lastedit,
+.path-mod-margic .needsedit,
+.path-mod-margic .editend {
     margin: 5px;
     text-align: center;
 }
 
-#page-mod-margic-view .lastedit {
+.path-mod-margic .lastedit {
     font-size: 0.7em;
 }
 
-#page-mod-margic-view .needsedit,
-#page-mod-margic-view .editend {
+.path-mod-margic .needsedit,
+.path-mod-margic .editend {
     color: darkred;
     font-weight: bold;
 }
 
-#page-mod-margic-view .needsedit span,
-#page-mod-margic-view .editend span {
+.path-mod-margic .needsedit span,
+.path-mod-margic .editend span {
     background: white;
     padding: 2px;
 }
 
-#page-mod-margic-view .author { /* Used in renderer.php about line 191. */
+.path-mod-margic .author { /* Used in renderer.php about line 191. */
     font-size: 1em;
     font-weight: bold;
 }
 
-#page-mod-margic-view .grade { /* Used in renderer.php about line 200. */
+.path-mod-margic .grade { /* Used in renderer.php about line 200. */
     font-weight: bold;
     font-style: italic;
     text-align: right;
 }
 
-#page-mod-margic-view .entriesheader {
+.path-mod-margic .entriesheader {
     margin-bottom: 10px;
     border: 1px solid rgba(0, 0, 0, .125);
     border-radius: 5px;
@@ -73,12 +73,12 @@
     -moz-border-radius: 5px;
 }
 
-#page-mod-margic-view .entriesheader h4 {
+.path-mod-margic .entriesheader h4 {
     margin-bottom: 5px;
     margin-top: 5px;
 }
 
-#page-mod-margic-view .entryfooter {
+.path-mod-margic .entryfooter {
     width: 100%;
     border: 1px solid rgba(0, 0, 0, .125);
     border-radius: 5px;
@@ -86,7 +86,7 @@
     -moz-border-radius: 5px;
 }
 
-#page-mod-margic-view .entry {
+.path-mod-margic .entry {
     text-align: left;
     font-size: 1em;
     padding: 10px;
@@ -97,8 +97,8 @@
     -moz-border-radius: 5px;
 }
 
-#page-mod-margic-view .gradingform,
-#page-mod-margic-view .ratingform {
+.path-mod-margic .gradingform,
+.path-mod-margic .ratingform {
     padding: 10px;
     text-align: left;
     font-size: 1em;
@@ -109,13 +109,13 @@
     -moz-border-radius: 5px;
 }
 
-#page-mod-margic-view .ratingform h5 {
+.path-mod-margic .ratingform h5 {
     margin-bottom: 10px;
     padding-bottom: 5px;
     border-bottom: 1px solid rgba(0, 0, 0, .125);
 }
 
-#page-mod-margic-view .annotationsheader {
+.path-mod-margic .annotationsheader {
     margin-bottom: 10px;
     border: 1px solid rgba(0, 0, 0, .125);
     border-radius: 5px;
@@ -123,12 +123,12 @@
     -moz-border-radius: 5px;
 }
 
-#page-mod-margic-view .annotationsheader h4 {
+.path-mod-margic .annotationsheader h4 {
     margin-bottom: 5px;
     margin-top: 5px;
 }
 
-#page-mod-margic-view .annotationarea {
+.path-mod-margic .annotationarea {
     text-align: left;
     font-size: 1em;
     padding: 10px;
@@ -138,30 +138,30 @@
     -moz-border-radius: 5px;
 }
 
-#page-mod-margic-view .annotationarea .annotatedtextpreview:hover {
+.path-mod-margic .annotationarea .annotatedtextpreview:hover {
     background-color: lightblue;
     cursor: pointer;
 }
 
-#page-mod-margic-view .annotated,
-#page-mod-margic-view .annotated_temp {
+.path-mod-margic .annotated,
+.path-mod-margic .annotated_temp {
     background-color: yellow;
     cursor: pointer;
 }
 
-#page-mod-margic-view .hovered .annotated,
-#page-mod-margic-view .hovered .annotated_temp {
+.path-mod-margic .hovered .annotated,
+.path-mod-margic .hovered .annotated_temp {
     background: none;
 }
 
-#page-mod-margic-view .annotated:hover,
-#page-mod-margic-view .annotated_temp:hover,
-#page-mod-margic-view .hovered,
-#page-mod-margic-view .errortypeheader .hovered {
+.path-mod-margic .annotated:hover,
+.path-mod-margic .annotated_temp:hover,
+.path-mod-margic .hovered,
+.path-mod-margic .errortypeheader .hovered {
     background-color: lightblue !important;
 }
 
-#page-mod-margic-view .annotation-box {
+.path-mod-margic .annotation-box {
     background-color: white;
     border: 1px solid #dbdbdb;
     border-radius: 2px;
@@ -170,34 +170,34 @@
     box-shadow: 0 1px 1px rgba(0, 0, 0, .1);
 }
 
-#page-mod-margic-view .annotation-box:hover {
+.path-mod-margic .annotation-box:hover {
     box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, .15);
 }
 
-#page-mod-margic-view #id_submitbutton {
+.path-mod-margic #id_submitbutton {
     margin-right: 5px;
 }
 
-#page-mod-margic-view textarea {
+.path-mod-margic textarea {
     width: 100%;
 }
 
-#page-mod-margic-annotations_summary th {
+.path-mod-margic-annotations_summary th {
     min-width: 135px;
 }
 
-#page-mod-margic-view .annotatedtextpreviewdiv {
+.path-mod-margic .annotatedtextpreviewdiv {
     margin-top: 5px;
     margin-bottom: 5px;
 }
 
-#page-mod-margic-view .annotationauthor {
+.path-mod-margic .annotationauthor {
     padding-top: 5px;
     padding-bottom: 5px;
     margin-top: 10px;
 }
 
-#page-mod-margic-view .annotatedtextpreview {
+.path-mod-margic .annotatedtextpreview {
     border-left: 5px solid yellow;
     padding-left: 5px;
     background-color: white;
@@ -205,7 +205,7 @@
     width: 100%;
 }
 
-#page-mod-margic-view .margic-btn-round-small {
+.path-mod-margic .margic-btn-round-small {
     width: 1.6rem;
     height: 1.6rem;
     border-radius: 50%;
@@ -214,7 +214,7 @@
     margin-bottom: 5px;
 }
 
-#page-mod-margic-view .childentrywrapper {
+.path-mod-margic .childentrywrapper {
     margin-left: 20px;
 }
 
