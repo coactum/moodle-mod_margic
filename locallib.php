@@ -170,9 +170,6 @@ class margic {
                 case 'highestgradetolowest':
                     set_user_preference('sortoption['.$id.']', 4);
                     break;
-                case 'latestmodified':
-                    set_user_preference('sortoption['.$id.']', 5);
-                    break;
                 default:
                     if (!get_user_preferences('sortoption['.$id.']')) {
                         set_user_preference('sortoption['.$id.']', 1);
@@ -182,11 +179,11 @@ class margic {
             switch (get_user_preferences('sortoption['.$id.']')) {
                 case 1:
                     $this->sortmode = get_string('currententry', 'mod_margic');
-                    $sortoptions = 'timecreated DESC';
+                    $sortoptions = 'timemodified DESC';
                     break;
                 case 2:
                     $this->sortmode = get_string('oldestentry', 'mod_margic');
-                    $sortoptions = 'timecreated ASC';
+                    $sortoptions = 'timemodified ASC';
                     break;
                 case 3:
                     $this->sortmode = get_string('lowestgradeentry', 'mod_margic');
@@ -196,13 +193,9 @@ class margic {
                     $this->sortmode = get_string('highestgradeentry', 'mod_margic');
                     $sortoptions = 'rating DESC, timemodified DESC';
                     break;
-                case 5:
-                    $this->sortmode = get_string('latestmodifiedentry', 'mod_margic');
-                    $sortoptions = 'timemodified DESC, timecreated DESC';
-                    break;
                 default:
                     $this->sortmode = get_string('currententry', 'mod_margic');
-                    $sortoptions = 'timecreated DESC';
+                    $sortoptions = 'timemodified DESC';
             }
 
         }
@@ -243,15 +236,6 @@ class margic {
             $this->page = $page;
         }
 
-        // Handling groups.
-        $currentgroups = groups_get_activity_group($this->cm, true);    // Get a list of the currently allowed groups for this course.
-
-        if ($currentgroups) {
-            $allowedusers = get_users_by_capability($this->context, 'mod/margic:addentries', '', $sort = 'lastname ASC, firstname ASC', '', '', $currentgroups);
-        } else {
-            $allowedusers = true;
-        }
-
         // Get entries.
         if ($this->mode == 'allentries') {
 
@@ -264,88 +248,6 @@ class margic {
         } else if ($this->mode == 'ownentries') {
             $this->entries = $DB->get_records('margic_entries', array('margic' => $this->instance->id, 'userid' => $USER->id, 'baseentry' => null), $sortoptions);
         }
-
-        $gradingstr = get_string('needsgrading', 'margic');
-        $regradingstr = get_string('needsregrading', 'margic');
-
-        $viewinguserid = $USER->id;
-
-        $strmanager = get_string_manager();
-
-        // Prepare entries.
-        // foreach ($this->entries as $i => $entry) {
-        //     $this->entries[$i]->user = $DB->get_record('user', array('id' => $entry->userid));
-
-        //     if (!$currentgroups || ($allowedusers && in_array($this->entries[$i]->user, $allowedusers))) {
-        //         // Get child entries for entry.
-        //         $this->entries[$i]->childentries = $DB->get_records('margic_entries', array('margic' => $this->instance->id, 'baseentry' => $entry->id), 'timecreated DESC');
-
-        //         $revisionnr = count($this->entries[$i]->childentries);
-        //         foreach ($this->entries[$i]->childentries as $ci => $childentry) {
-        //             $this->entries[$i]->childentries[$ci] = $this->prepare_entry_annotations($childentry, $strmanager);
-        //             $this->entries[$i]->childentries[$ci]->stats = entrystats::get_entry_stats($childentry->text, $childentry->timecreated);
-        //             $this->entries[$i]->childentries[$ci]->revision = $revisionnr;
-
-        //             if ($ci == array_key_first($this->entries[$i]->childentries)) {
-        //                 $this->entries[$i]->childentries[$ci]->newestentry = true;
-        //                 if ($viewinguserid == $childentry->userid) {
-        //                     $this->entries[$i]->childentries[$ci]->entrycanbeedited = true;
-        //                 } else {
-        //                     $this->entries[$i]->childentries[$ci]->entrycanbeedited = false;
-        //                 }
-        //             } else {
-        //                 $this->entries[$i]->childentries[$ci]->entrycanbeedited = false;
-        //                 $this->entries[$i]->childentries[$ci]->newestentry = false;
-        //             }
-
-        //             if ($viewinguserid == $entry->userid && empty($this->entries[$i]->childentries)) {
-        //                 $this->entries[$i]->entrycanbeedited = true;
-        //             } else {
-        //                 $this->entries[$i]->entrycanbeedited = false;
-        //             }
-
-        //             $revisionnr -= 1;
-        //         }
-
-        //         $this->entries[$i]->childentries = array_values($this->entries[$i]->childentries);
-
-        //         if (empty($this->entries[$i]->childentries)) {
-        //             $this->entries[$i]->haschildren = false;
-        //         } else {
-        //             $this->entries[$i]->haschildren = true;
-        //         }
-
-        //         // Get entry stats.
-        //         $this->entries[$i]->stats = entrystats::get_entry_stats($entry->text, $entry->timecreated);
-
-        //         // Check entry grading.
-        //         if (!empty($entry->timecreated) && empty($entry->timemarked)) {
-        //             $this->entries[$i]->needsgrading = $gradingstr;
-        //         } else if (!empty($entry->timemodified) && !empty($entry->timemarked) && $entry->timemodified > $entry->timemarked) {
-        //             $this->entries[$i]->needsregrading = $regradingstr;
-        //         } else {
-        //             $this->entries[$i]->needsregrading = false;
-        //         }
-
-        //         // Check if entry can be edited.
-        //         if ($viewinguserid == $entry->userid && empty($this->entries[$i]->childentries)) {
-        //             $this->entries[$i]->entrycanbeedited = true;
-        //         } else {
-        //             $this->entries[$i]->entrycanbeedited = false;
-        //         }
-
-        //         // Prepare entry annotations.
-        //         $this->entries[$i] = $this->prepare_entry_annotations($entry, $strmanager);
-        //     } else {
-        //         unset($this->entries[$i]);
-        //     }
-
-            // Replace base entry with last child entry for displaying last child entry on top
-            // if (!empty($this->entries[$i]->childentries)) {
-            //     $baseentry = $this->entries[$i];
-            //     $this->entries[$i] = $this->entries[$i]->childentries[array_key_last($this->entries[$i]->childentries)];
-            // }
-        //}
     }
 
     /**

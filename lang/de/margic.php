@@ -167,7 +167,7 @@ $string['toggleratingform'] = 'Bewertungsmodus öffnen/schließen';
 $string['norating'] = 'Bewertung deaktiviert.';
 $string['viewallmargics'] = 'Alle Margics im Kurs anzeigen';
 $string['startoreditentry'] = 'Eintrag anlegen oder bearbeiten';
-$string['addentry'] = 'Eintrag anlegen';
+$string['addnewentry'] = 'Neuen Eintrag anlegen';
 $string['editentry'] = 'Eintrag bearbeiten';
 $string['editentrynotpossible'] = 'Bearbeiten des Eintrages nicht möglich.';
 $string['editdateinfuture'] = 'Das angegebene Erstelldatum des Eintrags liegt in der Zukunft.';
@@ -175,13 +175,11 @@ $string['currenttooldest'] = 'Zeige die Einträge vom Aktuellsten zum Ältesten'
 $string['oldesttocurrent'] = 'Zeige die Einträge vom Ältesten zum Aktuellsten';
 $string['lowestgradetohighest'] = 'Zeige die Einträge vom am niedrigsten Bewerteten zum Höchsten';
 $string['highestgradetolowest'] = 'Zeige die Einträge vom am höchsten Bewerteten zum Niedrigsten';
-$string['lastmodified'] = 'Zeige die zuletzt geänderten Einträge';
 $string['sorting'] = 'Sortierung';
 $string['currententry'] = 'Aktuelle Einträge';
 $string['oldestentry'] = 'Älteste Einträge';
 $string['lowestgradeentry'] = 'Am niedrigsten bewertete Einträge';
 $string['highestgradeentry'] = 'Am höchsten bewertete Beiträge';
-$string['latestmodifiedentry'] = 'Zuletzt geänderte Einträge';
 $string['viewallentries'] = 'Alle Einträge ansehen';
 
 $string['grammar_verb'] = 'Grammatik: Verbform';
@@ -269,6 +267,7 @@ $string['id'] = 'ID';
 $string['overview'] = 'Übersicht';
 $string['at'] = 'am';
 $string['from'] = 'von';
+$string['toggleolderversions'] = 'Ältere Versionen ein- oder ausblenden';
 
 // Privacy.
 $string['privacy:metadata:margic_entries'] = 'Enthält die gespeicherten Benutzereinträge aller Margics.';

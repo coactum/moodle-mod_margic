@@ -376,6 +376,44 @@ class results {
     }
 
     /**
+     * Return the edit time options for a margic.
+     *
+     * @param stdClass $moduleinstance The margic module instance.
+     * @return array $editoroptions Array containing the editor and attachment options.
+     * @return array $attachmentoptions Array containing the editor and attachment options.
+     */
+    public static function margic_get_edittime_options($moduleinstance) {
+        $edittimes = new stdClass();
+
+        // Calculate if edit time has started.
+        $timenow = time();
+        if (!$moduleinstance->timeopen) {
+            $edittimes->edittimenotstarted = false;
+            $edittimes->edittimestarts = false;
+        } else if ($moduleinstance->timeopen && $timenow >= $moduleinstance->timeopen) {
+            $edittimes->edittimenotstarted = false;
+            $edittimes->edittimestarts = $moduleinstance->timeopen;
+        } else if ($moduleinstance->timeopen && $timenow < $moduleinstance->timeopen) {
+            $edittimes->edittimenotstarted = true;
+            $edittimes->edittimestarts = $moduleinstance->timeopen;
+        }
+
+        // Calculate if edit time has ended.
+        if (!$moduleinstance->timeclose) {
+            $edittimes->edittimehasended = false;
+            $edittimes->edittimeends = false;
+        } else if ($moduleinstance->timeclose && $timenow < $moduleinstance->timeclose) {
+            $edittimes->edittimehasended = false;
+            $edittimes->edittimeends = $moduleinstance->timeclose;
+        } else if ($moduleinstance->timeclose && $timenow >= $moduleinstance->timeclose) {
+            $edittimes->edittimehasended = true;
+            $edittimes->edittimeends = $moduleinstance->timeclose;
+        }
+
+        return $edittimes;
+    }
+
+    /**
      * Check for existing rating entry in mdl_rating for the current user.
      *
      * @param array $ratingoptions An array of current entry data.

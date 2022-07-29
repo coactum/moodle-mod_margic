@@ -86,7 +86,7 @@ if (($entryid && !$moduleinstance->editall) || !results::margic_available($modul
 if ($entryid) {
     $title = get_string('editentry', 'mod_margic');
 } else {
-    $title = get_string('addentry', 'mod_margic');
+    $title = get_string('addnewentry', 'mod_margic');
 }
 
 $PAGE->set_url('/mod/margic/edit.php', array('id' => $id));
@@ -170,7 +170,7 @@ if ($form->is_cancelled()) {
     $newentry->userid = $USER->id;
 
     $newentry->timecreated = $fromform->timecreated;
-    $newentry->timemodified = 0;
+    $newentry->timemodified = $fromform->timecreated;
 
     $newentry->text = '';
     $newentry->format = 1;
@@ -239,58 +239,38 @@ echo $OUTPUT->box($intro);
 
 echo $OUTPUT->heading($title, 3);
 
-// Calculate if edit time has started.
-$timenow = time();
-if (!$moduleinstance->timeopen) {
-    $edittimenotstarted = false;
-    $edittimestarts = false;
-} else if ($moduleinstance->timeopen && $timenow >= $moduleinstance->timeopen) {
-    $edittimenotstarted = false;
-    $edittimestarts = $moduleinstance->timeopen;
-} else if ($moduleinstance->timeopen && $timenow < $moduleinstance->timeopen) {
-    $edittimenotstarted = true;
-    $edittimestarts = $moduleinstance->timeopen;
+// If existing entry is edited render entry.
+if ($entry) {
+    $edittimes = results::margic_get_edittime_options($moduleinstance);
+
+    $grades = make_grades_menu($moduleinstance->scale); // For select in grading_form.
+
+    $currentgroups = groups_get_activity_group($cm, true);    // Get a list of the currently allowed groups for this course.
+
+    if ($currentgroups) {
+        $allowedusers = get_users_by_capability($context, 'mod/margic:addentries', '', $sort = 'lastname ASC, firstname ASC', '', '', $currentgroups);
+    } else {
+        $allowedusers = true;
+    }
+
+    $strmanager = get_string_manager();
+
+    $gradingstr = get_string('needsgrading', 'margic');
+    $regradingstr = get_string('needsregrading', 'margic');
+
+    if ($entry->baseentry) { // If edited entry is child entry get base entry for rendering.
+        $entry = $DB->get_record('margic_entries', array('margic' => $moduleinstance->id, "id" => $entry->baseentry));
+    }
+
+    $page = new margic_entry($margic, $cm, $context, $moduleinstance, $entry, $margic->get_annotationarea_width(),
+        $moduleinstance->editall, $edittimes->edittimestarts, $edittimes->edittimenotstarted, $edittimes->edittimeends,
+        $edittimes->edittimehasended, has_capability('mod/margic:manageentries', $context), $course, false, true, false,
+        false, true, $grades, $currentgroups, $allowedusers, $strmanager, $gradingstr, $regradingstr);
+
+    echo $OUTPUT->render($page);
 }
 
-// Calculate if edit time has ended.
-if (!$moduleinstance->timeclose) {
-    $edittimehasended = false;
-    $edittimeends = false;
-} else if ($moduleinstance->timeclose && $timenow < $moduleinstance->timeclose) {
-    $edittimehasended = false;
-    $edittimeends = $moduleinstance->timeclose;
-} else if ($moduleinstance->timeclose && $timenow >= $moduleinstance->timeclose) {
-    $edittimehasended = true;
-    $edittimeends = $moduleinstance->timeclose;
-}
-
-$grades = make_grades_menu($moduleinstance->scale); // For select in grading_form.
-
-$currentgroups = groups_get_activity_group($cm, true);    // Get a list of the currently allowed groups for this course.
-
-if ($currentgroups) {
-    $allowedusers = get_users_by_capability($context, 'mod/margic:addentries', '', $sort = 'lastname ASC, firstname ASC', '', '', $currentgroups);
-} else {
-    $allowedusers = true;
-}
-
-$strmanager = get_string_manager();
-
-$gradingstr = get_string('needsgrading', 'margic');
-$regradingstr = get_string('needsregrading', 'margic');
-
-if ($entry->baseentry) { // If edited entry is child entry get base entry for rendering.
-    $entry = $DB->get_record('margic_entries', array('margic' => $moduleinstance->id, "id" => $entry->baseentry));
-}
-
-$page = new margic_entry($margic, $cm, $context, $moduleinstance, $entry, $margic->get_annotationarea_width(),
-    $moduleinstance->editall, $edittimestarts, $edittimenotstarted, $edittimeends, $edittimehasended,
-    has_capability('mod/margic:manageentries', $context), $course, false, true, false, false, true, $grades,
-    $currentgroups, $allowedusers, $strmanager, $gradingstr, $regradingstr);
-
-echo $OUTPUT->render($page);
-
-// Otherwise fill and print the form.
+// Display the form for editing the entry.
 $form->display();
 
 echo $OUTPUT->footer();

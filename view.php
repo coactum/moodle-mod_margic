@@ -158,41 +158,19 @@ if ($moduleinstance->assessed != 0) {
     $currentuserrating = false;
 }
 
-// Calculate if edit time has started.
-$timenow = time();
-if (!$moduleinstance->timeopen) {
-    $edittimenotstarted = false;
-    $edittimestarts = false;
-} else if ($moduleinstance->timeopen && $timenow >= $moduleinstance->timeopen) {
-    $edittimenotstarted = false;
-    $edittimestarts = $moduleinstance->timeopen;
-} else if ($moduleinstance->timeopen && $timenow < $moduleinstance->timeopen) {
-    $edittimenotstarted = true;
-    $edittimestarts = $moduleinstance->timeopen;
-}
-
-// Calculate if edit time has ended.
-if (!$moduleinstance->timeclose) {
-    $edittimehasended = false;
-    $edittimeends = false;
-} else if ($moduleinstance->timeclose && $timenow < $moduleinstance->timeclose) {
-    $edittimehasended = false;
-    $edittimeends = $moduleinstance->timeclose;
-} else if ($moduleinstance->timeclose && $timenow >= $moduleinstance->timeclose) {
-    $edittimehasended = true;
-    $edittimeends = $moduleinstance->timeclose;
-}
-
-
 // Handle groups.
 echo groups_print_activity_menu($cm, $CFG->wwwroot . "/mod/margic/view.php?id=$id");
 
+$edittimes = results::margic_get_edittime_options($moduleinstance);
+
 // Output page.
-$page = new margic_view($margic, $cm, $context, $moduleinstance, $margic->get_entries_grouped_by_pagecount(), $margic->get_sortmode(),
-    get_config('mod_margic', 'entrybgc'), get_config('mod_margic', 'entrytextbgc'), $margic->get_annotationarea_width(),
-    $moduleinstance->editall, $edittimestarts, $edittimenotstarted, $edittimeends, $edittimehasended, $canmanageentries, sesskey(), $currentuserrating,
-    $ratingaggregationmode, $course, $userid, $margic->get_pagecountoptions(), $margic->get_pagebar(), count($margic->get_entries()),
-    $annotationmode, $canmakeannotations, $margic->get_errortypes_for_form());
+$page = new margic_view($margic, $cm, $context, $moduleinstance, $margic->get_entries_grouped_by_pagecount(),
+    $margic->get_sortmode(), get_config('mod_margic', 'entrybgc'), get_config('mod_margic', 'entrytextbgc'),
+    $margic->get_annotationarea_width(), $moduleinstance->editall, $edittimes->edittimestarts,
+    $edittimes->edittimenotstarted, $edittimes->edittimeends, $edittimes->edittimehasended, $canmanageentries,
+    sesskey(), $currentuserrating, $ratingaggregationmode, $course, $userid, $margic->get_pagecountoptions(),
+    $margic->get_pagebar(), count($margic->get_entries()), $annotationmode, $canmakeannotations,
+    $margic->get_errortypes_for_form());
 
 echo $OUTPUT->render($page);
 

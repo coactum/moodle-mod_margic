@@ -180,7 +180,7 @@ $string['toggleratingform'] = 'Open/close rating form';
 $string['norating'] = 'Rating disabled.';
 $string['viewallmargics'] = 'View all margics in course';
 $string['startoreditentry'] = 'Add or edit entry';
-$string['addentry'] = 'Add entry';
+$string['addnewentry'] = 'Add new entry';
 $string['editentry'] = 'Edit entry';
 $string['editentrynotpossible'] = 'You can not edit this entry.';
 $string['editdateinfuture'] = 'The specified entry date is in the future.';
@@ -188,13 +188,11 @@ $string['currenttooldest'] = 'Show entries from current to oldest';
 $string['oldesttocurrent'] = 'Show entries from oldest to current';
 $string['lowestgradetohighest'] = 'Show entries from the lowest rated to the highest one';
 $string['highestgradetolowest'] = 'Show entries from the highest rated to the lowest one';
-$string['latestmodified'] = 'Show the last modified entries';
 $string['sorting'] = 'Sorting';
 $string['currententry'] = 'Current entries';
 $string['oldestentry'] = 'Oldest entries';
 $string['lowestgradeentry'] = 'Lowest rated entries';
 $string['highestgradeentry'] = 'Highest rated entries';
-$string['latestmodifiedentry'] = 'Last modified entries';
 $string['viewallentries'] = 'View all entries';
 
 $string['grammar_verb'] = 'Grammar: Verb form';
@@ -282,6 +280,7 @@ $string['id'] = 'ID';
 $string['overview'] = 'Overview';
 $string['at'] = 'at';
 $string['from'] = 'from';
+$string['toggleolderversions'] = 'Toggle older versions of the entry';
 
 // Privacy.
 $string['privacy:metadata:margic_entries'] = 'Contains the user entries saved in all margics.';
