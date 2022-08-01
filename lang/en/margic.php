@@ -281,6 +281,7 @@ $string['overview'] = 'Overview';
 $string['at'] = 'at';
 $string['from'] = 'from';
 $string['toggleolderversions'] = 'Toggle older versions of the entry';
+$string['timecreatedinvalid'] = 'Change failed. There are already younger versions of this entry.';
 
 // Privacy.
 $string['privacy:metadata:margic_entries'] = 'Contains the user entries saved in all margics.';
@@ -295,6 +296,7 @@ $string['privacy:metadata:margic_entries:rating'] = 'The grade with which the en
 $string['privacy:metadata:margic_entries:entrycomment'] = 'The teachers comment for the entry.';
 $string['privacy:metadata:margic_entries:teacher'] = 'ID of the grader.';
 $string['privacy:metadata:margic_entries:timemarked'] = 'Time the entry was graded.';
+$string['privacy:metadata:margic_entries:baseentry'] = 'The ID of the original entry on which this revised entry is based';
 $string['privacy:metadata:margic_annotations:margic'] = 'ID of the Margic the annotated entry belongs to.';
 $string['privacy:metadata:margic_annotations:entry'] = 'ID of the entry the annotation belongs to.';
 $string['privacy:metadata:margic_annotations:userid'] = 'ID of the user that made the annotation.';

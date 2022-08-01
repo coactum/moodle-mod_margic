@@ -182,6 +182,23 @@ if ($form->is_cancelled()) {
             $newentry->baseentry = $entry->baseentry;
         }
 
+        // Check if timecreated is not older then connected entries
+        if ($moduleinstance->editdates) {
+
+            $baseentry = $DB->get_record('margic_entries', array('margic' => $moduleinstance->id, "id" => $newentry->baseentry));
+
+            if ($newentry->timecreated < $baseentry->timemodified) {
+                redirect(new moodle_url('/mod/margic/view.php?id=' . $cm->id), get_string('timecreatedinvalid', 'mod_margic'), null, notification::NOTIFY_ERROR);
+            }
+
+            $connectedentries = $DB->get_records('margic_entries', array('margic' => $moduleinstance->id, 'baseentry' => $newentry->baseentry), 'timecreated DESC');
+
+            if ($connectedentries && $newentry->timecreated < $connectedentries[array_key_first($connectedentries)]->timecreated) {
+                redirect(new moodle_url('/mod/margic/view.php?id=' . $cm->id), get_string('timecreatedinvalid', 'mod_margic'), null, notification::NOTIFY_ERROR);
+            }
+
+        }
+
         // Update timemodified for base entry.
         $baseentry = $DB->get_record('margic_entries', array('margic' => $moduleinstance->id, "id" => $newentry->baseentry));
         $baseentry->timemodified = $fromform->timecreated;

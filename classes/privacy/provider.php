@@ -67,6 +67,7 @@ class provider implements \core_privacy\local\metadata\provider,
             'entrycomment' => 'privacy:metadata:margic_entries:entrycomment',
             'teacher' => 'privacy:metadata:margic_entries:teacher',
             'timemarked' => 'privacy:metadata:margic_entries:timemarked',
+            'baseentry' => 'privacy:metadata:margic_entries:baseentry',
         ], 'privacy:metadata:margic_entries');
 
         // The table 'margic_annotations' stores the annotations made in all margics.
@@ -267,7 +268,8 @@ class provider implements \core_privacy\local\metadata\provider,
                     e.entrycomment,
                     e.formatcomment,
                     e.teacher,
-                    e.timemarked
+                    e.timemarked,
+                    e.baseentry
                    FROM {margic_entries} e
                    WHERE (
                     e.margic = :margicid AND
@@ -304,15 +306,34 @@ class provider implements \core_privacy\local\metadata\provider,
      */
     protected static function export_entry_data(int $userid, \context $context, $subcontext, $entry) {
 
+        if ($entry->timecreated != 0) {
+            $timecreated = transform::datetime($entry->timecreated);
+        } else {
+            $timecreated = null;
+        }
+
+        if ($entry->timemodified != 0) {
+            $timemodified = transform::datetime($entry->timemodified);
+        } else {
+            $timemodified = null;
+        }
+
+        if ($entry->timemarked != 0) {
+            $timemarked = transform::datetime($entry->timemarked);
+        } else {
+            $timemarked = null;
+        }
+
         // Store related metadata.
         $entrydata = (object) [
             'margic' => $entry->margic,
             'userid' => $entry->userid,
-            'timecreated' => transform::datetime($entry->timecreated),
-            'timemodified' => transform::datetime($entry->timemodified),
+            'timecreated' => $timecreated,
+            'timemodified' => $timemodified,
             'rating' => $entry->rating,
             'teacher' => $entry->teacher,
-            'timemarked' => transform::datetime($entry->timemarked),
+            'timemarked' => $timemarked,
+            'baseentry' => $entry->baseentry,
         ];
 
         $entrydata->text = writer::with_context($context)->rewrite_pluginfile_urls($subcontext, 'mod_margic', 'entry', $entry->id, $entry->text);
@@ -395,13 +416,19 @@ class provider implements \core_privacy\local\metadata\provider,
      */
     protected static function export_annotation_data(int $userid, \context $context, $subcontext, $annotation) {
 
+        if ($annotation->timemodified != 0) {
+            $timemodified = transform::datetime($annotation->timemodified);
+        } else {
+            $timemodified = null;
+        }
+
         // Store related metadata.
         $annotationdata = (object) [
             'margic' => $annotation->margic,
             'entry' => $annotation->entry,
             'userid' => $annotation->userid,
             'timecreated' => transform::datetime($annotation->timecreated),
-            'timemodified' => transform::datetime($annotation->timemodified),
+            'timemodified' => $timemodified,
             'type' => $annotation->type,
             'text' => format_text($annotation->text, 2, array('para' => false)),
         ];
@@ -528,7 +555,6 @@ class provider implements \core_privacy\local\metadata\provider,
                 ]);
 
             }
-
         }
     }
 

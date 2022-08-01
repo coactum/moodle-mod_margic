@@ -50,7 +50,7 @@ class backup_margic_activity_structure_step extends backup_activity_structure_st
         $entry = new backup_nested_element('entry', array('id'), array(
             'userid', 'timecreated', 'timemodified', 'text', 'format',
             'rating', 'entrycomment', 'formatcomment', 'teacher',
-            'timemarked', 'mailed'));
+            'timemarked', 'mailed', 'baseentry'));
 
         $annotations = new backup_nested_element('annotations');
         $annotation = new backup_nested_element('annotation', array('id'), array(

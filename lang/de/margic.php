@@ -268,6 +268,7 @@ $string['overview'] = 'Übersicht';
 $string['at'] = 'am';
 $string['from'] = 'von';
 $string['toggleolderversions'] = 'Ältere Versionen ein- oder ausblenden';
+$string['timecreatedinvalid'] = 'Änderung fehlgeschlagen. Es gibt bereits jüngere Versionen dieses Beitrags.';
 
 // Privacy.
 $string['privacy:metadata:margic_entries'] = 'Enthält die gespeicherten Benutzereinträge aller Margics.';
@@ -282,6 +283,7 @@ $string['privacy:metadata:margic_entries:rating'] = 'Die Note, mit der der Eintr
 $string['privacy:metadata:margic_entries:entrycomment'] = 'Der Kommentar des Lehrers zu diesem Eintrag.';
 $string['privacy:metadata:margic_entries:teacher'] = 'ID der Bewerterin oder des Bewerters.';
 $string['privacy:metadata:margic_entries:timemarked'] = 'Zeitpunkt der Bewertung.';
+$string['privacy:metadata:margic_entries:baseentry'] = 'Die ID des Originaleintrags auf dem dieser überarbeitete Eintrag basiert.';
 $string['privacy:metadata:margic_annotations:margic'] = 'ID des Margics, zu dem der annotierte Eintrag gehört.';
 $string['privacy:metadata:margic_annotations:entry'] = 'ID des Eintrags, zu dem die Annotation gehört.';
 $string['privacy:metadata:margic_annotations:userid'] = 'ID des Benutzers, der die Annotation angelegt hat.';

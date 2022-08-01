@@ -61,8 +61,6 @@ class restore_margic_activity_structure_step extends restore_activity_structure_
     protected function process_margic($data) {
         global $DB;
 
-        $userinfo = $this->get_setting_value('userinfo');
-
         $data = (object) $data;
         $oldid = $data->id;
         $data->course = $this->get_courseid();
@@ -113,6 +111,12 @@ class restore_margic_activity_structure_step extends restore_activity_structure_
 
         $data->margic = $this->get_new_parentid('margic');
         $data->userid = $this->get_mappingid('user', $data->userid);
+
+        if ($data->baseentry !== null && $this->get_mappingid('margic_entry', $data->baseentry) !== null) {
+            $data->baseentry = $this->get_mappingid('margic_entry', $data->baseentry);
+        } else {
+            $data->baseentry = null;
+        }
 
         $newitemid = $DB->insert_record('margic_entries', $data);
         $this->set_mapping('margic_entry', $oldid, $newitemid);
