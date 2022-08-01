@@ -85,12 +85,8 @@
     }
 }}
 
-{{#js}}
-{{/js}}
-
-{{#entry}}
-    <div class="wrapper">
-
+<div class="margic_entry">
+    {{#entry}}
         {{#childentries}}
             {{> margic/margic_childentry }}
         {{/childentries}}
@@ -208,5 +204,5 @@
                 <div class="needsedit"><span>{{needsregrading}}</span></div>
             {{/needsregrading}}
         </div>
-    </div>
-{{/entry}}
+    {{/entry}}
+</div>

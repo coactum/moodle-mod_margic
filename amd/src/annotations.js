@@ -21,10 +21,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
- define(['jquery'], function($) {
-    return {
-        init: function(annotations, canmakeannotations) {
+ import $ from 'jquery';
 
+ export const init = (annotations, canmakeannotations, myuserid) => {
             // Hide all Moodle forms.
             $('.annotation-form').hide();
 
@@ -67,7 +66,7 @@
              * @param {int} annotationid
              */
             function editAnnotation(annotationid) {
-                if (canmakeannotations) {
+                if (canmakeannotations && myuserid == annotations[annotationid].userid) {
                     removeAllTempHighlights();
                     resetForms();
 
@@ -600,6 +599,4 @@
                 }
               });
 
-        }
-    };
-});
+};

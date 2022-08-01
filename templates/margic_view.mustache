@@ -21,100 +21,99 @@
     Overview.
 }}
 
-{{#js}}
-{{/js}}
+<div class="margic_view">
+    {{#edittimehasended}}{{#edittimeends}}<div class="alert alert-danger alert-block fade in" role="alert"><button type="button" class="close" data-dismiss="alert">×</button>{{#str}}editingended, mod_margic, {{#userdate}}{{edittimeends}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}}{{/str}}</div>{{/edittimeends}}{{/edittimehasended}}
+    {{#edittimenotstarted}}{{#edittimestarts}}<div class="alert alert-warning alert-block fade in" role="alert"><button type="button" class="close" data-dismiss="alert">×</button>{{#str}}editingstarts, mod_margic, {{#userdate}}{{edittimestarts}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}}{{/str}}</div>{{/edittimestarts}}{{/edittimenotstarted}}
 
-{{#edittimehasended}}{{#edittimeends}}<div class="alert alert-danger alert-block fade in" role="alert"><button type="button" class="close" data-dismiss="alert">×</button>{{#str}}editingended, mod_margic, {{#userdate}}{{edittimeends}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}}{{/str}}</div>{{/edittimeends}}{{/edittimehasended}}
-{{#edittimenotstarted}}{{#edittimestarts}}<div class="alert alert-warning alert-block fade in" role="alert"><button type="button" class="close" data-dismiss="alert">×</button>{{#str}}editingstarts, mod_margic, {{#userdate}}{{edittimestarts}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}}{{/str}}</div>{{/edittimestarts}}{{/edittimenotstarted}}
+    <h3>{{#str}}overview, mod_margic{{/str}}</h3>
 
-<h3>{{#str}}overview, mod_margic{{/str}}</h3>
+    <div class="pb-2">
+        {{#ratingaggregationmode}}{{#entries.0}}
+                <strong>{{ratingaggregationmode}}: </strong>
 
-<div class="pb-2">
-    {{#ratingaggregationmode}}{{#entries.0}}
-            <strong>{{ratingaggregationmode}}: </strong>
+                {{#currentuserrating}}
+                    {{currentuserrating}}
+                {{/currentuserrating}}
+        {{/entries.0}}{{/ratingaggregationmode}}
+        {{^ratingaggregationmode}}{{#str}}norating, mod_margic{{/str}}{{/ratingaggregationmode}}
+        {{#entries.0}}<span class="pull-right pr-5">
+            <strong>{{#str}}sorting, mod_margic{{/str}}</strong>{{#sortmode}}<strong>: </strong>{{sortmode}}{{/sortmode}}
+        </span>{{/entries.0}}
+    </div>
 
-            {{#currentuserrating}}
-                {{currentuserrating}}
-            {{/currentuserrating}}
-    {{/entries.0}}{{/ratingaggregationmode}}
-    {{^ratingaggregationmode}}{{#str}}norating, mod_margic{{/str}}{{/ratingaggregationmode}}
-    {{#entries.0}}<span class="pull-right pr-5">
-        <strong>{{#str}}sorting, mod_margic{{/str}}</strong>{{#sortmode}}<strong>: </strong>{{sortmode}}{{/sortmode}}
-    </span>{{/entries.0}}
-</div>
+    <div class="pb-1 actionbuttons">
+        {{^edittimehasended}}{{^edittimenotstarted}}<a class="btn btn-primary mr-1" href="edit.php?id={{cmid}}"> {{#str}}startnewentry, mod_margic{{/str}} </a>{{/edittimenotstarted}}{{/edittimehasended}}
+        {{#entries.0}}
+            {{#canmanageentries}}<button class="btn btn-primary" data-toggle="collapse" data-target=".gradingform" aria-expanded="false" aria-controls=".gradingform" title="{{#str}}toggleratingform, mod_margic{{/str}}">{{#str}}toggleratingform, mod_margic{{/str}}</button>{{/canmanageentries}}
+            {{#canmanageentries}}{{#singleuser}}<a class="btn btn-primary m-1" href="view.php?id={{cmid}}"> {{#str}}viewallentries, mod_margic{{/str}} </a>{{/singleuser}}{{/canmanageentries}}
+            {{^annotationmode}}
+                {{#canmakeannotations}}<a class="btn btn-primary m-1 buttonannotationmode" href="view.php?id={{cmid}}&annotationmode=1"> {{#str}}viewandmakeannotations, mod_margic{{/str}} </a>{{/canmakeannotations}}
+                {{^canmakeannotations}}<a class="btn btn-primary m-1 buttonannotationmode" href="view.php?id={{cmid}}&annotationmode=1"> {{#str}}viewannotations, mod_margic{{/str}} </a>{{/canmakeannotations}}
+            {{/annotationmode}}
+            {{#annotationmode}}
+                <a class="btn btn-primary m-1 buttonannotationmode" href="view.php?id={{cmid}}"> {{#str}}hideannotations, mod_margic{{/str}} </a>
+                <a class="btn btn-primary m-1 buttonannotationmode" href="" data-toggle="collapse" data-target=".collapseAnnotation" aria-expanded="false" aria-controls="collapseAnnotation" title="{{#str}}toggleallannotations, mod_margic{{/str}}"> {{#str}}toggleallannotations, mod_margic{{/str}} </a>
+            {{/annotationmode}}
+        {{/entries.0}}
+        {{#canmanageentries}}<a class="btn btn-primary m-1" href="annotations_summary.php?id={{cmid}}"> {{#str}}annotationssummary, mod_margic{{/str}} </a>{{/canmanageentries}}
 
-<div class="pb-1 actionbuttons">
-    {{^edittimehasended}}{{^edittimenotstarted}}<a class="btn btn-primary mr-1" href="edit.php?id={{cmid}}"> {{#str}}startnewentry, mod_margic{{/str}} </a>{{/edittimenotstarted}}{{/edittimehasended}}
+        {{#entries.0}}<span class="pull-right p-1">
+            <a href="view.php?id={{cmid}}&action=download" class="p-1 pr-2 border-right solid"><i class="fa fa-2x fa-download" title="{{#str}}csvexport, mod_margic{{/str}}"></i></a>
+            <a href="view.php?id={{cmid}}&action=currenttooldest" class="p-1"><i class="fa fa-2x fa-arrow-down" title="{{#str}}currenttooldest, mod_margic{{/str}}"></i></a>
+            <a href="view.php?id={{cmid}}&action=oldesttocurrent" class="p-1"><i class="fa fa-2x fa-arrow-up" title="{{#str}}oldesttocurrent, mod_margic{{/str}}"></i></a>
+            {{#ratingaggregationmode}}
+                <a href="view.php?id={{cmid}}&action=lowestgradetohighest" class="p-1"><i class="fa fa-2x fa-thumbs-down" title="{{#str}}lowestgradetohighest, mod_margic{{/str}}"></i></a>
+                <a href="view.php?id={{cmid}}&action=highestgradetolowest" class="p-1"><i class="fa fa-2x fa-thumbs-up" title="{{#str}}highestgradetolowest, mod_margic{{/str}}"></i></a>
+            {{/ratingaggregationmode}}
+        </span>{{/entries.0}}
+    </div>
+
     {{#entries.0}}
-        {{#canmanageentries}}<button class="btn btn-primary" data-toggle="collapse" data-target=".gradingform" aria-expanded="false" aria-controls=".gradingform" title="{{#str}}toggleratingform, mod_margic{{/str}}">{{#str}}toggleratingform, mod_margic{{/str}}</button>{{/canmanageentries}}
-        {{#canmanageentries}}{{#singleuser}}<a class="btn btn-primary m-1" href="view.php?id={{cmid}}"> {{#str}}viewallentries, mod_margic{{/str}} </a>{{/singleuser}}{{/canmanageentries}}
-        {{^annotationmode}}
-            {{#canmakeannotations}}<a class="btn btn-primary m-1" href="view.php?id={{cmid}}&annotationmode=1"> {{#str}}viewandmakeannotations, mod_margic{{/str}} </a>{{/canmakeannotations}}
-            {{^canmakeannotations}}<a class="btn btn-primary m-1" href="view.php?id={{cmid}}&annotationmode=1"> {{#str}}viewannotations, mod_margic{{/str}} </a>{{/canmakeannotations}}
-        {{/annotationmode}}
-        {{#annotationmode}}
-            <a class="btn btn-primary m-1" href="view.php?id={{cmid}}"> {{#str}}hideannotations, mod_margic{{/str}} </a>
-            <a class="btn btn-primary m-1" href="" data-toggle="collapse" data-target=".collapseAnnotation" aria-expanded="false" aria-controls="collapseAnnotation" title="{{#str}}toggleallannotations, mod_margic{{/str}}"> {{#str}}toggleallannotations, mod_margic{{/str}} </a>
-        {{/annotationmode}}
-    {{/entries.0}}
-    {{#canmanageentries}}<a class="btn btn-primary m-1" href="annotations_summary.php?id={{cmid}}"> {{#str}}annotationssummary, mod_margic{{/str}} </a>{{/canmanageentries}}
+    <form action="view.php?id={{cmid}}" method="post">
+        <input type="hidden" name="id" value="{{cmid}}">
+        <input type="hidden" name="sesskey" value="{{sesskey}}">
 
-    {{#entries.0}}<span class="pull-right p-1">
-        <a href="view.php?id={{cmid}}&action=download" class="p-1 pr-2 border-right solid"><i class="fa fa-2x fa-download" title="{{#str}}csvexport, mod_margic{{/str}}"></i></a>
-        <a href="view.php?id={{cmid}}&action=currenttooldest" class="p-1"><i class="fa fa-2x fa-arrow-down" title="{{#str}}currenttooldest, mod_margic{{/str}}"></i></a>
-        <a href="view.php?id={{cmid}}&action=oldesttocurrent" class="p-1"><i class="fa fa-2x fa-arrow-up" title="{{#str}}oldesttocurrent, mod_margic{{/str}}"></i></a>
-        {{#ratingaggregationmode}}
-            <a href="view.php?id={{cmid}}&action=lowestgradetohighest" class="p-1"><i class="fa fa-2x fa-thumbs-down" title="{{#str}}lowestgradetohighest, mod_margic{{/str}}"></i></a>
-            <a href="view.php?id={{cmid}}&action=highestgradetolowest" class="p-1"><i class="fa fa-2x fa-thumbs-up" title="{{#str}}highestgradetolowest, mod_margic{{/str}}"></i></a>
-        {{/ratingaggregationmode}}
-    </span>{{/entries.0}}
-</div>
+        <div class="mt-1">
+            <ul class="pagination">
+                {{#pagebar}}
+                    <li class="page-item">
+                        <a class="page-link" href="view.php?id={{cmid}}&page={{nr}}{{#annotationmode}}&annotationmode=1{{/annotationmode}}">{{{display}}}</a>
+                    </li>
+                {{/pagebar}}
 
-{{#entries.0}}
-<form action="view.php?id={{cmid}}" method="post">
-    <input type="hidden" name="id" value="{{cmid}}">
-    <input type="hidden" name="sesskey" value="{{sesskey}}">
-
-    <div class="mt-1">
-        <ul class="pagination">
-            {{#pagebar}}
-                <li class="page-item">
-                    <a class="page-link" href="view.php?id={{cmid}}&page={{nr}}{{#annotationmode}}&annotationmode=1{{/annotationmode}}">{{{display}}}</a>
-                </li>
-            {{/pagebar}}
-
-            <div class="ml-auto">
-                <strong>{{#str}}pagesize, mod_margic{{/str}}:</strong>
-                <select onchange="this.form.submit()" aria-label="Select page count" name="pagecount">
-                    {{#pagecountoptions}}<option {{option}}>{{text}}</option>{{/pagecountoptions}}
-                </select>
-                <strong> / {{entriescount}}</strong>
-            </div>
-        </ul>
-    </div>
-</form>
-
-<div class="d-flex justify-content-between">
-    <div class="align-self-center entriesheader {{^annotationmode}}w-100{{/annotationmode}}" style="background: {{entrybgc}}; {{#annotationmode}}width: {{entryareawidth}}% {{/annotationmode}}">
-        <h4 class="text-center">
-            {{#canmanageentries}}{{#str}}entries, mod_margic{{/str}}{{/canmanageentries}}
-            {{^canmanageentries}}{{#str}}myentries, mod_margic{{/str}}{{/canmanageentries}}
-        </h4>
-    </div>
-    {{#annotationmode}}
-        <div class="align-self-center annotationsheader" style="background: {{entrybgc}}; width: {{annotationareawidth}}%">
-            <h4 class="text-center">{{#str}} annotations, mod_margic {{/str}}</h4>
+                <div class="ml-auto">
+                    <strong>{{#str}}pagesize, mod_margic{{/str}}:</strong>
+                    <select onchange="this.form.submit()" aria-label="Select page count" name="pagecount">
+                        {{#pagecountoptions}}<option {{option}}>{{text}}</option>{{/pagecountoptions}}
+                    </select>
+                    <strong> / {{entriescount}}</strong>
+                </div>
+            </ul>
         </div>
-    {{/annotationmode}}
+    </form>
+
+    <div class="d-flex justify-content-between">
+        <div class="align-self-center entriesheader {{^annotationmode}}w-100{{/annotationmode}}" style="background: {{entrybgc}}; {{#annotationmode}}width: {{entryareawidth}}% {{/annotationmode}}">
+            <h4 class="text-center">
+                {{#canmanageentries}}{{#str}}entries, mod_margic{{/str}}{{/canmanageentries}}
+                {{^canmanageentries}}{{#str}}myentries, mod_margic{{/str}}{{/canmanageentries}}
+            </h4>
+        </div>
+        {{#annotationmode}}
+            <div class="align-self-center annotationsheader" style="background: {{entrybgc}}; width: {{annotationareawidth}}%">
+                <h4 class="text-center">{{#str}} annotations, mod_margic {{/str}}</h4>
+            </div>
+        {{/annotationmode}}
+    </div>
+    {{/entries.0}}
+
+    {{#entries}}
+        {{{entry}}}
+    {{/entries}}
+
+    {{^entries}}
+        <br>
+        {{#canmanageentries}}{{#str}}noentriesfound, mod_margic{{/str}}{{/canmanageentries}}
+        {{^canmanageentries}}{{#str}}notstarted, mod_margic{{/str}}{{/canmanageentries}}
+    {{/entries}}
 </div>
-{{/entries.0}}
-
-{{#entries}}
-    {{{entry}}}
-{{/entries}}
-
-{{^entries}}
-    <br>
-    {{#canmanageentries}}{{#str}}noentriesfound, mod_margic{{/str}}{{/canmanageentries}}
-    {{^canmanageentries}}{{#str}}notstarted, mod_margic{{/str}}{{/canmanageentries}}
-{{/entries}}

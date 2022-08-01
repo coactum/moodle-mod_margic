@@ -251,10 +251,11 @@ if ($form->is_cancelled()) {
 echo $OUTPUT->header();
 echo $OUTPUT->heading(format_string($moduleinstance->name));
 
-$intro = format_module_intro('margic', $moduleinstance, $cm->id);
-echo $OUTPUT->box($intro);
+if ($moduleinstance->intro) {
+    echo $OUTPUT->box(format_module_intro('margic', $moduleinstance, $cm->id), 'generalbox mod_introbox', 'newmoduleintro');
+}
 
-echo $OUTPUT->heading($title, 3);
+echo $OUTPUT->heading($title, 4);
 
 // If existing entry is edited render entry.
 if ($entry) {
