@@ -236,6 +236,7 @@ export const init = (annotations, canmakeannotations, myuserid) => {
             if (annotationid) {
                 highlightEl.className += ' ' + cssClass + '-' + annotationid;
                 // highlightEl.tabIndex = 1;
+                highlightEl.style = "text-decoration:underline; text-decoration-color: #" + color;
                 highlightEl.id = cssClass + '-' + annotationid;
                 highlightEl.style.backgroundColor = '#' + color;
             }
