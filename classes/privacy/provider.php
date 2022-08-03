@@ -93,6 +93,7 @@ class provider implements \core_privacy\local\metadata\provider,
         // The margic uses multiple subsystems that save personal data.
         $items->add_subsystem_link('core_files', [], 'privacy:metadata:core_files');
         $items->add_subsystem_link('core_rating', [], 'privacy:metadata:core_rating');
+        $items->add_subsystem_link('core_message', [], 'privacy:metadata:core_message');
 
         // User preferences in the margic.
         $items->add_user_preference('sortoption', 'privacy:metadata:preference:sortoption');

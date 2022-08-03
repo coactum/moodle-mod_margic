@@ -42,20 +42,12 @@ $string['margic:addentries'] = 'Margic-Einträge hinzufügen';
 $string['margic:addinstance'] = 'Margic-Instanzen hinzufügen';
 $string['margic:manageentries'] = 'Margic-Einträge verwalten';
 $string['margic:rate'] = 'Margic-Einträge bewerten';
+$string['margic:receivegradingmessages'] = 'Nachrichten über die Bewertung von Einträgen erhalten';
+$string['margic:editdefaulterrortypes'] = 'Standardfehlertyp-Vorlagen bearbeiten';
 $string['margicclosetime'] = 'Endzeitpunkt';
 $string['margicclosetime_help'] = 'Wenn diese Option aktiviert ist können Sie ein Datum festlegen, an dem die Margic-Instanz geschlossen wird. Teilnehmende können danach keine Einträge mehr anlegen oder bearbeiten.';
 $string['margicdescription'] = 'Beschreibung der Margic-Instanz';
 $string['margicentrydate'] = 'Datum für diesen Eintrag festlegen';
-$string['margicmail'] = 'Hallo {$a->user},
-{$a->teacher} hat einige Rückmeldungen zu Ihrem Margic-Eintrag für \'{$a->margic}\' veröffentlicht.
-
-Sie können diese als Anhang zu Ihrem Margic-Eintrag sehen:
-
-    {$a->url}';
-$string['margicmailhtml'] = 'Hallo {$a->user},
-{$a->teacher} hat einige Rückmeldungen zu Ihrem
-Margic-Eintrag für \'<i>{$a->margic}</i>\' veröffentlicht.<br /><br />
-Sie können diese als Anhang zu Ihrem <a href="{$a->url}">Margic-Eintrag sehen >/a>.';
 $string['margicname'] = 'Name der Margic-Instanz';
 $string['margicdescription'] = 'Beschreibung der Margic-Instanz';
 $string['margicopentime'] = 'Startzeit';
@@ -93,8 +85,6 @@ $string['gradeingradebook'] = 'Aktuelle Bewertung aus der Bewertungsübersicht';
 $string['feedbackingradebook'] = 'Aktuelles Feedback aus der Bewertungsübersicht';
 $string['lastnameasc'] = 'Nachname aufsteigend:';
 $string['lastnamedesc'] = 'Nachname absteigend:';
-$string['mailed'] = 'Benachrichtigt';
-$string['mailsubject'] = 'Rückmeldung zur Margic-Instanz';
 $string['modulename'] = 'Margic';
 $string['modulename_help'] = 'Die Margic-Instanz kann tolle Dinge ...';
 $string['modulenameplural'] = 'Margics';
@@ -269,6 +259,17 @@ $string['at'] = 'am';
 $string['from'] = 'von';
 $string['toggleolderversions'] = 'Ältere Versionen ein- oder ausblenden';
 $string['timecreatedinvalid'] = 'Änderung fehlgeschlagen. Es gibt bereits jüngere Versionen dieses Beitrags.';
+$string['messageprovider:gradingmessages'] = 'Systemnachrichten bei der Bewertung von Einträgen';
+$string['sendgradingmessage'] = 'Ersteller/in des Eintrags sofort über die Bewertung benachrichtigen';
+$string['mailed'] = 'Benachrichtigt';
+$string['gradingmailsubject'] = 'Feedback zu Margic-Eintrag erhalten';
+$string['gradingmailfullmessage'] = 'Hallo {$a->user},
+{$a->teacher} hat eine Rückmeldung beziehungsweise Bewertung zu Ihrem Eintrag im Margic {$a->margic} veröffentlicht.
+Hier können Sie diese ansehen: {$a->url}';
+$string['gradingmailfullmessagehtml'] = 'Hallo {$a->user},<br>
+{$a->teacher} hat eine Rückmeldung beziehungsweise Bewertung zu Ihrem Eintrag im Margic <strong>{$a->margic}</strong> veröffentlicht.<br><br>
+<a href="{$a->url}"><strong>Hier</strong></a> können Sie diese ansehen.';
+$string['mailfooter'] = 'Diese Nachricht bezieht sich auf ein Margic in {$a->systemname}. Unter dem folgenden Link finden Sie alle weiteren Informationen. <br> {$a->coursename} -> Margic -> {$a->name} <br> {$a->url}';
 
 // Privacy.
 $string['privacy:metadata:margic_entries'] = 'Enthält die gespeicherten Benutzereinträge aller Margics.';
@@ -296,8 +297,9 @@ $string['privacy:metadata:margic_errortype_templates:timemodified'] = 'Zeitpunkt
 $string['privacy:metadata:margic_errortype_templates:name'] = 'Name der Fehlertyp-Vorlage.';
 $string['privacy:metadata:margic_errortype_templates:color'] = 'Farbe der Fehlertyp-Vorlage als Hex-Wert.';
 $string['privacy:metadata:margic_errortype_templates:userid'] = 'ID des Benutzers, der die Fehlertyp-Vorlage erstellt hat.';
-$string['privacy:metadata:core_rating'] = 'Die zu den Margic-Einträgen hinzugefügten Bewertungen werden unter Verwendung des core_rating-Systems gespeichert.';
-$string['privacy:metadata:core_files'] = 'Dateien, die mit Margic-Einträgen verknüpft sind, werden mithilfe des Systems core_files gespeichert.';
+$string['privacy:metadata:core_rating'] = 'Es werden zu Margic-Einträgen hinzugefügte Bewertungen gespeichert.';
+$string['privacy:metadata:core_files'] = 'Es werden mit Margic-Einträgen verknüpfte Dateien gespeichert.';
+$string['privacy:metadata:core_message'] = 'Es werden Nachrichten über die Bewertung von Margic-Einträgen an Benutzer versendet.';
 $string['privacy:metadata:preference:sortoption'] = 'Die Präferenz für die Sortierung jedes Margics.';
 $string['privacy:metadata:preference:margic_pagecount'] = 'Die Anzahl der Einträge, die pro Seite in jedem Margic angezeigt werden sollen.';
 $string['privacy:metadata:preference:margic_activepage'] = 'Die Nummer der aktuell geöffneten Seite in jedem Margic.';

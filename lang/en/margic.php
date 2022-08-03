@@ -81,16 +81,8 @@ $string['margic:addentries'] = 'Add margic entries';
 $string['margic:addinstance'] = 'Add margic instances';
 $string['margic:manageentries'] = 'Manage margic entries';
 $string['margic:rate'] = 'Rate margic entries';
-$string['margicmail'] = 'Greetings {$a->user},
-{$a->teacher} has posted some feedback on your margic entry for \'{$a->margic}\'.
-
-You can see it appended to your margic entry:
-
-    {$a->url}';
-$string['margicmailhtml'] = 'Greetings {$a->user},
-{$a->teacher} has posted some feedback on your
-margic entry for \'<i>{$a->margic}</i>\'.<br /><br />
-You can see it appended to your <a href="{$a->url}">margic entry</a>.';
+$string['margic:receivegradingmessages'] = 'Receive messages about the rating of entries';
+$string['margic:editdefaulterrortypes'] = 'Edit default error type templates';
 $string['margicname'] = 'Name of the margic';
 $string['margicdescription'] = 'Description of the margic';
 $string['format'] = 'Format';
@@ -106,8 +98,6 @@ $string['invalidtimeresettime'] = 'The time was reset to the original time of: {
 
 $string['lastnameasc'] = 'Last name ascending:';
 $string['lastnamedesc'] = 'Last name descending:';
-$string['mailed'] = 'Mailed';
-$string['mailsubject'] = 'margic feedback';
 $string['modulename'] = 'Margic';
 $string['modulename_help'] = 'The margic activity enables teachers to obtain students feedback
  over a period of time.';
@@ -282,6 +272,17 @@ $string['at'] = 'at';
 $string['from'] = 'from';
 $string['toggleolderversions'] = 'Toggle older versions of the entry';
 $string['timecreatedinvalid'] = 'Change failed. There are already younger versions of this entry.';
+$string['messageprovider:gradingmessages'] = 'Notifications when entries are rated';
+$string['sendgradingmessage'] = 'Notify the creator of the entry immediately about the rating';
+$string['mailed'] = 'Mailed';
+$string['gradingmailsubject'] = 'Received feedback for Margic entry';
+$string['gradingmailfullmessage'] = 'Greetings {$a->user},
+{$a->teacher} has published a feedback or rating for your entry in Margic {$a->margic}.
+Here you can view them: {$a->url}';
+$string['gradingmailfullmessagehtml'] = 'Greetings {$a->user},<br>
+{$a->teacher} has published a feedback or rating for your entry in Margic <strong>{$a->margic}</strong>.<br><br>
+<a href="{$a->url}"><strong>Here</strong></a> you can view them.';
+$string['mailfooter'] = 'This message is about a Margic in {$a->systemname}. You can find all further information under the following link: <br> {$a->coursename} -> Margic -> {$a->name} <br> {$a->url}';
 
 // Privacy.
 $string['privacy:metadata:margic_entries'] = 'Contains the user entries saved in all margics.';
@@ -309,8 +310,9 @@ $string['privacy:metadata:margic_errortype_templates:timemodified'] = 'Time the 
 $string['privacy:metadata:margic_errortype_templates:name'] = 'Name of the errortype template.';
 $string['privacy:metadata:margic_errortype_templates:color'] = 'Color of the errortype template as hex value.';
 $string['privacy:metadata:margic_errortype_templates:userid'] = 'ID of the user that made the errortype template.';
-$string['privacy:metadata:core_rating'] = 'Ratings added to margic entries are stored using the core_rating system.';
-$string['privacy:metadata:core_files'] = 'Files linked to margic entries are stored using the core_files system.';
+$string['privacy:metadata:core_rating'] = 'Ratings added to Margic entries are saved.';
+$string['privacy:metadata:core_files'] = 'Files associated with Margic entries are saved.';
+$string['privacy:metadata:core_message'] = 'Messages are sent to users about the grading of Margic entries.';
 $string['privacy:metadata:preference:sortoption'] = 'The preference for the sorting of each margic.';
 $string['privacy:metadata:preference:margic_pagecount'] = 'The number of entries that should be shown per page for each Margic.';
 $string['privacy:metadata:preference:margic_activepage'] = 'The number of the page currently opened in each Margic.';

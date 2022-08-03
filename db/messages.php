@@ -15,17 +15,23 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Plugin version and other meta-data are defined here.
+ * Plugin message providers are defined here.
  *
- * @package   mod_margic
- * @copyright 2022 coactum GmbH
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package     mod_margic
+ * @category    message
+ * @copyright   2022 coactum GmbH
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'mod_margic';
-$plugin->release = '1.1.3';        // User-friendly version number.
-$plugin->version = 2022080100;        // The current module version (Date: YYYYMMDDXX).
-$plugin->requires  = 2020061507;      // Requires Moodle 3.9.
-$plugin->maturity  = MATURITY_BETA;
+$messageproviders = array (
+
+    'gradingmessages' => array(
+        'capability' => 'mod/margic:receivegradingmessages',
+        'defaults' => array(
+            'popup' => MESSAGE_PERMITTED + MESSAGE_DEFAULT_LOGGEDIN + MESSAGE_DEFAULT_LOGGEDOFF,
+            'email' => MESSAGE_PERMITTED,
+        ),
+    ),
+);
