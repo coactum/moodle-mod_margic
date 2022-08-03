@@ -68,6 +68,12 @@ if (! $coursesections = $DB->get_record("course_sections", array(
 
 require_login($course, true, $cm);
 
+// Get annotation (ajax).
+if ($getannotations) {
+    echo json_encode($margic->get_annotations());
+    die;
+}
+
 require_capability('mod/margic:makeannotations', $context);
 
 // Header.
@@ -77,12 +83,6 @@ $PAGE->set_title(format_string($moduleinstance->name));
 $urlparams = array('id' => $id, 'annotationmode' => 1);
 
 $redirecturl = new moodle_url('/mod/margic/view.php', $urlparams);
-
-// Get annotation (ajax).
-if ($getannotations) {
-    echo json_encode($margic->get_annotations());
-    die;
-}
 
 // Delete annotation.
 if (has_capability('mod/margic:makeannotations', $context) && $deleteannotation !== 0) {

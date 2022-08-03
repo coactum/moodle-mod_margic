@@ -604,7 +604,7 @@ class margic {
         $position = 0;
 
         $doc = new DOMDocument();
-        $doc->loadHTML($entry->text);
+        @$doc->loadHTML($entry->text);
 
         $this->index_original($doc);
 
