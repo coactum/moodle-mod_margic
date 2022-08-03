@@ -485,7 +485,10 @@ class margic {
     private function index_original($doc) {
 
         // var_dump('index_original: $doc');
+
+        // echo '<pre>';
         // var_dump($doc);
+        // echo '</pre>';
 
         foreach ($doc->childNodes as $childnode) {
             // var_dump('index_original: $childnode');
@@ -607,8 +610,20 @@ class margic {
 
         $this->index_original($doc);
 
-        // var_dump('NEW ENTRY');
-        // var_dump($i);
+        // echo '<pre>';
+        // var_dump('Text');
+        // var_dump(htmlspecialchars($entry->text));
+        // echo '</pre>';
+
+        // echo '<pre>';
+            // foreach ($this->nodepositions as $position => $node) {
+            //     if (isset($node->tagName)) {
+            //         echo $position . ' ' . $node->tagName . "\n";
+            //     } else {
+            //         echo $position . ' ' . $node->nodeValue . "\n";
+            //     }
+            // }
+        // echo '</pre>';
 
         // var_dump('<br>');
         // var_dump('<br>');
@@ -672,16 +687,83 @@ class margic {
 
             // var_dump('$nodepositions');
             // var_dump($this->nodepositions);
+            // echo '<pre>';
+            $found = false;
 
             foreach ($this->nodepositions as $position => $node) {
+                // if ($annotation->text == 'sadipscing') {
+                //     var_dump($annotation->startcontainer);
+                //     var_dump($nodelist[0]);
+                //     var_dump($node);
+                // }
+
                 if ($nodelist[0] === $node) { // Check if startcontainer node ($nodelist[0]) is same as node in nodepositions array.
+                    $found = true;
                     $entry->annotations[$key]->position = $position; // If so asssign its position to annotation.
                     // echo "POSITION OF ANNOTATION:  <br>";
                     // echo $entry->annotations[$key]->position;
                     // echo "<br>";
+
+                    // echo 'position:' . $position . " \n";
+                    // echo $annotation->text . " \n";
+                    // echo 'offset:' . $annotation->startposition . " \n";
+                    // echo " \n\n";
+
+                    // echo 'HIGHLIHGHT';
+                    // $span = $doc->createElement('span', htmlspecialchars(substr($nodelist[0]->textContent, $annotation->startposition)));
+                    // var_dump($doc->saveXml($span));
                     break;
                 }
             }
+
+            if (!$found) {
+                // echo 'Ich darf nicht passieren!!!!';
+                $diffoffsets = 0;
+                foreach ($entry->annotations as $key2 => $annotation2) {
+                    $xpathprefix1 = substr($annotation->startcontainer, 0, -3);
+                    $xpathprefix2 = substr($annotation2->startcontainer, 0, -3);
+
+                    if ($key2 >= $key) {
+                        break;
+                    }
+
+                    if ($xpathprefix2 == $xpathprefix1) {
+                        $diffoffsets += $annotation2->startposition;
+                    }
+                }
+
+                $xpath = new DOMXpath($doc);
+                $fixedxpath = substr($annotation->startcontainer, 0, -3) . '[1]';
+                $nodelist = $xpath->query('/' . $fixedxpath);
+
+                // echo 'NOT FOUND' . " \n";
+                // var_dump($annotation->startcontainer);
+                // var_dump('/' . $fixedxpath);
+                // var_dump($nodelist[0]);
+                // var_dump($node);
+
+                foreach ($this->nodepositions as $position => $node) {
+
+                    if ($nodelist[0] === $node) { // Check if startcontainer node ($nodelist[0]) is same as node in nodepositions array.
+                        $found = true;
+                        $entry->annotations[$key]->position = $position; // If so asssign its position to annotation.
+                        // echo "POSITION OF ANNOTATION:  <br>";
+                        // echo $entry->annotations[$key]->position;
+                        // echo "<br>";
+
+                        // echo 'position fixed:' . $position . " \n";
+                        // echo $annotation->text . " \n";
+                        // echo 'offset:' . $annotation->startposition . " \n";
+                        // echo " \n\n";
+                        //$annotation->startposition += $diffoffsets;
+                        break;
+                    }
+
+                }
+            }
+
+            // echo '</pre>';
+
         }
 
         // Sort annotations by position and offset of startcontainer.
