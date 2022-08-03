@@ -321,8 +321,6 @@ class margic {
      * @return array action
      */
     public function get_annotations() {
-        global $DB, $USER;
-
         return $this->annotations;
     }
 

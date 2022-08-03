@@ -35,6 +35,9 @@ $id = required_param('id', PARAM_INT);
 // Module instance ID as alternative.
 $m  = optional_param('m', null, PARAM_INT);
 
+// Param if annotations should be returned via ajax.
+$getannotations = optional_param('getannotations',  0, PARAM_INT);
+
 // Param if annotation should be deleted.
 $deleteannotation = optional_param('deleteannotation',  0, PARAM_INT); // Annotation to be deleted.
 
@@ -74,6 +77,12 @@ $PAGE->set_title(format_string($moduleinstance->name));
 $urlparams = array('id' => $id, 'annotationmode' => 1);
 
 $redirecturl = new moodle_url('/mod/margic/view.php', $urlparams);
+
+// Get annotation (ajax).
+if ($getannotations) {
+    echo json_encode($margic->get_annotations());
+    die;
+}
 
 // Delete annotation.
 if (has_capability('mod/margic:makeannotations', $context) && $deleteannotation !== 0) {

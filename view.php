@@ -125,9 +125,7 @@ if ($annotationmode === 1 && has_capability('mod/margic:viewannotations', $conte
     $PAGE->navbar->add(get_string('viewannotations', 'mod_margic'));
 
     $PAGE->requires->js_call_amd('mod_margic/annotations', 'init',
-        array('annotations' => $margic->get_annotations(),
-            'canmakeannotations' => $canmakeannotations,
-            'myuserid' => $USER->id));
+        array( 'cmid' => $cm->id, 'canmakeannotations' => $canmakeannotations, 'myuserid' => $USER->id));
 } else {
     // Header.
     $PAGE->set_url('/mod/margic/view.php', array(

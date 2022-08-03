@@ -23,8 +23,11 @@
 
 import $ from 'jquery';
 
-export const init = (annotations, canmakeannotations, myuserid) => {
+export const init = (cmid, canmakeannotations, myuserid) => {
+
     var edited = false;
+    var annotations = Array();
+
     // Hide all Moodle forms.
     $('.annotation-form').hide();
 
@@ -34,11 +37,130 @@ export const init = (annotations, canmakeannotations, myuserid) => {
     $('.annotation-form div.form-group').removeClass('form-group');
     $('.annotation-form div.row').removeClass('row');
 
+    // Onclick listener if form is canceled.
+    $(document).on('click', '#id_cancel', function(e) {
+        e.preventDefault();
+
+        removeAllTempHighlights(); // Remove other temporary highlights.
+
+        resetForms(); // Remove old form contents.
+
+        edited = false;
+    });
+
+    // Listen for return key pressed to submit annotation form.
+    $('textarea').keypress(function (e) {
+        if (e.which == 13) {
+            $(this).parents(':eq(2)').submit();
+            e.preventDefault();
+        }
+    });
+
+    // If user selects text for new annotation
+    $(document).on('mouseup', '.originaltext', function () {
+        var selectedrange = window.getSelection().getRangeAt(0);
+
+        if (selectedrange.cloneContents().textContent !== '' && canmakeannotations) {
+
+            removeAllTempHighlights(); // Remove other temporary highlights.
+
+            resetForms(); // Remove old form contents.
+
+            var entry = this.id.replace(/entry-/, '');
+
+            $('.annotation-form-' + entry + ' input[name="startcontainer"]').val(
+                xpathFromNode(selectedrange.startContainer, this));
+            $('.annotation-form-' + entry + ' input[name="endcontainer"]').val(
+                xpathFromNode(selectedrange.endContainer, this));
+            $('.annotation-form-' + entry + ' input[name="startposition"]').val(selectedrange.startOffset);
+            $('.annotation-form-' + entry + ' input[name="endposition"]').val(selectedrange.endOffset);
+
+            $('.annotation-form-' + entry + ' select').val(1);
+
+            var annotatedtext = highlightRange(selectedrange, false, 'annotated_temp');
+
+            if (annotatedtext != '') {
+                $('#annotationpreview-temp-' + entry).html(annotatedtext);
+            }
+
+            $('.annotationarea-' + entry + ' .annotation-form').show();
+            $('.annotation-form-' + entry + ' #id_text').focus();
+        }
+    });
+
+    // Fetch and recreate annotations.
+    $.ajax({
+        url: './annotations.php',
+        data: {'id': cmid, 'getannotations': 1},
+        success: function(response) {
+            annotations = JSON.parse(response);
+            recreateAnnotations();
+
+            // Highlight annotation and all annotated text if annotated text is hovered
+            $('.annotated').mouseenter(function () {
+                var id = this.id.replace('annotated-', '');
+                $('.annotationpreview-' + id).addClass('hovered');
+                $('.annotated-' + id).addClass('hovered');
+                $('.annotation-box-' + id + ' .errortype').addClass('hovered');
+
+            });
+
+            $('.annotated').mouseleave(function () {
+                var id = this.id.replace('annotated-', '');
+                $('.annotationpreview-' + id).removeClass('hovered');
+                $('.annotated-' + id).removeClass('hovered');
+                $('.annotation-box-' + id + ' .errortype').removeClass('hovered');
+            });
+
+            // Highlight annotated text if annotationpreview is hovered
+            $('.annotatedtextpreview').mouseenter(function () {
+                var id = this.id.replace('annotationpreview-', '');
+                $('.annotated-' + id).addClass('hovered');
+            });
+
+            $('.annotatedtextpreview').mouseleave(function () {
+                var id = this.id.replace('annotationpreview-', '');
+                $('.annotated-' + id).removeClass('hovered');
+            });
+
+            // Highlight whole temp annotation if part of temp annotation is hovered
+            $(document).on('mouseover', '.annotated_temp', function () {
+                $('.annotated_temp').addClass('hovered');
+            });
+
+            $(document).on('mouseleave', '.annotated_temp', function () {
+                $('.annotated_temp').removeClass('hovered');
+            });
+
+            // Onclick listener for editing annotation.
+            $(document).on('click', '.annotated', function () {
+                var id = this.id.replace('annotated-', '');
+                editAnnotation(id);
+            });
+
+            // Onclick listener for editing annotation.
+            $(document).on('click', '.edit-annotation', function () {
+                var id = this.id.replace('edit-annotation-', '');
+                editAnnotation(id);
+            });
+
+            // Onclick listener for click on annotation-box.
+            // $(document).on('click', '.annotation-box', function() {
+            //     var id = this.id.replace('annotation-box-', '');
+            //     $('#annotated-' + id).focus();
+            // });
+        },
+        error: function() {
+            alert ('Error fetiching annotations');
+        }
+    });
+
     /**
      * Recreate annotations.
      *
      */
     function recreateAnnotations() {
+
         for (let annotation of Object.values(annotations)) {
 
             // Recreate range from db.
@@ -120,6 +242,32 @@ export const init = (annotations, canmakeannotations, myuserid) => {
         $('.annotation-form textarea[name^="text"]').val('');
 
         $('.annotation-box').not('.annotation-form').show(); // To show again edited annotation.
+    }
+
+    /**
+     * Remove all temporary highlights under a given root element.
+     */
+     function removeAllTempHighlights() {
+        const highlights = Array.from($('body')[0].querySelectorAll('.annotated_temp'));
+        if (highlights !== undefined && highlights.length != 0) {
+            removeHighlights(highlights);
+        }
+    }
+
+    /**
+     * Remove highlights from a range previously highlighted with `highlightRange`.
+     *
+     * @param {HighlightElement[]} highlights - The highlight elements returned by `highlightRange`
+     */
+    function removeHighlights(highlights) {
+        for (var i = 0; i < highlights.length; i++) {
+            if (highlights[i].parentNode) {
+                var pn = highlights[i].parentNode;
+                const children = Array.from(highlights[i].childNodes);
+                replaceWith(highlights[i], children);
+                pn.normalize();
+            }
+        }
     }
 
     /**
@@ -476,138 +624,4 @@ export const init = (annotations, canmakeannotations, myuserid) => {
         replacements.forEach(r => parent.insertBefore(r, node));
         node.remove();
     }
-
-    /**
-     * Remove all temporary highlights under a given root element.
-     */
-    function removeAllTempHighlights() {
-        const highlights = Array.from($('body')[0].querySelectorAll('.annotated_temp'));
-        if (highlights !== undefined && highlights.length != 0) {
-            removeHighlights(highlights);
-        }
-    }
-
-    /**
-     * Remove highlights from a range previously highlighted with `highlightRange`.
-     *
-     * @param {HighlightElement[]} highlights - The highlight elements returned by `highlightRange`
-     */
-    function removeHighlights(highlights) {
-        for (var i = 0; i < highlights.length; i++) {
-            if (highlights[i].parentNode) {
-                var pn = highlights[i].parentNode;
-                const children = Array.from(highlights[i].childNodes);
-                replaceWith(highlights[i], children);
-                pn.normalize();
-            }
-        }
-    }
-
-    // If user selects text for new annotation
-    $(document).on('mouseup', '.originaltext', function () {
-        var selectedrange = window.getSelection().getRangeAt(0);
-
-        if (selectedrange.cloneContents().textContent !== '' && canmakeannotations) {
-
-            removeAllTempHighlights(); // Remove other temporary highlights.
-
-            resetForms(); // Remove old form contents.
-
-            var entry = this.id.replace(/entry-/, '');
-
-            $('.annotation-form-' + entry + ' input[name="startcontainer"]').val(
-                xpathFromNode(selectedrange.startContainer, this));
-            $('.annotation-form-' + entry + ' input[name="endcontainer"]').val(
-                xpathFromNode(selectedrange.endContainer, this));
-            $('.annotation-form-' + entry + ' input[name="startposition"]').val(selectedrange.startOffset);
-            $('.annotation-form-' + entry + ' input[name="endposition"]').val(selectedrange.endOffset);
-
-            $('.annotation-form-' + entry + ' select').val(1);
-
-            var annotatedtext = highlightRange(selectedrange, false, 'annotated_temp');
-
-            if (annotatedtext != '') {
-                $('#annotationpreview-temp-' + entry).html(annotatedtext);
-            }
-
-            $('.annotationarea-' + entry + ' .annotation-form').show();
-            $('.annotation-form-' + entry + ' #id_text').focus();
-        }
-    });
-
-    recreateAnnotations();
-
-    // Highlight annotation and all annotated text if annotated text is hovered
-    $('.annotated').mouseenter(function () {
-        var id = this.id.replace('annotated-', '');
-        $('.annotationpreview-' + id).addClass('hovered');
-        $('.annotated-' + id).addClass('hovered');
-        $('.annotation-box-' + id + ' .errortype').addClass('hovered');
-
-    });
-
-    $('.annotated').mouseleave(function () {
-        var id = this.id.replace('annotated-', '');
-        $('.annotationpreview-' + id).removeClass('hovered');
-        $('.annotated-' + id).removeClass('hovered');
-        $('.annotation-box-' + id + ' .errortype').removeClass('hovered');
-    });
-
-    // Highlight annotated text if annotationpreview is hovered
-    $('.annotatedtextpreview').mouseenter(function () {
-        var id = this.id.replace('annotationpreview-', '');
-        $('.annotated-' + id).addClass('hovered');
-    });
-
-    $('.annotatedtextpreview').mouseleave(function () {
-        var id = this.id.replace('annotationpreview-', '');
-        $('.annotated-' + id).removeClass('hovered');
-    });
-
-    // Highlight whole temp annotation if part of temp annotation is hovered
-    $(document).on('mouseover', '.annotated_temp', function () {
-        $('.annotated_temp').addClass('hovered');
-    });
-
-    $(document).on('mouseleave', '.annotated_temp', function () {
-        $('.annotated_temp').removeClass('hovered');
-    });
-
-    // Onclick listener for editing annotation.
-    $(document).on('click', '.annotated', function () {
-        var id = this.id.replace('annotated-', '');
-        editAnnotation(id);
-    });
-
-    // Onclick listener for editing annotation.
-    $(document).on('click', '.edit-annotation', function () {
-        var id = this.id.replace('edit-annotation-', '');
-        editAnnotation(id);
-    });
-
-    // Onclick listener for click on annotation-box.
-    // $(document).on('click', '.annotation-box', function() {
-    //     var id = this.id.replace('annotation-box-', '');
-    //     $('#annotated-' + id).focus();
-    // });
-
-    // onclick listener if form is canceled
-    $(document).on('click', '#id_cancel', function (e) {
-        e.preventDefault();
-
-        removeAllTempHighlights(); // Remove other temporary highlights.
-
-        resetForms(); // Remove old form contents.
-
-        edited = false;
-    });
-
-    // Listen for return key pressed to submit annotation form.
-    $('textarea').keypress(function (e) {
-        if (e.which == 13) {
-            $(this).parents(':eq(2)').submit();
-            e.preventDefault();
-        }
-    });
-
 };
