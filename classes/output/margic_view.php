@@ -203,7 +203,6 @@ class margic_view implements renderable, templatable {
             }
         }
 
-
         $data->entries = $this->entries;
         $data->sortmode = $this->sortmode;
         $data->entrybgc = $this->entrybgc;

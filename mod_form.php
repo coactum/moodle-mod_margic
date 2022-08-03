@@ -125,6 +125,13 @@ class mod_margic_mod_form extends moodleform_mod {
         $this->add_action_buttons();
     }
 
+    /**
+     * Validate form.
+     *
+     * @param object $data The data from the form.
+     * @param object $files The files from the form.
+     * @return object $errors The errors.
+     */
     public function validation($data, $files) {
         $errors = parent::validation($data, $files);
 

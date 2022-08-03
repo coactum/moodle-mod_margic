@@ -607,7 +607,6 @@ function margic_reset_userdata($data) {
 /**
  * Removes all grades in the margic gradebook
  *
- * @global object
  * @param int $courseid
  */
 function margic_reset_gradebook($courseid) {
