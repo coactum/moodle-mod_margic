@@ -343,8 +343,6 @@ function margic_user_complete($course, $user, $mod, $margic) {
 function margic_print_recent_activity($course, $viewfullnames, $timestart) {
     global $CFG, $USER, $DB, $OUTPUT;
 
-    error_log('margic_print_recent_activity');
-
     $params = array(
         $timestart,
         $course->id,
@@ -357,14 +355,14 @@ function margic_print_recent_activity($course, $viewfullnames, $timestart) {
         $userfieldsapi = \core_user\fields::for_userpic();
         $namefields = $userfieldsapi->get_sql('u', false, '', 'userid', false)->selects;;
     }
-    $sql = "SELECT e.id, e.timemodified, cm.id AS cmid, $namefields
+    $sql = "SELECT e.id, e.timecreated, cm.id AS cmid, $namefields
               FROM {margic_entries} e
               JOIN {margic} d ON d.id = e.margic
               JOIN {course_modules} cm ON cm.instance = d.id
               JOIN {modules} md ON md.id = cm.module
               JOIN {user} u ON u.id = e.userid
-             WHERE e.timemodified > ? AND d.course = ? AND md.name = ?
-          ORDER BY u.lastname ASC, u.firstname ASC
+             WHERE e.timecreated > ? AND d.course = ? AND md.name = ?
+          ORDER BY timecreated DESC
     ";
 
     $newentries = $DB->get_records_sql($sql, $params);
@@ -388,8 +386,10 @@ function margic_print_recent_activity($course, $viewfullnames, $timestart) {
         }
         $context = context_module::instance($entry->cmid);
 
+        $teacher = has_capability('mod/margic:manageentries', $context);
+
         // Only teachers can see other students entries.
-        if (! has_capability('mod/margic:manageentries', $context)) {
+        if (!$teacher) {
             continue;
         }
 
@@ -421,13 +421,13 @@ function margic_print_recent_activity($course, $viewfullnames, $timestart) {
         return false;
     }
 
-    echo $OUTPUT->heading(get_string('neworeditedmargicentries', 'margic') . ':', 6);
+    echo $OUTPUT->heading(get_string('newmargicentries', 'margic') . ':', 6);
 
     foreach ($show as $entry) {
         $cm = $modinfo->get_cm($entry->cmid);
         $context = context_module::instance($entry->cmid);
         $link = $CFG->wwwroot . '/mod/margic/view.php?id=' . $cm->id;
-        print_recent_activity_note($entry->timemodified, $entry, $cm->name, $link, false, $viewfullnames);
+        print_recent_activity_note($entry->timecreated, $entry, $cm->name, $link, false, $viewfullnames);
         echo '<br>';
     }
 
@@ -450,8 +450,6 @@ function margic_get_recent_mod_activity(&$activities, &$index, $timestart, $cour
     $cmid, $userid=0, $groupid=0) {
 
     global $CFG, $COURSE, $USER, $DB;
-
-    error_log('margic_get_recent_mod_activity');
 
     if ($COURSE->id == $courseid) {
         $course = $COURSE;
@@ -486,14 +484,14 @@ function margic_get_recent_mod_activity(&$activities, &$index, $timestart, $cour
     $userfields = user_picture::fields('u', null, 'userid');
 
     $entries = $DB->get_records_sql(
-        'SELECT e.id, e.timemodified, ' . $userfields .
+        'SELECT e.id, e.timecreated, ' . $userfields .
         '  FROM {margic_entries} e
         JOIN {margic} m ON m.id = e.margic
         JOIN {user} u ON u.id = e.userid ' . $groupjoin .
-        '  WHERE e.timemodified > :timestart AND
+        '  WHERE e.timecreated > :timestart AND
             m.id = :cminstance
             ' . $userselect . ' ' . $groupselect .
-            ' ORDER BY e.timemodified ASC', $params);
+            ' ORDER BY e.timecreated DESC', $params);
 
     if (!$entries) {
          return;
@@ -504,11 +502,17 @@ function margic_get_recent_mod_activity(&$activities, &$index, $timestart, $cour
     $grader          = has_capability('moodle/grade:viewall', $cmcontext);
     $accessallgroups = has_capability('moodle/site:accessallgroups', $cmcontext);
     $viewfullnames   = has_capability('moodle/site:viewfullnames', $cmcontext);
+    $teacher = has_capability('mod/margic:manageentries', $cmcontext);
 
     $show = array();
     foreach ($entries as $entry) {
         if ($entry->userid == $USER->id) {
             $show[] = $entry;
+            continue;
+        }
+
+        // Only teachers can see other students entries.
+        if (!$teacher) {
             continue;
         }
 
@@ -555,7 +559,7 @@ function margic_get_recent_mod_activity(&$activities, &$index, $timestart, $cour
         $activity->cmid         = $cm->id;
         $activity->name         = $aname;
         $activity->sectionnum   = $cm->sectionnum;
-        $activity->timestamp    = $entry->timemodified;
+        $activity->timestamp    = $entry->timecreated;
         $activity->user         = new stdClass();
         if ($grader) {
             $activity->grade = $grades->items[0]->grades[$entry->userid]->str_long_grade;
@@ -590,8 +594,6 @@ function margic_get_recent_mod_activity(&$activities, &$index, $timestart, $cour
 function margic_print_recent_mod_activity($activity, $courseid, $detail, $modnames) {
     global $CFG, $OUTPUT;
 
-    error_log('margic_print_recent_mod_activity');
-
     echo '<table border="0" cellpadding="3" cellspacing="0" class="margic-recent">';
 
     echo '<tr><td class="userpicture" valign="top">';
@@ -608,16 +610,20 @@ function margic_print_recent_mod_activity($activity, $courseid, $detail, $modnam
         echo '</div>';
     }
 
-    if (isset($activity->grade)) {
+    /* if (isset($activity->grade)) {
         echo '<div class="grade">';
         echo get_string('grade').': ';
         echo $activity->grade;
         echo '</div>';
-    }
+    } */
+
+    echo '<div class="grade"><strong>';
+    echo '<a href="' . $CFG->wwwroot . '/mod/margic/view.php?id=' . $activity->cmid . '">' . get_string('entryadded', 'mod_margic') . '</a>';
+    echo '</strong></div>';
 
     echo '<div class="user">';
     echo "<a href=\"$CFG->wwwroot/user/view.php?id={$activity->user->id}&amp;course=$courseid\">";
-    echo "{$activity->user->fullname}</a>  - " . userdate($activity->timestamp);
+    echo "{$activity->user->fullname}</a> - " . userdate($activity->timestamp);
     echo '</div>';
 
     echo '</td></tr></table>';

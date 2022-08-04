@@ -168,8 +168,14 @@ if ($form->is_cancelled()) {
     $newentry->margic = $moduleinstance->id;
     $newentry->userid = $USER->id;
 
-    $newentry->timecreated = $fromform->timecreated;
-    $newentry->timemodified = $fromform->timecreated;
+    if ($moduleinstance->editdates) {
+        $newentry->timecreated = $fromform->timecreated;
+        $newentry->timemodified = $fromform->timecreated;
+    } else {
+        $newentry->timecreated = $timenow;
+        $newentry->timemodified = $timenow;
+    }
+
 
     $newentry->text = '';
     $newentry->format = 1;
@@ -239,10 +245,10 @@ if ($form->is_cancelled()) {
     $event->trigger();
 
     if ($moduleinstance->editdates && $fromform->timecreated > $timenow) {
-        redirect(new moodle_url('/mod/margic/view.php?id=' . $cm->id), get_string('entryadded', 'mod_margic') .
+        redirect(new moodle_url('/mod/margic/view.php?id=' . $cm->id), get_string('entryaddedoredited', 'mod_margic') .
             ' ' . get_string('editdateinfuture', 'mod_margic'), null, notification::NOTIFY_WARNING);
     } else {
-        redirect(new moodle_url('/mod/margic/view.php?id=' . $cm->id), get_string('entryadded', 'mod_margic'), null, notification::NOTIFY_SUCCESS);
+        redirect(new moodle_url('/mod/margic/view.php?id=' . $cm->id), get_string('entryaddedoredited', 'mod_margic'), null, notification::NOTIFY_SUCCESS);
     }
 
 }

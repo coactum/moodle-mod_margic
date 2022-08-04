@@ -102,7 +102,7 @@ $string['modulename_help'] = 'The margic activity enables teachers to obtain stu
 $string['modulenameplural'] = 'Margics';
 $string['needsgrading'] = ' This entry has not been given feedback or a rating yet.';
 $string['needsregrading'] = 'This entry has changed since feedback or a rating was given.';
-$string['neworeditedmargicentries'] = 'New or edited margic entries';
+$string['newmargicentries'] = 'New margic entries';
 $string['nextentry'] = 'Next entry';
 $string['nodeadline'] = 'Always open';
 $string['noentriesmanagers'] = 'There are no teachers';
@@ -237,7 +237,7 @@ $string['annotationareawidth_help'] = 'The width of the annotation area in perce
 $string['errannotationareawidthinvalid'] = 'Width invalid (minimum: {$a->minwidth}%, maximum: {$a->maxwidth}%).';
 $string['toggleannotation'] = 'Toggle annotation';
 $string['toggleallannotations'] = 'Toggle all annotations';
-$string['entryadded'] = 'Entry added or modified.';
+$string['entryaddedoredited'] = 'Entry added or modified.';
 $string['deletealluserdata'] = 'Delete all entries, annotations, files, ratings and tags';
 $string['alluserdatadeleted'] = 'All entries, annotations, files, ratings and tags are deleted';
 $string['deleteerrortypes'] = 'Delete errortypes';
@@ -278,6 +278,7 @@ $string['gradingmailfullmessagehtml'] = 'Greetings {$a->user},<br>
 <a href="{$a->url}"><strong>Here</strong></a> you can view them.';
 $string['mailfooter'] = 'This message is about a Margic in {$a->systemname}. You can find all further information under the following link: <br> {$a->coursename} -> Margic -> {$a->name} <br> {$a->url}';
 $string['hoverannotation'] = 'Hover annotation';
+$string['entryadded'] = 'Entry added';
 
 // Privacy.
 $string['privacy:metadata:margic_entries'] = 'Contains the user entries saved in all margics.';

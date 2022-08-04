@@ -88,7 +88,7 @@ $string['modulename_help'] = 'Die Margic-Instanz kann tolle Dinge ...';
 $string['modulenameplural'] = 'Margics';
 $string['needsgrading'] = 'Dieser Eintrag hat noch keine Rückmeldung oder Bewertung erhalten.';
 $string['needsregrading'] = 'Dieser Eintrag hat sich geändert, seit ein Feedback oder eine Bewertung abgegeben wurde.';
-$string['neworeditedmargicentries'] = 'Neue oder bearbeitete Margic-Einträge';
+$string['newmargicentries'] = 'Neue Margic-Einträge';
 $string['nextentry'] = 'Nächster Eintrag';
 $string['nodeadline'] = 'Immer offen';
 $string['noentriesmanagers'] = 'Keine Trainer/innen';
@@ -224,7 +224,7 @@ $string['annotationareawidth_help'] = 'Die Breite des Annotationsbereiches in Pr
 $string['errannotationareawidthinvalid'] = 'Breite ungültig (Minimum: {$a->minwidth}, Maximum: {$a->maxwidth}).';
 $string['toggleannotation'] = 'Annotation aus- / einklappen';
 $string['toggleallannotations'] = 'Alle Annotation aus- / einklappen';
-$string['entryadded'] = 'Eintrag angelegt oder bearbeitet';
+$string['entryaddedoredited'] = 'Eintrag angelegt oder bearbeitet';
 $string['deletealluserdata'] = 'Alle Einträge, deren Annotationen, Dateien, Bewertungen und Tags löschen';
 $string['alluserdatadeleted'] = 'Alle Einträge, deren Annotationen, Dateien, Bewertungen und Tags wurden entfernt';
 $string['deleteerrortypes'] = 'Fehlertypen löschen';
@@ -265,6 +265,7 @@ $string['gradingmailfullmessagehtml'] = 'Hallo {$a->user},<br>
 <a href="{$a->url}"><strong>Hier</strong></a> können Sie diese ansehen.';
 $string['mailfooter'] = 'Diese Nachricht bezieht sich auf ein Margic in {$a->systemname}. Unter dem folgenden Link finden Sie alle weiteren Informationen. <br> {$a->coursename} -> Margic -> {$a->name} <br> {$a->url}';
 $string['hoverannotation'] = 'Annotation hervorheben';
+$string['entryadded'] = 'Eintrag angelegt';
 
 // Privacy.
 $string['privacy:metadata:margic_entries'] = 'Enthält die gespeicherten Benutzereinträge aller Margics.';
