@@ -70,7 +70,13 @@ require_login($course, true, $cm);
 
 // Get annotation (ajax).
 if ($getannotations) {
-    echo json_encode($margic->get_annotations());
+    $annotations = $margic->get_annotations();
+    if ($annotations) {
+        echo json_encode($annotations);
+    } else {
+        echo json_encode(array());
+    }
+
     die;
 }
 

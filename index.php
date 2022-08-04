@@ -114,7 +114,7 @@ foreach ($margics as $margic) {
     }
 
     // Description.
-    $table->data[$i][] = format_text($margic->intro, $margic->introformat);
+    $table->data[$i][] = format_module_intro('margic', $margic, $margic->coursemodule);
 
     $i ++;
 }

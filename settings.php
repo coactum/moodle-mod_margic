@@ -28,20 +28,6 @@ if ($ADMIN->fulltree) {
     // Availability settings.
     $settings->add(new admin_setting_heading('mod_margic/availibility', get_string('availability'), ''));
 
-    $settings->add(new admin_setting_configselect('margic/showrecentactivity',
-        get_string('showrecentactivity', 'margic'),
-        get_string('showrecentactivity', 'margic'), 1, array(
-        '0' => get_string('no'),
-        '1' => get_string('yes')
-    )));
-
-    $settings->add(new admin_setting_configselect('margic/overview',
-        get_string('showoverview', 'margic'),
-        get_string('showoverview', 'margic'), 1, array(
-        '0' => get_string('no'),
-        '1' => get_string('yes')
-    )));
-
     // 20201015 Default edit all entries setting.
     $settings->add(new admin_setting_configselect('margic/editall',
         get_string('editall', 'margic'),
@@ -65,11 +51,6 @@ if ($ADMIN->fulltree) {
     // Default width of annotation area.
     $settings->add(new admin_setting_configtext('mod_margic/annotationareawidth', get_string('annotationareawidth', 'margic'),
         get_string('annotationareawidthall', 'margic'), 40, '/^([2-7]\d|80)+$/')); // Range allowed: 20-80
-
-    // Date format setting.
-    $settings->add(new admin_setting_configtext('mod_margic/dateformat',
-        get_string('dateformat', 'margic'),
-        get_string('configdateformat', 'margic'), 'M d, Y G:i', PARAM_TEXT, 15));
 
     // margic entry/feedback background colour setting.
     $name = 'mod_margic/entrybgc';

@@ -137,8 +137,7 @@ if ($DB->record_exists('margic_entries', array('margic' => $moduleinstance->id, 
     $data->textformat = $entry->format;
 
     $PAGE->requires->js_call_amd('mod_margic/annotations', 'init',
-        array('annotations' => $margic->get_annotations(),
-            'canmakeannotations' => false));
+        array('cmid' => $cm->id, 'canmakeannotations' => false, 'myuserid' => $USER->id));
 } else {
     $entry = false;
 

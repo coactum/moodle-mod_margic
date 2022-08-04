@@ -94,7 +94,7 @@ class entry extends \core_search\base_mod {
         // Prepare associative array with data from DB.
         $doc = \core_search\document_factory::instance($entry->id, $this->componentname, $this->areaname);
         // I am using the entry date (timecreated) for the title.
-        $doc->set('title', content_to_text((date(get_config('mod_margic', 'dateformat'), $entry->timecreated)), $entry->format));
+        $doc->set('title', content_to_text((userdate($entry->timecreated)), $entry->format));
         $doc->set('content', content_to_text('Entry: ' . $entry->text, $entry->format));
         $doc->set('contextid', $context->id);
         $doc->set('courseid', $entry->course);

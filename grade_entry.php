@@ -135,7 +135,6 @@ if ($fromform = $mform->get_data()) { // If grading form is submitted.
         $entry->formatcomment = $fromform->{'feedback_' . $entry->id . '_editor'}['format'];
         $entry->teacher = $USER->id;
         $entry->timemarked = $timenow;
-        $entry->mailed = 0; // Make sure mail goes out (again).
 
         if (!$DB->update_record("margic_entries", $entry)) {
             redirect(new moodle_url('/mod/margic/view.php', array('id' => $id)), get_string('errfeedbacknotupdated', 'mod_margic'), null, notification::NOTIFY_ERROR);

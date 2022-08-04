@@ -224,7 +224,6 @@ class results {
             get_string('entrycomment', 'margic'),
             get_string('teacher', 'margic'),
             get_string('timemarked', 'margic'),
-            get_string('mailed', 'margic'),
             get_string('baseentry', 'margic'),
             get_string('text', 'margic')
         );
@@ -244,7 +243,6 @@ class results {
                            d.entrycomment AS entrycomment,
                            d.teacher AS teacher,
                            to_char(to_timestamp(d.timemarked), 'YYYY-MM-DD HH24:MI:SS') AS timemarked,
-                           d.mailed AS mailed,
                            d.baseentry AS baseentry
                       FROM {margic_entries} d
                       JOIN {user} u ON u.id = d.userid
@@ -263,7 +261,6 @@ class results {
                            d.entrycomment AS entrycomment,
                            d.teacher AS teacher,
                            FROM_UNIXTIME(d.timemarked) AS TIMEMARKED,
-                           d.mailed AS mailed,
                            d.baseentry AS baseentry
                       FROM {margic_entries} d
                       JOIN {user} u ON u.id = d.userid
@@ -295,7 +292,6 @@ class results {
                     $d->entrycomment,
                     $d->teacher,
                     $d->timemarked,
-                    $d->mailed,
                     $d->baseentry,
                     format_text($d->text, $d->format, array('para' => false))
                 );

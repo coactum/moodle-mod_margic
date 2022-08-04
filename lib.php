@@ -340,14 +340,12 @@ function margic_user_complete($course, $user, $mod, $margic) {
  * @param int $timestart
  * @return bool
  */
-/* function margic_print_recent_activity($course, $viewfullnames, $timestart) {
+function margic_print_recent_activity($course, $viewfullnames, $timestart) {
     global $CFG, $USER, $DB, $OUTPUT;
 
-    if (! get_config('margic', 'showrecentactivity')) {
-        return false;
-    }
+    error_log('margic_print_recent_activity');
 
-    $dbparams = array(
+    $params = array(
         $timestart,
         $course->id,
         'margic'
@@ -359,36 +357,36 @@ function margic_user_complete($course, $user, $mod, $margic) {
         $userfieldsapi = \core_user\fields::for_userpic();
         $namefields = $userfieldsapi->get_sql('u', false, '', 'userid', false)->selects;;
     }
-    $sql = "SELECT de.id, de.timemodified, cm.id AS cmid, $namefields
-              FROM {margic_entries} de
-              JOIN {margic} d ON d.id = de.margic
+    $sql = "SELECT e.id, e.timemodified, cm.id AS cmid, $namefields
+              FROM {margic_entries} e
+              JOIN {margic} d ON d.id = e.margic
               JOIN {course_modules} cm ON cm.instance = d.id
               JOIN {modules} md ON md.id = cm.module
-              JOIN {user} u ON u.id = de.userid
-             WHERE de.timemodified > ? AND d.course = ? AND md.name = ?
+              JOIN {user} u ON u.id = e.userid
+             WHERE e.timemodified > ? AND d.course = ? AND md.name = ?
           ORDER BY u.lastname ASC, u.firstname ASC
     ";
-    // Changed on 20190622 original line 310: ORDER BY de.timemodified ASC.
-    $newentries = $DB->get_records_sql($sql, $dbparams);
+
+    $newentries = $DB->get_records_sql($sql, $params);
 
     $modinfo = get_fast_modinfo($course);
 
     $show = array();
 
-    foreach ($newentries as $anentry) {
-        if (! array_key_exists($anentry->cmid, $modinfo->get_cms())) {
+    foreach ($newentries as $entry) {
+        if (! array_key_exists($entry->cmid, $modinfo->get_cms())) {
             continue;
         }
-        $cm = $modinfo->get_cm($anentry->cmid);
+        $cm = $modinfo->get_cm($entry->cmid);
 
         if (! $cm->uservisible) {
             continue;
         }
-        if ($anentry->userid == $USER->id) {
-            $show[] = $anentry;
+        if ($entry->userid == $USER->id) {
+            $show[] = $entry;
             continue;
         }
-        $context = context_module::instance($anentry->cmid);
+        $context = context_module::instance($entry->cmid);
 
         // Only teachers can see other students entries.
         if (! has_capability('mod/margic:manageentries', $context)) {
@@ -407,7 +405,7 @@ function margic_user_complete($course, $user, $mod, $margic) {
             if (! $modinfo->get_groups($cm->groupingid)) {
                 continue;
             }
-            $usersgroups = groups_get_all_groups($course->id, $anentry->userid, $cm->groupingid);
+            $usersgroups = groups_get_all_groups($course->id, $entry->userid, $cm->groupingid);
             if (is_array($usersgroups)) {
                 $usersgroups = array_keys($usersgroups);
                 $intersect = array_intersect($usersgroups, $modinfo->get_groups($cm->groupingid));
@@ -416,27 +414,214 @@ function margic_user_complete($course, $user, $mod, $margic) {
                 }
             }
         }
-        $show[] = $anentry;
+        $show[] = $entry;
     }
 
     if (empty($show)) {
         return false;
     }
 
-    echo $OUTPUT->heading(get_string('newmargicentries', 'margic') . ':', 3);
+    echo $OUTPUT->heading(get_string('neworeditedmargicentries', 'margic') . ':', 6);
 
-    foreach ($show as $submission) {
-        $cm = $modinfo->get_cm($submission->cmid);
-        $context = context_module::instance($submission->cmid);
-        if (has_capability('mod/margic:manageentries', $context)) {
-            $link = $CFG->wwwroot . '/mod/margic/report.php?id=' . $cm->id;
-        } else {
-            $link = $CFG->wwwroot . '/mod/margic/view.php?id=' . $cm->id;
-        }
-        print_recent_activity_note($submission->timemodified, $submission, $cm->name, $link, false, $viewfullnames);
+    foreach ($show as $entry) {
+        $cm = $modinfo->get_cm($entry->cmid);
+        $context = context_module::instance($entry->cmid);
+        $link = $CFG->wwwroot . '/mod/margic/view.php?id=' . $cm->id;
+        print_recent_activity_note($entry->timemodified, $entry, $cm->name, $link, false, $viewfullnames);
+        echo '<br>';
     }
+
     return true;
-} */
+}
+
+/**
+ * Returns all margics since a given time.
+ *
+ * @param array $activities The activity information is returned in this array
+ * @param int $index The current index in the activities array
+ * @param int $timestart The earliest activity to show
+ * @param int $courseid Limit the search to this course
+ * @param int $cmid The course module id
+ * @param int $userid Optional user id
+ * @param int $groupid Optional group id
+ * @return void
+ */
+function margic_get_recent_mod_activity(&$activities, &$index, $timestart, $courseid,
+    $cmid, $userid=0, $groupid=0) {
+
+    global $CFG, $COURSE, $USER, $DB;
+
+    error_log('margic_get_recent_mod_activity');
+
+    if ($COURSE->id == $courseid) {
+        $course = $COURSE;
+    } else {
+        $course = $DB->get_record('course', array('id'=>$courseid));
+    }
+
+    $modinfo = get_fast_modinfo($course);
+
+    $cm = $modinfo->get_cm($cmid);
+    $params = array();
+    if ($userid) {
+        $userselect = 'AND u.id = :userid';
+        $params['userid'] = $userid;
+    } else {
+        $userselect = '';
+    }
+
+    if ($groupid) {
+        $groupselect = 'AND gm.groupid = :groupid';
+        $groupjoin   = 'JOIN {groups_members} gm ON  gm.userid=u.id';
+        $params['groupid'] = $groupid;
+    } else {
+        $groupselect = '';
+        $groupjoin   = '';
+    }
+
+    $params['cminstance'] = $cm->instance;
+    $params['timestart'] = $timestart;
+    $params['submitted'] = 1;
+
+    $userfields = user_picture::fields('u', null, 'userid');
+
+    $entries = $DB->get_records_sql(
+        'SELECT e.id, e.timemodified, ' . $userfields .
+        '  FROM {margic_entries} e
+        JOIN {margic} m ON m.id = e.margic
+        JOIN {user} u ON u.id = e.userid ' . $groupjoin .
+        '  WHERE e.timemodified > :timestart AND
+            m.id = :cminstance
+            ' . $userselect . ' ' . $groupselect .
+            ' ORDER BY e.timemodified ASC', $params);
+
+    if (!$entries) {
+         return;
+    }
+
+    $groupmode       = groups_get_activity_groupmode($cm, $course);
+    $cmcontext       = context_module::instance($cm->id);
+    $grader          = has_capability('moodle/grade:viewall', $cmcontext);
+    $accessallgroups = has_capability('moodle/site:accessallgroups', $cmcontext);
+    $viewfullnames   = has_capability('moodle/site:viewfullnames', $cmcontext);
+
+    $show = array();
+    foreach ($entries as $entry) {
+        if ($entry->userid == $USER->id) {
+            $show[] = $entry;
+            continue;
+        }
+
+        if ($groupmode == SEPARATEGROUPS and !$accessallgroups) {
+            if (isguestuser()) {
+                // Shortcut - guest user does not belong into any group.
+                continue;
+            }
+
+            // This will be slow - show only users that share group with me in this cm.
+            if (!$modinfo->get_groups($cm->groupingid)) {
+                continue;
+            }
+            $usersgroups = groups_get_all_groups($course->id, $entry->userid, $cm->groupingid);
+            if (is_array($usersgroups)) {
+                $usersgroups = array_keys($usersgroups);
+                $intersect = array_intersect($usersgroups, $modinfo->get_groups($cm->groupingid));
+                if (empty($intersect)) {
+                    continue;
+                }
+            }
+        }
+        $show[] = $entry;
+    }
+
+    if (empty($show)) {
+        return;
+    }
+
+    if ($grader) {
+        require_once($CFG->libdir.'/gradelib.php');
+        $userids = array();
+        foreach ($show as $id => $entry) {
+            $userids[] = $entry->userid;
+        }
+        $grades = grade_get_grades($courseid, 'mod', 'margic', $cm->instance, $userids);
+    }
+
+    $aname = format_string($cm->name, true);
+    foreach ($show as $entry) {
+        $activity = new stdClass();
+
+        $activity->type         = 'margic';
+        $activity->cmid         = $cm->id;
+        $activity->name         = $aname;
+        $activity->sectionnum   = $cm->sectionnum;
+        $activity->timestamp    = $entry->timemodified;
+        $activity->user         = new stdClass();
+        if ($grader) {
+            $activity->grade = $grades->items[0]->grades[$entry->userid]->str_long_grade;
+        }
+
+        $userfields = explode(',', user_picture::fields());
+        foreach ($userfields as $userfield) {
+            if ($userfield == 'id') {
+                // Aliased in SQL above.
+                $activity->user->{$userfield} = $entry->userid;
+            } else {
+                $activity->user->{$userfield} = $entry->{$userfield};
+            }
+        }
+        $activity->user->fullname = fullname($entry, $viewfullnames);
+
+        $activities[$index++] = $activity;
+    }
+
+    return;
+}
+
+/**
+ * Print recent activity from all margics in a given course
+ *
+ * This is used by course/recent.php
+ * @param stdClass $activity
+ * @param int $courseid
+ * @param bool $detail
+ * @param array $modnames
+ */
+function margic_print_recent_mod_activity($activity, $courseid, $detail, $modnames) {
+    global $CFG, $OUTPUT;
+
+    error_log('margic_print_recent_mod_activity');
+
+    echo '<table border="0" cellpadding="3" cellspacing="0" class="margic-recent">';
+
+    echo '<tr><td class="userpicture" valign="top">';
+    echo $OUTPUT->user_picture($activity->user);
+    echo '</td><td>';
+
+    if ($detail) {
+        $modname = $modnames[$activity->type];
+        echo '<div class="title">';
+        echo $OUTPUT->image_icon('icon', $modname, 'margic');
+        echo '<a href="' . $CFG->wwwroot . '/mod/margic/view.php?id=' . $activity->cmid . '">';
+        echo $activity->name;
+        echo '</a>';
+        echo '</div>';
+    }
+
+    if (isset($activity->grade)) {
+        echo '<div class="grade">';
+        echo get_string('grade').': ';
+        echo $activity->grade;
+        echo '</div>';
+    }
+
+    echo '<div class="user">';
+    echo "<a href=\"$CFG->wwwroot/user/view.php?id={$activity->user->id}&amp;course=$courseid\">";
+    echo "{$activity->user->fullname}</a>  - " . userdate($activity->timestamp);
+    echo '</div>';
+
+    echo '</td></tr></table>';
+}
 
 /**
  * Implementation of the function for printing the form elements that control
@@ -819,19 +1004,40 @@ function margic_scale_used_anywhere($scaleid) {
 } */
 
 /**
- * Returns the margic instance course_module id.
+ * Add a get_coursemodule_info function in case any assignment type wants to add 'extra' information
+ * for the course (see resource).
  *
- * @param integer $margicid
- * @return object
+ * Given a course_module object, this function returns any "extra" information that may be needed
+ * when printing this activity in a course listing.  See get_array_of_activities() in course/lib.php.
+ *
+ * @param stdClass $coursemodule The coursemodule object (record).
+ * @return cached_cm_info An object on information that the courses
+ *                        will know about (most noticeably, an icon).
  */
-/* function margic_get_coursemodule($margicid) {
-    global $DB;
+/* function margic_get_coursemodule_info($coursemodule) {
+    global $CFG, $DB;
 
-    return $DB->get_record_sql("SELECT cm.id FROM {course_modules} cm
-                                  JOIN {modules} m ON m.id = cm.module
-                                 WHERE cm.instance = ? AND m.name = 'margic'", array(
-        $margicid
-    ));
+    $dbparams = array('id'=>$coursemodule->instance);
+    $fields = 'id, name, alwaysshowdescription, allowsubmissionsfromdate, intro, introformat, completionsubmit';
+    if (! $assignment = $DB->get_record('assign', $dbparams, $fields)) {
+        return false;
+    }
+
+    $result = new cached_cm_info();
+    $result->name = $assignment->name;
+    if ($coursemodule->showdescription) {
+        if ($assignment->alwaysshowdescription || time() > $assignment->allowsubmissionsfromdate) {
+            // Convert intro to html. Do not filter cached version, filters run at display time.
+            $result->content = format_module_intro('assign', $assignment, $coursemodule->id, false);
+        }
+    }
+
+    // Populate the custom completion rules as key => value pairs, but only if the completion mode is 'automatic'.
+    if ($coursemodule->completion == COMPLETION_TRACKING_AUTOMATIC) {
+        $result->customdata['customcompletionrules']['completionsubmit'] = $assignment->completionsubmit;
+    }
+
+    return $result;
 } */
 
 /**
