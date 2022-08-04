@@ -333,7 +333,7 @@ class margic {
         if (isset($this->instance->annotationareawidth)) {
             $annotationareawidth = $this->instance->annotationareawidth;
         } else {
-            $annotationareawidth = get_config('mod_margic', 'annotationareawidth');
+            $annotationareawidth = get_config('margic', 'annotationareawidth');
         }
 
         return $annotationareawidth;

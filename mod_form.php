@@ -21,6 +21,7 @@
  * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/course/moodleform_mod.php');
@@ -54,9 +55,9 @@ class mod_margic_mod_form extends moodleform_mod {
 
         $this->standard_intro_elements(get_string('margicdescription', 'margic'));
 
-        $id = optional_param('update', null, PARAM_INT);
+        $update = optional_param('update', null, PARAM_INT);
 
-        if (!isset($id) || $id == 0) {
+        if (!isset($update) || $update == 0) {
             // Add the header for the error types.
             $mform->addElement('header', 'errortypeshdr', get_string('errortypes', 'margic'));
             $mform->setExpanded('errortypeshdr');
@@ -91,24 +92,28 @@ class mod_margic_mod_form extends moodleform_mod {
         $mform->addElement('header', 'availibilityhdr', get_string('availability'));
 
         $mform->addElement('date_time_selector', 'timeopen', get_string('margicopentime', 'margic'), array(
-            'optional' => true,
-            'step' => 1
+            'optional' => true
         ));
         $mform->addHelpButton('timeopen', 'margicopentime', 'margic');
 
         $mform->addElement('date_time_selector', 'timeclose', get_string('margicclosetime', 'margic'), array(
-            'optional' => true,
-            'step' => 1
+            'optional' => true
         ));
         $mform->addHelpButton('timeclose', 'margicclosetime', 'margic');
 
         // Edit all setting if user can edit its own entries.
-        $mform->addElement('selectyesno', 'editall', get_string('editall', 'margic'));
-        $mform->addHelpButton('editall', 'editall', 'margic');
+        if (get_config('margic', 'editall')) {
+            $mform->addElement('selectyesno', 'editall', get_string('editall', 'margic'));
+            $mform->addHelpButton('editall', 'editall', 'margic');
+            $mform->setDefault('editall', 1);
+        }
 
         // Edit dates setting if user can modify entry date.
-        $mform->addElement('selectyesno', 'editdates', get_string('editdates', 'margic'));
-        $mform->addHelpButton('editdates', 'editdates', 'margic');
+        if (get_config('margic', 'editdates')) {
+            $mform->addElement('selectyesno', 'editdates', get_string('editdates', 'margic'));
+            $mform->addHelpButton('editdates', 'editdates', 'margic');
+            $mform->setDefault('editdates', 0);
+        }
 
         // Add the header for appearance.
         $mform->addElement('header', 'appearancehdr', get_string('appearance'));
@@ -117,7 +122,10 @@ class mod_margic_mod_form extends moodleform_mod {
         $mform->addElement('text', 'annotationareawidth', get_string('annotationareawidth', 'margic'));
         $mform->setType('annotationareawidth', PARAM_INT);
         $mform->addHelpButton('annotationareawidth', 'annotationareawidth', 'margic');
-        $mform->setDefault('annotationareawidth', get_config('mod_margic', 'annotationareawidth'));
+
+        if (!isset($update) || $update == 0) { // If not updating existing instance set default to config value.
+            $mform->setDefault('annotationareawidth', get_config('mod_margic', 'annotationareawidth'));
+        }
 
         // Add the rest of the common settings.
         $this->standard_grading_coursemodule_elements();

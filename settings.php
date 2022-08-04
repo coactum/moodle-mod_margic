@@ -21,14 +21,15 @@
  * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later.
  */
+
 defined('MOODLE_INTERNAL') || die();
 
 if ($ADMIN->fulltree) {
 
-    // Availability settings.
-    $settings->add(new admin_setting_heading('mod_margic/availibility', get_string('availability'), ''));
+    // Editability settings.
+    $settings->add(new admin_setting_heading('margic/editability', get_string('editability', 'margic'), ''));
 
-    // 20201015 Default edit all entries setting.
+    // Edit all own entries.
     $settings->add(new admin_setting_configselect('margic/editall',
         get_string('editall', 'margic'),
         get_string('editall_help', 'margic'), 1, array(
@@ -36,7 +37,7 @@ if ($ADMIN->fulltree) {
         '1' => get_string('yes')
     )));
 
-    // 20201119 Default edit the date of any entry setting.
+    // Change the date of any new entry.
     $settings->add(new admin_setting_configselect('margic/editdates',
         get_string('editdates', 'margic'),
         get_string('editdates_help', 'margic'), 1, array(
@@ -45,15 +46,14 @@ if ($ADMIN->fulltree) {
     )));
 
     // Appearance settings.
-    $settings->add(new admin_setting_heading('mod_margic/appearance',
-        get_string('appearance'), ''));
+    $settings->add(new admin_setting_heading('margic/appearance', get_string('appearance'), ''));
 
     // Default width of annotation area.
-    $settings->add(new admin_setting_configtext('mod_margic/annotationareawidth', get_string('annotationareawidth', 'margic'),
+    $settings->add(new admin_setting_configtext('margic/annotationareawidth', get_string('annotationareawidth', 'margic'),
         get_string('annotationareawidthall', 'margic'), 40, '/^([2-7]\d|80)+$/')); // Range allowed: 20-80
 
-    // margic entry/feedback background colour setting.
-    $name = 'mod_margic/entrybgc';
+    // Background color of entry and annotation area.
+    $name = 'margic/entrybgc';
     $title = get_string('entrybgc_title', 'margic');
     $description = get_string('entrybgc_descr', 'margic');
     $default = get_string('entrybgc_colour', 'margic');
@@ -61,11 +61,11 @@ if ($ADMIN->fulltree) {
     $setting->set_updatedcallback('theme_reset_all_caches');
     $settings->add($setting);
 
-    // margic entry text background colour setting.
-    $name = 'mod_margic/entrytextbgc';
-    $title = get_string('entrytextbgc_title', 'margic');
-    $description = get_string('entrytextbgc_descr', 'margic');
-    $default = get_string('entrytextbgc_colour', 'margic');
+    // Background color of texts.
+    $name = 'margic/textbgc';
+    $title = get_string('textbgc_title', 'margic');
+    $description = get_string('textbgc_descr', 'margic');
+    $default = get_string('textbgc_colour', 'margic');
     $setting = new admin_setting_configcolourpicker($name, $title, $description, $default);
     $setting->set_updatedcallback('theme_reset_all_caches');
     $settings->add($setting);

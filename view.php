@@ -164,7 +164,7 @@ $edittimes = results::margic_get_edittime_options($moduleinstance);
 
 // Output page.
 $page = new margic_view($margic, $cm, $context, $moduleinstance, $margic->get_entries_grouped_by_pagecount(),
-    $margic->get_sortmode(), get_config('mod_margic', 'entrybgc'), get_config('mod_margic', 'entrytextbgc'),
+    $margic->get_sortmode(), get_config('margic', 'entrybgc'), get_config('margic', 'textbgc'),
     $margic->get_annotationarea_width(), $moduleinstance->editall, $edittimes->edittimestarts,
     $edittimes->edittimenotstarted, $edittimes->edittimeends, $edittimes->edittimehasended, $canmanageentries,
     sesskey(), $currentuserrating, $ratingaggregationmode, $course, $userid, $margic->get_pagecountoptions(),

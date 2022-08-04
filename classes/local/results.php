@@ -544,7 +544,7 @@ class results {
 
                 $feedbackarea .= $mform->render();
             } else if ($feedbacktext || ! empty($entry->rating)) {  // If user is student and has rating or feedback text.
-                $feedbackarea .= '<div class="ratingform" style="background-color: ' . get_config('mod_margic', 'entrytextbgc') . '">';
+                $feedbackarea .= '<div class="ratingform" style="background-color: ' . get_config('margic', 'textbgc') . '">';
                 $feedbackarea .= '<h5 class="d-flex justify-content-between"><span>' . get_string('feedback') . ' ' . get_string('from', 'mod_margic') . ' ' . $teacherimage . ' ';
                 $feedbackarea .= get_string('at', 'mod_margic') . ' ' . userdate($entry->timemarked) . '</span>';
 

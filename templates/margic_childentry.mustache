@@ -40,7 +40,7 @@
                 </h5>
 
                 {{#text}}
-                    <div id="entry-{{id}}" class="entry originaltext" style="background: {{entrytextbgc}};">
+                    <div id="entry-{{id}}" class="entry originaltext" style="background: {{textbgc}};">
                         {{{text}}}
                     </div>
                 {{/text}}
@@ -58,7 +58,7 @@
             {{#annotationmode}}
                 <div class="annotationarea annotationarea-{{id}}" style="background: {{entrybgc}}; width: {{annotationareawidth}}%">
                     {{#annotations}}
-                        <div id="annotation-box-{{id}}" class="annotation-box annotation-box-{{id}}" style="background: {{entrytextbgc}};" tabindex="{{position}}">
+                        <div id="annotation-box-{{id}}" class="annotation-box annotation-box-{{id}}" style="background: {{textbgc}};" tabindex="{{position}}">
                             <div class="errortypeheader">
                                 <span style="border-left: 10px solid #{{color}}; padding-left: 5px;"> </span>
                                 <strong class="errortype">{{type}}</strong>
@@ -89,7 +89,7 @@
                     {{/annotations}}
 
                     {{#annotationform}}
-                        <div class="annotation-box annotation-form annotation-form-{{id}}" style="background: {{entrytextbgc}};">
+                        <div class="annotation-box annotation-form annotation-form-{{id}}" style="background: {{textbgc}};">
                             <div class="annotatedtextpreviewdiv">
                                 <span id="annotationpreview-temp-{{id}}" class="annotatedtextpreview">{{#str}}annotatedtextnotfound, mod_margic {{/str}} <i class="fa fa-exclamation text-danger" aria-hidden="true" title="{{#str}}annotatedtextinvalid, margic {{/str}}"></i></span>
                             </div>

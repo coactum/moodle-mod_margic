@@ -57,7 +57,7 @@ class margic_view implements renderable, templatable {
     /** @var string */
     protected $entrybgc;
     /** @var string */
-    protected $entrytextbgc;
+    protected $textbgc;
     /** @var int */
     protected $entryareawidth;
     /** @var int */
@@ -105,7 +105,7 @@ class margic_view implements renderable, templatable {
      * @param array $entries The accessible entries for the margic instance
      * @param string $sortmode Sort mode for the margic instance
      * @param string $entrybgc Background color of the entries
-     * @param string $entrytextbgc Background color of the texts in the entries
+     * @param string $textbgc Background color of the texts in the entries
      * @param int $entryareawidth Width of the entry area
      * @param int $annotationareawidth Width of the annotation area
      * @param bool $caneditentries If own entries can be edited
@@ -126,7 +126,7 @@ class margic_view implements renderable, templatable {
      * @param bool $canmakeannotations If user can make annotations
      * @param array $errortypes Array with annotation types for form
      */
-    public function __construct($margic, $cm, $context, $moduleinstance, $entries, $sortmode, $entrybgc, $entrytextbgc, $annotationareawidth,
+    public function __construct($margic, $cm, $context, $moduleinstance, $entries, $sortmode, $entrybgc, $textbgc, $annotationareawidth,
         $caneditentries, $edittimestarts, $edittimenotstarted, $edittimeends, $edittimehasended, $canmanageentries, $sesskey,
         $currentuserrating, $ratingaggregationmode, $course, $singleuser, $pagecountoptions, $pagebar, $entriescount, $annotationmode,
         $canmakeannotations, $errortypes) {
@@ -139,7 +139,7 @@ class margic_view implements renderable, templatable {
         $this->entries = $entries;
         $this->sortmode = $sortmode;
         $this->entrybgc = $entrybgc;
-        $this->entrytextbgc = $entrytextbgc;
+        $this->textbgc = $textbgc;
         $this->annotationareawidth = $annotationareawidth;
         $this->entryareawidth = 100 - $annotationareawidth;
         $this->caneditentries = $caneditentries;
@@ -206,7 +206,7 @@ class margic_view implements renderable, templatable {
         $data->entries = $this->entries;
         $data->sortmode = $this->sortmode;
         $data->entrybgc = $this->entrybgc;
-        $data->entrytextbgc = $this->entrytextbgc;
+        $data->textbgc = $this->textbgc;
         $data->entryareawidth = $this->entryareawidth;
         $data->annotationareawidth = $this->annotationareawidth;
         $data->caneditentries = $this->caneditentries;

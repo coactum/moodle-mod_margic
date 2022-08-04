@@ -19,7 +19,7 @@
         <FIELD NAME="assesstimefinish" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="timeopen" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="timeclose" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-        <FIELD NAME="editall" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="1" SEQUENCE="false" COMMENT="If own entries can be edited."/>
+        <FIELD NAME="editall" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="If own entries can be edited."/>
         <FIELD NAME="editdates" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="If entry dates can be edited."/>
         <FIELD NAME="annotationareawidth" TYPE="int" LENGTH="3" NOTNULL="false" SEQUENCE="false" COMMENT="With of the annotatio area."/>
       </FIELDS>

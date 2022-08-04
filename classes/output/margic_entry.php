@@ -55,7 +55,7 @@ class margic_entry implements renderable, templatable {
     /** @var string */
     protected $entrybgc;
     /** @var string */
-    protected $entrytextbgc;
+    protected $textbgc;
     /** @var int */
     protected $entryareawidth;
     /** @var int */
@@ -181,8 +181,8 @@ class margic_entry implements renderable, templatable {
         $data->singleuser = $this->singleuser;
         $data->annotationmode = $this->annotationmode;
         $data->canmakeannotations = $this->canmakeannotations;
-        $data->entrybgc = get_config('mod_margic', 'entrybgc');
-        $data->entrytextbgc = get_config('mod_margic', 'entrytextbgc');
+        $data->entrybgc = get_config('margic', 'entrybgc');
+        $data->textbgc = get_config('margic', 'textbgc');
         $data->errortypes = $this->errortypes;
         $data->readonly = $this->readonly;
         return $data;
