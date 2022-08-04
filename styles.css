@@ -137,11 +137,6 @@
     -moz-border-radius: 5px;
 }
 
-.path-mod-margic .annotationarea .annotatedtextpreview:hover {
-    background-color: lightblue;
-    cursor: pointer;
-}
-
 .path-mod-margic .annotated,
 .path-mod-margic .annotated_temp {
     background-color: yellow;

@@ -269,6 +269,7 @@ $string['gradingmailfullmessagehtml'] = 'Hallo {$a->user},<br>
 {$a->teacher} hat eine Rückmeldung beziehungsweise Bewertung zu Ihrem Eintrag im Margic <strong>{$a->margic}</strong> veröffentlicht.<br><br>
 <a href="{$a->url}"><strong>Hier</strong></a> können Sie diese ansehen.';
 $string['mailfooter'] = 'Diese Nachricht bezieht sich auf ein Margic in {$a->systemname}. Unter dem folgenden Link finden Sie alle weiteren Informationen. <br> {$a->coursename} -> Margic -> {$a->name} <br> {$a->url}';
+$string['hoverannotation'] = 'Annotation hervorheben';
 
 // Privacy.
 $string['privacy:metadata:margic_entries'] = 'Enthält die gespeicherten Benutzereinträge aller Margics.';

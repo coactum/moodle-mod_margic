@@ -97,58 +97,50 @@ export const init = (cmid, canmakeannotations, myuserid) => {
             recreateAnnotations();
 
             // Highlight annotation and all annotated text if annotated text is hovered
-            $('.annotated').mouseenter(function () {
+            $('.annotated').mouseenter(function() {
                 var id = this.id.replace('annotated-', '');
-                $('.annotationpreview-' + id).addClass('hovered');
-                $('.annotated-' + id).addClass('hovered');
-                $('.annotation-box-' + id + ' .errortype').addClass('hovered');
-
-            });
-
-            $('.annotated').mouseleave(function () {
-                var id = this.id.replace('annotated-', '');
-                $('.annotationpreview-' + id).removeClass('hovered');
-                $('.annotated-' + id).removeClass('hovered');
-                $('.annotation-box-' + id + ' .errortype').removeClass('hovered');
-            });
-
-            // Highlight annotated text if annotationpreview is hovered
-            $('.annotatedtextpreview').mouseenter(function () {
-                var id = this.id.replace('annotationpreview-', '');
+                $('.annotation-box-' + id).addClass('hovered');
                 $('.annotated-' + id).addClass('hovered');
             });
 
-            $('.annotatedtextpreview').mouseleave(function () {
-                var id = this.id.replace('annotationpreview-', '');
+            $('.annotated').mouseleave(function() {
+                var id = this.id.replace('annotated-', '');
+                $('.annotation-box-' + id).removeClass('hovered');
                 $('.annotated-' + id).removeClass('hovered');
             });
 
             // Highlight whole temp annotation if part of temp annotation is hovered
-            $(document).on('mouseover', '.annotated_temp', function () {
+            $(document).on('mouseover', '.annotated_temp', function() {
                 $('.annotated_temp').addClass('hovered');
             });
 
-            $(document).on('mouseleave', '.annotated_temp', function () {
+            $(document).on('mouseleave', '.annotated_temp', function() {
                 $('.annotated_temp').removeClass('hovered');
             });
 
             // Onclick listener for editing annotation.
-            $(document).on('click', '.annotated', function () {
+            $(document).on('click', '.annotated', function() {
                 var id = this.id.replace('annotated-', '');
                 editAnnotation(id);
             });
 
             // Onclick listener for editing annotation.
-            $(document).on('click', '.edit-annotation', function () {
+            $(document).on('click', '.edit-annotation', function() {
                 var id = this.id.replace('edit-annotation-', '');
                 editAnnotation(id);
             });
 
-            // Onclick listener for click on annotation-box.
-            // $(document).on('click', '.annotation-box', function() {
-            //     var id = this.id.replace('annotation-box-', '');
-            //     $('#annotated-' + id).focus();
-            // });
+            // Highlight annotation if hoverannotation button is hovered
+            $(document).on('mouseover', '.hoverannotation', function() {
+                var id = this.id.replace('hoverannotation-', '');
+                $('.annotated-' + id).addClass('hovered');
+            });
+
+            $(document).on('mouseleave', '.hoverannotation', function() {
+                var id = this.id.replace('hoverannotation-', '');
+                $('.annotated-' + id).removeClass('hovered');
+            });
+
         },
         error: function() {
             alert ('Error fetiching annotations');
@@ -383,7 +375,6 @@ export const init = (cmid, canmakeannotations, myuserid) => {
 
             if (annotationid) {
                 highlightEl.className += ' ' + cssClass + '-' + annotationid;
-                // highlightEl.tabIndex = 1;
                 highlightEl.style = "text-decoration:underline; text-decoration-color: #" + color;
                 highlightEl.id = cssClass + '-' + annotationid;
                 highlightEl.style.backgroundColor = '#' + color;
