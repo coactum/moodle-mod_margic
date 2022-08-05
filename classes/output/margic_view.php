@@ -106,7 +106,6 @@ class margic_view implements renderable, templatable {
      * @param string $sortmode Sort mode for the margic instance
      * @param string $entrybgc Background color of the entries
      * @param string $textbgc Background color of the texts in the entries
-     * @param int $entryareawidth Width of the entry area
      * @param int $annotationareawidth Width of the annotation area
      * @param bool $caneditentries If own entries can be edited
      * @param int $edittimestarts Time when entries can be edited

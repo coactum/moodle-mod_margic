@@ -103,7 +103,6 @@ class margic_entry implements renderable, templatable {
      * @param object $context The context
      * @param array $moduleinstance The moduleinstance for creating grading form
      * @param object $entry The entry
-     * @param int $entryareawidth Width of the entry area
      * @param int $annotationareawidth Width of the annotation area
      * @param bool $caneditentries If own entries can be edited
      * @param int $edittimestarts Time when entries can be edited

@@ -454,7 +454,7 @@ function margic_get_recent_mod_activity(&$activities, &$index, $timestart, $cour
     if ($COURSE->id == $courseid) {
         $course = $COURSE;
     } else {
-        $course = $DB->get_record('course', array('id'=>$courseid));
+        $course = $DB->get_record('course', array('id' => $courseid));
     }
 
     $modinfo = get_fast_modinfo($course);

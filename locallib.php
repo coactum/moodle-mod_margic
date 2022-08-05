@@ -87,18 +87,17 @@ class margic {
      */
     public function __construct($id, $m, $userid, $action, $pagecount, $page) {
 
-        // Custom sort function for annotations.
+        /**
+         * Custom sort function for sorting annotations by position (or offset from startcontainer.)
+         *
+         * @param int $a First annotation
+         * @param int $b Second annotation
+         * @return bool Sort result
+         */
         function sortannotation($a, $b) {
-            // var_dump($a);
-            // var_dump($b);
-
             if (!isset($a->position)) {
-                // var_dump('Fehler: keine Position an Element A');
-                // var_dump($a->id);
                 return true;
             } else if (!isset($b->position)) {
-                // var_dump('Fehler: keine Position an Element B');
-                // var_dump($b->id);
                 return false;
             }
 
@@ -480,6 +479,11 @@ class margic {
         return $this->sortmode;
     }
 
+    /**
+     * Index all nodes in the document.
+     *
+     * @param DOMDocument $doc The DOMDocument with the entry text.
+     */
     private function index_original($doc) {
 
         // var_dump('index_original: $doc');
@@ -496,6 +500,12 @@ class margic {
         }
     }
 
+    /**
+     * Index the dom node and save its position in array.
+     *
+     * @param DOMNode $domnode The DOMNode to be indexed.
+     * @param int $position The position count.
+     */
     private function search_dom_node(DOMNode $domnode, &$position = 0) {
         // var_dump('search_dom_node: $domnode');
         // var_dump($domnode);
@@ -516,6 +526,21 @@ class margic {
         }
     }
 
+    /**
+     * Prepare the entry for the template.
+     *
+     * @param object $entry The entry to be processed.
+     * @param object $strmanager The moodle strmanager object needed to check error types.
+     * @param object $currentgroups The currentgroups for checking access.
+     * @param object $allowedusers The allowedusers for checking access.
+     * @param object $gradingstr The gradingstr for the template.
+     * @param object $regradingstr The regradingstr for the template.
+     * @param object $readonly If entry is in readonly mode.
+     * @param object $grades The grades for the gradingform.
+     * @param object $canmanageentries If user can manage entries.
+     * @param object $annotationmode If annotationmode is activated.
+     * @return object The entry or false if user is not allowed to see entry.
+     */
     public function prepare_entry($entry, $strmanager, $currentgroups, $allowedusers, $gradingstr, $regradingstr, $readonly, $grades, $canmanageentries, $annotationmode) {
         global $DB, $USER, $CFG, $OUTPUT;
 
@@ -597,6 +622,15 @@ class margic {
         }
     }
 
+    /**
+     * Prepare the annotations for the entry.
+     *
+     * @param object $entry The entry to be processed.
+     * @param object $strmanager The moodle strmanager object needed to check error types in the annotation form.
+     * @param object $annotationmode If annotationmode is activated.
+     * @param object $readonly If entry is in readonly mode.
+     * @return object The entry with its annotations.
+     */
     private function prepare_entry_annotations($entry, $strmanager, $annotationmode = false, $readonly = false) {
         global $DB, $USER, $CFG, $OUTPUT;
 
