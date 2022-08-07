@@ -47,7 +47,6 @@ class restore_margic_activity_structure_step extends restore_activity_structure_
             $paths[] = new restore_path_element('margic_entry', '/activity/margic/entries/entry');
             $paths[] = new restore_path_element('margic_entry_rating', '/activity/margic/entries/entry/ratings/rating');
             $paths[] = new restore_path_element('margic_entry_annotation', '/activity/margic/entries/entry/annotations/annotation');
-            $paths[] = new restore_path_element('margic_entry_tag', '/activity/margic/tags/tag');
         }
 
         return $this->prepare_activity_structure($paths);
@@ -104,8 +103,6 @@ class restore_margic_activity_structure_step extends restore_activity_structure_
     protected function process_margic_entry($data) {
         global $DB;
 
-        error_log('process_margic_entry');
-
         $data = (object) $data;
         $oldid = $data->id;
 
@@ -130,8 +127,6 @@ class restore_margic_activity_structure_step extends restore_activity_structure_
     protected function process_margic_errortype($data) {
         global $DB;
 
-        error_log('process_margic_errortype');
-
         $data = (object) $data;
         $oldid = $data->id;
 
@@ -150,8 +145,6 @@ class restore_margic_activity_structure_step extends restore_activity_structure_
     protected function process_margic_entry_annotation($data) {
         global $DB;
 
-        error_log('process_margic_entry_annotation');
-
         $data = (object) $data;
 
         $oldid = $data->id;
@@ -159,33 +152,10 @@ class restore_margic_activity_structure_step extends restore_activity_structure_
         $data->margic = $this->newmargicid;
         $data->entry = $this->get_new_parentid('margic_entry');
         $data->userid = $this->get_mappingid('user', $data->userid);
+        $data->type = $this->get_mappingid('margic_errortype', $data->type);
 
         $newitemid = $DB->insert_record('margic_annotations', $data);
         $this->set_mapping('margic_annotation', $oldid, $newitemid);
-    }
-
-    /**
-     * Add tags to restored margic entries.
-     *
-     * @param stdClass $data Tag
-     */
-    protected function process_margic_entry_tag($data) {
-        $data = (object) $data;
-
-        error_log('process_margic_entry_tag');
-
-        if (! core_tag_tag::is_enabled('mod_margic', 'margic_entries')) { // Tags disabled in server, nothing to process.
-            return;
-        }
-
-        if (! $itemid = $this->get_mappingid('margic_entries', $data->itemid)) {
-            // Some orphaned tag, we could not find the data record for it - ignore.
-            return;
-        }
-
-        $tag = $data->rawname;
-        $context = context_module::instance($this->task->get_moduleid());
-        core_tag_tag::add_item_tag('mod_margic', 'margic_entries', $itemid, $context, $tag);
     }
 
     /**
@@ -196,8 +166,6 @@ class restore_margic_activity_structure_step extends restore_activity_structure_
      */
     protected function process_margic_entry_rating($data) {
         global $DB;
-
-        error_log('process_margic_entry_rating');
 
         $data = (object) $data;
 

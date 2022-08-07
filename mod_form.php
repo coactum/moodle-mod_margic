@@ -124,7 +124,7 @@ class mod_margic_mod_form extends moodleform_mod {
         $mform->addHelpButton('annotationareawidth', 'annotationareawidth', 'margic');
 
         if (!isset($update) || $update == 0) { // If not updating existing instance set default to config value.
-            $mform->setDefault('annotationareawidth', get_config('mod_margic', 'annotationareawidth'));
+            $mform->setDefault('annotationareawidth', get_config('margic', 'annotationareawidth'));
         }
 
         // Add the rest of the common settings.

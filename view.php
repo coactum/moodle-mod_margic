@@ -98,7 +98,7 @@ if (!empty($action) && $action == 'download' && has_capability('mod/margic:adden
 
 // Trigger course_module_viewed event.
 $event = \mod_margic\event\course_module_viewed::create(array(
-    'objectid' => $moduleinstance->id,
+    'objectid' => $id,
     'context' => $context
 ));
 $event->add_record_snapshot('course_modules', $cm);

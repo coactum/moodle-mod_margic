@@ -612,7 +612,12 @@ function margic_print_recent_mod_activity($activity, $courseid, $detail, $modnam
 
     /* if (isset($activity->grade)) {
         echo '<div class="grade">';
-        echo get_string('grade').': ';
+
+        if ($CFG->branch > 310) {
+            echo get_string('gradenoun').': ';
+        } else {
+            echo get_string('grade').': ';
+        }
         echo $activity->grade;
         echo '</div>';
     } */
@@ -640,14 +645,6 @@ function margic_reset_course_form_definition(&$mform) {
     $mform->addElement('checkbox', 'reset_margic_all', get_string('deletealluserdata', 'margic'));
 
     $mform->addElement('checkbox', 'reset_margic_errortypes', get_string('deleteerrortypes', 'margic'));
-
-    $mform->addElement('checkbox', 'reset_margic_ratings', get_string('deleteallratings', 'margic'));
-    $mform->disabledIf('reset_margic_ratings', 'reset_margic_all', 'checked');
-    $mform->setAdvanced('reset_margic_ratings');
-
-    $mform->addElement('checkbox', 'reset_margic_tags', get_string('deletealltags', 'margic'));
-    $mform->disabledIf('reset_margic_tags', 'reset_margic_all', 'checked');
-    $mform->setAdvanced('reset_margic_tags');
 }
 
 /**
@@ -657,7 +654,7 @@ function margic_reset_course_form_definition(&$mform) {
  * @return array
  */
 function margic_reset_course_form_defaults($course) {
-    return array('reset_margic_all' => 1, 'reset_margic_errortypes' => 1, 'reset_margic_ratings' => 0, 'reset_margic_tags' => 0);
+    return array('reset_margic_all' => 1, 'reset_margic_errortypes' => 1);
 }
 
 /**
@@ -687,18 +684,16 @@ function margic_reset_userdata($data) {
 
     $margics = $DB->get_records_sql($sql, $params);
 
-    // Get ratings manager.
-    if (!empty($data->reset_margic_all) || !empty($data->reset_margic_ratings)) {
+    // Delete entries and their annotations, files and ratings.
+    if (!empty($data->reset_margic_all)) {
+
+        $fs = get_file_storage();
+
+        // Get ratings manager.
         $rm = new rating_manager();
         $ratingdeloptions = new stdClass;
         $ratingdeloptions->component = 'mod_margic';
         $ratingdeloptions->ratingarea = 'entry';
-    }
-
-    // Delete entries and their annotations, files, ratings and tags.
-    if (!empty($data->reset_margic_all)) {
-
-        $fs = get_file_storage();
 
         foreach ($margics as $margicid => $unused) {
             if (!$cm = get_coursemodule_from_instance('margic', $margicid)) {
@@ -713,9 +708,6 @@ function margic_reset_userdata($data) {
             // Remove ratings.
             $ratingdeloptions->contextid = $context->id;
             $rm->delete_ratings($ratingdeloptions);
-
-            // Remove tags.
-            core_tag_tag::delete_instances('mod_margic', null, $context->id);
         }
 
         // Remove all grades from gradebook (if that is not already done by the reset_gradebook_grades).
@@ -742,46 +734,6 @@ function margic_reset_userdata($data) {
 
         $status[] = array('component' => $modulename, 'item' => get_string('errortypesdeleted', 'margic'), 'error' => false);
 
-    }
-
-    // Delete ratings only.
-    if (!empty($data->reset_margic_ratings) ) {
-
-        if ($margics) {
-            foreach ($margics as $margicid => $unused) {
-                if (!$cm = get_coursemodule_from_instance('margic', $margicid)) {
-                    continue;
-                }
-
-                $context = context_module::instance($cm->id);
-                $ratingdeloptions->contextid = $context->id;
-                $rm->delete_ratings($ratingdeloptions);
-            }
-        }
-
-        // Remove all grades from gradebook (if that is not already done by the reset_gradebook_grades).
-        if (empty($data->reset_gradebook_grades)) {
-            margic_reset_gradebook($data->courseid);
-        }
-
-        $status[] = array('component' => $modulename, 'item' => get_string('ratingsdeleted', 'margic'), 'error' => false);
-
-    }
-
-    // Delete tags only.
-    if (!empty($data->reset_margic_tags) ) {
-        if ($margics) {
-            foreach ($margics as $margicid => $unused) {
-                if (!$cm = get_coursemodule_from_instance('margic', $margicid)) {
-                    continue;
-                }
-
-                $context = context_module::instance($cm->id);
-                core_tag_tag::delete_instances('mod_margic', null, $context->id);
-            }
-        }
-
-        $status[] = array('component' => $modulename, 'item' => get_string('tagsdeleted', 'margic'), 'error' => false);
     }
 
     // Updating dates - shift may be negative too.

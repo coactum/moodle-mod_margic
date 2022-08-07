@@ -57,9 +57,6 @@ class backup_margic_activity_structure_step extends backup_activity_structure_st
             'userid', 'timecreated', 'timemodified', 'type', 'startcontainer', 'endcontainer',
             'startposition', 'endposition', 'text'));
 
-        $tags = new backup_nested_element('tags');
-        $tag = new backup_nested_element('tag', array('id'), array('itemid', 'rawname'));
-
         $ratings = new backup_nested_element('ratings');
         $rating = new backup_nested_element('rating', array('id'), array(
             'component', 'ratingarea', 'scaleid', 'value', 'userid',
@@ -71,9 +68,6 @@ class backup_margic_activity_structure_step extends backup_activity_structure_st
 
         $margic->add_child($entries);
         $entries->add_child($entry);
-
-        $margic->add_child($tags);
-        $tags->add_child($tag);
 
         $entry->add_child($annotations);
         $annotations->add_child($annotation);
@@ -103,21 +97,6 @@ class backup_margic_activity_structure_step extends backup_activity_structure_st
                                                       'ratingarea' => backup_helper::is_sqlparam('entry')));
 
             $rating->set_source_alias('rating', 'value');
-
-            // Tags (core).
-            if (core_tag_tag::is_enabled('mod_margic', 'margic_entries')) {
-                $tag->set_source_sql('SELECT t.id, ti.itemid, t.rawname
-                                        FROM {tag} t
-                                        JOIN {tag_instance} ti
-                                          ON ti.tagid = t.id
-                                       WHERE ti.itemtype = ?
-                                         AND ti.component = ?
-                                         AND ti.contextid = ?', array(
-                    backup_helper::is_sqlparam('margic_entries'),
-                    backup_helper::is_sqlparam('mod_margic'),
-                    backup::VAR_CONTEXTID));
-            }
-
         }
 
         // Define id annotations.
