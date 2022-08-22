@@ -35,10 +35,8 @@
                 <th scope="col">{{#str}}participant, mod_margic{{/str}}</th>
                 {{#margicerrortypes}}
                     <th scope="col">
-                        {{name}}
+                        <span style="text-decoration: underline; text-decoration-color: #{{color}}; text-decoration-thickness: 3px;">{{name}}</span>
                         <div>
-                            {{#defaulttype}}<span style="background-color: #{{color}}" title="{{#str}}standardtype, mod_margic{{/str}}">(S)</span>{{/defaulttype}}
-                            {{^defaulttype}}<span style="background-color: #{{color}}" title="{{#str}}manualtype, mod_margic{{/str}}">(M)</span>{{/defaulttype}}
                             {{#canbeedited}}
                                 <a href="errortypes.php?id={{cmid}}&edit={{id}}&mode=2" title="{{#str}}editerrortype, margic {{/str}}"><i class="fa fa-lg fa-pencil" aria-hidden="true" ></i></a>
                                 <a href="annotations_summary.php?id={{cmid}}&delete={{id}}&mode=2" title="{{#str}}deleteerrortype, margic {{/str}}"><i class="fa fa-lg fa-trash" aria-hidden="true" ></i></a>

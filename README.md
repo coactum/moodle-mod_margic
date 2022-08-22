@@ -14,11 +14,17 @@ this program.  If not, see <http://www.gnu.org/licenses/>.
 
 @copyright 2022 coactum GmbH
 
-# margic #
+# Margic #
 
 ## Description ##
 
-Allows to annotate entries for various purposes (fork of mod_diary).
+This plugin allows users to make various entries and teachers to rate and annotate these entries.
+
+This plugin is based on the official mod_diary Moodle plugin (v. 3.4.1) from AL Rachels (https://moodle.org/plugins/mod_diary) which itself is a fork of the mod_journal plugin (https://moodle.org/plugins/mod_journal). The original plugin code was widely rewritten in the making of this plugin.
+
+The plugin also incorporates JavaScript Code from the Hypothesis project (https://github.com/hypothesis/client) which is released under the 2-Clause BSD License (https://opensource.org/licenses/BSD-2-Clause), sometimes referred to as the "Simplified BSD License".
+
+It also uses JavaScript Code form the approx-string-match-js project (https://github.com/robertknight/approx-string-match-js) from Robert Knight wich is released under the MIT License (https://opensource.org/licenses/MIT).
 
 ## Quick installation instructions ##
 

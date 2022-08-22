@@ -44,7 +44,7 @@ class backup_margic_activity_structure_step extends backup_activity_structure_st
 
         $errortypes = new backup_nested_element('errortypes');
         $errortype = new backup_nested_element('errortype', array('id'), array(
-            'timecreated', 'timemodified', 'name', 'color', 'defaulttype', 'userid', 'priority'));
+            'timecreated', 'timemodified', 'name', 'color', 'priority'));
 
         $entries = new backup_nested_element('entries');
         $entry = new backup_nested_element('entry', array('id'), array(

@@ -356,7 +356,7 @@ class margic {
         $types = array();
         $strmanager = get_string_manager();
         foreach ($this->errortypes as $key => $type) {
-            if ($type->defaulttype == 1 && $strmanager->string_exists($type->name, 'mod_margic')) {
+            if ($strmanager->string_exists($type->name, 'mod_margic')) {
                 $types[$key] = get_string($type->name, 'mod_margic');
             } else {
                 $types[$key] = $type->name;
@@ -673,13 +673,11 @@ class margic {
 
             if (!$DB->record_exists('margic_errortypes', array('id' => $annotation->type))) { // If annotation type does not exist.
                 $entry->annotations[$key]->color = 'FFFF00';
-                $entry->annotations[$key]->defaulttype = 0;
                 $entry->annotations[$key]->type = get_string('deletederrortype', 'mod_margic');
             } else {
                 $entry->annotations[$key]->color = $this->errortypes[$annotation->type]->color;
-                $entry->annotations[$key]->defaulttype = $this->errortypes[$annotation->type]->defaulttype;
 
-                if ($entry->annotations[$key]->defaulttype == 1 && $strmanager->string_exists($this->errortypes[$annotation->type]->name, 'mod_margic')) {
+                if ($strmanager->string_exists($this->errortypes[$annotation->type]->name, 'mod_margic')) {
                     $entry->annotations[$key]->type = get_string($this->errortypes[$annotation->type]->name, 'mod_margic');
                 } else {
                     $entry->annotations[$key]->type = $this->errortypes[$annotation->type]->name;

@@ -233,7 +233,7 @@ $strmanager = get_string_manager();
 foreach ($margicerrortypes as $i => $type) {
     $margicerrortypes[$i]->canbeedited = true;
 
-    if ($type->defaulttype == 1 && $strmanager->string_exists($type->name, 'mod_margic')) {
+    if ($strmanager->string_exists($type->name, 'mod_margic')) {
         $margicerrortypes[$i]->name = get_string($type->name, 'mod_margic');
     } else {
         $margicerrortypes[$i]->name = $type->name;
