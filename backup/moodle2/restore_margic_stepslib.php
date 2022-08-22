@@ -200,11 +200,11 @@ class restore_margic_activity_structure_step extends restore_activity_structure_
 
         error_log('margic restore after_execute AFTERINTRO');
 
-        $this->add_related_files('mod_margic_entries', 'text', null);
+        $this->add_related_files('mod_margic', 'text', 'margic_entry');
 
         error_log('margic restore after_execute AFTERTEXT');
 
-        $this->add_related_files('mod_margic_entries', 'feedback', null);
+        //$this->add_related_files('mod_margic', 'feedback', 'margic_entry');
 
         error_log('margic restore after_execute AFTERFEEDBACK');
 

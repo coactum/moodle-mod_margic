@@ -66,8 +66,8 @@
         <FIELD NAME="type" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Type of the annotation"/>
         <FIELD NAME="startcontainer" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="Start container of the annotation"/>
         <FIELD NAME="endcontainer" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="End container of the annotation"/>
-        <FIELD NAME="startposition" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Start position of the annotation"/>
-        <FIELD NAME="endposition" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="End position of the annotation"/>
+        <FIELD NAME="startoffset" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Start position of the annotation"/>
+        <FIELD NAME="endoffset" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="End position of the annotation"/>
         <FIELD NAME="text" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="Text of the annotation"/>
       </FIELDS>
       <KEYS>

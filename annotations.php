@@ -136,13 +136,14 @@ if ($fromform = $mform->get_data()) {
     } else if ((!isset($fromform->annotationid) || $fromform->annotationid === 0) && isset($fromform->text)) { // New annotation.
 
         if ($fromform->startcontainer != -1 && $fromform->endcontainer != -1 &&
-            $fromform->startposition != -1 && $fromform->endposition != -1) {
+            $fromform->startoffset != -1 && $fromform->endoffset != -1) {
 
             if (!isset($fromform->type)) {
                 redirect($redirecturl, get_string('errtypedeleted', 'mod_margic'), null, notification::NOTIFY_ERROR);
             }
 
-            if (preg_match("/[^a-zA-Z0-9()\/[\]]/", $fromform->startcontainer) || preg_match("/[^a-zA-Z0-9()\/[\]]/", $fromform->endcontainer)) {
+            if (preg_match("/[^a-zA-Z0-9()-\/[\]]/", $fromform->startcontainer) || preg_match("/[^a-zA-Z0-9()-\/[\]]/", $fromform->endcontainer)
+                || preg_match("/[^a-zA-Z0-9()-\/[\]]/", $fromform->exact || preg_match("/[^a-zA-Z0-9()-\/[\]]/", $fromform->prefix) || preg_match("/[^a-zA-Z0-9()-\/[\]]/", $fromform->suffix))) {
                 redirect($redirecturl, get_string('annotationinvalid', 'mod_margic'), null, notification::NOTIFY_ERROR);
             }
 
@@ -159,8 +160,13 @@ if ($fromform = $mform->get_data()) {
             $annotation->type = $fromform->type;
             $annotation->startcontainer = $fromform->startcontainer;
             $annotation->endcontainer = $fromform->endcontainer;
-            $annotation->startposition = $fromform->startposition;
-            $annotation->endposition = $fromform->endposition;
+            $annotation->startoffset = $fromform->startoffset;
+            $annotation->endoffset = $fromform->endoffset;
+            $annotation->start = $fromform->start;
+            $annotation->end = $fromform->end;
+            $annotation->exact = $fromform->exact;
+            $annotation->prefix = $fromform->prefix;
+            $annotation->suffix = $fromform->suffix;
             $annotation->text = format_text($fromform->text, 2, array('para' => false));
 
             $DB->insert_record('margic_annotations', $annotation);

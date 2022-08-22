@@ -102,7 +102,7 @@ class margic {
             }
 
             if ($a->position === $b->position) {
-                return $a->startposition > $b->startposition;
+                return $a->startoffset > $b->startoffset;
             }
 
             return $a->position > $b->position;
@@ -738,11 +738,11 @@ class margic {
 
                     // echo 'position:' . $position . " \n";
                     // echo $annotation->text . " \n";
-                    // echo 'offset:' . $annotation->startposition . " \n";
+                    // echo 'offset:' . $annotation->startoffset . " \n";
                     // echo " \n\n";
 
                     // echo 'HIGHLIHGHT';
-                    // $span = $doc->createElement('span', htmlspecialchars(substr($nodelist[0]->textContent, $annotation->startposition)));
+                    // $span = $doc->createElement('span', htmlspecialchars(substr($nodelist[0]->textContent, $annotation->startoffset)));
                     // var_dump($doc->saveXml($span));
                     break;
                 }
@@ -760,7 +760,7 @@ class margic {
                     }
 
                     if ($xpathprefix2 == $xpathprefix1) {
-                        $diffoffsets += $annotation2->startposition;
+                        $diffoffsets += $annotation2->startoffset;
                     }
                 }
 
@@ -785,9 +785,9 @@ class margic {
 
                         // echo 'position fixed:' . $position . " \n";
                         // echo $annotation->text . " \n";
-                        // echo 'offset:' . $annotation->startposition . " \n";
+                        // echo 'offset:' . $annotation->startoffset . " \n";
                         // echo " \n\n";
-                        //$annotation->startposition += $diffoffsets;
+                        //$annotation->startoffset += $diffoffsets;
                         break;
                     }
 

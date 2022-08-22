@@ -22,11 +22,15 @@
  */
 
 import $ from 'jquery';
+import {RangeAnchor, TextPositionAnchor, TextQuoteAnchor} from './types';
+import {TextRange} from './text-range';
 
 export const init = (cmid, canmakeannotations, myuserid) => {
 
     var edited = false;
     var annotations = Array();
+
+    var newannotation = false;
 
     // Hide all Moodle forms.
     $('.annotation-form').hide();
@@ -49,7 +53,7 @@ export const init = (cmid, canmakeannotations, myuserid) => {
     });
 
     // Listen for return key pressed to submit annotation form.
-    $('textarea').keypress(function (e) {
+    $('textarea').keypress(function(e) {
         if (e.which == 13) {
             $(this).parents(':eq(2)').submit();
             e.preventDefault();
@@ -57,31 +61,49 @@ export const init = (cmid, canmakeannotations, myuserid) => {
     });
 
     // If user selects text for new annotation
-    $(document).on('mouseup', '.originaltext', function () {
+    $(document).on('mouseup', '.originaltext', function() {
         var selectedrange = window.getSelection().getRangeAt(0);
 
         if (selectedrange.cloneContents().textContent !== '' && canmakeannotations) {
 
+            // console.log('mouseup in originaltext');
+
             removeAllTempHighlights(); // Remove other temporary highlights.
 
-            resetForms(); // Remove old form contents.
+            resetForms(); // Reset the annotation forms.
+
+            // Create new annotation.
+            newannotation = createAnnotation(this);
 
             var entry = this.id.replace(/entry-/, '');
 
+            // RangeSelector.
             $('.annotation-form-' + entry + ' input[name="startcontainer"]').val(
-                xpathFromNode(selectedrange.startContainer, this));
+                newannotation.target[0].selector[0].startContainer);
             $('.annotation-form-' + entry + ' input[name="endcontainer"]').val(
-                xpathFromNode(selectedrange.endContainer, this));
-            $('.annotation-form-' + entry + ' input[name="startposition"]').val(selectedrange.startOffset);
-            $('.annotation-form-' + entry + ' input[name="endposition"]').val(selectedrange.endOffset);
+                newannotation.target[0].selector[0].endContainer);
+            $('.annotation-form-' + entry + ' input[name="startoffset"]').val(
+                newannotation.target[0].selector[0].startOffset);
+            $('.annotation-form-' + entry + ' input[name="endoffset"]').val(
+                newannotation.target[0].selector[0].endOffset);
+
+            // TextPositionSelector.
+            $('.annotation-form-' + entry + ' input[name="start"]').val(
+                newannotation.target[0].selector[1].start);
+            $('.annotation-form-' + entry + ' input[name="end"]').val(
+                newannotation.target[0].selector[1].end);
+
+            // TextQuoteSelector.
+            $('.annotation-form-' + entry + ' input[name="exact"]').val(
+                newannotation.target[0].selector[2].exact);
+            $('.annotation-form-' + entry + ' input[name="prefix"]').val(
+                newannotation.target[0].selector[2].prefix);
+            $('.annotation-form-' + entry + ' input[name="suffix"]').val(
+                newannotation.target[0].selector[2].suffix);
 
             $('.annotation-form-' + entry + ' select').val(1);
 
-            var annotatedtext = highlightRange(selectedrange, false, 'annotated_temp');
-
-            if (annotatedtext != '') {
-                $('#annotationpreview-temp-' + entry).html(annotatedtext);
-            }
+            $('#annotationpreview-temp-' + entry).html(newannotation.target[0].selector[2].exact);
 
             $('.annotationarea-' + entry + ' .annotation-form').show();
             $('.annotation-form-' + entry + ' #id_text').focus();
@@ -155,23 +177,34 @@ export const init = (cmid, canmakeannotations, myuserid) => {
 
         for (let annotation of Object.values(annotations)) {
 
-            // Recreate range from db.
-            var newrange = document.createRange();
+            const rangeSelectors = [[
+                {type: "RangeSelector", startContainer: annotation.startcontainer, startOffset: annotation.startoffset,
+                endContainer: annotation.endcontainer, endOffset: annotation.endoffset},
+                {type: "TextPositionSelector", start: annotation.start, end: annotation.end},
+                {type: "TextQuoteSelector", exact: annotation.exact, prefix: annotation.prefix, suffix: annotation.suffix}
+            ]];
 
-            try {
-                newrange.setStart(
-                    nodeFromXPath(annotation.startcontainer, $("#entry-" + annotation.entry)[0]), annotation.startposition);
-                newrange.setEnd(
-                    nodeFromXPath(annotation.endcontainer, $("#entry-" + annotation.entry)[0]), annotation.endposition);
-            } catch (e) {
-                // eslint-disable-line
-            }
+            // console.log('rangeSelectors');
+            // console.log(rangeSelectors);
 
-            var annotatedtext = highlightRange(newrange, annotation.id, 'annotated', annotation.color);
+            const target = rangeSelectors.map(selectors => ({
+                selector: selectors,
+            }));
 
-            if (annotatedtext != '') {
-                $('#annotationpreview-' + annotation.id).html(annotatedtext);
-            }
+            // console.log('target');
+            // console.log(target);
+
+            /** @type {AnnotationData} */
+            const newannotation = {
+                annotation: annotation,
+                target: target,
+            };
+
+            // console.log(newannotation);
+
+            anchor(newannotation, $("#entry-" + annotation.entry)[0]);
+
+            $('#annotationpreview-' + annotation.id).html(annotation.exact);
         }
     }
 
@@ -198,8 +231,13 @@ export const init = (cmid, canmakeannotations, myuserid) => {
 
             $('.annotation-form-' + entry + ' input[name="startcontainer"]').val(annotations[annotationid].startcontainer);
             $('.annotation-form-' + entry + ' input[name="endcontainer"]').val(annotations[annotationid].endcontainer);
-            $('.annotation-form-' + entry + ' input[name="startposition"]').val(annotations[annotationid].startposition);
-            $('.annotation-form-' + entry + ' input[name="endposition"]').val(annotations[annotationid].endposition);
+            $('.annotation-form-' + entry + ' input[name="startoffset"]').val(annotations[annotationid].startoffset);
+            $('.annotation-form-' + entry + ' input[name="endoffset"]').val(annotations[annotationid].endoffset);
+            $('.annotation-form-' + entry + ' input[name="start"]').val(annotations[annotationid].start);
+            $('.annotation-form-' + entry + ' input[name="end"]').val(annotations[annotationid].end);
+            $('.annotation-form-' + entry + ' input[name="exact"]').val(annotations[annotationid].exact);
+            $('.annotation-form-' + entry + ' input[name="prefix"]').val(annotations[annotationid].prefix);
+            $('.annotation-form-' + entry + ' input[name="suffix"]').val(annotations[annotationid].suffix);
 
             $('.annotation-form-' + entry + ' input[name="annotationid"]').val(annotationid);
 
@@ -228,8 +266,8 @@ export const init = (cmid, canmakeannotations, myuserid) => {
 
         $('.annotation-form input[name^="startcontainer"]').val(-1);
         $('.annotation-form input[name^="endcontainer"]').val(-1);
-        $('.annotation-form input[name^="startposition"]').val(-1);
-        $('.annotation-form input[name^="endposition"]').val(-1);
+        $('.annotation-form input[name^="startoffset"]').val(-1);
+        $('.annotation-form input[name^="endoffset"]').val(-1);
 
         $('.annotation-form textarea[name^="text"]').val('');
 
@@ -252,164 +290,17 @@ export const init = (cmid, canmakeannotations, myuserid) => {
      * @param {HighlightElement[]} highlights - The highlight elements returned by `highlightRange`
      */
     function removeHighlights(highlights) {
+
+        // console.log('removeHighlights highlights');
+        // console.log(highlights);
+
         for (var i = 0; i < highlights.length; i++) {
             if (highlights[i].parentNode) {
                 var pn = highlights[i].parentNode;
                 const children = Array.from(highlights[i].childNodes);
                 replaceWith(highlights[i], children);
-                pn.normalize();
+                pn.normalize(); // To Be removed?
             }
-        }
-    }
-
-    /**
-     * Return text nodes which are entirely inside `range`.
-     *
-     * If a range starts or ends part-way through a text node, the node is split
-     * and the part inside the range is returned.
-     *
-     * @param {Range} range
-     * @return {Text[]}
-     */
-    function wholeTextNodesInRange(range) {
-        if (range.collapsed) {
-            // Exit early for an empty range to avoid an edge case that breaks the algorithm
-            // below. Splitting a text node at the start of an empty range can leave the
-            // range ending in the left part rather than the right part.
-            return [];
-        }
-
-        /** @type {Node|null} */
-        let root = range.commonAncestorContainer;
-        if (root.nodeType !== Node.ELEMENT_NODE) {
-            // If the common ancestor is not an element, set it to the parent element to
-            // ensure that the loop below visits any text nodes generated by splitting
-            // the common ancestor.
-            //
-            // Note that `parentElement` may be `null`.
-            root = root.parentElement;
-        }
-        if (!root) {
-            // If there is no root element then we won't be able to insert highlights,
-            // so exit here.
-            return [];
-        }
-
-        const textNodes = [];
-        const nodeIter = /** @type {Document} */ (
-            root.ownerDocument
-        ).createNodeIterator(
-            root,
-            NodeFilter.SHOW_TEXT // Only return `Text` nodes.
-        );
-        let node;
-        while ((node = nodeIter.nextNode())) {
-            if (!isNodeInRange(range, node)) {
-                continue;
-            }
-            let text = /** @type {Text} */ (node);
-
-            if (text === range.startContainer && range.startOffset > 0) {
-                // Split `text` where the range starts. The split will create a new `Text`
-                // node which will be in the range and will be visited in the next loop iteration.
-                text.splitText(range.startOffset);
-                continue;
-            }
-
-            if (text === range.endContainer && range.endOffset < text.data.length) {
-                // Split `text` where the range ends, leaving it as the part in the range.
-                text.splitText(range.endOffset);
-            }
-
-            textNodes.push(text);
-        }
-
-        return textNodes;
-    }
-
-    /**
-     * Wraps the DOM Nodes within the provided range with a highlight
-     * element of the specified class and returns the highlight Elements.
-     *
-     * @param {Range} range - Range to be highlighted
-     * @param {int} annotationid - ID of annotation
-     * @param {string} cssClass - A CSS class to use for the highlight
-     * @param {string} color - Color of the highlighting
-     * @return {HighlightElement[]} - Elements wrapping text in `normedRange` to add a highlight effect
-     */
-    function highlightRange(range, annotationid = false, cssClass = 'annotated', color = 'FFFF00') {
-
-        const textNodes = wholeTextNodesInRange(range);
-
-        // Group text nodes into spans of adjacent nodes. If a group of text nodes are
-        // adjacent, we only need to create one highlight element for the group.
-        let textNodeSpans = [];
-        let prevNode = null;
-        let currentSpan = null;
-
-        textNodes.forEach(node => {
-            if (prevNode && prevNode.nextSibling === node) {
-                currentSpan.push(node);
-            } else {
-                currentSpan = [node];
-                textNodeSpans.push(currentSpan);
-            }
-            prevNode = node;
-        });
-
-        // Filter out text node spans that consist only of white space. This avoids
-        // inserting highlight elements in places that can only contain a restricted
-        // subset of nodes such as table rows and lists.
-        const whitespace = /^\s*$/;
-        textNodeSpans = textNodeSpans.filter(span =>
-            // Check for at least one text node with non-space content.
-            span.some(node => !whitespace.test(node.nodeValue))
-        );
-
-        // Wrap each text node span with a `<span>` element.
-        var hihglightedtext = '';
-
-        textNodeSpans.forEach(nodes => {
-            const highlightEl = document.createElement('span');
-            highlightEl.className = cssClass;
-
-            if (annotationid) {
-                highlightEl.className += ' ' + cssClass + '-' + annotationid;
-                highlightEl.style = "text-decoration:underline; text-decoration-color: #" + color;
-                highlightEl.id = cssClass + '-' + annotationid;
-                highlightEl.style.backgroundColor = '#' + color;
-            }
-
-            hihglightedtext += nodes[0].textContent;
-
-            nodes[0].parentNode.replaceChild(highlightEl, nodes[0]);
-            nodes.forEach(node => highlightEl.appendChild(node));
-
-        });
-
-        return hihglightedtext;
-    }
-
-    /**
-     * Returns true if any part of `node` lies within `range`.
-     *
-     * @param {Range} range
-     * @param {Node} node
-     * @return {bool} - If node is in range
-     */
-    function isNodeInRange(range, node) {
-        try {
-            const length = node.nodeValue?.length ?? node.childNodes.length;
-            return (
-                // Check start of node is before end of range.
-                range.comparePoint(node, 0) <= 0 &&
-                // Check end of node is after start of range.
-                range.comparePoint(node, length) >= 0
-            );
-        } catch (e) {
-            // `comparePoint` may fail if the `range` and `node` do not share a common
-            // ancestor or `node` is a doctype.
-            return false;
         }
     }
 
@@ -584,22 +475,22 @@ export const init = (cmid, canmakeannotations, myuserid) => {
      * @param {Element} [root]
      * @return {Node|null}
      */
-    function nodeFromXPath(xpath, root = document.body) {
-        try {
-            return evaluateSimpleXPath(xpath, root);
-        } catch (err) {
-            return document.evaluate(
-                '.' + xpath,
-                root,
+    // function nodeFromXPath(xpath, root = document.body) {
+    //     try {
+    //         return evaluateSimpleXPath(xpath, root);
+    //     } catch (err) {
+    //         return document.evaluate(
+    //             '.' + xpath,
+    //             root,
 
-                // The `namespaceResolver` and `result` arguments are optional in the spec
-                // but required in Edge Legacy.
-                null /* NamespaceResolver */,
-                XPathResult.FIRST_ORDERED_NODE_TYPE,
-                null /* Result */
-            ).singleNodeValue;
-        }
-    }
+    //             // The `namespaceResolver` and `result` arguments are optional in the spec
+    //             // but required in Edge Legacy.
+    //             null /* NamespaceResolver */,
+    //             XPathResult.FIRST_ORDERED_NODE_TYPE,
+    //             null /* Result */
+    //         ).singleNodeValue;
+    //     }
+    // }
 
     /**
      * Replace a child `node` with `replacements`.
@@ -615,4 +506,536 @@ export const init = (cmid, canmakeannotations, myuserid) => {
         replacements.forEach(r => parent.insertBefore(r, node));
         node.remove();
     }
+
 };
+
+/**
+ * Create a new annotation that is associated with the selected region of
+ * the current document.
+ *
+ * @param {object} root - The root element
+ * @return {object} - The new annotation
+ */
+function createAnnotation(root) {
+    // console.log('createAnnotation');
+
+    const ranges = [window.getSelection().getRangeAt(0)];
+
+    // console.log('ranges');
+    // console.log(ranges);
+
+    if (ranges.collapsed) {
+        return null;
+    }
+
+    //const info = await this.getDocumentInfo();
+    const rangeSelectors = ranges.map(range => describe(root, range));
+
+    // console.log('rangeSelectors');
+    // console.log(rangeSelectors);
+
+    const target = rangeSelectors.map(selectors => ({
+      selector: selectors,
+    }));
+
+    // console.log('target');
+    // console.log(target);
+
+    /** @type {AnnotationData} */
+    const annotation = {
+      target,
+    };
+
+    // console.log('TARGET INFORMATION TO SAVE IN THE DB');
+    // console.log(annotation);
+
+    temp = anchor(annotation, root);
+
+    // console.log('TEMP');
+    // console.log(temp);
+
+    return annotation;
+}
+
+/**
+ * Get anchors for new annnotation.
+ *
+ * @param {Element} root
+ * @param {Range} range
+ * @return {object} - Array with the anchors.
+ */
+export function describe(root, range) {
+    const types = [RangeAnchor, TextPositionAnchor, TextQuoteAnchor];
+    const result = [];
+
+    // console.log('describe');
+
+    for (let type of types) {
+      try {
+        const anchor = type.fromRange(root, range);
+
+        // console.log('type');
+        // console.log(type);
+        // console.log('anchor');
+        // console.log(anchor);
+
+        result.push(anchor.toSelector());
+      } catch (error) {
+        continue;
+      }
+    }
+    return result;
+}
+
+// Anchoring
+
+/**
+   * Anchor an annotation's selectors in the document.
+   *
+   * _Anchoring_ resolves a set of selectors to a concrete region of the document
+   * which is then highlighted.
+   *
+   * Any existing anchors associated with `annotation` will be removed before
+   * re-anchoring the annotation.
+   *
+   * @param {AnnotationData} annotation
+   * @return {obj} achor object
+   */
+ function anchor(annotation, root) {
+    // console.log('anchor');
+    // console.log('annotation');
+    // console.log(annotation);
+
+    /**
+     * Resolve an annotation's selectors to a concrete range.
+     *
+     * @param {Target} target
+     * @return {obj}
+     */
+    const locate = target => {
+
+        // console.log('anchor -> locate');
+        // console.log('target');
+        // console.log(target);
+
+      // Only annotations with an associated quote can currently be anchored.
+      // This is because the quote is used to verify anchoring with other selector
+      // types.
+      if (
+        !target.selector ||
+        !target.selector.some(s => s.type === 'TextQuoteSelector')
+      ) {
+        return { annotation, target };
+      }
+
+      /** @type {Anchor} */
+      let anchor;
+      try {
+        const range = htmlAnchor(root, target.selector);
+        // Convert the `Range` to a `TextRange` which can be converted back to
+        // a `Range` later. The `TextRange` representation allows for highlights
+        // to be inserted during anchoring other annotations without "breaking"
+        // this anchor.
+        // console.log('anchor -> locate -> after htmlAnchor');
+        // console.log('result of htmlAnchor');
+        // console.log(range);
+        const textRange = TextRange.fromRange(range);
+        // console.log('range for anchor');
+        // console.log('textRange');
+        // console.log(textRange);
+
+        anchor = { annotation, target, range: textRange };
+
+        // console.log('anchor found');
+        // console.log(anchor);
+      } catch (err) {
+        // console.log('error in try to find textrange');
+        // console.log(err);
+        anchor = { annotation, target };
+      }
+
+    //   console.log('anchor at the end of anchor -> locate');
+    //   console.log(anchor);
+      return anchor;
+    };
+
+    /**
+     * Highlight the text range that `anchor` refers to.
+     *
+     * @param {Anchor} anchor
+     */
+    const highlight = anchor => {
+        // console.log('highlight');
+        // console.log('highlight resolveAnchor');
+      const range = resolveAnchor(anchor);
+    //   console.log('range');
+    //   console.log(range);
+
+      if (!range) {
+        // console.log('no range');
+        return;
+      }
+
+    //   console.log('highlight after resolveAnchor');
+    //   console.log('range');
+    //   console.log(range);
+
+    //   console.log('annotation');
+    //   console.log(annotation);
+
+      let highlights = [];
+
+      if (annotation.annotation) {
+        highlights = highlightRange(range, annotation.annotation.id, 'annotated', annotation.annotation.color);
+      } else {
+        highlights = highlightRange(range, false, 'annotated_temp');
+      }
+
+    //   console.log('highlights after i should have highlighted range');
+    //   console.log(highlights);
+
+      highlights.forEach(h => {
+        h._annotation = anchor.annotation;
+      });
+      anchor.highlights = highlights;
+
+    //   if (this._focusedAnnotations.has(anchor.annotation.$tag)) {
+    //     setHighlightsFocused(highlights, true);
+    //   }
+    };
+
+    // Remove existing anchors for this annotation.
+    // this.detach(annotation, false /* notify */); // To be replaced by own method
+
+    // Resolve selectors to ranges and insert highlights.
+    if (!annotation.target) {
+      annotation.target = [];
+    }
+    const anchors = annotation.target.map(locate);
+    // console.log('anchors after locate');
+    // console.log(anchors);
+
+    for (let anchor of anchors) {
+        // console.log('before highlighting anchor');
+        // console.log('anchor');
+        // console.log(anchor);
+        highlight(anchor);
+        // console.log('after highlighting anchor');
+    }
+
+    // Set flag indicating whether anchoring succeeded. For each target,
+    // anchoring is successful either if there are no selectors (ie. this is a
+    // Page Note) or we successfully resolved the selectors to a range.
+    annotation.$orphan =
+      anchors.length > 0 &&
+      anchors.every(anchor => anchor.target.selector && !anchor.range);
+
+    // console.log('anchor ends');
+    // console.log('anchors');
+    // console.log(anchors);
+    return anchors;
+  }
+
+/**
+ * Resolve an anchor's associated document region to a concrete `Range`.
+ *
+ * This may fail if anchoring failed or if the document has been mutated since
+ * the anchor was created in a way that invalidates the anchor.
+ *
+ * @param {Anchor} anchor
+ * @return {Range|null}
+ */
+function resolveAnchor(anchor) {
+    // console.log('resolveAnchor');
+    // console.log('anchor');
+    // console.log(anchor);
+
+    if (!anchor.range) {
+      return null;
+    }
+    try {
+      return anchor.range.toRange();
+    } catch {
+      return null;
+    }
+}
+
+
+    /**
+     * Wraps the DOM Nodes within the provided range with a highlight
+     * element of the specified class and returns the highlight Elements.
+     *
+     * @param {Range} range - Range to be highlighted
+     * @param {int} annotationid - ID of annotation
+     * @param {string} cssClass - A CSS class to use for the highlight
+     * @param {string} color - Color of the highlighting
+     * @return {HighlightElement[]} - Elements wrapping text in `normedRange` to add a highlight effect
+     */
+     function highlightRange(range, annotationid = false, cssClass = 'annotated', color = 'FFFF00') {
+        // console.log('highlightRange');
+        // console.log('range');
+        // console.log(range);
+
+        const textNodes = wholeTextNodesInRange(range);
+
+        // Group text nodes into spans of adjacent nodes. If a group of text nodes are
+        // adjacent, we only need to create one highlight element for the group.
+        let textNodeSpans = [];
+        let prevNode = null;
+        let currentSpan = null;
+
+        textNodes.forEach(node => {
+            if (prevNode && prevNode.nextSibling === node) {
+                currentSpan.push(node);
+            } else {
+                currentSpan = [node];
+                textNodeSpans.push(currentSpan);
+            }
+            prevNode = node;
+        });
+
+        // Filter out text node spans that consist only of white space. This avoids
+        // inserting highlight elements in places that can only contain a restricted
+        // subset of nodes such as table rows and lists.
+        const whitespace = /^\s*$/;
+        textNodeSpans = textNodeSpans.filter(span =>
+            // Check for at least one text node with non-space content.
+            span.some(node => !whitespace.test(node.nodeValue))
+        );
+
+        // Wrap each text node span with a `<span>` element.
+        const highlights = /** @type {HighlightElement[]} */ ([]);
+
+        textNodeSpans.forEach(nodes => {
+            const highlightEl = document.createElement('margic-highlight');
+            highlightEl.className = cssClass;
+
+            if (annotationid) {
+                highlightEl.className += ' ' + cssClass + '-' + annotationid;
+                highlightEl.style = "text-decoration:underline; text-decoration-color: #" + color;
+                highlightEl.id = cssClass + '-' + annotationid;
+                highlightEl.style.backgroundColor = '#' + color;
+            }
+
+            const parent = /** @type {Node} */ (nodes[0].parentNode);
+            parent.replaceChild(highlightEl, nodes[0]);
+            nodes.forEach(node => highlightEl.appendChild(node));
+
+            highlights.push(highlightEl);
+
+        });
+
+        return highlights;
+    }
+
+    /**
+    * Return text nodes which are entirely inside `range`.
+    *
+    * If a range starts or ends part-way through a text node, the node is split
+    * and the part inside the range is returned.
+    *
+    * @param {Range} range
+    * @return {Text[]}
+    */
+   function wholeTextNodesInRange(range) {
+       if (range.collapsed) {
+           // Exit early for an empty range to avoid an edge case that breaks the algorithm
+           // below. Splitting a text node at the start of an empty range can leave the
+           // range ending in the left part rather than the right part.
+           return [];
+       }
+
+       /** @type {Node|null} */
+       let root = range.commonAncestorContainer;
+       if (root.nodeType !== Node.ELEMENT_NODE) {
+           // If the common ancestor is not an element, set it to the parent element to
+           // ensure that the loop below visits any text nodes generated by splitting
+           // the common ancestor.
+           //
+           // Note that `parentElement` may be `null`.
+           root = root.parentElement;
+       }
+       if (!root) {
+           // If there is no root element then we won't be able to insert highlights,
+           // so exit here.
+           return [];
+       }
+
+       const textNodes = [];
+       const nodeIter = /** @type {Document} */ (
+           root.ownerDocument
+       ).createNodeIterator(
+           root,
+           NodeFilter.SHOW_TEXT // Only return `Text` nodes.
+       );
+       let node;
+       while ((node = nodeIter.nextNode())) {
+           if (!isNodeInRange(range, node)) {
+               continue;
+           }
+           let text = /** @type {Text} */ (node);
+
+           if (text === range.startContainer && range.startOffset > 0) {
+               // Split `text` where the range starts. The split will create a new `Text`
+               // node which will be in the range and will be visited in the next loop iteration.
+               text.splitText(range.startOffset);
+               continue;
+           }
+
+           if (text === range.endContainer && range.endOffset < text.data.length) {
+               // Split `text` where the range ends, leaving it as the part in the range.
+               text.splitText(range.endOffset);
+           }
+
+           textNodes.push(text);
+       }
+
+       return textNodes;
+   }
+
+   /**
+    * Returns true if any part of `node` lies within `range`.
+    *
+    * @param {Range} range
+    * @param {Node} node
+    * @return {bool} - If node is in range
+    */
+   function isNodeInRange(range, node) {
+       try {
+           const length = node.nodeValue?.length ?? node.childNodes.length;
+           return (
+               // Check start of node is before end of range.
+               range.comparePoint(node, 0) <= 0 &&
+               // Check end of node is after start of range.
+               range.comparePoint(node, length) >= 0
+           );
+       } catch (e) {
+           // `comparePoint` may fail if the `range` and `node` do not share a common
+           // ancestor or `node` is a doctype.
+           return false;
+       }
+   }
+
+/**
+ * @param {RangeAnchor|TextPositionAnchor|TextQuoteAnchor} anchor
+ * @param {Object} [options]
+ * @return {obj} - range
+ */
+ function querySelector(anchor, options = {}) {
+    // console.log('querySelector');
+    // console.log('anchor');
+    // console.log(anchor);
+    // console.log('options');
+    // console.log(options);
+
+    return anchor.toRange(options);
+  }
+
+  /**
+   * Anchor a set of selectors.
+   *
+   * This function converts a set of selectors into a document range.
+   * It encapsulates the core anchoring algorithm, using the selectors alone or
+   * in combination to establish the best anchor within the document.
+   *
+   * @param {Element} root - The root element of the anchoring context.
+   * @param {Selector[]} selectors - The selectors to try.
+   * @param {Object} [options]
+   * @return {object} the query selector
+   */
+  function htmlAnchor(root, selectors, options = {}) {
+    let position = null;
+    let quote = null;
+    let range = null;
+
+    // console.log('htmlAnchor()');
+
+    // Collect all the selectors
+    for (let selector of selectors) {
+      switch (selector.type) {
+        case 'TextPositionSelector':
+          position = selector;
+          options.hint = position.start; // TextQuoteAnchor hint
+          break;
+        case 'TextQuoteSelector':
+          quote = selector;
+          break;
+        case 'RangeSelector':
+          range = selector;
+          break;
+      }
+    }
+
+    /**
+     * Assert the quote matches the stored quote, if applicable
+     * @param {Range} range
+     * @return {Range} range
+     */
+    const maybeAssertQuote = range => {
+        // console.log('maybeAssertQuote');
+        // console.log('range');
+        // console.log(range);
+        // console.log('quote');
+        // console.log(quote);
+      if (quote?.exact && range.toString() !== quote.exact) {
+        throw new Error('quote mismatch');
+      } else {
+        // console.log('range found!');
+        // console.log(range);
+        return range;
+      }
+    };
+
+    let queryselector = false;
+    if (range) {
+        // console.log('range');
+
+      let anchor = RangeAnchor.fromSelector(root, range);
+
+    //   console.log('anchor');
+    //   console.log(anchor);
+
+      queryselector = querySelector(anchor, options);
+
+      if (queryselector) {
+
+        // console.log('htmlAnchor queryselector for RangeAnchor');
+        // console.log(queryselector);
+
+        return queryselector;
+      } else {
+        return maybeAssertQuote;
+      }
+    }
+
+    if (position) {
+        // console.log('position');
+
+        let anchor = TextPositionAnchor.fromSelector(root, position);
+
+        queryselector = querySelector(anchor, options);
+        if (queryselector) {
+
+            // console.log('htmlAnchor queryselector for TextPositionAnchor');
+            // console.log(queryselector);
+            return queryselector;
+          } else {
+            return maybeAssertQuote;
+          }
+    }
+
+    if (quote) {
+        // console.log('quote');
+        // console.log('htmlAnchor queryselector for TextQuoteAnchor');
+
+        let anchor = TextQuoteAnchor.fromSelector(root, quote);
+
+        queryselector = querySelector(anchor, options);
+
+        // console.log(queryselector);
+
+        return queryselector;
+    }
+
+    return false;
+  }
