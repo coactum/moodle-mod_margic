@@ -158,24 +158,24 @@ class margic {
         if (has_capability('mod/margic:addentries', $context)) {
             switch ($action) {
                 case 'currenttooldest':
-                    set_user_preference('sortoption['.$id.']', 1);
+                    set_user_preference('margic_sortoption', 1);
                     break;
                 case 'oldesttocurrent':
-                    set_user_preference('sortoption['.$id.']', 2);
+                    set_user_preference('margic_sortoption', 2);
                     break;
                 case 'lowestgradetohighest':
-                    set_user_preference('sortoption['.$id.']', 3);
+                    set_user_preference('margic_sortoption', 3);
                     break;
                 case 'highestgradetolowest':
-                    set_user_preference('sortoption['.$id.']', 4);
+                    set_user_preference('margic_sortoption', 4);
                     break;
                 default:
-                    if (!get_user_preferences('sortoption['.$id.']')) {
-                        set_user_preference('sortoption['.$id.']', 1);
+                    if (!get_user_preferences('margic_sortoption')) {
+                        set_user_preference('margic_sortoption', 1);
                     }
             }
 
-            switch (get_user_preferences('sortoption['.$id.']')) {
+            switch (get_user_preferences('margic_sortoption')) {
                 case 1:
                     $this->sortmode = get_string('currententry', 'mod_margic');
                     $sortoptions = 'timemodified DESC';
@@ -206,14 +206,14 @@ class margic {
                 $pagecount = 2;
             }
 
-            $oldpagecount = get_user_preferences('margic_pagecount_'.$id);
+            $oldpagecount = get_user_preferences('margic_pagecount');
 
             if ($pagecount != $oldpagecount) {
-                set_user_preference('margic_pagecount_'.$id, $pagecount);
+                set_user_preference('margic_pagecount', $pagecount);
             }
 
             $this->pagecount = $pagecount;
-        } else if ($oldpagecount = get_user_preferences('margic_pagecount_'.$id)) {
+        } else if ($oldpagecount = get_user_preferences('margic_pagecount')) {
             $this->pagecount = $oldpagecount;
         } else {
             $this->pagecount = 5;
@@ -226,13 +226,18 @@ class margic {
                 $page = 1;
             }
 
-            $oldpage = get_user_preferences('margic_activepage_'.$id);
+            $oldpage = get_user_preferences('margic_activepage');
 
             if ($page != $oldpage) {
-                set_user_preference('margic_activepage_'.$id, $page);
+                set_user_preference('margic_activepage', $page);
             }
 
             $this->page = $page;
+        } else if ($oldpage = get_user_preferences('margic_activepage')) {
+            $this->page = $oldpage;
+        } else {
+            $this->page = 1;
+
         }
 
         // Get entries.
@@ -397,6 +402,9 @@ class margic {
 
             if (isset($groupedentries[$this->page])) {
                 return array_values($groupedentries[$this->page]);
+            } else if (isset($groupedentries[1])) { // In case the active page stored is not existent in this margic.
+                set_user_preference('margic_activepage', 1);
+                return array_values($groupedentries[1]);
             } else {
                 return false;
             }

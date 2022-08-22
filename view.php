@@ -46,7 +46,7 @@ $action = optional_param('action',  'currententry', PARAM_ALPHANUMEXT);
 $pagecount = optional_param('pagecount', 0, PARAM_INT);
 
 // Param containing the active page.
-$page = optional_param('page', 1, PARAM_INT);
+$page = optional_param('page', 0, PARAM_INT);
 
 // Param if annotation mode is activated.
 $annotationmode = optional_param('annotationmode',  0, PARAM_BOOL); // Annotation mode.

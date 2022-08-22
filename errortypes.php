@@ -86,7 +86,10 @@ if ($edit !== 0) {
         $editedtypeid = $edit;
         $editedtypename = $editedtype->name;
         $editedcolor = $editedtype->color;
-        $editeddefaulttype = $editedtype->defaulttype;
+
+        if ($mode == 1) {
+            $editeddefaulttype = $editedtype->defaulttype;
+        }
     }
 }
 

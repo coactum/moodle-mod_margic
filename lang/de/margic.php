@@ -295,9 +295,9 @@ $string['privacy:metadata:margic_errortype_templates:userid'] = 'ID des Benutzer
 $string['privacy:metadata:core_rating'] = 'Es werden zu Margic-Einträgen hinzugefügte Bewertungen gespeichert.';
 $string['privacy:metadata:core_files'] = 'Es werden mit Margic-Einträgen verknüpfte Dateien gespeichert.';
 $string['privacy:metadata:core_message'] = 'Es werden Nachrichten über die Bewertung von Margic-Einträgen an Benutzer versendet.';
-$string['privacy:metadata:preference:sortoption'] = 'Die Präferenz für die Sortierung jedes Margics.';
-$string['privacy:metadata:preference:margic_pagecount'] = 'Die Anzahl der Einträge, die pro Seite in jedem Margic angezeigt werden sollen.';
-$string['privacy:metadata:preference:margic_activepage'] = 'Die Nummer der aktuell geöffneten Seite in jedem Margic.';
+$string['privacy:metadata:preference:margic_sortoption'] = 'Die Präferenz für die Sortierung des Margics.';
+$string['privacy:metadata:preference:margic_pagecount'] = 'Die Anzahl der Einträge, die pro Seite in einem Margic angezeigt werden sollen.';
+$string['privacy:metadata:preference:margic_activepage'] = 'Die Nummer der zuletzt geöffneten Seite im Margic.';
 
 // löschen
 $string['numwordscln'] = '{$a->one} bereinigte Wörter mit {$a->two} Zeichen, AUSSCHLIEßLICH {$a->three} Leerzeichen. ';

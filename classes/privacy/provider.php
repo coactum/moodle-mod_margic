@@ -46,7 +46,8 @@ use core_grades\component_gradeitem as gradeitem; // needed?
  */
 class provider implements \core_privacy\local\metadata\provider,
                           \core_privacy\local\request\core_userlist_provider,
-                          \core_privacy\local\request\plugin\provider {
+                          \core_privacy\local\request\plugin\provider,
+                          \core_privacy\local\request\user_preference_provider {
 
     /**
      * Provides the meta data stored for usera stored by mod_margic.
@@ -96,7 +97,7 @@ class provider implements \core_privacy\local\metadata\provider,
         $items->add_subsystem_link('core_message', [], 'privacy:metadata:core_message');
 
         // User preferences in the margic.
-        $items->add_user_preference('sortoption', 'privacy:metadata:preference:sortoption');
+        $items->add_user_preference('margic_sortoption', 'privacy:metadata:preference:margic_sortoption');
         $items->add_user_preference('margic_pagecount', 'privacy:metadata:preference:margic_pagecount');
         $items->add_user_preference('margic_activepage', 'privacy:metadata:preference:margic_activepage');
 
@@ -436,6 +437,45 @@ class provider implements \core_privacy\local\metadata\provider,
 
         // Store the annotation data.
         writer::with_context($context)->export_data($subcontext, $annotationdata);
+    }
+
+    /**
+     * Store all user preferences for the plugin.
+     *
+     * @param   int         $userid The userid of the user whose data is to be exported.
+     */
+    public static function export_user_preferences(int $userid) {
+        $user = \core_user::get_user($userid);
+
+        if ($margic_sortoption = get_user_preferences('margic_sortoption', 0, $userid)) {
+            switch ($margic_sortoption) {
+                case 1:
+                    $sortoption = get_string('currenttooldest', 'mod_margic');
+                    break;
+                case 2:
+                    $sortoption = get_string('oldesttocurrent', 'mod_margic');
+                    break;
+                case 3:
+                    $sortoption = get_string('lowestgradetohighest', 'mod_margic');
+                    break;
+                case 4:
+                    $sortoption = get_string('highestgradetolowest', 'mod_margic');
+                    break;
+                default:
+                    $sortoption = get_string('currenttooldest', 'mod_margic');
+                    break;
+            }
+
+            writer::export_user_preference('mod_margic', 'margic_sortoption', $margic_sortoption, $sortoption);
+        }
+
+        if ($margic_pagecount = get_user_preferences('margic_pagecount', 0, $userid)) {
+            writer::export_user_preference('mod_margic', 'margic_pagecount', $margic_pagecount, get_string('privacy:metadata:preference:margic_pagecount', 'mod_margic'));
+        }
+
+        if ($margic_activepage = get_user_preferences('margic_activepage', 0, $userid)) {
+            writer::export_user_preference('mod_margic', 'margic_activepage', $margic_activepage, get_string('privacy:metadata:preference:margic_activepage', 'mod_margic'));
+        }
     }
 
     /**

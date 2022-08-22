@@ -308,9 +308,9 @@ $string['privacy:metadata:margic_errortype_templates:userid'] = 'ID of the user 
 $string['privacy:metadata:core_rating'] = 'Ratings added to Margic entries are saved.';
 $string['privacy:metadata:core_files'] = 'Files associated with Margic entries are saved.';
 $string['privacy:metadata:core_message'] = 'Messages are sent to users about the grading of Margic entries.';
-$string['privacy:metadata:preference:sortoption'] = 'The preference for the sorting of each margic.';
-$string['privacy:metadata:preference:margic_pagecount'] = 'The number of entries that should be shown per page for each Margic.';
-$string['privacy:metadata:preference:margic_activepage'] = 'The number of the page currently opened in each Margic.';
+$string['privacy:metadata:preference:margic_sortoption'] = 'The preference for the sorting of a margic.';
+$string['privacy:metadata:preference:margic_pagecount'] = 'The number of entries that should be shown per page for a Margic.';
+$string['privacy:metadata:preference:margic_activepage'] = 'The number of the last opened page in a Margic.';
 
 // Löschen.
 $string['numwordscln'] = '{$a->one} clean text words using {$a->two} characters, NOT including {$a->three} spaces. ';
