@@ -1,5 +1,8 @@
 /**
- * approx-string-match from Robert Knight (https://github.com/robertknight/approx-string-match-js)
+ * Functions for string matching used by the other methods.
+ *
+ * This code originaly is from the approx-string-match project (https://github.com/robertknight/approx-string-match-js)
+ * by Robert Knight wich is released under the MIT License (https://opensource.org/licenses/MIT).
  */
 
 /**

@@ -1,4 +1,12 @@
 /**
+ * Functions for handling text-ranges used by the other methods.
+ *
+ * This code originaly is from the Hypothesis project (https://github.com/hypothesis/client)
+ * which is released under the 2-Clause BSD License (https://opensource.org/licenses/BSD-2-Clause),
+ * sometimes referred to as the "Simplified BSD License".
+ */
+
+/**
  * Return the combined length of text nodes contained in `node`.
  *
  * @param {Node} node

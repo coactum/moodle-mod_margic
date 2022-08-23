@@ -24,7 +24,7 @@ This plugin is based on the official mod_diary Moodle plugin (v. 3.4.1) from AL 
 
 The plugin also incorporates JavaScript Code from the Hypothesis project (https://github.com/hypothesis/client) which is released under the 2-Clause BSD License (https://opensource.org/licenses/BSD-2-Clause), sometimes referred to as the "Simplified BSD License".
 
-It also uses JavaScript Code form the approx-string-match-js project (https://github.com/robertknight/approx-string-match-js) from Robert Knight wich is released under the MIT License (https://opensource.org/licenses/MIT).
+It also uses JavaScript Code form the approx-string-match-js project (https://github.com/robertknight/approx-string-match-js) by Robert Knight wich is released under the MIT License (https://opensource.org/licenses/MIT).
 
 ## Quick installation instructions ##
 

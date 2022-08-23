@@ -1,4 +1,12 @@
 /**
+ * XPATH and DOM functions used for anchoring and highlighting.
+ *
+ * This code originaly is from the Hypothesis project (https://github.com/hypothesis/client)
+ * which is released under the 2-Clause BSD License (https://opensource.org/licenses/BSD-2-Clause),
+ * sometimes referred to as the "Simplified BSD License".
+ */
+
+/**
  * Get the node name for use in generating an xpath expression.
  *
  * @param {Node} node
@@ -17,7 +25,7 @@ function getNodeName(node) {
  * Get the index of the node as it appears in its parent's child list
  *
  * @param {Node} node
-  * @return {int} - Position of the node
+ * @return {int} - Position of the node
  */
 function getNodePosition(node) {
   let pos = 0;
@@ -33,11 +41,11 @@ function getNodePosition(node) {
 }
 
 /**
-  * Get the path segments to the node
-  *
-  * @param {Node} node
-  * @return {array} - Path segments
-  */
+ * Get the path segments to the node
+ *
+ * @param {Node} node
+ * @return {array} - Path segments
+ */
 function getPathSegment(node) {
   const name = getNodeName(node);
   const pos = getNodePosition(node);

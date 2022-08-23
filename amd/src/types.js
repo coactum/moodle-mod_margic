@@ -6,9 +6,13 @@
  *  1. Providing a consistent interface across different types of anchors.
  *  2. Insulating the rest of the code from API changes in the underlying anchoring
  *     libraries.
+ *
+ * This code originaly is from the Hypothesis project (https://github.com/hypothesis/client)
+ * which is released under the 2-Clause BSD License (https://opensource.org/licenses/BSD-2-Clause),
+ * sometimes referred to as the "Simplified BSD License".
  */
 
-//import { matchQuote } from './match-quote';
+// import { matchQuote } from './match-quote';
 import { TextRange, TextPosition } from './text-range';
 import { nodeFromXPath, xpathFromNode } from './xpath';
 
@@ -233,7 +237,7 @@ export class TextQuoteAnchor {
   /**
    * @param {QuoteMatchOptions} [options]
    */
-  toPositionAnchor() {
+  toPositionAnchor(options = {}) {
     const text = /** @type {string} */ (this.root.textContent);
     // const match = matchQuote(text, this.exact, {
     //   ...this.context,
@@ -243,6 +247,7 @@ export class TextQuoteAnchor {
     if (!match) {
       throw new Error('Quote not found');
     }
+
     return new TextPositionAnchor(this.root, match.start, match.end);
   }
 }
