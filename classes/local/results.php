@@ -353,7 +353,7 @@ class results {
             'context' => $context,
             'subdirs' => false,
 
-            'editdates' => $margic->editdates, // Custom data (not really for editor).
+            'editentrydates' => $margic->editentrydates, // Custom data (not really for editor).
         );
 
         // If maxfiles would be set to an int and more files are given the editor saves them all but saves the overcouting incorrect so that white box is diaplayed.

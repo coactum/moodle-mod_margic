@@ -40,7 +40,7 @@ class backup_margic_activity_structure_step extends backup_activity_structure_st
         $margic = new backup_nested_element('margic', array('id'), array(
             'name', 'intro', 'introformat', 'timecreated', 'timemodified',
             'scale', 'assessed', 'assesstimestart', 'assesstimefinish',
-            'timeopen', 'timeclose', 'editall', 'editdates', 'annotationareawidth'));
+            'timeopen', 'timeclose', 'editentries', 'editentrydates', 'annotationareawidth'));
 
         $errortypes = new backup_nested_element('errortypes');
         $errortype = new backup_nested_element('errortype', array('id'), array(

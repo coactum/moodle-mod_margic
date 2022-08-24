@@ -102,17 +102,17 @@ class mod_margic_mod_form extends moodleform_mod {
         $mform->addHelpButton('timeclose', 'margicclosetime', 'margic');
 
         // Edit all setting if user can edit its own entries.
-        if (get_config('margic', 'editall')) {
-            $mform->addElement('selectyesno', 'editall', get_string('editall', 'margic'));
-            $mform->addHelpButton('editall', 'editall', 'margic');
-            $mform->setDefault('editall', 1);
+        if (get_config('margic', 'editentries')) {
+            $mform->addElement('selectyesno', 'editentries', get_string('editentries', 'margic'));
+            $mform->addHelpButton('editentries', 'editentries', 'margic');
+            $mform->setDefault('editentries', 1);
         }
 
         // Edit dates setting if user can modify entry date.
-        if (get_config('margic', 'editdates')) {
-            $mform->addElement('selectyesno', 'editdates', get_string('editdates', 'margic'));
-            $mform->addHelpButton('editdates', 'editdates', 'margic');
-            $mform->setDefault('editdates', 0);
+        if (get_config('margic', 'editentrydates')) {
+            $mform->addElement('selectyesno', 'editentrydates', get_string('editentrydates', 'margic'));
+            $mform->addHelpButton('editentrydates', 'editentrydates', 'margic');
+            $mform->setDefault('editentrydates', 0);
         }
 
         // Add the header for appearance.

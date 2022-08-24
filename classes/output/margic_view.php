@@ -195,7 +195,7 @@ class margic_view implements renderable, templatable {
             foreach ($this->entries as $key => $entry) {
                 if ($entry) { // Set user picture for teachers.
                     $this->entries[$key]->entry = $OUTPUT->render(new margic_entry($this->margic, $this->cm, $this->context, $this->moduleinstance,
-                        $entry, $this->annotationareawidth, $this->moduleinstance->editall, $this->edittimestarts, $this->edittimenotstarted,
+                        $entry, $this->annotationareawidth, $this->moduleinstance->editentries, $this->edittimestarts, $this->edittimenotstarted,
                         $this->edittimeends, $this->edittimehasended, $this->canmanageentries, $this->course, $this->singleuser, $this->annotationmode,
                         $this->canmakeannotations, $this->errortypes, $readonly, $grades, $currentgroups, $allowedusers, $strmanager, $gradingstr, $regradingstr));
                 }

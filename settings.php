@@ -30,17 +30,17 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_heading('margic/editability', get_string('editability', 'margic'), ''));
 
     // Edit all own entries.
-    $settings->add(new admin_setting_configselect('margic/editall',
-        get_string('editall', 'margic'),
-        get_string('editall_help', 'margic'), 1, array(
+    $settings->add(new admin_setting_configselect('margic/editentries',
+        get_string('editentries', 'margic'),
+        get_string('editentries_help', 'margic'), 1, array(
         '0' => get_string('no'),
         '1' => get_string('yes')
     )));
 
     // Change the date of any new entry.
-    $settings->add(new admin_setting_configselect('margic/editdates',
-        get_string('editdates', 'margic'),
-        get_string('editdates_help', 'margic'), 1, array(
+    $settings->add(new admin_setting_configselect('margic/editentrydates',
+        get_string('editentrydates', 'margic'),
+        get_string('editentrydates_help', 'margic'), 1, array(
         '0' => get_string('no'),
         '1' => get_string('yes')
     )));

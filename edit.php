@@ -68,7 +68,7 @@ require_login($course, true, $cm);
 require_capability('mod/margic:addentries', $context);
 
 // Prevent creating and editing of entries if user is not allowed to edit entry or activity is not available.
-if (($entryid && !$moduleinstance->editall) || !results::margic_available($moduleinstance)) {
+if (($entryid && !$moduleinstance->editentries) || !results::margic_available($moduleinstance)) {
     // Trigger invalid_access_attempt with redirect to the view page.
     $params = array(
         'objectid' => $id,
@@ -153,7 +153,7 @@ $data = file_prepare_standard_editor($data, 'text', $editoroptions, $context, 'm
 $data = file_prepare_standard_filemanager($data, 'attachment', $attachmentoptions, $context, 'mod_margic', 'attachment', $data->entryid);
 
 // Create form.
-$form = new mod_margic_entry_form(null, array('margic' => $moduleinstance->editdates, 'editoroptions' => $editoroptions));
+$form = new mod_margic_entry_form(null, array('margic' => $moduleinstance->editentrydates, 'editoroptions' => $editoroptions));
 
 // Set existing data for this entry.
 $form->set_data($data);
@@ -168,7 +168,7 @@ if ($form->is_cancelled()) {
     $newentry->margic = $moduleinstance->id;
     $newentry->userid = $USER->id;
 
-    if ($moduleinstance->editdates) {
+    if ($moduleinstance->editentrydates) {
         $newentry->timecreated = $fromform->timecreated;
         $newentry->timemodified = $fromform->timecreated;
     } else {
@@ -188,7 +188,7 @@ if ($form->is_cancelled()) {
         }
 
         // Check if timecreated is not older then connected entries
-        if ($moduleinstance->editdates) {
+        if ($moduleinstance->editentrydates) {
 
             $baseentry = $DB->get_record('margic_entries', array('margic' => $moduleinstance->id, "id" => $newentry->baseentry));
 
@@ -244,7 +244,7 @@ if ($form->is_cancelled()) {
     $event->add_record_snapshot('margic', $moduleinstance);
     $event->trigger();
 
-    if ($moduleinstance->editdates && $fromform->timecreated > $timenow) {
+    if ($moduleinstance->editentrydates && $fromform->timecreated > $timenow) {
         redirect(new moodle_url('/mod/margic/view.php?id=' . $cm->id), get_string('entryaddedoredited', 'mod_margic') .
             ' ' . get_string('editdateinfuture', 'mod_margic'), null, notification::NOTIFY_WARNING);
     } else {
@@ -286,7 +286,7 @@ if ($entry) {
     }
 
     $page = new margic_entry($margic, $cm, $context, $moduleinstance, $entry, $margic->get_annotationarea_width(),
-        $moduleinstance->editall, $edittimes->edittimestarts, $edittimes->edittimenotstarted, $edittimes->edittimeends,
+        $moduleinstance->editentries, $edittimes->edittimestarts, $edittimes->edittimenotstarted, $edittimes->edittimeends,
         $edittimes->edittimehasended, has_capability('mod/margic:manageentries', $context), $course, false, true, false,
         false, true, $grades, $currentgroups, $allowedusers, $strmanager, $gradingstr, $regradingstr);
 

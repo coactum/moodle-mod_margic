@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="mod/margic/db" VERSION="20220227" COMMENT="XMLDB file for Moodle mod/margic"
+<XMLDB PATH="mod/margic/db" VERSION="20220822" COMMENT="XMLDB file for Moodle mod/margic"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
@@ -19,8 +19,8 @@
         <FIELD NAME="assesstimefinish" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="timeopen" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="timeclose" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-        <FIELD NAME="editall" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="If own entries can be edited."/>
-        <FIELD NAME="editdates" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="If entry dates can be edited."/>
+        <FIELD NAME="editentries" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="If own entries can be edited."/>
+        <FIELD NAME="editentrydates" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="If entry dates can be edited."/>
         <FIELD NAME="annotationareawidth" TYPE="int" LENGTH="3" NOTNULL="false" SEQUENCE="false" COMMENT="With of the annotatio area."/>
       </FIELDS>
       <KEYS>

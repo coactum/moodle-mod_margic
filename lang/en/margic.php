@@ -265,10 +265,10 @@ $string['hoverannotation'] = 'Hover annotation';
 $string['entryadded'] = 'Entry added';
 
 // Admin settings.
-$string['editdates'] = 'Edit entry dates';
-$string['editdates_help'] = 'If enabled, teachers can configure in each margic whether users can edit their own entries.';
-$string['editall'] = 'Edit own entries';
-$string['editall_help'] = 'If enabled, teachers can configure in each margic whether users can edit the date of each new entry.';
+$string['editentrydates'] = 'Edit entry dates';
+$string['editentrydates_help'] = 'If enabled, teachers can configure in each margic whether users can edit their own entries.';
+$string['editentries'] = 'Edit own entries';
+$string['editentries_help'] = 'If enabled, teachers can configure in each margic whether users can edit the date of each new entry.';
 $string['annotationareawidth'] = 'Width of the annotation area';
 $string['annotationareawidthall'] = 'The width of the annotation area in percent for all margics. Can be overridden by teachers in the individual margics.';
 $string['editability'] = 'Editability';

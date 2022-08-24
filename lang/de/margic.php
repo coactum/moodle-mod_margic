@@ -252,10 +252,10 @@ $string['hoverannotation'] = 'Annotation hervorheben';
 $string['entryadded'] = 'Eintrag angelegt';
 
 // Admin settings.
-$string['editall'] = 'Eigene Einträge bearbeiten';
-$string['editall_help'] = 'Wenn aktiviert können Lehrende in jedem Margic festlegen, ob Nutzer/innen ihre eigenen Einträge bearbeiten können.';
-$string['editdates'] = 'Eintragsdatum bearbeiten';
-$string['editdates_help'] = 'Wenn aktiviert können Lehrende in jedem Margic festlegen, ob Nutzer/innen das Datum jedes neuen Eintrags bearbeiten können.';
+$string['editentries'] = 'Eigene Einträge bearbeiten';
+$string['editentries_help'] = 'Wenn aktiviert können Lehrende in jedem Margic festlegen, ob Nutzer/innen ihre eigenen Einträge bearbeiten können.';
+$string['editentrydates'] = 'Eintragsdatum bearbeiten';
+$string['editentrydates_help'] = 'Wenn aktiviert können Lehrende in jedem Margic festlegen, ob Nutzer/innen das Datum jedes neuen Eintrags bearbeiten können.';
 $string['annotationareawidth'] = 'Breite des Annotationsbereichs';
 $string['annotationareawidthall'] = 'Die Breite des Annotationsbereichs in Prozent für alle Margics. Kann von Lehrenden in den einzelnen Margics überschrieben werden.';
 $string['editability'] = 'Bearbeitbarkeit';
