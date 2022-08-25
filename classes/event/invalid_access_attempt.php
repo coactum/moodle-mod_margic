@@ -50,7 +50,7 @@ class invalid_access_attempt extends \core\event\base {
      * @return string
      */
     public static function get_name() {
-        return get_string('invalidaccess', 'mod_margic');
+        return get_string('eventinvalidaccess', 'mod_margic');
     }
 
     /**
@@ -59,8 +59,8 @@ class invalid_access_attempt extends \core\event\base {
      * @return string
      */
     public function get_description() {
-        return "The user with id '$this->userid' attempted direct URL access to 'margic' file
-           . '{$this->other['file']}' while in the course with id '$this->contextinstanceid'.";
+        return "The user with id '$this->userid' attempted illegal access to 'margic' page
+           '{$this->other['file']}' while in the course with id '$this->contextinstanceid'.";
     }
 
     /**
@@ -78,6 +78,6 @@ class invalid_access_attempt extends \core\event\base {
      */
     protected function get_legacy_logdata() {
         $url = new \moodle_url('view.php', array('id' => $this->contextinstanceid));
-        return array($this->courseid, 'margic', 'view', $url->out(), $this->objectid, $this->contextinstanceid);
+        return array($this->courseid, 'margic', 'invalid access attempt', $url->out(), $this->objectid, $this->contextinstanceid);
     }
 }

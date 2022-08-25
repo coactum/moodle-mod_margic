@@ -27,7 +27,6 @@ namespace mod_margic\event;
  * The mod_margic feedback updated class.
  *
  * @package   mod_margic
- * @since     Moodle 2.7
  * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -57,7 +56,7 @@ class feedback_updated extends \core\event\base {
      * @return string
      */
     public function get_description() {
-        return "The user with id '$this->userid' has updated feedback for the margic activity with the course module id
+        return "The user with id '$this->userid' has updated the feedback for an entry for the margic activity with the course module id
             '$this->contextinstanceid'";
     }
 
@@ -67,7 +66,7 @@ class feedback_updated extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/margic/report.php', array(
+        return new \moodle_url('/mod/margic/view.php', array(
             'id' => $this->contextinstanceid
         ));
     }
@@ -78,13 +77,13 @@ class feedback_updated extends \core\event\base {
      * @return array of parameters to be passed to legacy add_to_log() function.
      */
     protected function get_legacy_logdata() {
-        $url = new \moodle_url('report.php', array(
+        $url = new \moodle_url('view.php', array(
             'id' => $this->contextinstanceid
         ));
         return array(
             $this->courseid,
             'margic',
-            'report',
+            'update feedback',
             $url->out(),
             $this->objectid,
             $this->contextinstanceid

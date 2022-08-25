@@ -27,7 +27,6 @@ namespace mod_margic\event;
  * The mod_margic entry updated class.
  *
  * @package   mod_margic
- * @since     Moodle 2.7
  * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -84,7 +83,7 @@ class entry_updated extends \core\event\base {
         return array(
             $this->courseid,
             'margic',
-            'edit',
+            'update entry',
             $url->out(),
             $this->objectid,
             $this->contextinstanceid

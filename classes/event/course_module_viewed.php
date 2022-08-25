@@ -27,7 +27,6 @@ namespace mod_margic\event;
  * The mod_margic course module viewed event class.
  *
  * @package   mod_margic
- * @since     Moodle 2.7
  * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

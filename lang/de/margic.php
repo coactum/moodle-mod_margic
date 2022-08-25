@@ -25,116 +25,116 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['accessdenied'] = 'Zugang verweigert';
-$string['alias'] = 'Schlagwort';
-$string['aliases'] = 'Schlagwörter';
-$string['aliases_help'] = 'Jedem Margic-Eintrag kann eine Liste an Schlagwörtern oder Aliasnamen zugeordnet werden. Verwenden Sie für jedes Schlagwort eine neue Zeile (nicht getrennt durch Kommata)';
-$string['blankentry'] = 'Leerer Eintrag';
-$string['calendarend'] = '{$a} schließt';
-$string['calendarstart'] = '{$a} öffnet';
-$string['created'] = 'vor {$a->years} Jahren, {$a->month} Monaten, {$a->days} Tagen und {$a->hours} Stunden';
-$string['csvexport'] = 'Exportieren nach .csv';
-$string['deadline'] = 'Offene Tage';
-$string['details'] = 'Statistik';
-$string['margic:addentries'] = 'Margic-Einträge hinzufügen';
-$string['margic:addinstance'] = 'Margic-Instanzen hinzufügen';
-$string['margic:manageentries'] = 'Margic-Einträge verwalten';
-$string['margic:rate'] = 'Margic-Einträge bewerten';
-$string['margic:receivegradingmessages'] = 'Nachrichten über die Bewertung von Einträgen erhalten';
-$string['margic:editdefaulterrortypes'] = 'Standardfehlertyp-Vorlagen bearbeiten';
-$string['margicclosetime'] = 'Endzeitpunkt';
-$string['margicclosetime_help'] = 'Wenn diese Option aktiviert ist können Sie ein Datum festlegen, an dem die Margic-Instanz geschlossen wird. Teilnehmende können danach keine Einträge mehr anlegen oder bearbeiten.';
-$string['margicdescription'] = 'Beschreibung der Margic-Instanz';
-$string['margicentrydate'] = 'Datum für diesen Eintrag festlegen';
-$string['margicname'] = 'Name der Margic-Instanz';
-$string['margicdescription'] = 'Beschreibung der Margic-Instanz';
-$string['margicopentime'] = 'Startzeit';
-$string['margicopentime_help'] = 'Wenn diese Option aktiviert ist, können Sie ein Datum festlegen, an dem die Margic-Instanz zur Verwendung geöffnet wird.';
-$string['editingends'] = 'Bearbeitungszeitraum beginnt am {$a}';
-$string['editingended'] = 'Die Bearbeitungszeit endete am {$a}';
-$string['editingends'] = 'Bearbeitungszeitraum endet am {$a}';
-$string['editthisentry'] = 'Diesen Eintrag bearbeiten';
-$string['entries'] = 'Einträge';
-$string['entry'] = 'Eintrag';
-$string['entrycomment'] = 'Kommentar zum Eintrag';
-$string['eventmargiccreated'] = 'Margic erstellt';
-$string['eventmargicdeleted'] = 'Margic gelöscht';
-$string['eventmargicviewed'] = 'Margic angezeigt';
-$string['eventdownloadentriess'] = 'Margic-Einträge herunterladen';
-$string['evententriesviewed'] = 'Margic-Einträge angezeigt';
-$string['evententrycreated'] = 'Margic-Eintrag erstellt';
-$string['evententryupdated'] = 'Margic-Eintrag aktualisiert';
-$string['eventfeedbackupdated'] = 'Feedback zur Margic-Instanz aktualisiert';
-$string['exportfilenamemyentries'] = 'Meine_Margic_Eintraege';
-$string['exportfilenamemargicentries'] = 'Margic_Eintraege';
-$string['exportfilenameallentries'] = 'Alle_Margic_Einträge';
-$string['format'] = 'Format';
-$string['gradeingradebook'] = 'Aktuelle Bewertung aus der Bewertungsübersicht';
-$string['feedbackingradebook'] = 'Aktuelles Feedback aus der Bewertungsübersicht';
-$string['lastnameasc'] = 'Nachname aufsteigend:';
-$string['lastnamedesc'] = 'Nachname absteigend:';
+// Events.
+$string['eventdownloadentries'] = 'Margic Einträge herunterladen';
+$string['evententrycreated'] = 'Margic Eintrag angelegt';
+$string['evententryupdated'] = 'Margic Eintrag aktualisiert';
+$string['eventfeedbackupdated'] = 'Feedback zu Margic Eintrag aktualisiert';
+$string['eventinvalidaccess'] = 'Unberechtigter Zugriff';
+
+// Common
 $string['modulename'] = 'Margic';
-$string['modulename_help'] = 'Die Margic-Instanz kann tolle Dinge ...';
 $string['modulenameplural'] = 'Margics';
+$string['modulename_help'] = 'Die Aktivität Margic erlaubt es Nutzerinnen und Nutzern, beliebige Einträge anzulegen und Lehrenden diese zu bewerten und zu annotieren.';
+$string['pluginadministration'] = 'Margic Administration';
+
+// General errors
+$string['erraccessdenied'] = 'Zugang verweigert';
+$string['generalerrorinsert'] = 'Speichern des neuen Margic Eintrags fehlgeschlagen.';
+$string['incorrectcourseid'] = 'Inkorrekte Kurs-ID';
+$string['incorrectmodule'] = 'Inkorrekte Kurs-Modul-ID';
+
+// Entry (template)
+$string['entry'] = 'Eintrag';
+$string['editthisentry'] = 'Diesen Eintrag bearbeiten';
+$string['blankentry'] = 'Leerer Eintrag';
+$string['created'] = 'vor {$a->years} Jahren, {$a->month} Monaten, {$a->days} Tagen und {$a->hours} Stunden';
+$string['details'] = 'Statistik';
+$string['numwordsraw'] = '{$a->wordscount} Wörter mit {$a->charscount} Zeichen, einschließlich {$a->spacescount} Leerzeichen.';
+$string['lastedited'] = 'Zuletzt bearbeitet';
 $string['needsgrading'] = 'Dieser Eintrag hat noch keine Rückmeldung oder Bewertung erhalten.';
-$string['needsregrading'] = 'Dieser Eintrag hat sich geändert, seit ein Feedback oder eine Bewertung abgegeben wurde.';
-$string['newmargicentries'] = 'Neue Margic-Einträge';
-$string['nextentry'] = 'Nächster Eintrag';
-$string['nodeadline'] = 'Immer offen';
-$string['noentriesmanagers'] = 'Keine Trainer/innen';
-$string['noentry'] = 'Kein Eintrag';
-$string['notopenuntil'] = 'Diese Margic-Instanz ist nicht geöffnet bis';
-$string['notstarted'] = 'Sie haben diese Margic-Instanz noch nicht begonnen';
-$string['overallrating'] = 'Gesamtbewertung';
-$string['pagesize'] = 'Einträge pro Seite';
-$string['pluginadministration'] = 'Administration zu Margic';
-$string['pluginname'] = 'Margic';
-$string['previousentry'] = 'Vorheriger Eintrag';
-$string['rate'] = 'Bewerten';
-$string['rating'] = 'Bewertung';
-$string['savedrating'] = 'Gespeicherte Bewertung für diesen Eintrag';
-$string['newrating'] = 'Neue Bewertung für diesen Eintrag';
-$string['returnto'] = 'Zurück zu {$a}';
-$string['returntoreport'] = 'Zurück zur Übersicht von {$a}';
-$string['savesettings'] = 'Einstellungen speichern';
-$string['search'] = 'Suche';
-$string['search:activity'] = 'Margic - Informationen zur Aktivität';
-$string['search:entry'] = 'Margic-Einträge';
-$string['search:entrycomment'] = 'Kommentar zum Margic-Eintrag';
-$string['selectentry'] = 'Eintrag zur Kennzeichnung auswählen';
-$string['sortcurrententry'] = 'Vom aktuellen Margic-Eintrag bis zum ersten.';
-$string['sorthighestentry'] = 'Vom am höchsten bewerteten Margic-Eintrag bis zum am niedrigsten bewerteten.';
-$string['sortlastentry'] = 'Vom zuletzt geänderten Margic-Eintrag bis zum ältesten geänderten.';
-$string['sortlowestentry'] = 'Vom am niedrigsten bewerteten Margic-Eintrag bis zum höchsten.';
-$string['sortoptions'] = 'Einstellungen zur Sortierung:';
-$string['sortorder'] = '<h5>Sortierreihenfolge ist: </h5>';
-$string['teacher'] = 'Trainer/in';
-$string['text'] = 'Text';
-$string['timecreated'] = 'Zeitpunkt der Erstellung';
-$string['timemarked'] = 'Zeitpunkt der Bewertung';
-$string['timemodified'] = 'Zeitpunkt der Bearbeitung';
-$string['toolbar'] = 'Symbolleiste:';
-$string['userid'] = 'Nutzer-ID';
-$string['usertoolbar'] = 'Werkzeuge:';
-$string['viewallentries'] = 'Anzeigen von {$a} Margic-Einträgen';
+$string['needsregrading'] = 'Dieser Eintrag hat sich geändert, seit das Feedback oder die Bewertung abgegeben wurde.';
+$string['getallentriesofuser'] = 'Alle Margic Enträge dieses Benutzers anzeigen';
 
-$string['startnewentry'] = 'Neuer Eintrag';
+// View (and template)
 $string['viewentries'] = 'Einträge ansehen';
-$string['numwordsraw'] = '{$a->wordscount} Wörter mit {$a->charscount} Zeichen, einschließlich {$a->spacescount} Leerzeichen. ';
-$string['margicentrydate'] = 'Datum des Eintrags bestimmen';
-
-$string['margic:viewannotations'] = 'Annotationen ansehen';
-$string['margic:makeannotations'] = 'Annotationen anlegen';
-$string['annotations'] = 'Annotationen';
+$string['startnewentry'] = 'Neuer Eintrag';
 $string['viewannotations'] = 'Annotationen ansehen';
 $string['hideannotations'] = 'Annotationen verstecken';
+$string['entries'] = 'Einträge';
+$string['annotations'] = 'Annotationen';
+$string['csvexport'] = 'Exportieren als .csv Datei';
+$string['pagesize'] = 'Einträge pro Seite';
+$string['editingstarts'] = 'Der Bearbeitungszeitraum beginnt am {$a}';
+$string['editingends'] = 'Der Bearbeitungszeitraum endet am {$a}';
+$string['editingended'] = 'Der Bearbeitungszeitraum endete am {$a}';
+$string['notstarted'] = 'Sie haben noch keine Margic Einträge angelegt';
+$string['noentriesfound'] = 'Keine Einträge gefunden';
+$string['viewallentries'] = 'Alle Einträge ansehen';
+
+// Annotations
 $string['annotationadded'] = 'Annotation hinzugefügt';
 $string['annotationedited'] = 'Annotation geändert';
 $string['annotationdeleted'] = 'Annotation gelöscht';
 $string['annotationinvalid'] = 'Annotation ungültig';
-$string['noentriesfound'] = 'Keine Einträge gefunden';
-$string['lastedited'] = 'Zuletzt bearbeitet';
-$string['getallentriesofuser'] = 'Alle Margic Enträge dieses Benutzers anzeigen';
+
+// mod_form
+$string['margicname'] = 'Name der Margic';
+$string['margicdescription'] = 'Beschreibung des Margics';
+$string['margicopentime'] = 'Startzeit';
+$string['margicopentime_help'] = 'Wenn aktiviert können Sie das Datum festlegen, ab dem Einträge im Margic erstellt werden können.';
+$string['margicclosetime'] = 'Endzeitpunkt';
+$string['margicclosetime_help'] = 'Wenn aktiviert können Sie ein Datum festlegen, bis zu dem Einträge im Margic anlegen oder bearbeitet werden können.';
+
+// edit_form
+$string['margicentrydate'] = 'Datum für diesen Eintrag festlegen';
+
+// grading_form
+$string['gradeingradebook'] = 'Aktuelle Bewertung aus der Bewertungsübersicht';
+$string['feedbackingradebook'] = 'Aktuelles Feedback aus der Bewertungsübersicht';
+$string['savedrating'] = 'Gespeicherte Bewertung für diesen Eintrag';
+$string['newrating'] = 'Neue Bewertung für diesen Eintrag';
+
+// Calendar
+$string['calendarend'] = '{$a} schließt';
+$string['calendarstart'] = '{$a} öffnet';
+
+// csv export
+$string['pluginname'] = 'Margic';
+$string['userid'] = 'Nutzer-ID';
+$string['timecreated'] = 'Zeitpunkt der Erstellung';
+$string['timemodified'] = 'Zeitpunkt der Bearbeitung';
+$string['text'] = 'Text';
+$string['entrycomment'] = 'Feedback zum Eintrag';
+$string['format'] = 'Format';
+$string['teacher'] = 'Trainer/in';
+$string['timemarked'] = 'Zeitpunkt der Bewertung';
+$string['exportfilenamemyentries'] = 'Meine_Margic_Eintraege';
+$string['exportfilenamemargicentries'] = 'Margic_Eintraege';
+$string['exportfilenameallentries'] = 'Alle_Margic_Eintraege';
+
+// Capabilities.
+$string['margic:addentries'] = 'Margic Einträge hinzufügen';
+$string['margic:addinstance'] = 'Margic Instanzen hinzufügen';
+$string['margic:manageentries'] = 'Margic Einträge verwalten';
+$string['margic:rate'] = 'Margic Einträge bewerten';
+$string['margic:receivegradingmessages'] = 'Nachrichten über die Bewertung von Einträgen erhalten';
+$string['margic:editdefaulterrortypes'] = 'Standardfehlertyp Vorlagen bearbeiten';
+$string['margic:viewannotations'] = 'Annotationen ansehen';
+$string['margic:makeannotations'] = 'Annotationen anlegen';
+
+// Recent activity
+$string['newmargicentries'] = 'Neue Margic Einträge';
+
+// User complete
+$string['noentry'] = 'Kein Eintrag';
+
+// Search
+$string['search'] = 'Suche';
+$string['search:activity'] = 'Margic - Informationen zur Aktivität';
+$string['search:entry'] = 'Margic-Einträge';
+$string['search:entrycomment'] = 'Kommentar zum Margic-Eintrag';
+
 $string['myentries'] = 'Meine Einträge';
 $string['forallentries'] = 'für alle Einträge von';
 $string['forallmyentries'] = 'für alle meine Einträge';
@@ -155,7 +155,6 @@ $string['currententry'] = 'Aktuelle Einträge';
 $string['oldestentry'] = 'Älteste Einträge';
 $string['lowestgradeentry'] = 'Am niedrigsten bewertete Einträge';
 $string['highestgradeentry'] = 'Am höchsten bewertete Beiträge';
-$string['viewallentries'] = 'Alle Einträge ansehen';
 
 $string['grammar_verb'] = 'Grammatik: Verbform';
 $string['grammar_syntax'] = 'Grammatik: Satzbau';
@@ -300,9 +299,13 @@ $string['privacy:metadata:preference:margic_pagecount'] = 'Die Anzahl der Eintr�
 $string['privacy:metadata:preference:margic_activepage'] = 'Die Nummer der zuletzt geöffneten Seite im Margic.';
 
 // löschen
-$string['numwordscln'] = '{$a->one} bereinigte Wörter mit {$a->two} Zeichen, AUSSCHLIEßLICH {$a->three} Leerzeichen. ';
-$string['numwordsstd'] = '{$a->one} standardisierte Wörter mit {$a->two} Zeichen, einschließlich {$a->three} Leerzeichen. ';
-$string['edittopoflist'] = 'Den Anfang der Liste bearbeiten';
-$string['reload'] = 'Neuladen und Anzeigen vom aktuellsten zum ältesten Margic-Eintrag';
-$string['sortfirstentry'] = 'Vom ersten Margic-Eintrag bis zum letzten.';
-$string['outof'] = 'aus {$a} Einträgen.';
+// $string['numwordscln'] = '{$a->one} bereinigte Wörter mit {$a->two} Zeichen, AUSSCHLIEßLICH {$a->three} Leerzeichen. ';
+// $string['numwordsstd'] = '{$a->one} standardisierte Wörter mit {$a->two} Zeichen, einschließlich {$a->three} Leerzeichen. ';
+// $string['edittopoflist'] = 'Den Anfang der Liste bearbeiten';
+// $string['reload'] = 'Neuladen und Anzeigen vom aktuellsten zum ältesten Margic-Eintrag';
+// $string['sortfirstentry'] = 'Vom ersten Margic-Eintrag bis zum letzten.';
+// $string['outof'] = 'aus {$a} Einträgen.';
+// $string['sortcurrententry'] = 'Vom aktuellen Margic-Eintrag bis zum ersten.';
+// $string['sorthighestentry'] = 'Vom am höchsten bewerteten Margic-Eintrag bis zum am niedrigsten bewerteten.';
+// $string['sortlastentry'] = 'Vom zuletzt geänderten Margic-Eintrag bis zum ältesten geänderten.';
+// $string['sortlowestentry'] = 'Vom am niedrigsten bewerteten Margic-Eintrag bis zum höchsten.';

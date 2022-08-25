@@ -47,7 +47,7 @@ class download_margic_entries extends \core\event\base {
      * @return string
      */
     public static function get_name() {
-        return get_string('eventdownloadentriess', 'mod_margic');
+        return get_string('eventdownloadentries', 'mod_margic');
     }
 
     /**
@@ -83,7 +83,7 @@ class download_margic_entries extends \core\event\base {
         return array(
             $this->courseid,
             'margic',
-            'view',
+            'download entries',
             $url->out(),
             $this->objectid,
             $this->contextinstanceid

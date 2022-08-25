@@ -24,131 +24,117 @@
  */
 defined('MOODLE_INTERNAL') || die();
 
-$string['eventmargiccreated'] = 'margic created';
-$string['eventmargicviewed'] = 'margic viewed';
-$string['evententriesviewed'] = 'margic entries viewed';
-$string['eventmargicdeleted'] = 'margic deleted';
-$string['eventdownloadentriess'] = 'Download entries';
-$string['evententryupdated'] = 'margic entry updated';
-$string['evententrycreated'] = 'margic entry created';
+// Events.
+$string['eventdownloadentries'] = 'Download entries';
+$string['evententrycreated'] = 'Margic entry created';
+$string['evententryupdated'] = 'Margic entry updated';
 $string['eventfeedbackupdated'] = 'Margic feedback updated';
-$string['eventinvalidentryattempt'] = 'margic invalid entry attempt';
+$string['eventinvalidaccess'] = 'Invalid access';
 
-$string['accessdenied'] = 'Access denied';
-$string['alias'] = 'Keyword';
-$string['aliases'] = 'Keyword(s)';
-$string['aliases_help'] = 'Each margic entry can have an associated list of keywords (or aliases).
+// Common
+$string['modulename'] = 'Margic';
+$string['modulenameplural'] = 'Margics';
+$string['modulename_help'] = 'The Margic activity allows users to create unlimited entries and teachers to rate and annotate them.';
+$string['pluginadministration'] = 'Margic administration';
 
-Enter each keyword on a new line (not separated by commas).';
-$string['and'] = ' and ';
+// General errors
+$string['erraccessdenied'] = 'Access denied';
+$string['generalerrorinsert'] = 'Could not save the new margic entry.';
+$string['incorrectcourseid'] = 'Course ID is incorrect';
+$string['incorrectmodule'] = 'Course Module ID is incorrect';
+
+// Entry (template)
+$string['entry'] = 'Entry';
+$string['editthisentry'] = 'Edit this entry';
 $string['blankentry'] = 'Blank entry';
+$string['created'] = '{$a->years} years, {$a->month} months, {$a->days} days and {$a->hours} hours ago';
+$string['details'] = 'Statistics';
+$string['numwordsraw'] = '{$a->wordscount} text words using {$a->charscount} characters, including {$a->spacescount} spaces.';
+$string['lastedited'] = 'Last edited';
+$string['needsgrading'] = ' This entry has not been given feedback or a rating yet.';
+$string['needsregrading'] = 'This entry has changed since feedback or a rating was given.';
+$string['getallentriesofuser'] = 'Show all Margic entries for this user';
+
+// View (and template)
+$string['viewentries'] = 'View entries';
+$string['startnewentry'] = 'New entry';
+$string['viewannotations'] = 'View annotations';
+$string['hideannotations'] = 'Hide annotations';
+$string['entries'] = 'Entries';
+$string['annotations'] = 'Annotations';
+$string['csvexport'] = 'Export as .csv file';
+$string['pagesize'] = 'Entries per page';
+$string['editingstarts'] = 'Editing period starts at {$a}';
+$string['editingends'] = 'Editing period ends on {$a}';
+$string['editingended'] = 'Editing period ended on {$a}';
+$string['notstarted'] = 'You have not added any entries to this Margic yet';
+$string['noentriesfound'] = 'No entries found';
+$string['viewallentries'] = 'View all entries';
+
+// Annotations
+$string['annotationadded'] = 'Annotation added';
+$string['annotationedited'] = 'Annotation edited';
+$string['annotationdeleted'] = 'Annotation deleted';
+$string['annotationinvalid'] = 'Annotation invalid';
+
+// mod_form
+$string['margicname'] = 'Name of the Margic';
+$string['margicdescription'] = 'Description of the Margic';
+$string['margicopentime'] = 'Open time';
+$string['margicopentime_help'] = 'If enabled, you can set the date from which entries can be created in the Margic.';
+$string['margicclosetime'] = 'Close time';
+$string['margicclosetime_help'] = 'If activated, you can set a date until which entries can be created or edited in the Margic.';
+
+// edit_form
+$string['margicentrydate'] = 'Set date for this entry';
+
+// grading_form
+$string['gradeingradebook'] = 'Current rating from gradebook';
+$string['feedbackingradebook'] = 'Current feedback from gradebook';
+$string['savedrating'] = 'Rating saved for this entry';
+$string['newrating'] = 'New rating for this entry';
+
+// Calendar
 $string['calendarend'] = '{$a} closes';
 $string['calendarstart'] = '{$a} opens';
-$string['created'] = '{$a->years} years, {$a->month} months, {$a->days} days and {$a->hours} hours ago';
-$string['csvexport'] = 'Export to .csv';
-$string['deadline'] = 'Days Open';
-$string['details'] = 'Statistics';
-$string['margicclosetime'] = 'Close time';
-$string['margicclosetime_help'] = 'If this option is activated, you can set a date on which the Margic is closed. Participants will no longer be able to create or edit entries after that date.';
-$string['margicentrydate'] = 'Set date for this entry';
-$string['margicopentime'] = 'Open time';
-$string['margicopentime_help'] = 'If enabled, you can set a date for the margic to be opened for use.';
-$string['editingstarts'] = 'Editing period starts at {$a}';
-$string['editingended'] = 'Editing period has ended at {$a}';
-$string['editingends'] = 'Editing period ends at {$a}';
-$string['editthisentry'] = 'Edit this entry';
-$string['entries'] = 'Entries';
-$string['entry'] = 'Entry';
-$string['entrycomment'] = 'Entry comment';
+
+// csv export
+$string['pluginname'] = 'Margic';
+$string['userid'] = 'User id';
+$string['timecreated'] = 'Time created';
+$string['timemodified'] = 'Time modified';
+$string['text'] = 'Text';
+$string['entrycomment'] = 'Entry feedback';
+$string['format'] = 'Format';
+$string['teacher'] = 'Teacher';
+$string['timemarked'] = 'Time graded';
 $string['exportfilenamemyentries'] = 'My_Margic_Entries';
 $string['exportfilenamemargicentries'] = 'Margic_Entries';
 $string['exportfilenameallentries'] = 'All_Margic_Entries';
-$string['gradeingradebook'] = 'Current rating from gradebook';
-$string['feedbackingradebook'] = 'Current feedback from gradebook';
+
+// Capabilities.
 $string['margic:addentries'] = 'Add margic entries';
 $string['margic:addinstance'] = 'Add margic instances';
 $string['margic:manageentries'] = 'Manage margic entries';
 $string['margic:rate'] = 'Rate margic entries';
 $string['margic:receivegradingmessages'] = 'Receive messages about the rating of entries';
 $string['margic:editdefaulterrortypes'] = 'Edit default error type templates';
-$string['margicname'] = 'Name of the margic';
-$string['margicdescription'] = 'Description of the margic';
-$string['format'] = 'Format';
-$string['generalerrorupdate'] = 'Could not update your margic.';
-$string['generalerrorinsert'] = 'Could not insert a new margic entry.';
-$string['incorrectcourseid'] = 'Course ID is incorrect';
-$string['incorrectmodule'] = 'Course Module ID was incorrect';
-$string['invalidaccess'] = 'Invalid access';
-$string['invalidtimechange'] = 'An invalid attempt to change this entry\'s, Time created, has been detected. ';
-$string['invalidtimechangeoriginal'] = 'The original time was: {$a->one}. ';
-$string['invalidtimechangenewtime'] = 'The changed time was: {$a->one}. ';
-$string['invalidtimeresettime'] = 'The time was reset to the original time of: {$a->one}.';
+$string['margic:viewannotations'] = 'View annotations';
+$string['margic:makeannotations'] = 'Make annotations';
 
-$string['lastnameasc'] = 'Last name ascending:';
-$string['lastnamedesc'] = 'Last name descending:';
-$string['modulename'] = 'Margic';
-$string['modulename_help'] = 'The margic activity enables teachers to obtain students feedback
- over a period of time.';
-$string['modulenameplural'] = 'Margics';
-$string['needsgrading'] = ' This entry has not been given feedback or a rating yet.';
-$string['needsregrading'] = 'This entry has changed since feedback or a rating was given.';
+// Recent activity
 $string['newmargicentries'] = 'New margic entries';
-$string['nextentry'] = 'Next entry';
-$string['nodeadline'] = 'Always open';
-$string['noentriesmanagers'] = 'There are no teachers';
-$string['noentry'] = 'No entry';
-$string['notopenuntil'] = 'This margic won\'t be open until';
 
-$string['notstarted'] = 'You have not started this margic yet';
-$string['overallrating'] = 'Overall rating';
-$string['pagesize'] = 'Entries per page';
-$string['pluginadministration'] = 'margic module administration';
-$string['pluginname'] = 'Margic';
-$string['previousentry'] = 'Previous entry';
-$string['rate'] = 'Rate';
-$string['rating'] = 'Rating';
-$string['savedrating'] = 'Rating saved for this entry';
-$string['newrating'] = 'New rating for this entry';
-$string['returnto'] = 'Return to {$a}';
-$string['returntoreport'] = 'Return to report page for - {$a}';
-$string['savesettings'] = 'Save settings';
+// User complete
+$string['noentry'] = 'No entry';
+
+// Search
 $string['search'] = 'Search';
 $string['search:entry'] = 'margic - entries';
 $string['search:entrycomment'] = 'margic - entry comment';
 $string['search:activity'] = 'margic - activity information';
-$string['selectentry'] = 'Select entry for marking';
-$string['sortorder'] = 'Sort order is: ';
-$string['sortcurrententry'] = 'From current margic entry to the first entry.';
-$string['sortlowestentry'] = 'From lowest rated margic entry to the highest entry.';
-$string['sorthighestentry'] = 'From highest rated margic entry to the lowest rated entry.';
-$string['sortlastentry'] = 'From latest modified margic entry to the oldest modified entry.';
-$string['sortoptions'] = ' Sort options: ';
-$string['startnewentry'] = 'New entry';
-$string['teacher'] = 'Teacher';
-$string['text'] = 'Text';
-$string['timecreated'] = 'Time created';
-$string['timemarked'] = 'Time graded';
-$string['timemodified'] = 'Time modified';
-$string['toolbar'] = 'Toolbar:';
-$string['userid'] = 'User id';
-$string['usertoolbar'] = 'User toolbar:';
-$string['viewallentries'] = 'View {$a} margic entries';
-$string['viewentries'] = 'View entries';
 
-$string['margic:viewannotations'] = 'View annotations';
-$string['margic:makeannotations'] = 'Make annotations';
-$string['annotations'] = 'Annotations';
-$string['viewannotations'] = 'View annotations';
-$string['hideannotations'] = 'Hide annotations';
-$string['annotationadded'] = 'Annotation added';
-$string['annotationedited'] = 'Annotation edited';
-$string['annotationdeleted'] = 'Annotation deleted';
-$string['annotationinvalid'] = 'Annotation invalid';
-$string['noentriesfound'] = 'No entries found';
-$string['lastedited'] = 'Last edited';
-$string['getallentriesofuser'] = 'Get all margic entries for this user';
 $string['myentries'] = 'My entries';
-$string['numwordsraw'] = '{$a->wordscount} text words using {$a->charscount} characters, including {$a->spacescount} spaces. ';
 $string['forallentries'] = 'for all entries of';
 $string['forallmyentries'] = 'for all of my entries';
 $string['togglegradingform'] = 'Grading';
@@ -168,7 +154,6 @@ $string['currententry'] = 'Current entries';
 $string['oldestentry'] = 'Oldest entries';
 $string['lowestgradeentry'] = 'Lowest rated entries';
 $string['highestgradeentry'] = 'Highest rated entries';
-$string['viewallentries'] = 'View all entries';
 
 $string['grammar_verb'] = 'Grammar: Verb form';
 $string['grammar_syntax'] = 'Grammar: Syntax';
@@ -313,10 +298,19 @@ $string['privacy:metadata:preference:margic_pagecount'] = 'The number of entries
 $string['privacy:metadata:preference:margic_activepage'] = 'The number of the last opened page in a Margic.';
 
 // Löschen.
-$string['numwordscln'] = '{$a->one} clean text words using {$a->two} characters, NOT including {$a->three} spaces. ';
-$string['numwordsstd'] = '{$a->one} standardized words using {$a->two} characters, including {$a->three} spaces. ';
-$string['numwordsnew'] = 'New calculation: {$a->one} raw text words using {$a->two} characters, in {$a->three} sentences, in {$a->four} paragraphs. ';
-$string['edittopoflist'] = 'Edit top of the list';
-$string['reload'] = 'Reload and show from current to oldest margic entry';
-$string['sortfirstentry'] = 'From first margic entry to the latest entry.';
-$string['outof'] = ' out of {$a} entries.';
+// $string['numwordscln'] = '{$a->one} clean text words using {$a->two} characters, NOT including {$a->three} spaces. ';
+// $string['numwordsstd'] = '{$a->one} standardized words using {$a->two} characters, including {$a->three} spaces. ';
+// $string['numwordsnew'] = 'New calculation: {$a->one} raw text words using {$a->two} characters, in {$a->three} sentences, in {$a->four} paragraphs. ';
+// $string['edittopoflist'] = 'Edit top of the list';
+// $string['reload'] = 'Reload and show from current to oldest margic entry';
+// $string['sortfirstentry'] = 'From first margic entry to the latest entry.';
+// $string['outof'] = ' out of {$a} entries.';
+
+// $string['eventmargiccreated'] = 'margic created';
+// $string['eventmargicviewed'] = 'margic viewed';
+// $string['eventmargicdeleted'] = 'margic deleted';
+// $string['sortcurrententry'] = 'From current margic entry to the first entry.';
+// $string['sortlowestentry'] = 'From lowest rated margic entry to the highest entry.';
+// $string['sorthighestentry'] = 'From highest rated margic entry to the lowest rated entry.';
+// $string['sortlastentry'] = 'From latest modified margic entry to the oldest modified entry.';
+
