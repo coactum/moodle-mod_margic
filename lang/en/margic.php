@@ -34,7 +34,21 @@ $string['eventinvalidaccess'] = 'Invalid access';
 // Common
 $string['modulename'] = 'Margic';
 $string['modulenameplural'] = 'Margics';
-$string['modulename_help'] = 'The Margic activity allows users to create unlimited entries and teachers to rate and annotate them.';
+$string['modulename_help'] = 'In the Margic activity, participants can create unlimited entries which can then be evaluated and annotated by teachers.
+
+Margics can be used in a meaningful way in language lessons, for example. Students can create entries to answer variable tasks, write their own texts and stories, or practice vocabulary.
+
+Teachers can then view, correct and evaluate these entries on a customizable overview page. For this purpose, they can mark specific text passages and write annotations for them, whereby an error type and a short text can be stored for each annotation. The entire entry can also be graded and provided with textual or acoustic feedback. Participants then have the opportunity to revise their original entry and use the feedback received to improve it.
+
+The available error types for the annotations can be flexibly adjusted. In an error summary, instructors can also evaluate for each participant how many and which errors they made in a Margic. Finally, it is also possible to export the written entries for further use.
+
+Core features of the plugin:
+
+* Write and revise multimedia entries.
+* Individually customizable overview page with all (own) entries available in Margic
+* Extensive possibilities for annotation and evaluation of entries for teachers
+* Customizable error types and accurate error evaluation';
+$string['modulename_link'] = 'mod/margic/view';
 $string['pluginadministration'] = 'Margic administration';
 
 // General errors

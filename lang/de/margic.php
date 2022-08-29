@@ -35,7 +35,21 @@ $string['eventinvalidaccess'] = 'Unberechtigter Zugriff';
 // Common
 $string['modulename'] = 'Margic';
 $string['modulenameplural'] = 'Margics';
-$string['modulename_help'] = 'Die Aktivität Margic erlaubt es Nutzerinnen und Nutzern, beliebige Einträge anzulegen und Lehrenden diese zu bewerten und zu annotieren.';
+$string['modulename_help'] = 'In der Aktivität Margic können Teilnehmerinnen und Teilnehmer unbeschränkt Einträge anlegen welche dann von Lehrenden bewertet und annotiert werden können.
+
+Sinnvoll einsetzen lassen sich Margics zum Beispiel im Sprachunterricht. Dort können Teilnehmende etwa Einträge zur Beantwortung von variablen Aufgabenstellungen verfassen, eigene Texte und Geschichten schreiben oder aber Vokabeln üben.
+
+Lehrende können diese Einträge dann auf einer individualisierbaren Übersichtsseite ansehen, korrigieren und bewerten. Dazu können sie konkrete Textstellen markieren und Annotationen zu diesen verfassen, wobei für jede Annotation ein Fehlertyp sowie ein kurzer Text hinterlegt werden kann. Es kann außerdem der komplette Eintrag benotet und mit einem textuellen oder akustischen Feedback versehen werden. Teilnehmende haben danach die Möglichkeit, ihren Ursprungseintrag zu überarbeiten und das erhaltene Feedback so zur Verbesserung zu nutzen.
+
+Die verfügbaren Fehlertypen für die Annotationen können dabei flexibel angepasst werden. In einer Fehlerzusammenfassung können Lehrende zudem für jeden Teilnehmenden auswerten, wie viele und welche Fehler dieser in einem Margic gemacht hat. Schließlich besteht auch die Möglichkeit, die verfassten Einträge für die Weiterverwendung zu exportieren.
+
+Kernfeatures des Plugins:
+
+* Verfassen und Überarbeiten von multimedialen Einträgen
+* Individuell anpassbare Übersichtsseite mit allen im Margic vorhandenen (eigenen) Einträgen
+* Umfangreiche Möglichkeiten zur Annotierung und Bewertung von Einträgen für Lehrende
+* Anpassbare Fehlertypen und genaue Fehlerauswertung';
+$string['modulename_link'] = 'mod/margic/view';
 $string['pluginadministration'] = 'Margic Administration';
 
 // General errors
