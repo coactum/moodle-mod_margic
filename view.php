@@ -82,7 +82,7 @@ $canmanageentries = has_capability('mod/margic:manageentries', $context);
 $canaddentries = has_capability('mod/margic:addentries', $context);
 
 if (!$canaddentries) {
-    throw new moodle_exception(get_string('accessdenied', 'margic'));
+    throw new moodle_exception(get_string('erraccessdenied', 'margic'));
 }
 
 if ($pagecount) {

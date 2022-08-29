@@ -46,6 +46,8 @@ $string['incorrectmodule'] = 'Inkorrekte Kurs-Modul-ID';
 
 // Entry (template)
 $string['entry'] = 'Eintrag';
+$string['revision'] = 'Überarbeitung';
+$string['baseentry'] = 'Originaleintrag';
 $string['editthisentry'] = 'Diesen Eintrag bearbeiten';
 $string['blankentry'] = 'Leerer Eintrag';
 $string['created'] = 'vor {$a->years} Jahren, {$a->month} Monaten, {$a->days} Tagen und {$a->hours} Stunden';
@@ -55,28 +57,59 @@ $string['lastedited'] = 'Zuletzt bearbeitet';
 $string['needsgrading'] = 'Dieser Eintrag hat noch keine Rückmeldung oder Bewertung erhalten.';
 $string['needsregrading'] = 'Dieser Eintrag hat sich geändert, seit das Feedback oder die Bewertung abgegeben wurde.';
 $string['getallentriesofuser'] = 'Alle Margic Enträge dieses Benutzers anzeigen';
+$string['toggleannotation'] = 'Annotation aus- / einklappen';
+$string['id'] = 'ID';
+$string['at'] = 'am';
+$string['from'] = 'von';
+$string['toggleolderversions'] = 'Ältere Versionen ein- oder ausblenden';
+$string['hoverannotation'] = 'Annotation hervorheben';
 
 // View (and template)
+$string['overview'] = 'Übersicht';
 $string['viewentries'] = 'Einträge ansehen';
 $string['startnewentry'] = 'Neuer Eintrag';
+$string['togglegradingform'] = 'Bewerten';
 $string['viewannotations'] = 'Annotationen ansehen';
 $string['hideannotations'] = 'Annotationen verstecken';
+$string['norating'] = 'Bewertung deaktiviert.';
+$string['forallmyentries'] = 'für alle meine Einträge';
 $string['entries'] = 'Einträge';
+$string['myentries'] = 'Meine Einträge';
 $string['annotations'] = 'Annotationen';
+$string['toggleallannotations'] = 'Alle Annotation aus- / einklappen';
 $string['csvexport'] = 'Exportieren als .csv Datei';
 $string['pagesize'] = 'Einträge pro Seite';
+$string['sorting'] = 'Sortierung';
+$string['currenttooldest'] = 'Zeige die Einträge vom Aktuellsten zum Ältesten';
+$string['oldesttocurrent'] = 'Zeige die Einträge vom Ältesten zum Aktuellsten';
+$string['lowestgradetohighest'] = 'Zeige die Einträge vom am niedrigsten Bewerteten zum Höchsten';
+$string['highestgradetolowest'] = 'Zeige die Einträge vom am höchsten Bewerteten zum Niedrigsten';
+$string['currententry'] = 'Aktuelle Einträge';
+$string['oldestentry'] = 'Älteste Einträge';
+$string['lowestgradeentry'] = 'Am niedrigsten bewertete Einträge';
+$string['highestgradeentry'] = 'Am höchsten bewertete Beiträge';
 $string['editingstarts'] = 'Der Bearbeitungszeitraum beginnt am {$a}';
 $string['editingends'] = 'Der Bearbeitungszeitraum endet am {$a}';
 $string['editingended'] = 'Der Bearbeitungszeitraum endete am {$a}';
 $string['notstarted'] = 'Sie haben noch keine Margic Einträge angelegt';
 $string['noentriesfound'] = 'Keine Einträge gefunden';
 $string['viewallentries'] = 'Alle Einträge ansehen';
+$string['viewallmargics'] = 'Alle Margics im Kurs anzeigen';
 
 // Annotations
+$string['annotationcreated'] = 'Erstellt am {$a}';
+$string['annotationmodified'] = 'Bearbeitet am {$a}';
+$string['editannotation'] = 'Bearbeiten';
+$string['deleteannotation'] = 'Löschen';
 $string['annotationadded'] = 'Annotation hinzugefügt';
 $string['annotationedited'] = 'Annotation geändert';
 $string['annotationdeleted'] = 'Annotation gelöscht';
 $string['annotationinvalid'] = 'Annotation ungültig';
+$string['annotatedtextnotfound'] = 'Annotierter Text nicht gefunden';
+$string['annotatedtextinvalid'] = 'Der ursprünglich annotierte Text ist ungültig geworden. Die Markierung für diese Annotation muss deshalb neu gesetzt werden.';
+$string['notallowedtodothis'] = 'Vorgang nicht möglich.';
+$string['deletederrortype'] = 'Gelöschter Typ';
+$string['errtypedeleted'] = 'Fehlertyp nicht vorhanden.';
 
 // mod_form
 $string['margicname'] = 'Name der Margic';
@@ -85,15 +118,74 @@ $string['margicopentime'] = 'Startzeit';
 $string['margicopentime_help'] = 'Wenn aktiviert können Sie das Datum festlegen, ab dem Einträge im Margic erstellt werden können.';
 $string['margicclosetime'] = 'Endzeitpunkt';
 $string['margicclosetime_help'] = 'Wenn aktiviert können Sie ein Datum festlegen, bis zu dem Einträge im Margic anlegen oder bearbeitet werden können.';
+$string['annotationareawidth_help'] = 'Die Breite des Annotationsbereichs in Prozent. Mindestens 20 und maximal 80 Prozent.';
+$string['errannotationareawidthinvalid'] = 'Breite ungültig (Minimum: {$a->minwidth}, Maximum: {$a->maxwidth}).';
 
 // edit_form
+$string['addnewentry'] = 'Neuen Eintrag anlegen';
+$string['editentry'] = 'Eintrag bearbeiten';
 $string['margicentrydate'] = 'Datum für diesen Eintrag festlegen';
+$string['editentrynotpossible'] = 'Bearbeiten des Eintrags nicht möglich.';
+$string['editdateinfuture'] = 'Das angegebene Erstelldatum des Eintrags liegt in der Zukunft.';
+$string['entryaddedoredited'] = 'Eintrag angelegt oder bearbeitet';
+$string['timecreatedinvalid'] = 'Änderung fehlgeschlagen. Es gibt bereits jüngere Versionen dieses Beitrags.';
+$string['entryadded'] = 'Eintrag angelegt';
 
 // grading_form
 $string['gradeingradebook'] = 'Aktuelle Bewertung aus der Bewertungsübersicht';
 $string['feedbackingradebook'] = 'Aktuelles Feedback aus der Bewertungsübersicht';
 $string['savedrating'] = 'Gespeicherte Bewertung für diesen Eintrag';
 $string['newrating'] = 'Neue Bewertung für diesen Eintrag';
+$string['forallentries'] = 'für alle Einträge von';
+$string['grader'] = 'Bewerter';
+$string['feedbackupdated'] = 'Rückmeldung und / oder Note aktualisiert';
+$string['errfeedbacknotupdated'] = 'Rückmeldung und Note konnte nicht aktualisiert werden';
+$string['errnograder'] = 'Kein Bewerter.';
+$string['errnofeedbackorratingdisabled'] = 'Keine Rückmeldung oder Bewertung ist deaktiviert.';
+
+// error_summary
+$string['errorsummary'] = 'Fehlerauswertung';
+$string['participant'] = 'TeilnehmerIn';
+$string['backtooverview'] = 'Zurück zur Übersicht';
+$string['adderrortype'] = 'Fehlertyp anlegen';
+$string['errortypeadded'] = 'Fehlertyp angelegt';
+$string['editerrortype'] = 'Fehlertyp bearbeiten';
+$string['errortypeedited'] = 'Fehlertyp bearbeitet';
+$string['editerrortypetemplate'] = 'Vorlage bearbeiten';
+$string['errortypecantbeedited'] = 'Fehlertyp konnte nicht geändert werden';
+$string['deleteerrortype'] = 'Fehlertyp entfernen';
+$string['errortypedeleted'] = 'Fehlertyp entfernt';
+$string['deleteerrortypetemplate'] = 'Vorlage löschen';
+$string['errortypeinvalid'] = 'Fehlertyp ungültig';
+$string['nameoferrortype'] = 'Name des Fehlertyps';
+$string['margicerrortypes'] = 'Margic Fehlertypen';
+$string['errortypetemplates'] = 'Fehlertyp-Vorlagen';
+$string['errortypes'] = 'Fehlertypen';
+$string['template'] = 'Vorlage';
+$string['addtomargic'] = 'Zum Margic hinzufügen';
+$string['switchtotemplatetypes'] = 'Zu den Fehlertyp-Vorlagen wechseln';
+$string['switchtomargictypes'] = 'Zu den Fehlertypen des Margics wechseln';
+$string['notemplatetypes'] = 'Keine Fehlertyp-Vorlagen verfügbar';
+$string['movefor'] = 'Weiter vorne anzeigen';
+$string['moveback'] = 'Weiter hinten anzeigen';
+$string['prioritychanged'] = 'Reihenfolge geändert';
+$string['prioritynotchanged'] = 'Reihenfolge konnte nicht geändert werden';
+
+// errortypes_form
+$string['annotationcolor'] = 'Farbe des Fehlertyps';
+$string['standardtype'] = 'Standard Fehlertyp';
+$string['manualtype'] = 'Manueller Fehlertyp';
+$string['standard'] = 'Standard';
+$string['custom'] = 'Benutzerdefiniert';
+$string['type'] = 'Art';
+$string['color'] = 'Farbe';
+$string['errnohexcolor'] = 'Kein hexadezimaler Farbwert.';
+$string['changetype'] = 'Die Änderung des Namens oder der Farbe des Fehlertypen wirkt sich nur auf die Vorlage aus und wird daher erst bei der Erstellung neuer Margics wirksam. Die Fehlertypen in bestehenden Margics sind von diesen Änderungen nicht betroffen.';
+$string['explanationtypename'] = 'Name des Fehlertyps';
+$string['explanationtypename_help'] = 'Der Name des Fehlertypen. Für folgende Standardfehlertypen sind bereits Übersetzungen in Moodle hinterlegt: "grammar_verb", "grammar_syntax", "grammar_congruence", "grammar_other", "expression", "orthography", "punctuation" und "other". Alle anderen Namen werden nicht übersetzt.';
+$string['explanationhexcolor'] = 'Farbe des Fehlertyps';
+$string['explanationhexcolor_help'] = 'Die Farbe des Fehlertypen als Hexadezimalwert. Dieser besteht aus genau 6 Zeichen (A-F sowie 0-9) und repräsentiert eine Farbe. Den Hexwert von beliebigen Farben kann man z. B. unter https://www.w3schools.com/colors/colors_picker.asp herausfinden.';
+$string['explanationstandardtype'] = 'Hier kann ausgewählt werden, ob der Fehlertyp ein Standardtyp sein soll. In diesem Fall kann er von allen Lehrenden für ihre Margics ausgewählt und dann in diesen verwendet werden. Andernfalls kann er nur von Ihnen selbst in Ihren Margics verwendet werden.';
 
 // Calendar
 $string['calendarend'] = '{$a} schließt';
@@ -135,27 +227,7 @@ $string['search:activity'] = 'Margic - Informationen zur Aktivität';
 $string['search:entry'] = 'Margic-Einträge';
 $string['search:entrycomment'] = 'Kommentar zum Margic-Eintrag';
 
-$string['myentries'] = 'Meine Einträge';
-$string['forallentries'] = 'für alle Einträge von';
-$string['forallmyentries'] = 'für alle meine Einträge';
-$string['togglegradingform'] = 'Bewerten';
-$string['norating'] = 'Bewertung deaktiviert.';
-$string['viewallmargics'] = 'Alle Margics im Kurs anzeigen';
-$string['startoreditentry'] = 'Eintrag anlegen oder bearbeiten';
-$string['addnewentry'] = 'Neuen Eintrag anlegen';
-$string['editentry'] = 'Eintrag bearbeiten';
-$string['editentrynotpossible'] = 'Bearbeiten des Eintrags nicht möglich.';
-$string['editdateinfuture'] = 'Das angegebene Erstelldatum des Eintrags liegt in der Zukunft.';
-$string['currenttooldest'] = 'Zeige die Einträge vom Aktuellsten zum Ältesten';
-$string['oldesttocurrent'] = 'Zeige die Einträge vom Ältesten zum Aktuellsten';
-$string['lowestgradetohighest'] = 'Zeige die Einträge vom am niedrigsten Bewerteten zum Höchsten';
-$string['highestgradetolowest'] = 'Zeige die Einträge vom am höchsten Bewerteten zum Niedrigsten';
-$string['sorting'] = 'Sortierung';
-$string['currententry'] = 'Aktuelle Einträge';
-$string['oldestentry'] = 'Älteste Einträge';
-$string['lowestgradeentry'] = 'Am niedrigsten bewertete Einträge';
-$string['highestgradeentry'] = 'Am höchsten bewertete Beiträge';
-
+// Default error type templates
 $string['grammar_verb'] = 'Grammatik: Verbform';
 $string['grammar_syntax'] = 'Grammatik: Satzbau';
 $string['grammar_congruence'] = 'Grammatik: Kongruenz';
@@ -165,78 +237,13 @@ $string['orthography'] = 'Orthographie';
 $string['punctuation'] = 'Interpunktion';
 $string['other'] = 'Sonstiges';
 
-$string['annotationssummary'] = 'Fehlerauswertung';
-$string['participant'] = 'TeilnehmerIn';
-$string['backtooverview'] = 'Zurück zur Übersicht';
-$string['adderrortype'] = 'Fehlertyp anlegen';
-$string['errortypeadded'] = 'Fehlertyp angelegt';
-$string['editerrortype'] = 'Fehlertyp bearbeiten';
-$string['errortypeedited'] = 'Fehlertyp bearbeitet';
-$string['editerrortypetemplate'] = 'Vorlage bearbeiten';
-$string['errortypecantbeedited'] = 'Fehlertyp konnte nicht geändert werden';
-$string['deleteerrortype'] = 'Fehlertyp entfernen';
-$string['errortypedeleted'] = 'Fehlertyp entfernt';
-$string['deleteerrortypetemplate'] = 'Vorlage löschen';
-$string['errortypeinvalid'] = 'Fehlertyp ungültig';
-$string['nameoferrortype'] = 'Name des Fehlertyps';
-$string['annotationcreated'] = 'Erstellt am {$a}';
-$string['annotationmodified'] = 'Bearbeitet am {$a}';
-$string['editannotation'] = 'Bearbeiten';
-$string['deleteannotation'] = 'Löschen';
-$string['annotationcolor'] = 'Farbe des Fehlertyps';
-$string['standardtype'] = 'Standard Fehlertyp';
-$string['manualtype'] = 'Manueller Fehlertyp';
-$string['standard'] = 'Standard';
-$string['custom'] = 'Benutzerdefiniert';
-$string['type'] = 'Art';
-$string['color'] = 'Farbe';
-$string['errnohexcolor'] = 'Kein hexadezimaler Farbwert.';
-$string['changetype'] = 'Die Änderung des Namens oder der Farbe des Fehlertypen wirkt sich nur auf die Vorlage aus und wird daher erst bei der Erstellung neuer Margics wirksam. Die Fehlertypen in bestehenden Margics sind von diesen Änderungen nicht betroffen.';
-$string['explanationtypename'] = 'Name des Fehlertyps';
-$string['explanationtypename_help'] = 'Der Name des Fehlertypen. Für folgende Standardfehlertypen sind bereits Übersetzungen in Moodle hinterlegt: "grammar_verb", "grammar_syntax", "grammar_congruence", "grammar_other", "expression", "orthography", "punctuation" und "other". Alle anderen Namen werden nicht übersetzt.';
-$string['explanationhexcolor'] = 'Farbe des Fehlertyps';
-$string['explanationhexcolor_help'] = 'Die Farbe des Fehlertypen als Hexadezimalwert. Dieser besteht aus genau 6 Zeichen (A-F sowie 0-9) und repräsentiert eine Farbe. Den Hexwert von beliebigen Farben kann man z. B. unter https://www.w3schools.com/colors/colors_picker.asp herausfinden.';
-$string['explanationstandardtype'] = 'Hier kann ausgewählt werden, ob der Fehlertyp ein Standardtyp sein soll. In diesem Fall kann er von allen Lehrenden für ihre Margics ausgewählt und dann in diesen verwendet werden. Andernfalls kann er nur von Ihnen selbst in Ihren Margics verwendet werden.';
-$string['annotatedtextnotfound'] = 'Annotierter Text nicht gefunden';
-$string['annotatedtextinvalid'] = 'Der ursprünglich annotierte Text ist (z. B. durch eine nachträgliche Änderung des ursprünglichen Beitrags) ungültig geworden. Die Markierung für diese Annotation muss deshalb neu gesetzt werden.';
-$string['notallowedtodothis'] = 'Vorgang nicht möglich.';
-$string['deletederrortype'] = 'Gelöschter Typ';
-$string['errtypedeleted'] = 'Fehlertyp nicht vorhanden.';
-$string['grader'] = 'Bewerter';
-$string['feedbackupdated'] = 'Rückmeldung und / oder Note aktualisiert';
-$string['errfeedbacknotupdated'] = 'Rückmeldung und Note konnte nicht aktualisiert werden';
-$string['errnograder'] = 'Kein Bewerter.';
-$string['errnofeedbackorratingdisabled'] = 'Keine Rückmeldung oder Rückmeldung ist deaktiviert.';
-$string['annotationareawidth_help'] = 'Die Breite des Annotationsbereichs in Prozent.';
-$string['errannotationareawidthinvalid'] = 'Breite ungültig (Minimum: {$a->minwidth}, Maximum: {$a->maxwidth}).';
-$string['toggleannotation'] = 'Annotation aus- / einklappen';
-$string['toggleallannotations'] = 'Alle Annotation aus- / einklappen';
-$string['entryaddedoredited'] = 'Eintrag angelegt oder bearbeitet';
+// lib
 $string['deletealluserdata'] = 'Alle Einträge, deren Annotationen, Dateien und Bewertungen löschen';
 $string['alluserdatadeleted'] = 'Alle Einträge, deren Annotationen, Dateien und Bewertungen wurden entfernt';
 $string['deleteerrortypes'] = 'Fehlertypen löschen';
 $string['errortypesdeleted'] = 'Fehlertypen gelöscht';
 
-$string['margicerrortypes'] = 'Margic Fehlertypen';
-$string['errortypetemplates'] = 'Fehlertyp-Vorlagen';
-$string['errortypes'] = 'Fehlertypen';
-$string['template'] = 'Vorlage';
-$string['addtomargic'] = 'Zum Margic hinzufügen';
-$string['switchtotemplatetypes'] = 'Zu den Fehlertyp-Vorlagen wechseln';
-$string['switchtomargictypes'] = 'Zu den Fehlertypen des Margics wechseln';
-$string['notemplatetypes'] = 'Keine Fehlertyp-Vorlagen verfügbar';
-$string['movefor'] = 'Weiter vorne anzeigen';
-$string['moveback'] = 'Weiter hinten anzeigen';
-$string['prioritychanged'] = 'Reihenfolge geändert';
-$string['prioritynotchanged'] = 'Reihenfolge konnte nicht geändert werden';
-$string['revision'] = 'Überarbeitung';
-$string['baseentry'] = 'Originaleintrag';
-$string['id'] = 'ID';
-$string['overview'] = 'Übersicht';
-$string['at'] = 'am';
-$string['from'] = 'von';
-$string['toggleolderversions'] = 'Ältere Versionen ein- oder ausblenden';
-$string['timecreatedinvalid'] = 'Änderung fehlgeschlagen. Es gibt bereits jüngere Versionen dieses Beitrags.';
+// messages
 $string['messageprovider:gradingmessages'] = 'Systemnachrichten bei der Bewertung von Einträgen';
 $string['sendgradingmessage'] = 'Ersteller/in des Eintrags sofort über die Bewertung benachrichtigen';
 $string['gradingmailsubject'] = 'Feedback zu Margic-Eintrag erhalten';
@@ -247,16 +254,14 @@ $string['gradingmailfullmessagehtml'] = 'Hallo {$a->user},<br>
 {$a->teacher} hat eine Rückmeldung beziehungsweise Bewertung zu Ihrem Eintrag im Margic <strong>{$a->margic}</strong> veröffentlicht.<br><br>
 <a href="{$a->url}"><strong>Hier</strong></a> können Sie diese ansehen.';
 $string['mailfooter'] = 'Diese Nachricht bezieht sich auf ein Margic in {$a->systemname}. Unter dem folgenden Link finden Sie alle weiteren Informationen. <br> {$a->coursename} -> Margic -> {$a->name} <br> {$a->url}';
-$string['hoverannotation'] = 'Annotation hervorheben';
-$string['entryadded'] = 'Eintrag angelegt';
 
 // Admin settings.
-$string['editentries'] = 'Eigene Einträge bearbeiten';
-$string['editentries_help'] = 'Wenn aktiviert können Lehrende in jedem Margic festlegen, ob Nutzer/innen ihre eigenen Einträge bearbeiten können.';
 $string['editentrydates'] = 'Eintragsdatum bearbeiten';
 $string['editentrydates_help'] = 'Wenn aktiviert können Lehrende in jedem Margic festlegen, ob Nutzer/innen das Datum jedes neuen Eintrags bearbeiten können.';
+$string['editentries'] = 'Eigene Einträge bearbeiten';
+$string['editentries_help'] = 'Wenn aktiviert können Lehrende in jedem Margic festlegen, ob Nutzer/innen ihre eigenen Einträge bearbeiten können.';
 $string['annotationareawidth'] = 'Breite des Annotationsbereichs';
-$string['annotationareawidthall'] = 'Die Breite des Annotationsbereichs in Prozent für alle Margics. Kann von Lehrenden in den einzelnen Margics überschrieben werden.';
+$string['annotationareawidthall'] = 'Die Breite des Annotationsbereichs in Prozent für alle Margics. Kann von Lehrenden in den einzelnen Margics überschrieben werden. Minimal 20 and maximal 80 Prozent.';
 $string['editability'] = 'Bearbeitbarkeit';
 $string['entrybgc_title'] = 'Hintergrundfarbe für die Einträge und Annotationen';
 $string['entrybgc_descr'] = 'Hier kann die Hintergrundfarbe der Bereiche für die Einträge und Annotationen festgelegt werden.';
@@ -291,21 +296,9 @@ $string['privacy:metadata:margic_errortype_templates:timemodified'] = 'Zeitpunkt
 $string['privacy:metadata:margic_errortype_templates:name'] = 'Name der Fehlertyp-Vorlage.';
 $string['privacy:metadata:margic_errortype_templates:color'] = 'Farbe der Fehlertyp-Vorlage als Hex-Wert.';
 $string['privacy:metadata:margic_errortype_templates:userid'] = 'ID des Benutzers, der die Fehlertyp-Vorlage erstellt hat.';
-$string['privacy:metadata:core_rating'] = 'Es werden zu Margic-Einträgen hinzugefügte Bewertungen gespeichert.';
-$string['privacy:metadata:core_files'] = 'Es werden mit Margic-Einträgen verknüpfte Dateien gespeichert.';
-$string['privacy:metadata:core_message'] = 'Es werden Nachrichten über die Bewertung von Margic-Einträgen an Benutzer versendet.';
+$string['privacy:metadata:core_rating'] = 'Es werden zu Margic Einträgen hinzugefügte Bewertungen gespeichert.';
+$string['privacy:metadata:core_files'] = 'Es werden mit Margic Einträgen verknüpfte Dateien gespeichert.';
+$string['privacy:metadata:core_message'] = 'Es werden Nachrichten über die Bewertung von Margic Einträgen an Benutzer versendet.';
 $string['privacy:metadata:preference:margic_sortoption'] = 'Die Präferenz für die Sortierung des Margics.';
 $string['privacy:metadata:preference:margic_pagecount'] = 'Die Anzahl der Einträge, die pro Seite in einem Margic angezeigt werden sollen.';
 $string['privacy:metadata:preference:margic_activepage'] = 'Die Nummer der zuletzt geöffneten Seite im Margic.';
-
-// löschen
-// $string['numwordscln'] = '{$a->one} bereinigte Wörter mit {$a->two} Zeichen, AUSSCHLIEßLICH {$a->three} Leerzeichen. ';
-// $string['numwordsstd'] = '{$a->one} standardisierte Wörter mit {$a->two} Zeichen, einschließlich {$a->three} Leerzeichen. ';
-// $string['edittopoflist'] = 'Den Anfang der Liste bearbeiten';
-// $string['reload'] = 'Neuladen und Anzeigen vom aktuellsten zum ältesten Margic-Eintrag';
-// $string['sortfirstentry'] = 'Vom ersten Margic-Eintrag bis zum letzten.';
-// $string['outof'] = 'aus {$a} Einträgen.';
-// $string['sortcurrententry'] = 'Vom aktuellen Margic-Eintrag bis zum ersten.';
-// $string['sorthighestentry'] = 'Vom am höchsten bewerteten Margic-Eintrag bis zum am niedrigsten bewerteten.';
-// $string['sortlastentry'] = 'Vom zuletzt geänderten Margic-Eintrag bis zum ältesten geänderten.';
-// $string['sortlowestentry'] = 'Vom am niedrigsten bewerteten Margic-Eintrag bis zum höchsten.';

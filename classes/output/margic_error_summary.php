@@ -35,7 +35,7 @@ use stdClass;
  * @copyright   2022 coactum GmbH
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class margic_annotations_summary implements renderable, templatable {
+class margic_error_summary implements renderable, templatable {
 
     /** @var int */
     protected $cmid;

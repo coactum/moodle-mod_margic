@@ -23,7 +23,7 @@
  */
 
 use core\output\notification;
-use mod_margic\output\margic_annotations_summary;
+use mod_margic\output\margic_error_summary;
 
 require(__DIR__.'/../../config.php');
 require_once(__DIR__.'/lib.php');
@@ -79,7 +79,7 @@ require_capability('mod/margic:makeannotations', $context);
 
 // Add type to margic.
 if ($addtomargic) {
-    $redirecturl = new moodle_url('/mod/margic/annotations_summary.php', array('id' => $id));
+    $redirecturl = new moodle_url('/mod/margic/error_summary.php', array('id' => $id));
 
     if ($DB->record_exists('margic_errortype_templates', array('id' => $addtomargic))) {
 
@@ -104,7 +104,7 @@ if ($addtomargic) {
 
 // Change priority.
 if ($mode == 2 && $priority && $action && $DB->record_exists('margic_errortypes', array('id' => $priority))) {
-    $redirecturl = new moodle_url('/mod/margic/annotations_summary.php', array('id' => $id));
+    $redirecturl = new moodle_url('/mod/margic/error_summary.php', array('id' => $id));
 
     $type = $DB->get_record('margic_errortypes', array('margic' => $moduleinstance->id, 'id' => $priority));
 
@@ -157,7 +157,7 @@ if ($mode == 2 && $priority && $action && $DB->record_exists('margic_errortypes'
 // Delete annotation.
 if ($delete !== 0 && $mode) {
 
-    $redirecturl = new moodle_url('/mod/margic/annotations_summary.php', array('id' => $id));
+    $redirecturl = new moodle_url('/mod/margic/error_summary.php', array('id' => $id));
 
     if ($mode == 1) { // If type is template error type.
         $table = 'margic_errortype_templates';
@@ -190,8 +190,8 @@ $margicname = format_string($moduleinstance->name, true, array(
     'context' => $context
 ));
 
-$PAGE->set_url('/mod/margic/annotations_summary.php', array('id' => $cm->id));
-$PAGE->navbar->add(get_string('annotationssummary', 'mod_margic'));
+$PAGE->set_url('/mod/margic/error_summary.php', array('id' => $cm->id));
+$PAGE->navbar->add(get_string('errorsummary', 'mod_margic'));
 
 $PAGE->set_title(get_string('modulename', 'mod_margic').': ' . $margicname);
 $PAGE->set_heading(format_string($course->fullname));
@@ -274,7 +274,7 @@ foreach ($errortypetemplates as $id => $templatetype) {
 $errortypetemplates = array_values($errortypetemplates);
 
 // Output page.
-$page = new margic_annotations_summary($cm->id, $participants, $margicerrortypes, $errortypetemplates);
+$page = new margic_error_summary($cm->id, $participants, $margicerrortypes, $errortypetemplates);
 
 echo $OUTPUT->render($page);
 

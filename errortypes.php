@@ -23,7 +23,7 @@
  */
 
 use core\output\notification;
-use mod_margic\output\margic_annotations_summary;
+use mod_margic\output\margic_error_summary;
 
 require(__DIR__.'/../../config.php');
 require_once(__DIR__.'/lib.php');
@@ -71,7 +71,7 @@ require_login($course, true, $cm);
 
 require_capability('mod/margic:makeannotations', $context);
 
-$redirecturl = new moodle_url('/mod/margic/annotations_summary.php', array('id' => $id));
+$redirecturl = new moodle_url('/mod/margic/error_summary.php', array('id' => $id));
 
 if ($edit !== 0) {
     if ($mode == 1) { // If type is template error type.

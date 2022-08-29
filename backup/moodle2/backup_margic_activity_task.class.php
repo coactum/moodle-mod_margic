@@ -70,7 +70,7 @@ class backup_margic_activity_task extends backup_activity_task {
         $content = preg_replace($search, '$@MARGICEDITVIEW*$2@$', $content);
 
         // Link to the annotation summary by moduleid.
-        $search = "/(".$base."\/mod\/margic\/annotations_summary.php\?id\=)([0-9]+)/";
+        $search = "/(".$base."\/mod\/margic\/error_summary.php\?id\=)([0-9]+)/";
         $content = preg_replace($search, '$@MARGICANNOTATIONSUMMARY*$2@$', $content);
 
         // Link to the page for editing errortypes.
