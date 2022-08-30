@@ -12,7 +12,7 @@
  * sometimes referred to as the "Simplified BSD License".
  */
 
-// import { matchQuote } from './match-quote';
+import { matchQuote } from './match-quote';
 import { TextRange, TextPosition } from './text-range';
 import { nodeFromXPath, xpathFromNode } from './xpath';
 
@@ -85,7 +85,14 @@ export class RangeAnchor {
   toSelector() {
     // "Shrink" the range so that it tightly wraps its text. This ensures more
     // predictable output for a given text selection.
+
+    // console.log('types.js -> toSelector this.range');
+    // console.log(this.range);
+
     const normalizedRange = TextRange.fromRange(this.range).toRange();
+
+    // console.log('types.js -> toSelector normalizedRange');
+    // console.log(normalizedRange);
 
     const textRange = TextRange.fromRange(normalizedRange);
     const startContainer = xpathFromNode(textRange.start.element, this.root);
@@ -121,6 +128,9 @@ export class TextPositionAnchor {
    * @param {Range} range
    */
   static fromRange(root, range) {
+    console.log('TextPositionAnchor -> fromRange root');
+    console.log(root);
+
     const textRange = TextRange.fromRange(range).relativeTo(root);
     return new TextPositionAnchor(
       root,
@@ -239,11 +249,11 @@ export class TextQuoteAnchor {
    */
   toPositionAnchor(options = {}) {
     const text = /** @type {string} */ (this.root.textContent);
-    // const match = matchQuote(text, this.exact, {
-    //   ...this.context,
-    //   hint: options.hint,
-    // });
-    const match = text.match(this.exact);
+    const match = matchQuote(text, this.exact, {
+      ...this.context,
+      hint: options.hint,
+    });
+    // const match = text.match(this.exact);
     if (!match) {
       throw new Error('Quote not found');
     }

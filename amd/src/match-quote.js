@@ -1,4 +1,4 @@
-import approxSearch from 'approx-string-match';
+import approxSearch from './string-match';
 
 /**
  * @typedef {import('approx-string-match').Match} StringMatch

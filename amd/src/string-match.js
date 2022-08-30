@@ -8,19 +8,19 @@
 /**
  * Represents a match returned by a call to `search`.
  */
- export interface Match {
-    /** Start offset within the text string of the match. */
-    start: number;
-    /** End offset within the text string of the match. */
-    end: number;
-    /**
-     * The number of differences (insertions, deletions or substitutions) between
-     * the pattern and the approximate match in the text.
-     */
-    errors: number;
-  }
+//  export interface Match {
+//     /** Start offset within the text string of the match. */
+//     start: number;
+//     /** End offset within the text string of the match. */
+//     end: number;
+//     /**
+//      * The number of differences (insertions, deletions or substitutions) between
+//      * the pattern and the approximate match in the text.
+//      */
+//     errors: number;
+//   }
 
-  function reverse(s: string) {
+  function reverse(s) {
     return s.split("").reverse().join("");
   }
 
@@ -32,7 +32,7 @@
    * text.
    * @return Matches with the `start` property set.
    */
-  function findMatchStarts(text: string, pattern: string, matches: Match[]) {
+  function findMatchStarts(text, pattern, matches) {
     const patRev = reverse(pattern);
 
     return matches.map((m) => {
@@ -62,19 +62,19 @@
   /**
    * Internal context used when calculating blocks of a column.
    */
-  interface Context {
-    /**
-     * Bit-arrays of positive vertical deltas.
-     *
-     * ie. `P[b][i]` is set if the vertical delta for the i'th row in the b'th
-     * block is positive.
-     */
-    P: Uint32Array;
-    /** Bit-arrays of negative vertical deltas. */
-    M: Uint32Array;
-    /** Bit masks with a single bit set indicating the last row in each block. */
-    lastRowMask: Uint32Array;
-  }
+  // interface Context {
+  //   /**
+  //    * Bit-arrays of positive vertical deltas.
+  //    *
+  //    * ie. `P[b][i]` is set if the vertical delta for the i'th row in the b'th
+  //    * block is positive.
+  //    */
+  //   P: Uint32Array;
+  //   /** Bit-arrays of negative vertical deltas. */
+  //   M: Uint32Array;
+  //   /** Bit masks with a single bit set indicating the last row in each block. */
+  //   lastRowMask: Uint32Array;
+  // }
 
   /**
    * Return 1 if a number is non-zero or zero otherwise, without using
@@ -84,7 +84,7 @@
    *
    * Adapted from https://stackoverflow.com/a/3912218/434243
    */
-  function oneIfNotZero(n: number) {
+  function oneIfNotZero(n) {
     return ((n | -n) >> 31) & 1;
   }
 
@@ -100,7 +100,7 @@
    * @param hIn - Horizontal input delta ∈ {1,0,-1}
    * @return Horizontal output delta ∈ {1,0,-1}
    */
-  function advanceBlock(ctx: Context, peq: Uint32Array, b: number, hIn: number) {
+  function advanceBlock(ctx, peq, b, hIn) {
     let pV = ctx.P[b];
     let mV = ctx.M[b];
     const hInIsNegative = hIn >>> 31; // 1 if hIn < 0 or 0 otherwise.
@@ -142,7 +142,7 @@
    *
    * This is the block-based search algorithm from Fig. 9 on p.410 of [1].
    */
-  function findMatchEnds(text: string, pattern: string, maxErrors: number) {
+  function findMatchEnds(text, pattern, maxErrors) {
     if (pattern.length === 0) {
       return [];
     }
@@ -173,12 +173,12 @@
 
     // Map of UTF-16 character code to bit vector indicating positions in the
     // pattern that equal that character.
-    const peq = new Map<number, Uint32Array>();
+    const peq = new Map();
 
     // Version of `peq` that only stores mappings for small characters. This
     // allows faster lookups when iterating through the text because a simple
     // array lookup can be done instead of a hash table lookup.
-    const asciiPeq = [] as Uint32Array[];
+    const asciiPeq = [];
     for (let i = 0; i < 256; i++) {
       asciiPeq.push(emptyPeq);
     }
@@ -328,9 +328,9 @@
    * match. Only the "best" matches are returned.
    */
   export default function search(
-    text: string,
-    pattern: string,
-    maxErrors: number
+    text,
+    pattern,
+    maxErrors
   ) {
     const matches = findMatchEnds(text, pattern, maxErrors);
     return findMatchStarts(text, pattern, matches);

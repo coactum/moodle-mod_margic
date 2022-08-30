@@ -177,9 +177,9 @@ export const init = (cmid, canmakeannotations, myuserid) => {
         for (let annotation of Object.values(annotations)) {
 
             const rangeSelectors = [[
-                {type: "RangeSelector", startContainer: annotation.startcontainer, startOffset: annotation.startoffset,
-                endContainer: annotation.endcontainer, endOffset: annotation.endoffset},
-                {type: "TextPositionSelector", start: annotation.start, end: annotation.end},
+                {type: "RangeSelector", startContainer: annotation.startcontainer, startOffset: parseInt(annotation.startoffset),
+                endContainer: annotation.endcontainer, endOffset: parseInt(annotation.endoffset)},
+                {type: "TextPositionSelector", start: parseInt(annotation.start), end: parseInt(annotation.end)},
                 {type: "TextQuoteSelector", exact: annotation.exact, prefix: annotation.prefix, suffix: annotation.suffix}
             ]];
 
@@ -286,33 +286,36 @@ function createAnnotation(root) {
 
     const ranges = [window.getSelection().getRangeAt(0)];
 
-    // console.log('ranges');
-    // console.log(ranges);
+    console.log('createAnnotation ranges');
+    console.log(ranges);
 
     if (ranges.collapsed) {
         return null;
     }
 
+    console.log('createAnnotation -> ROOT');
+    console.log(root);
+
     //const info = await this.getDocumentInfo();
     const rangeSelectors = ranges.map(range => describe(root, range));
 
-    // console.log('rangeSelectors');
-    // console.log(rangeSelectors);
+    console.log('rangeSelectors');
+    console.log(rangeSelectors);
 
     const target = rangeSelectors.map(selectors => ({
       selector: selectors,
     }));
 
-    // console.log('target');
-    // console.log(target);
+    console.log('target');
+    console.log(target);
 
     /** @type {AnnotationData} */
     const annotation = {
       target,
     };
 
-    // console.log('TARGET INFORMATION TO SAVE IN THE DB');
-    // console.log(annotation);
+    console.log('Annotation INFORMATION TO SAVE IN THE DB');
+    console.log(annotation);
 
     anchor(annotation, root);
 

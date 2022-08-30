@@ -101,8 +101,8 @@ export function describe(root, range) {
         // console.log('anchor found');
         // console.log(anchor);
       } catch (err) {
-        // console.log('error in try to find textrange');
-        // console.log(err);
+        console.log('Error in try to find textrange');
+        console.log(err);
         anchor = { annotation, target };
       }
 
@@ -402,6 +402,9 @@ function isNodeInRange(range, node) {
     let quote = null;
     let range = null;
 
+    console.log('htmlAnchor -> ROOT');
+    console.log(root);
+
     // console.log('htmlAnchor()');
 
     // Collect all the selectors
@@ -441,57 +444,64 @@ function isNodeInRange(range, node) {
     };
 
     let queryselector = false;
-    if (range) {
-        // console.log('range');
 
-      let anchor = RangeAnchor.fromSelector(root, range);
+    try {
+        if (range) {
+            // console.log('range');
 
-    //   console.log('anchor');
-    //   console.log(anchor);
+          let anchor = RangeAnchor.fromSelector(root, range);
 
-      queryselector = querySelector(anchor, options);
+        //   console.log('anchor');
+        //   console.log(anchor);
 
-      if (queryselector) {
+          queryselector = querySelector(anchor, options);
 
-        // console.log('htmlAnchor queryselector for RangeAnchor');
-        // console.log(queryselector);
+          if (queryselector) {
 
-        return queryselector;
-      } else {
-        return maybeAssertQuote;
-      }
-    }
-
-    if (position) {
-        // console.log('position');
-
-        let anchor = TextPositionAnchor.fromSelector(root, position);
-
-        queryselector = querySelector(anchor, options);
-        if (queryselector) {
-
-            // console.log('htmlAnchor queryselector for TextPositionAnchor');
+            // console.log('htmlAnchor queryselector for RangeAnchor');
             // console.log(queryselector);
+
             return queryselector;
           } else {
             return maybeAssertQuote;
           }
+        }
+    } catch (error) {
+        try {
+            if (position) {
+                // console.log('position');
+
+                let anchor = TextPositionAnchor.fromSelector(root, position);
+
+                queryselector = querySelector(anchor, options);
+                if (queryselector) {
+
+                    // console.log('htmlAnchor queryselector for TextPositionAnchor');
+                    // console.log(queryselector);
+                    return queryselector;
+                  } else {
+                    return maybeAssertQuote;
+                  }
+            }
+        } catch (error) {
+            try {
+                if (quote) {
+                    // console.log('quote');
+                    // console.log('htmlAnchor queryselector for TextQuoteAnchor');
+
+                    let anchor = TextQuoteAnchor.fromSelector(root, quote);
+
+                    queryselector = querySelector(anchor, options);
+
+                    // console.log(queryselector);
+
+                    return queryselector;
+                }
+            } catch (error) {
+                return false;
+            }
+        }
     }
-
-    if (quote) {
-        // console.log('quote');
-        // console.log('htmlAnchor queryselector for TextQuoteAnchor');
-
-        let anchor = TextQuoteAnchor.fromSelector(root, quote);
-
-        queryselector = querySelector(anchor, options);
-
-        // console.log(queryselector);
-
-        return queryselector;
-    }
-
-    return false;
 }
 
 /**
@@ -516,10 +526,10 @@ function isNodeInRange(range, node) {
 
     for (var i = 0; i < highlights.length; i++) {
         if (highlights[i].parentNode) {
-            var pn = highlights[i].parentNode;
+            //var pn = highlights[i].parentNode;
             const children = Array.from(highlights[i].childNodes);
             replaceWith(highlights[i], children);
-            pn.normalize(); // To Be removed?
+            //pn.normalize(); // To Be removed?
         }
     }
 }
