@@ -22,7 +22,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use mod_margic\local\results;
+use mod_margic\local\helper;
 use \mod_margic\event\invalid_access_attempt;
 use core\output\notification;
 use mod_margic\output\margic_entry;
@@ -68,7 +68,7 @@ require_login($course, true, $cm);
 require_capability('mod/margic:addentries', $context);
 
 // Prevent creating and editing of entries if user is not allowed to edit entry or activity is not available.
-if (($entryid && !$moduleinstance->editentries) || !results::margic_available($moduleinstance)) {
+if (($entryid && !$moduleinstance->editentries) || !helper::margic_available($moduleinstance)) {
     // Trigger invalid_access_attempt with redirect to the view page.
     $params = array(
         'objectid' => $id,
@@ -147,7 +147,7 @@ if ($DB->record_exists('margic_entries', array('margic' => $moduleinstance->id, 
     $data->textformat = FORMAT_HTML;
 }
 
-list ($editoroptions, $attachmentoptions) = results::margic_get_editor_and_attachment_options($course, $context, $moduleinstance);
+list ($editoroptions, $attachmentoptions) = helper::margic_get_editor_and_attachment_options($course, $context, $moduleinstance);
 
 $data = file_prepare_standard_editor($data, 'text', $editoroptions, $context, 'mod_margic', 'entry', $data->entryid);
 $data = file_prepare_standard_filemanager($data, 'attachment', $attachmentoptions, $context, 'mod_margic', 'attachment', $data->entryid);
@@ -264,7 +264,7 @@ echo $OUTPUT->heading($title, 4);
 
 // If existing entry is edited render entry.
 if ($entry) {
-    $edittimes = results::margic_get_edittime_options($moduleinstance);
+    $edittimes = helper::margic_get_edittime_options($moduleinstance);
 
     $grades = make_grades_menu($moduleinstance->scale); // For select in grading_form.
 

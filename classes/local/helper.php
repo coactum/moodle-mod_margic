@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Results utilities for margic.
+ * helper utilities for margic.
  *
  * @package   mod_margic
  * @copyright 2022 coactum GmbH
@@ -26,7 +26,7 @@ namespace mod_margic\local;
 define('MARGIC_EVENT_TYPE_OPEN', 'open');
 define('MARGIC_EVENT_TYPE_CLOSE', 'close');
 
-use mod_margic\local\results;
+use mod_margic\local\helper;
 use stdClass;
 use csv_export_writer;
 use html_writer;
@@ -40,7 +40,7 @@ use calendar_event;
  * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class results {
+class helper {
 
     /**
      * Update the calendar entries for this margic activity.

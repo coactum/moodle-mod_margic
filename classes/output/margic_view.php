@@ -23,7 +23,6 @@
  */
 namespace mod_margic\output;
 
-use mod_margic\local\results;
 use mod_margic\annotation_form;
 
 use renderable;
@@ -175,7 +174,6 @@ class margic_view implements renderable, templatable {
         if ($this->entries) {
 
             require_once($CFG->dirroot . '/mod/margic/annotation_form.php');
-            require_once($CFG->dirroot . '/mod/margic/classes/local/results.php');
 
             $grades = make_grades_menu($this->moduleinstance->scale); // For select in grading_form.
             $currentgroups = groups_get_activity_group($this->cm, true);    // Get a list of the currently allowed groups for this course.

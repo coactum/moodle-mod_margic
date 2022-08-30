@@ -214,6 +214,7 @@ $string['entrycomment'] = 'Entry feedback';
 $string['format'] = 'Format';
 $string['teacher'] = 'Teacher';
 $string['timemarked'] = 'Time graded';
+$string['rating'] = 'Rating';
 $string['exportfilenamemyentries'] = 'My_Margic_Entries';
 $string['exportfilenamemargicentries'] = 'Margic_Entries';
 $string['exportfilenameallentries'] = 'All_Margic_Entries';

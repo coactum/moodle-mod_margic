@@ -23,7 +23,7 @@
  */
 
 use mod_margic\local\entrystats;
-use mod_margic\local\results;
+use mod_margic\local\helper;
 
 /**
  * Base class for mod_margic.
@@ -613,13 +613,13 @@ class margic {
             }
 
             require_once($CFG->dirroot . '/mod/margic/annotation_form.php');
-            require_once($CFG->dirroot . '/mod/margic/classes/local/results.php');
+            require_once($CFG->dirroot . '/mod/margic/classes/local/helper.php');
 
             $entry->user->userpicture = $OUTPUT->user_picture($entry->user,
             array('courseid' => $this->course->id, 'link' => true, 'includefullname' => true, 'size' => 25));
 
             // Add feedback area to entry.
-            $entry->gradingform = results::margic_return_feedback_area_for_entry($this->cm->id, $this->context, $this->course, $this->instance,
+            $entry->gradingform = helper::margic_return_feedback_area_for_entry($this->cm->id, $this->context, $this->course, $this->instance,
             $entry, $grades, $canmanageentries);
 
             $entry = $this->prepare_entry_annotations($entry, $strmanager, $annotationmode, $readonly);

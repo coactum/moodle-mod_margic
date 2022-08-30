@@ -23,7 +23,6 @@
  */
 namespace mod_margic\output;
 
-use mod_margic\local\results;
 use mod_margic\annotation_form;
 
 use renderable;

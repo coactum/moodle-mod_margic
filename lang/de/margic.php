@@ -215,6 +215,7 @@ $string['entrycomment'] = 'Feedback zum Eintrag';
 $string['format'] = 'Format';
 $string['teacher'] = 'Trainer/in';
 $string['timemarked'] = 'Zeitpunkt der Bewertung';
+$string['rating'] = 'Bewertung';
 $string['exportfilenamemyentries'] = 'Meine_Margic_Eintraege';
 $string['exportfilenamemargicentries'] = 'Margic_Eintraege';
 $string['exportfilenameallentries'] = 'Alle_Margic_Eintraege';

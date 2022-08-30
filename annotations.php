@@ -143,7 +143,7 @@ if ($fromform = $mform->get_data()) {
             }
 
             if (preg_match("/[^a-zA-Z0-9()-\/[\]]/", $fromform->startcontainer) || preg_match("/[^a-zA-Z0-9()-\/[\]]/", $fromform->endcontainer)
-                || preg_match("/[^a-zA-Z0-9()-\/[\]]/", $fromform->exact || preg_match("/[^a-zA-Z0-9()-\/[\]]/", $fromform->prefix) || preg_match("/[^a-zA-Z0-9()-\/[\]]/", $fromform->suffix))) {
+                || preg_match("/[^a-zA-Z0-9()-\/[\]]/", $fromform->exact) || preg_match("/[^a-zA-Z0-9()-\/[\]]/", $fromform->prefix) || preg_match("/[^a-zA-Z0-9()-\/[\]]/", $fromform->suffix)) {
                 redirect($redirecturl, get_string('annotationinvalid', 'mod_margic'), null, notification::NOTIFY_ERROR);
             }
 

@@ -22,7 +22,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use mod_margic\local\results;
+use mod_margic\local\helper;
 
 /**
  * Given an object containing all the necessary data,
@@ -48,7 +48,7 @@ function margic_add_instance($margic) {
     $margic->id = $DB->insert_record('margic', $margic);
 
     // Add calendar dates.
-    results::margic_update_calendar($margic, $margic->coursemodule);
+    helper::margic_update_calendar($margic, $margic->coursemodule);
 
     // Add expected completion date.
     if (! empty($margic->completionexpected)) {
@@ -127,7 +127,7 @@ function margic_update_instance($margic) {
     $DB->update_record('margic', $margic);
 
     // Update calendar.
-    results::margic_update_calendar($margic, $margic->coursemodule);
+    helper::margic_update_calendar($margic, $margic->coursemodule);
 
     // Update completion date.
     $completionexpected = (! empty($margic->completionexpected)) ? $margic->completionexpected : null;

@@ -23,7 +23,7 @@
  */
 
 use mod_margic\output\margic_view;
-use mod_margic\local\results;
+use mod_margic\local\helper;
 use core\output\notification;
 
 require(__DIR__.'/../../config.php');
@@ -93,7 +93,7 @@ if ($pagecount) {
 // Toolbar action handler for download.
 if (!empty($action) && $action == 'download' && has_capability('mod/margic:addentries', $context)) {
     // Call download entries function in lib.php.
-    results::download_entries($context, $course, $moduleinstance);
+    helper::download_entries($context, $course, $moduleinstance);
 }
 
 // Trigger course_module_viewed event.
@@ -148,7 +148,7 @@ if ($moduleinstance->intro) {
 
 // Get grading of current user when margic is rated.
 if ($moduleinstance->assessed != 0) {
-    $ratingaggregationmode = results::get_margic_aggregation($moduleinstance->assessed) . ' ' . get_string('forallmyentries', 'mod_margic');
+    $ratingaggregationmode = helper::get_margic_aggregation($moduleinstance->assessed) . ' ' . get_string('forallmyentries', 'mod_margic');
     $gradinginfo = grade_get_grades($course->id, 'mod', 'margic', $moduleinstance->id, $USER->id);
     $userfinalgrade = $gradinginfo->items[0]->grades[$USER->id];
     $currentuserrating = $userfinalgrade->str_long_grade;
@@ -160,7 +160,7 @@ if ($moduleinstance->assessed != 0) {
 // Handle groups.
 echo groups_print_activity_menu($cm, $CFG->wwwroot . "/mod/margic/view.php?id=$id");
 
-$edittimes = results::margic_get_edittime_options($moduleinstance);
+$edittimes = helper::margic_get_edittime_options($moduleinstance);
 
 // Output page.
 $page = new margic_view($margic, $cm, $context, $moduleinstance, $margic->get_entries_grouped_by_pagecount(),

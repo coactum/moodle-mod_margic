@@ -23,7 +23,7 @@
  */
 
 use core\output\notification;
-use mod_margic\local\results;
+use mod_margic\local\helper;
 
 require_once("../../config.php");
 require_once($CFG->dirroot . '/mod/margic/grading_form.php');
@@ -78,7 +78,7 @@ $data->timecreated = $entry->timecreated;
 $data->{'feedback_' . $entry->id} = $entry->entrycomment;
 $data->{'feedback_' . $entry->id . 'format'} = $entry->formatcomment;
 
-list ($editoroptions, $attachmentoptions) = results::margic_get_editor_and_attachment_options($course, $context, $moduleinstance);
+list ($editoroptions, $attachmentoptions) = helper::margic_get_editor_and_attachment_options($course, $context, $moduleinstance);
 
 $data = file_prepare_standard_editor($data, 'feedback_' . $entry->id, $editoroptions, $context, 'mod_margic', 'feedback', $data->entry);
 $data = file_prepare_standard_filemanager($data, 'attachment', $attachmentoptions, $context, 'mod_margic', 'attachment', $data->entry);
@@ -158,7 +158,7 @@ if ($fromform = $mform->get_data()) { // If grading form is submitted.
             $ratingoptions->assesstimefinish = $moduleinstance->assesstimefinish;
 
             // Check if there is already a rating, and if so, just update it.
-            if ($rec = results::check_rating_entry($ratingoptions)) {
+            if ($rec = helper::check_rating_entry($ratingoptions)) {
                 $ratingoptions->id = $rec->id;
                 $DB->update_record('rating', $ratingoptions, false);
             } else {

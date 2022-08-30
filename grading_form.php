@@ -24,12 +24,12 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-use mod_margic\local\results;
+use mod_margic\local\helper;
 
 global $CFG;
 
 require_once("$CFG->libdir/formslib.php");
-require_once($CFG->dirroot . '/mod/margic/classes/local/results.php');
+require_once($CFG->dirroot . '/mod/margic/classes/local/helper.php');
 require_once(__DIR__ .'/../../lib/gradelib.php');
 
 /**
@@ -90,7 +90,7 @@ class mod_margic_grading_form extends moodleform {
                 }
             }
 
-            $aggregatestr = results::get_margic_aggregation($this->_customdata['margic']->assessed) . ' ' . get_string('forallentries', 'margic') . ' '. $userfullname;
+            $aggregatestr = helper::get_margic_aggregation($this->_customdata['margic']->assessed) . ' ' . get_string('forallentries', 'margic') . ' '. $userfullname;
 
             $mform->addElement('static', 'currentuserrating', $aggregatestr.': ', $currentuserrating);
 
