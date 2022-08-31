@@ -123,6 +123,8 @@ $string['annotatedtextinvalid'] = 'The originally annotated text has become inva
 $string['notallowedtodothis'] = 'No permissions to do this.';
 $string['deletederrortype'] = 'Deleted type';
 $string['errtypedeleted'] = 'Annotation type does not exists.';
+$string['annotationsarefetched'] = 'Annotations being loaded';
+$string['reloadannotations'] = 'Reload annotations';
 
 // mod_form
 $string['margicname'] = 'Name of the Margic';

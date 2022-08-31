@@ -106,6 +106,7 @@
                         <button class="btn btn-secondary margic-btn-round-small pull-right" data-toggle="collapse" data-target=".collapseAnnotation" aria-expanded="false" aria-controls="collapseAnnotation" title="{{#str}}toggleallannotations, mod_margic{{/str}}"><i class="fa fa-lg fa-caret-down"></i></button>
                     {{/annotationmode}}
                 </h4>
+                <div id="overlay" style="background: {{entrybgc}}"><div id="overlaytext"><span class="pr-2">{{#str}}annotationsarefetched, mod_margic{{/str}}</span> <a href="view.php?id={{cmid}}&annotationmode=1" class="btn btn-secondary margic-btn-round-small" title="{{#str}}reloadannotations, mod_margic{{/str}}"><i class="fa fa-lg fa-refresh"></i></a></div></div>
             </div>
         {{/annotationmode}}
     </div>

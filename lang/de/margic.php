@@ -124,6 +124,8 @@ $string['annotatedtextinvalid'] = 'Der ursprünglich annotierte Text ist ungült
 $string['notallowedtodothis'] = 'Vorgang nicht möglich.';
 $string['deletederrortype'] = 'Gelöschter Typ';
 $string['errtypedeleted'] = 'Fehlertyp nicht vorhanden.';
+$string['annotationsarefetched'] = 'Annotationen werden geladen';
+$string['reloadannotations'] = 'Annotationen neu laden';
 
 // mod_form
 $string['margicname'] = 'Name der Margic';

@@ -31,9 +31,6 @@ export const init = (cmid, canmakeannotations, myuserid) => {
 
     var newannotation = false;
 
-    // Hide all Moodle forms.
-    $('.annotation-form').hide();
-
     // Remove col-mds from moodle form.
     $('.annotation-form div.col-md-3').removeClass('col-md-3');
     $('.annotation-form div.col-md-9').removeClass('col-md-9');
@@ -163,8 +160,11 @@ export const init = (cmid, canmakeannotations, myuserid) => {
             });
 
         },
+        complete: function() {
+            $('#overlay').hide();
+        },
         error: function() {
-            alert ('Error fetiching annotations');
+            alert('Error fetching annotations');
         }
     });
 

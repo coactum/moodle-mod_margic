@@ -142,8 +142,7 @@ if ($fromform = $mform->get_data()) {
                 redirect($redirecturl, get_string('errtypedeleted', 'mod_margic'), null, notification::NOTIFY_ERROR);
             }
 
-            if (preg_match("/[^a-zA-Z0-9()-\/[\]]/", $fromform->startcontainer) || preg_match("/[^a-zA-Z0-9()-\/[\]]/", $fromform->endcontainer)
-                || preg_match("/[^a-zA-Z0-9()-\/[\]]/", $fromform->exact) || preg_match("/[^a-zA-Z0-9()-\/[\]]/", $fromform->prefix) || preg_match("/[^a-zA-Z0-9()-\/[\]]/", $fromform->suffix)) {
+            if (preg_match("/[^a-zA-Z0-9()-\/[\]]/", $fromform->startcontainer) || preg_match("/[^a-zA-Z0-9()-\/[\]]/", $fromform->endcontainer)) {
                 redirect($redirecturl, get_string('annotationinvalid', 'mod_margic'), null, notification::NOTIFY_ERROR);
             }
 
@@ -164,9 +163,9 @@ if ($fromform = $mform->get_data()) {
             $annotation->endoffset = $fromform->endoffset;
             $annotation->start = $fromform->start;
             $annotation->end = $fromform->end;
-            $annotation->exact = $fromform->exact;
-            $annotation->prefix = $fromform->prefix;
-            $annotation->suffix = $fromform->suffix;
+            $annotation->exact = format_text($fromform->exact, 2, array('para' => false));;
+            $annotation->prefix = format_text($fromform->prefix, 2, array('para' => false));;
+            $annotation->suffix = format_text($fromform->suffix, 2, array('para' => false));;
             $annotation->text = format_text($fromform->text, 2, array('para' => false));
 
             $DB->insert_record('margic_annotations', $annotation);
