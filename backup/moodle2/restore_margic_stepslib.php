@@ -131,7 +131,6 @@ class restore_margic_activity_structure_step extends restore_activity_structure_
         $oldid = $data->id;
 
         $data->margic = $this->get_new_parentid('margic');
-        $data->userid = $this->get_mappingid('user', $data->userid);
 
         $newitemid = $DB->insert_record('margic_errortypes', $data);
         $this->set_mapping('margic_errortype', $oldid, $newitemid);
@@ -204,7 +203,7 @@ class restore_margic_activity_structure_step extends restore_activity_structure_
 
         error_log('margic restore after_execute AFTERTEXT');
 
-        //$this->add_related_files('mod_margic', 'feedback', 'margic_entry');
+        $this->add_related_files('mod_margic', 'feedback', 'margic_entry');
 
         error_log('margic restore after_execute AFTERFEEDBACK');
 

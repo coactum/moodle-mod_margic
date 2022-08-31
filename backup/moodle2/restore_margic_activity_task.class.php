@@ -57,7 +57,7 @@ class restore_margic_activity_task extends restore_activity_task {
 
         // Define the contents (files in textareas).
         $contents[] = new restore_decode_content('margic', array('intro'), 'margic');
-        $contents[] = new restore_decode_content('margic_entries', array('text', 'entrycomment'), 'margic_entry');
+        $contents[] = new restore_decode_content('margic_entries', array('text', 'feedback'), 'margic_entry');
 
         return $contents;
     }

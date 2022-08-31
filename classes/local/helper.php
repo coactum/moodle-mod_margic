@@ -221,7 +221,7 @@ class helper {
             get_string('timemodified', 'margic'),
             get_string('format', 'margic'),
             get_string('rating', 'margic'),
-            get_string('entrycomment', 'margic'),
+            get_string('feedback', 'margic'),
             get_string('teacher', 'margic'),
             get_string('timemarked', 'margic'),
             get_string('baseentry', 'margic'),
@@ -240,7 +240,7 @@ class helper {
                            d.text AS text,
                            d.format AS format,
                            d.rating AS rating,
-                           d.entrycomment AS entrycomment,
+                           d.feedback AS feedback,
                            d.teacher AS teacher,
                            to_char(to_timestamp(d.timemarked), 'YYYY-MM-DD HH24:MI:SS') AS timemarked,
                            d.baseentry AS baseentry
@@ -258,7 +258,7 @@ class helper {
                            d.text AS text,
                            d.format AS format,
                            d.rating AS rating,
-                           d.entrycomment AS entrycomment,
+                           d.feedback AS feedback,
                            d.teacher AS teacher,
                            FROM_UNIXTIME(d.timemarked) AS TIMEMARKED,
                            d.baseentry AS baseentry
@@ -289,7 +289,7 @@ class helper {
                     $d->timemodified,
                     $d->format,
                     $d->rating,
-                    $d->entrycomment,
+                    $d->feedback,
                     $d->teacher,
                     $d->timemarked,
                     $d->baseentry,
@@ -508,7 +508,7 @@ class helper {
 
             $feedbackarea = '';
 
-            $feedbacktext = format_text($entry->entrycomment, $entry->formatcomment, array('para' => false));
+            $feedbacktext = format_text($entry->feedback, $entry->formatfeedback, array('para' => false));
 
             if ($canmanageentries) { // If user is teacher.
                 if (! $entry->teacher) {
@@ -524,8 +524,8 @@ class helper {
                 $data->id = $cmid;
                 $data->entry = $entry->id;
                 $data->timecreated = $entry->timecreated;
-                $data->{'feedback_' . $entry->id} = $entry->entrycomment;
-                $data->{'feedback_' . $entry->id . 'format'} = $entry->formatcomment;
+                $data->{'feedback_' . $entry->id} = $entry->feedback;
+                $data->{'feedback_' . $entry->id . 'format'} = $entry->formatfeedback;
 
                 list ($editoroptions, $attachmentoptions) = self::margic_get_editor_and_attachment_options($course, $context, $margic);
 

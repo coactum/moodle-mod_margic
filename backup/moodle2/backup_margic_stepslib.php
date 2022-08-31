@@ -49,13 +49,13 @@ class backup_margic_activity_structure_step extends backup_activity_structure_st
         $entries = new backup_nested_element('entries');
         $entry = new backup_nested_element('entry', array('id'), array(
             'userid', 'timecreated', 'timemodified', 'text', 'format',
-            'rating', 'entrycomment', 'formatcomment', 'teacher',
+            'rating', 'feedback', 'formatfeedback', 'teacher',
             'timemarked', 'baseentry'));
 
         $annotations = new backup_nested_element('annotations');
         $annotation = new backup_nested_element('annotation', array('id'), array(
             'userid', 'timecreated', 'timemodified', 'type', 'startcontainer', 'endcontainer',
-            'startoffset', 'endoffset', 'text'));
+            'startoffset', 'endoffset', 'start', 'end', 'exact', 'prefix', 'suffix', 'text'));
 
         $ratings = new backup_nested_element('ratings');
         $rating = new backup_nested_element('rating', array('id'), array(
@@ -103,7 +103,6 @@ class backup_margic_activity_structure_step extends backup_activity_structure_st
         $margic->annotate_ids('scale', 'scale');
         $rating->annotate_ids('scale', 'scaleid');
         $rating->annotate_ids('user', 'userid');
-        $errortype->annotate_ids('user', 'userid');
 
         if ($userinfo) {
             $entry->annotate_ids('user', 'userid');
@@ -114,7 +113,7 @@ class backup_margic_activity_structure_step extends backup_activity_structure_st
         // Define file annotations.
         $margic->annotate_files('mod_margic', 'intro', null); // This file area has no itemid.
         $entry->annotate_files('mod_margic', 'entry', 'id');
-        //$entry->annotate_files('mod_margic', 'feedback', 'id');
+        $entry->annotate_files('mod_margic', 'feedback', 'id');
 
         return $this->prepare_activity_structure($margic);
     }

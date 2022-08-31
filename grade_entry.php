@@ -75,8 +75,8 @@ $data = new stdClass();
 $data->id = $id;
 $data->entry = $entry->id;
 $data->timecreated = $entry->timecreated;
-$data->{'feedback_' . $entry->id} = $entry->entrycomment;
-$data->{'feedback_' . $entry->id . 'format'} = $entry->formatcomment;
+$data->{'feedback_' . $entry->id} = $entry->feedback;
+$data->{'feedback_' . $entry->id . 'format'} = $entry->formatfeedback;
 
 list ($editoroptions, $attachmentoptions) = helper::margic_get_editor_and_attachment_options($course, $context, $moduleinstance);
 
@@ -118,7 +118,7 @@ if ($fromform = $mform->get_data()) { // If grading form is submitted.
         $ratingchanged = false;
     }
 
-    if ($newfeedback != $entry->entrycomment && !($newfeedback == '' && $entry->entrycomment == null)) {
+    if ($newfeedback != $entry->feedback && !($newfeedback == '' && $entry->feedback == null)) {
         $feedbackchanged = true;
     } else {
         $feedbackchanged = false;
@@ -131,8 +131,8 @@ if ($fromform = $mform->get_data()) { // If grading form is submitted.
             $entry->rating = $newrating;
         }
 
-        $entry->entrycomment = $newfeedback;
-        $entry->formatcomment = $fromform->{'feedback_' . $entry->id . '_editor'}['format'];
+        $entry->feedback = $newfeedback;
+        $entry->formatfeedback = $fromform->{'feedback_' . $entry->id . '_editor'}['format'];
         $entry->teacher = $USER->id;
         $entry->timemarked = $timenow;
 

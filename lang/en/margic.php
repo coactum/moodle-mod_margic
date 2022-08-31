@@ -212,7 +212,7 @@ $string['userid'] = 'User id';
 $string['timecreated'] = 'Time created';
 $string['timemodified'] = 'Time modified';
 $string['text'] = 'Text';
-$string['entrycomment'] = 'Entry feedback';
+$string['feedback'] = 'Entry feedback';
 $string['format'] = 'Format';
 $string['teacher'] = 'Teacher';
 $string['timemarked'] = 'Time graded';
@@ -239,9 +239,9 @@ $string['noentry'] = 'No entry';
 
 // Search
 $string['search'] = 'Search';
-$string['search:entry'] = 'Margic - entries';
-$string['search:entrycomment'] = 'Margic - entry comment';
 $string['search:activity'] = 'Margic - activity information';
+$string['search:entry'] = 'Margic entries';
+$string['search:feedback'] = 'Feedback to Margic entries';
 
 // Default error type templates
 $string['grammar_verb'] = 'Grammar: Verb form';
@@ -296,7 +296,7 @@ $string['privacy:metadata:margic_entries:timecreated'] = 'Date on which the entr
 $string['privacy:metadata:margic_entries:timemodified'] = 'Time the entry was last modified.';
 $string['privacy:metadata:margic_entries:text'] = 'The content of the entry.';
 $string['privacy:metadata:margic_entries:rating'] = 'The grade with which the entry was rated.';
-$string['privacy:metadata:margic_entries:entrycomment'] = 'The teachers comment for the entry.';
+$string['privacy:metadata:margic_entries:feedback'] = 'The teachers feedback for the entry.';
 $string['privacy:metadata:margic_entries:teacher'] = 'ID of the grader.';
 $string['privacy:metadata:margic_entries:timemarked'] = 'Time the entry was graded.';
 $string['privacy:metadata:margic_entries:baseentry'] = 'The ID of the original entry on which this revised entry is based';

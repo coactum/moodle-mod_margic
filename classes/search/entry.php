@@ -101,7 +101,7 @@ class entry extends \core_search\base_mod {
         $doc->set('userid', $entry->userid);
         $doc->set('owneruserid', \core_search\manager::NO_OWNER_ID);
         $doc->set('modified', $entry->timemodified);
-        $doc->set('description1', content_to_text('Feedback: ' . $entry->entrycomment, $entry->format));
+        $doc->set('description1', content_to_text('Feedback: ' . $entry->feedback, $entry->format));
 
         // Check if this document should be considered new.
         if (isset($options['lastindexedtime']) && ($options['lastindexedtime'] < $entry->timemodified)) {

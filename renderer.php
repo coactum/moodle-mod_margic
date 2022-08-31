@@ -118,7 +118,7 @@ class mod_margic_renderer extends plugin_renderer_base {
         echo '</div>';
 
         // Feedback text.
-        echo format_text($entry->entrycomment, FORMAT_PLAIN);
+        echo format_text($entry->feedback, FORMAT_PLAIN);
         echo '</td></tr></table>';
     }
 }

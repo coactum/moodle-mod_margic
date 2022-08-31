@@ -65,7 +65,7 @@ class provider implements \core_privacy\local\metadata\provider,
             'timemodified' => 'privacy:metadata:margic_entries:timemodified',
             'text' => 'privacy:metadata:margic_entries:text',
             'rating' => 'privacy:metadata:margic_entries:rating',
-            'entrycomment' => 'privacy:metadata:margic_entries:entrycomment',
+            'feedback' => 'privacy:metadata:margic_entries:feedback',
             'teacher' => 'privacy:metadata:margic_entries:teacher',
             'timemarked' => 'privacy:metadata:margic_entries:timemarked',
             'baseentry' => 'privacy:metadata:margic_entries:baseentry',
@@ -267,8 +267,8 @@ class provider implements \core_privacy\local\metadata\provider,
                     e.text,
                     e.format,
                     e.rating,
-                    e.entrycomment,
-                    e.formatcomment,
+                    e.feedback,
+                    e.formatfeedback,
                     e.teacher,
                     e.timemarked,
                     e.baseentry
@@ -345,9 +345,9 @@ class provider implements \core_privacy\local\metadata\provider,
             'context' => $context,
         ]);
 
-        $entrydata->entrycomment = writer::with_context($context)->rewrite_pluginfile_urls($subcontext, 'mod_margic', 'feedback', $entry->id, $entry->entrycomment);
+        $entrydata->feedback = writer::with_context($context)->rewrite_pluginfile_urls($subcontext, 'mod_margic', 'feedback', $entry->id, $entry->feedback);
 
-        $entrydata->entrycomment = format_text($entrydata->entrycomment, $entry->formatcomment, (object) [
+        $entrydata->feedback = format_text($entrydata->feedback, $entry->formatfeedback, (object) [
             'para'    => false,
             'context' => $context,
         ]);

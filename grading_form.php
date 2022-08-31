@@ -56,7 +56,7 @@ class mod_margic_grading_form extends moodleform {
         $mform->addElement('hidden', 'entry');
         $mform->setType('entry', PARAM_INT);
 
-        $feedbacktext = $this->_customdata['entry']->entrycomment;
+        $feedbacktext = $this->_customdata['entry']->feedback;
 
         $user = $DB->get_record('user', array('id' => $this->_customdata['entry']->userid));
         $userfullname = fullname($user);
@@ -117,7 +117,7 @@ class mod_margic_grading_form extends moodleform {
 
         } else {
             $mform->addElement('editor', 'feedback_' . $this->_customdata['entry']->id . '_editor',
-                get_string('entrycomment', 'mod_margic'), null, $this->_customdata['editoroptions']);
+                get_string('feedback', 'mod_margic'), null, $this->_customdata['editoroptions']);
             $mform->setType('feedback_' . $this->_customdata['entry']->id . '_editor', PARAM_RAW);
 
             $mform->addElement('selectyesno', 'sendgradingmessage', get_string('sendgradingmessage', 'margic'));
