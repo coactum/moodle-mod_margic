@@ -88,24 +88,18 @@ class margic {
     public function __construct($id, $m, $userid, $action, $pagecount, $page) {
 
         /**
-         * Custom sort function for sorting annotations by position (or offset from startcontainer.)
+         * Custom sort function for sorting annotations by absolute start position.
          *
          * @param int $a First annotation
          * @param int $b Second annotation
          * @return bool Sort result
          */
         function sortannotation($a, $b) {
-            if (!isset($a->position)) {
-                return true;
-            } else if (!isset($b->position)) {
-                return false;
+            if ($a->start === $b->start) {
+                return $a->end > $b->end;
             }
 
-            if ($a->position === $b->position) {
-                return $a->startoffset > $b->startoffset;
-            }
-
-            return $a->position > $b->position;
+            return $a->start > $b->start;
         }
 
         global $DB, $USER;
@@ -488,53 +482,6 @@ class margic {
     }
 
     /**
-     * Index all nodes in the document.
-     *
-     * @param DOMDocument $doc The DOMDocument with the entry text.
-     */
-    private function index_original($doc) {
-
-        // var_dump('index_original: $doc');
-
-        // echo '<pre>';
-        // var_dump($doc);
-        // echo '</pre>';
-
-        foreach ($doc->childNodes as $childnode) {
-            // var_dump('index_original: $childnode');
-            // var_dump($childnode);
-
-            $this->search_dom_node($childnode);
-        }
-    }
-
-    /**
-     * Index the dom node and save its position in array.
-     *
-     * @param DOMNode $domnode The DOMNode to be indexed.
-     * @param int $position The position count.
-     */
-    private function search_dom_node(DOMNode $domnode, &$position = 0) {
-        // var_dump('search_dom_node: $domnode');
-        // var_dump($domnode);
-
-        // var_dump('search_dom_node: $nodepositions');
-        // var_dump($nodepositions);
-
-        // var_dump('search_dom_node: $position');
-        // var_dump($position);
-
-        foreach ($domnode->childNodes as $node) {
-            $this->nodepositions[$position] = $node;
-            $position = $position + 1;
-
-            if ($node->hasChildNodes()) {
-                $this->search_dom_node($node, $position);
-            }
-        }
-    }
-
-    /**
      * Prepare the entry for the template.
      *
      * @param object $entry The entry to be processed.
@@ -642,38 +589,6 @@ class margic {
     private function prepare_entry_annotations($entry, $strmanager, $annotationmode = false, $readonly = false) {
         global $DB, $USER, $CFG, $OUTPUT;
 
-        // Index entry for annotation sorting.
-        $position = 0;
-
-        $doc = new DOMDocument();
-        @$doc->loadHTML($entry->text);
-
-        $this->index_original($doc);
-
-        // echo '<pre>';
-        // var_dump('Text');
-        // var_dump(htmlspecialchars($entry->text));
-        // echo '</pre>';
-
-        // echo '<pre>';
-            // foreach ($this->nodepositions as $position => $node) {
-            //     if (isset($node->tagName)) {
-            //         echo $position . ' ' . $node->tagName . "\n";
-            //     } else {
-            //         echo $position . ' ' . $node->nodeValue . "\n";
-            //     }
-            // }
-        // echo '</pre>';
-
-        // var_dump('<br>');
-        // var_dump('<br>');
-
-        // var_dump('NEW nodepositions');
-        // var_dump($this->nodepositions);
-
-        // var_dump('<br>');
-        // var_dump('<br>');
-
         // Get annotations for entry.
         $entry->annotations = array_values($DB->get_records('margic_annotations', array('margic' => $this->cm->instance, 'entry' => $entry->id)));
 
@@ -707,108 +622,15 @@ class margic {
             } else {
                 $entry->annotationform = false;
             }
-
-            // Get position of startcontainer.
-            $xpath = new DOMXpath($doc);
-            $nodelist = $xpath->query('/' . $annotation->startcontainer);
-
-            // echo('$annotation->id <br>');
-            // var_dump($annotation->id);
-            // echo "<br>";
-
-            // echo('$annotation->startcontainer <br>');
-            // var_dump($annotation->startcontainer);
-            // echo "<br>";
-
-            // var_dump('$nodelist');
-            // var_dump($nodelist);
-
-            // var_dump('$nodepositions');
-            // var_dump($this->nodepositions);
-            // echo '<pre>';
-            $found = false;
-
-            foreach ($this->nodepositions as $position => $node) {
-                // if ($annotation->text == 'sadipscing') {
-                //     var_dump($annotation->startcontainer);
-                //     var_dump($nodelist[0]);
-                //     var_dump($node);
-                // }
-
-                if ($nodelist[0] === $node) { // Check if startcontainer node ($nodelist[0]) is same as node in nodepositions array.
-                    $found = true;
-                    $entry->annotations[$key]->position = $position; // If so asssign its position to annotation.
-                    // echo "POSITION OF ANNOTATION:  <br>";
-                    // echo $entry->annotations[$key]->position;
-                    // echo "<br>";
-
-                    // echo 'position:' . $position . " \n";
-                    // echo $annotation->text . " \n";
-                    // echo 'offset:' . $annotation->startoffset . " \n";
-                    // echo " \n\n";
-
-                    // echo 'HIGHLIHGHT';
-                    // $span = $doc->createElement('span', htmlspecialchars(substr($nodelist[0]->textContent, $annotation->startoffset)));
-                    // var_dump($doc->saveXml($span));
-                    break;
-                }
-            }
-
-            if (!$found) {
-                // echo 'Ich darf nicht passieren!!!!';
-                $diffoffsets = 0;
-                foreach ($entry->annotations as $key2 => $annotation2) {
-                    $xpathprefix1 = substr($annotation->startcontainer, 0, -3);
-                    $xpathprefix2 = substr($annotation2->startcontainer, 0, -3);
-
-                    if ($key2 >= $key) {
-                        break;
-                    }
-
-                    if ($xpathprefix2 == $xpathprefix1) {
-                        $diffoffsets += $annotation2->startoffset;
-                    }
-                }
-
-                $xpath = new DOMXpath($doc);
-                $fixedxpath = substr($annotation->startcontainer, 0, -3) . '[1]';
-                $nodelist = $xpath->query('/' . $fixedxpath);
-
-                // echo 'NOT FOUND' . " \n";
-                // var_dump($annotation->startcontainer);
-                // var_dump('/' . $fixedxpath);
-                // var_dump($nodelist[0]);
-                // var_dump($node);
-
-                foreach ($this->nodepositions as $position => $node) {
-
-                    if ($nodelist[0] === $node) { // Check if startcontainer node ($nodelist[0]) is same as node in nodepositions array.
-                        $found = true;
-                        $entry->annotations[$key]->position = $position; // If so asssign its position to annotation.
-                        // echo "POSITION OF ANNOTATION:  <br>";
-                        // echo $entry->annotations[$key]->position;
-                        // echo "<br>";
-
-                        // echo 'position fixed:' . $position . " \n";
-                        // echo $annotation->text . " \n";
-                        // echo 'offset:' . $annotation->startoffset . " \n";
-                        // echo " \n\n";
-                        //$annotation->startoffset += $diffoffsets;
-                        break;
-                    }
-
-                }
-            }
-
-            // echo '</pre>';
-
         }
 
-        // Sort annotations by position and offset of startcontainer.
+        // Sort annotations and find its position.
         usort($entry->annotations, "sortannotation");
-
-        // Reset nodepositions with empty array for next entry.
-        $this->nodepositions = array();
+        $pos = 1;
+        foreach ($entry->annotations as $key => $annotation) {
+            $entry->annotations[$key]->position = $pos;
+            $pos += 1;
+        }
 
         if ($annotationmode) {
             // Add annotation form.

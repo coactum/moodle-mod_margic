@@ -447,8 +447,8 @@ class provider implements \core_privacy\local\metadata\provider,
     public static function export_user_preferences(int $userid) {
         $user = \core_user::get_user($userid);
 
-        if ($margic_sortoption = get_user_preferences('margic_sortoption', 0, $userid)) {
-            switch ($margic_sortoption) {
+        if ($margicsortoption = get_user_preferences('margic_sortoption', 0, $userid)) {
+            switch ($margicsortoption) {
                 case 1:
                     $sortoption = get_string('currenttooldest', 'mod_margic');
                     break;
@@ -466,15 +466,15 @@ class provider implements \core_privacy\local\metadata\provider,
                     break;
             }
 
-            writer::export_user_preference('mod_margic', 'margic_sortoption', $margic_sortoption, $sortoption);
+            writer::export_user_preference('mod_margic', 'margic_sortoption', $margicsortoption, $sortoption);
         }
 
-        if ($margic_pagecount = get_user_preferences('margic_pagecount', 0, $userid)) {
-            writer::export_user_preference('mod_margic', 'margic_pagecount', $margic_pagecount, get_string('privacy:metadata:preference:margic_pagecount', 'mod_margic'));
+        if ($margicpagecount = get_user_preferences('margic_pagecount', 0, $userid)) {
+            writer::export_user_preference('mod_margic', 'margic_pagecount', $margicpagecount, get_string('privacy:metadata:preference:margic_pagecount', 'mod_margic'));
         }
 
-        if ($margic_activepage = get_user_preferences('margic_activepage', 0, $userid)) {
-            writer::export_user_preference('mod_margic', 'margic_activepage', $margic_activepage, get_string('privacy:metadata:preference:margic_activepage', 'mod_margic'));
+        if ($margicactivepage = get_user_preferences('margic_activepage', 0, $userid)) {
+            writer::export_user_preference('mod_margic', 'margic_activepage', $margicactivepage, get_string('privacy:metadata:preference:margic_activepage', 'mod_margic'));
         }
     }
 
