@@ -101,8 +101,8 @@ export function describe(root, range) {
         // console.log('anchor found');
         // console.log(anchor);
       } catch (err) {
-        console.log('Error in try to find textrange');
-        console.log(err);
+        // console.log('Error in try to find textrange');
+        // console.log(err);
         anchor = { annotation, target };
       }
 
@@ -402,8 +402,8 @@ function isNodeInRange(range, node) {
     let quote = null;
     let range = null;
 
-    console.log('htmlAnchor -> ROOT');
-    console.log(root);
+    // console.log('html.js -> anchor() -> selectors');
+    // console.log(selectors);
 
     // console.log('htmlAnchor()');
 
@@ -447,7 +447,7 @@ function isNodeInRange(range, node) {
 
     try {
         if (range) {
-            // console.log('range');
+            // console.log('html.js -> anchor() range RangeAnchor.fromSelector');
 
           let anchor = RangeAnchor.fromSelector(root, range);
 
@@ -469,6 +469,9 @@ function isNodeInRange(range, node) {
     } catch (error) {
         try {
             if (position) {
+
+                // console.log('html.js -> anchor() position TextPositionAnchor.fromSelector');
+
                 // console.log('position');
 
                 let anchor = TextPositionAnchor.fromSelector(root, position);
@@ -486,6 +489,9 @@ function isNodeInRange(range, node) {
         } catch (error) {
             try {
                 if (quote) {
+
+                    // console.log('html.js -> anchor() quote TextQuoteAnchor.fromSelector');
+
                     // console.log('quote');
                     // console.log('htmlAnchor queryselector for TextQuoteAnchor');
 

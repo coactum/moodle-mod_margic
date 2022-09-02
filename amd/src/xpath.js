@@ -63,12 +63,6 @@ function getPathSegment(node) {
 export function xpathFromNode(node, root) {
   let xpath = '';
 
-  // console.log('xpathFromNode');
-  // console.log('node');
-  // console.log(node);
-  // console.log('root');
-  // console.log(root);
-
   /** @type {Node|null} */
   let elem = node;
   while (elem !== root) {
@@ -80,9 +74,6 @@ export function xpathFromNode(node, root) {
   }
   xpath = '/' + xpath;
   xpath = xpath.replace(/\/$/, ''); // Remove trailing slash
-
-  // console.log('xpathFromNode xpath');
-  // console.log(xpath);
 
   return xpath;
 }

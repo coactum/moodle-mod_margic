@@ -128,8 +128,8 @@ export class TextPositionAnchor {
    * @param {Range} range
    */
   static fromRange(root, range) {
-    console.log('TextPositionAnchor -> fromRange root');
-    console.log(root);
+    // console.log('TextPositionAnchor -> fromRange root');
+    // console.log(root);
 
     const textRange = TextRange.fromRange(range).relativeTo(root);
     return new TextPositionAnchor(

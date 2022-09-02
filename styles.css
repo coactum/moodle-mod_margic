@@ -23,14 +23,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later.
  */
 
-.path-mod-margic .entrycontent { /* Used in renderer.php. */
-    padding: 3px;
-}
-
-.path-mod-margic .picture { /* Used in renderer.php with left. */
-    width: 35px;
-}
-
 .path-mod-margic .lastedit,
 .path-mod-margic .needsedit,
 .path-mod-margic .editend {
@@ -52,17 +44,6 @@
 .path-mod-margic .editend span {
     background: white;
     padding: 2px;
-}
-
-.path-mod-margic .author { /* Used in renderer.php about line 191. */
-    font-size: 1em;
-    font-weight: bold;
-}
-
-.path-mod-margic .grade { /* Used in renderer.php about line 200. */
-    font-weight: bold;
-    font-style: italic;
-    text-align: right;
 }
 
 .path-mod-margic .entriesheader {

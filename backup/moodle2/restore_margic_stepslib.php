@@ -192,20 +192,11 @@ class restore_margic_activity_structure_step extends restore_activity_structure_
      * Defines post-execution actions like restoring files.
      */
     protected function after_execute() {
-        error_log('margic restore after_execute BEGIN');
-
         // Add margic related files, no need to match by itemname (just internally handled context).
         $this->add_related_files('mod_margic', 'intro', null);
 
-        error_log('margic restore after_execute AFTERINTRO');
-
         $this->add_related_files('mod_margic', 'text', 'margic_entry');
 
-        error_log('margic restore after_execute AFTERTEXT');
-
         $this->add_related_files('mod_margic', 'feedback', 'margic_entry');
-
-        error_log('margic restore after_execute AFTERFEEDBACK');
-
     }
 }

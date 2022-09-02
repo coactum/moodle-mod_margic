@@ -286,36 +286,36 @@ function createAnnotation(root) {
 
     const ranges = [window.getSelection().getRangeAt(0)];
 
-    console.log('createAnnotation ranges');
-    console.log(ranges);
+    // console.log('createAnnotation ranges');
+    // console.log(ranges);
 
     if (ranges.collapsed) {
         return null;
     }
 
-    console.log('createAnnotation -> ROOT');
-    console.log(root);
+    // console.log('createAnnotation -> ROOT');
+    // console.log(root);
 
     //const info = await this.getDocumentInfo();
     const rangeSelectors = ranges.map(range => describe(root, range));
 
-    console.log('rangeSelectors');
-    console.log(rangeSelectors);
+    // console.log('rangeSelectors');
+    // console.log(rangeSelectors);
 
     const target = rangeSelectors.map(selectors => ({
       selector: selectors,
     }));
 
-    console.log('target');
-    console.log(target);
+    // console.log('target');
+    // console.log(target);
 
     /** @type {AnnotationData} */
     const annotation = {
       target,
     };
 
-    console.log('Annotation INFORMATION TO SAVE IN THE DB');
-    console.log(annotation);
+    // console.log('Annotation INFORMATION TO SAVE IN THE DB');
+    // console.log(annotation);
 
     anchor(annotation, root);
 

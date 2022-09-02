@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * margic entries search.
+ * Margic entries search.
  *
  * @package   mod_margic
  * @copyright 2022 coactum GmbH
@@ -29,7 +29,7 @@ require_once($CFG->dirroot . '/mod/margic/lib.php');
 require_once($CFG->dirroot . '/lib/grouplib.php');
 
 /**
- * margic entries search.
+ * Margic entries search.
  *
  * @package   mod_margic
  * @copyright 2022 coactum GmbH
@@ -154,12 +154,8 @@ class entry extends \core_search\base_mod {
         $contextmodule = \context::instance_by_id($doc->get('contextid'));
 
         $entryuserid = $doc->get('userid');
-        if ($entryuserid == $USER->id) {
-            $url = '/mod/margic/view.php';
-        } else {
-            // Teachers see student's entries in the report page.
-            $url = '/mod/margic/report.php#entry-' . $entryuserid;
-        }
+        $url = '/mod/margic/view.php';
+
         return new \moodle_url($url, array(
             'id' => $contextmodule->instanceid
         ));
@@ -189,8 +185,8 @@ class entry extends \core_search\base_mod {
      */
     protected function get_entry($entryid) {
         global $DB;
-        return $DB->get_record_sql("SELECT de.*, d.course FROM {margic_entries} de
-                                      JOIN {margic} d ON d.id = de.margic
-                                     WHERE de.id = ?", array('id' => $entryid), MUST_EXIST);
+        return $DB->get_record_sql("SELECT me.*, m.course FROM {margic_entries} me
+                                      JOIN {margic} m ON m.id = me.margic
+                                     WHERE me.id = ?", array('id' => $entryid), MUST_EXIST);
     }
 }

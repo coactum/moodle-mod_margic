@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * helper utilities for margic.
+ * Helper utilities for margic.
  *
  * @package   mod_margic
  * @copyright 2022 coactum GmbH
@@ -300,37 +300,6 @@ class helper {
         }
         // Download the completed array.
         $csv->download_file();
-    }
-
-    /**
-     * Return formatted text.
-     *
-     * @param array $entry
-     * @param array $course
-     * @param array $cm
-     * @return string $entrytext Text string containing a user entry.
-     * @return int $entry-format Format for user entry.
-     * @return array $formatoptions Array of options for a user entry.
-     */
-    public static function margic_format_entry_text($entry, $course = false, $cm = false) {
-        if (! $cm) {
-            if ($course) {
-                $courseid = $course->id;
-            } else {
-                $courseid = 0;
-            }
-            $cm = get_coursemodule_from_instance('margic', $entry->margic, $courseid);
-        }
-
-        $context = context_module::instance($cm->id);
-        $entrytext = file_rewrite_pluginfile_urls($entry->text, 'pluginfile.php', $context->id, 'mod_margic', 'entry', $entry->id);
-
-        $formatoptions = array(
-            'context' => $context,
-            'noclean' => false,
-            'trusted' => false
-        );
-        return format_text($entrytext, $entry->format, $formatoptions);
     }
 
     /**

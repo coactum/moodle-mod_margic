@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This page opens the current lib instance of margic.
+ * This page opens the current lib instance of mod margic.
  *
  * @package   mod_margic
  * @copyright 2022 coactum GmbH
@@ -26,11 +26,11 @@ use mod_margic\local\helper;
 
 /**
  * Given an object containing all the necessary data,
- * (defined by the form in mod.html) this function
+ * (defined by the form in mod_form.php) this function
  * will create a new instance and return the id number
  * of the new instance.
  *
- * @param object $margic Object containing required margic properties.
+ * @param object $margic the margic data.
  * @return int margic ID.
  */
 function margic_add_instance($margic) {
@@ -81,7 +81,7 @@ function margic_add_instance($margic) {
  * Given an object containing all the necessary margic data,
  * will update an existing instance with new margic data.
  *
- * @param object $margic Object containing required margic properties.
+ * @param object $margic the margic data.
  * @return boolean True if successful.
  */
 function margic_update_instance($margic) {
@@ -196,7 +196,6 @@ function margic_delete_instance($id) {
  * @uses FEATURE_MOD_INTRO
  * @uses FEATURE_SHOW_DESCRIPTION
  * @uses FEATURE_GRADE_HAS_GRADE
- * @uses FEATURE_GRADE_OUTCOMES
  * @uses FEATURE_RATE
  * @uses FEATURE_GROUPS
  * @uses FEATURE_GROUPINGS
@@ -213,8 +212,6 @@ function margic_supports($feature) {
             return true;
         case FEATURE_GRADE_HAS_GRADE:
             return true;
-        case FEATURE_GRADE_OUTCOMES:
-            return false;
         case FEATURE_RATE:
             return true;
         case FEATURE_GROUPS:
@@ -231,45 +228,7 @@ function margic_supports($feature) {
 }
 
 /**
- * List the actions that correspond to a view of this module.
- * This is used by the participation report.
- *
- * Note: This is not used by new logging system. Event with
- * crud = 'r' and edulevel = LEVEL_PARTICIPATING will
- * be considered as view action.
- *
- * @return array
- */
-function margic_get_view_actions() {
-    return array(
-        'view',
-        'view all',
-        'view responses'
-    );
-}
-
-/**
- * List the actions that correspond to a post of this module.
- * This is used by the participation report.
- *
- * Note: This is not used by new logging system. Event with
- * crud = ('c' || 'u' || 'd') and edulevel = LEVEL_PARTICIPATING
- * will be considered as post action.
- *
- * @return array
- */
-function margic_get_post_actions() {
-    return array(
-        'add entry',
-        'update entry',
-        'update feedback'
-    );
-}
-
-/**
  * Returns a summary of data activity of this user.
- *
- * Not used yet, as of 20200718.
  *
  * @param object $course
  * @param object $user
@@ -280,16 +239,9 @@ function margic_get_post_actions() {
 function margic_user_outline($course, $user, $mod, $margic) {
     global $DB;
 
-    if ($entry = $DB->get_record("margic_entries", array(
-        "userid" => $user->id,
-        "margic" => $margic->id
-    ))) {
-
-        $numwords = count(preg_split("/\w\b/", $entry->text)) - 1;
-
+    if ($count = $DB->count_records("margic_entries", array("userid" => $user->id, "margic" => $margic->id))) {
         $result = new stdClass();
-        $result->info = get_string("numwords", "", $numwords);
-        $result->time = $entry->timemodified;
+        $result->info = $count . ' ' .  get_string("entries");
         return $result;
     }
     return null;
@@ -303,7 +255,7 @@ function margic_user_outline($course, $user, $mod, $margic) {
  * @param object $mod
  * @param object $margic
  */
-function margic_user_complete($course, $user, $mod, $margic) {
+/* function margic_user_complete($course, $user, $mod, $margic) {
     global $DB, $OUTPUT;
 
     if ($entry = $DB->get_record("margic_entries", array(
@@ -317,7 +269,7 @@ function margic_user_complete($course, $user, $mod, $margic) {
             echo "<p><font size=\"1\">" . get_string("lastedited") . ": " . userdate($entry->timemodified) . "</font></p>";
         }
         if ($entry->text) {
-            echo margic_format_entry_text($entry, $course, $mod);
+            echo format_text($entry->text);
         }
         if ($entry->teacher) {
             $grades = make_grades_menu($margic->grade);
@@ -328,7 +280,7 @@ function margic_user_complete($course, $user, $mod, $margic) {
     } else {
         print_string("noentry", "margic");
     }
-}
+} */
 
 /**
  * Given a course and a time, this module should find recent activity
@@ -893,73 +845,6 @@ function margic_scale_used_anywhere($scaleid) {
 
     return $DB->record_exists_select('margic', "scale = ? and assessed > 0", [$scaleid * -1]);
 }
-
-/**
- * Return only the users that have entries in the specified margic activity.
- * Used by report.php.
- *
- * @param object $margic
- * @param object $currentgroup
- * @param object $sortoption return object $margics
- */
-/* function margic_get_users_done($margic, $currentgroup, $sortoption) {
-    global $DB;
-
-    $params = array();
-
-    $sql = "SELECT DISTINCT u.* FROM {margic_entries} de
-              JOIN {user} u ON de.userid = u.id ";
-
-    // Group users.
-    if ($currentgroup != 0) {
-        $sql .= "JOIN {groups_members} gm ON gm.userid = u.id AND gm.groupid = ?";
-        $params[] = $currentgroup;
-    }
-    // 20201014 Changed to a sort option preference to sort lastname ascending or descending.
-    $sql .= " WHERE de.margic = ? ORDER BY " . $sortoption;
-
-    $params[] = $margic->id;
-
-    $margics = $DB->get_records_sql($sql, $params);
-
-    $cm = margic_get_coursemodule($margic->id);
-    if (! $margics || ! $cm) {
-        return null;
-    }
-
-    // Remove unenrolled participants.
-    foreach ($margics as $key => $user) {
-
-        $context = context_module::instance($cm->id);
-
-        $canadd = has_capability('mod/margic:addentries', $context, $user);
-        $entriesmanager = has_capability('mod/margic:manageentries', $context, $user);
-
-        if (! $entriesmanager and ! $canadd) {
-            unset($margics[$key]);
-        }
-    }
-    return $margics;
-} */
-
-/**
- * Return margic log info.
- *
- * @param string $log
- * @return object
- */
-/* function margic_log_info($log) {
-    global $DB;
-
-    $sql = "SELECT d.*, u.firstname, u.lastname
-              FROM {margic} d
-              JOIN {margic_entries} de ON de.margic = d.id
-              JOIN {user} u ON u.id = de.userid
-             WHERE de.id = ?";
-    return $DB->get_record_sql($sql, array(
-        $log->info
-    ));
-} */
 
 /**
  * Add a get_coursemodule_info function in case any assignment type wants to add 'extra' information

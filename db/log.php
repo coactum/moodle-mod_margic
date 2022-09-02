@@ -38,12 +38,6 @@ $logs = array(
     ),
     array(
         'module' => 'margic',
-        'action' => 'view responses',
-        'mtable' => 'margic',
-        'field' => 'name'
-    ),
-    array(
-        'module' => 'margic',
         'action' => 'add entry',
         'mtable' => 'margic',
         'field' => 'name'
@@ -57,6 +51,18 @@ $logs = array(
     array(
         'module' => 'margic',
         'action' => 'update feedback',
+        'mtable' => 'margic',
+        'field' => 'name'
+    ),
+    array(
+        'module' => 'margic',
+        'action' => 'download entries',
+        'mtable' => 'margic',
+        'field' => 'name'
+    ),
+    array(
+        'module' => 'margic',
+        'action' => 'invalid access attempt',
         'mtable' => 'margic',
         'field' => 'name'
     )

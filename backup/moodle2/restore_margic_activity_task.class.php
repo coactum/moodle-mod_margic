@@ -93,11 +93,11 @@ class restore_margic_activity_task extends restore_activity_task {
 
         // Define the rules.
         $rules[] = new restore_log_rule('margic', 'view', 'view.php?id={course_module}', '{margic}');
-        $rules[] = new restore_log_rule('margic', 'view responses', 'view.php?id={course_module}', '{margic}');
         $rules[] = new restore_log_rule('margic', 'add entry', 'edit.php?id={course_module}', '{margic}');
         $rules[] = new restore_log_rule('margic', 'update entry', 'edit.php?id={course_module}', '{margic}');
         $rules[] = new restore_log_rule('margic', 'update feedback', 'view.php?id={course_module}', '{margic}');
-
+        $rules[] = new restore_log_rule('margic', 'download entries', 'view.php?id={course_module}', '{margic}');
+        $rules[] = new restore_log_rule('margic', 'invalid access attempt', 'edit.php?id={course_module}', '{margic}');
         return $rules;
     }
 
