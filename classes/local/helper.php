@@ -244,7 +244,7 @@ class helper {
                            m.teacher AS teacher,
                            to_char(to_timestamp(m.timemarked), 'YYYY-MM-DD HH24:MI:SS') AS timemarked,
                            m.baseentry AS baseentry
-                      FROM {margic_entries} d
+                      FROM {margic_entries} m
                       JOIN {user} u ON u.id = m.userid
                      WHERE m.userid > 0 ";
         } else {
@@ -262,7 +262,7 @@ class helper {
                            m.teacher AS teacher,
                            FROM_UNIXTIME(m.timemarked) AS TIMEMARKED,
                            m.baseentry AS baseentry
-                      FROM {margic_entries} d
+                      FROM {margic_entries} m
                       JOIN {user} u ON u.id = m.userid
                      WHERE m.userid > 0 ";
         }
@@ -273,27 +273,27 @@ class helper {
                   ORDER BY u.lastname ASC, u.firstname ASC, m.margic ASC, m.id ASC";
 
         // Add the list of users and diaries to our data array.
-        if ($ds = $DB->get_records_sql($sql, $fields)) {
-            foreach ($ds as $d) {
-                if ($d->timemodified == '1970-01-01 00:00:00') {
-                    $d->timemodified = '';
+        if ($ms = $DB->get_records_sql($sql, $fields)) {
+            foreach ($ms as $m) {
+                if ($m->timemodified == '1970-01-01 00:00:00') {
+                    $m->timemodified = '';
                 }
 
                 $output = array(
-                    $d->entry,
-                    $d->firstname,
-                    $d->lastname,
-                    $d->margic,
-                    $d->userid,
-                    $d->timecreated,
-                    $d->timemodified,
-                    $d->format,
-                    $d->rating,
-                    $d->feedback,
-                    $d->teacher,
-                    $d->timemarked,
-                    $d->baseentry,
-                    format_text($d->text, $d->format, array('para' => false))
+                    $m->entry,
+                    $m->firstname,
+                    $m->lastname,
+                    $m->margic,
+                    $m->userid,
+                    $m->timecreated,
+                    $m->timemodified,
+                    $m->format,
+                    $m->rating,
+                    $m->feedback,
+                    $m->teacher,
+                    $m->timemarked,
+                    $m->baseentry,
+                    format_text($m->text, $m->format, array('para' => false))
                 );
                 $csv->add_data($output);
             }
