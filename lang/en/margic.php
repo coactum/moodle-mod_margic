@@ -28,6 +28,9 @@ defined('MOODLE_INTERNAL') || die();
 $string['eventdownloadentries'] = 'Download entries';
 $string['evententrycreated'] = 'Margic entry created';
 $string['evententryupdated'] = 'Margic entry updated';
+$string['eventannotationcreated'] = 'Margic annotation created';
+$string['eventannotationupdated'] = 'Margic annotation updated';
+$string['eventannotationdeleted'] = 'Margic annotation deleted';
 $string['eventfeedbackupdated'] = 'Margic feedback updated';
 $string['eventinvalidaccess'] = 'Invalid access';
 

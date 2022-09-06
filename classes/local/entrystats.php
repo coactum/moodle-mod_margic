@@ -54,7 +54,16 @@ class entrystats {
         $entrystats['uniquewords'] = self::get_stats_uniquewords($cleantext);
         $entrystats['spaces'] = self::get_stats_spaces($cleantext) - $replacementspacescount;
         $entrystats['charswithoutspaces'] = $entrystats['chars'] - $entrystats['spaces'];
-        $entrystats['datediff'] = date_diff(new \DateTime(date('Y-m-d G:i:s', time())), new \DateTime(date('Y-m-d G:i:s', $entrytimecreated)));
+
+        $timenow = new \DateTime(date('Y-m-d G:i:s', time()));
+        $timeentrycreated = new \DateTime(date('Y-m-d G:i:s', $entrytimecreated));
+
+        if ($timenow >= $timeentrycreated) {
+            $entrystats['datediff'] = date_diff($timenow, $timeentrycreated);
+        } else {
+            $entrystats['datediff'] = false;
+        }
+
         return $entrystats;
     }
 

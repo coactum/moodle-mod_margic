@@ -44,17 +44,6 @@ class course_module_viewed extends \core\event\course_module_viewed {
     }
 
     /**
-     * Get URL related to the action
-     *
-     * @return \moodle_url
-     */
-    public function get_url() {
-        return new \moodle_url('/mod/margic/view.php', array(
-            'id' => $this->objectid
-        ));
-    }
-
-    /**
      * Return the legacy event log data.
      *
      * @return array|null
@@ -74,7 +63,7 @@ class course_module_viewed extends \core\event\course_module_viewed {
     }
 
     /**
-     * Get objectid mapping
+     * Get objectid mapping for restore.
      */
     public static function get_objectid_mapping() {
         return array('db' => 'margic', 'restore' => 'margic');

@@ -56,7 +56,7 @@ class feedback_updated extends \core\event\base {
      * @return string
      */
     public function get_description() {
-        return "The user with id '$this->userid' has updated the feedback for an entry for the margic activity with the course module id
+        return "The user with id '$this->userid' has updated the feedback for the entry with the id '$this->objectid' for the margic activity with the course module id
             '$this->contextinstanceid'";
     }
 
@@ -88,5 +88,12 @@ class feedback_updated extends \core\event\base {
             $this->objectid,
             $this->contextinstanceid
         );
+    }
+
+    /**
+     * Get objectid mapping for restore.
+     */
+    public static function get_objectid_mapping() {
+        return array('db' => 'margic_entries', 'restore' => 'margic_entry');
     }
 }

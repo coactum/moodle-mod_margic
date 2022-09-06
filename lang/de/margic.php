@@ -29,6 +29,9 @@ defined('MOODLE_INTERNAL') || die();
 $string['eventdownloadentries'] = 'Margic Einträge herunterladen';
 $string['evententrycreated'] = 'Margic Eintrag angelegt';
 $string['evententryupdated'] = 'Margic Eintrag aktualisiert';
+$string['eventannotationcreated'] = 'Margic Annotation angelegt';
+$string['eventannotationupdated'] = 'Margic Annotation aktualisiert';
+$string['eventannotationdeleted'] = 'Margic Annotation gelöscht';
 $string['eventfeedbackupdated'] = 'Feedback zu Margic Eintrag aktualisiert';
 $string['eventinvalidaccess'] = 'Unberechtigter Zugriff';
 
@@ -143,7 +146,7 @@ $string['editentry'] = 'Eintrag bearbeiten';
 $string['margicentrydate'] = 'Datum für diesen Eintrag festlegen';
 $string['editentrynotpossible'] = 'Bearbeiten des Eintrags nicht möglich.';
 $string['editdateinfuture'] = 'Das angegebene Erstelldatum des Eintrags liegt in der Zukunft.';
-$string['entryaddedoredited'] = 'Eintrag angelegt oder bearbeitet';
+$string['entryaddedoredited'] = 'Eintrag angelegt oder bearbeitet.';
 $string['timecreatedinvalid'] = 'Änderung fehlgeschlagen. Es gibt bereits jüngere Versionen dieses Beitrags.';
 $string['entryadded'] = 'Eintrag angelegt';
 

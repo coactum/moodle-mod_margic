@@ -94,6 +94,13 @@ if ($pagecount) {
 if (!empty($action) && $action == 'download' && has_capability('mod/margic:addentries', $context)) {
     // Call download entries function in lib.php.
     helper::download_entries($context, $course, $moduleinstance);
+
+    // Trigger module margic entries downloaded event.
+    $event = \mod_margic\event\download_margic_entries::create(array(
+        'objectid' => $id,
+        'context' => $context
+    ));
+    $event->trigger();
 }
 
 // Trigger course_module_viewed event.

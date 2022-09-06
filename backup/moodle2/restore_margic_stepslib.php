@@ -116,7 +116,7 @@ class restore_margic_activity_structure_step extends restore_activity_structure_
         }
 
         $newitemid = $DB->insert_record('margic_entries', $data);
-        $this->set_mapping('margic_entry', $oldid, $newitemid);
+        $this->set_mapping('margic_entry', $oldid, $newitemid, true);  // The true parameter is necessary for file handling
     }
 
     /**
@@ -195,7 +195,8 @@ class restore_margic_activity_structure_step extends restore_activity_structure_
         // Add margic related files, no need to match by itemname (just internally handled context).
         $this->add_related_files('mod_margic', 'intro', null);
 
-        $this->add_related_files('mod_margic', 'text', 'margic_entry');
+        // Component, filearea, mapping.
+        $this->add_related_files('mod_margic', 'entry', 'margic_entry');
 
         $this->add_related_files('mod_margic', 'feedback', 'margic_entry');
     }

@@ -55,7 +55,8 @@ class restore_margic_activity_task extends restore_activity_task {
     public static function define_decode_contents() {
         $contents = array();
 
-        // Define the contents (files in textareas).
+        // Define the contents (files).
+        // tablename, array(field1, field 2), $mapping.
         $contents[] = new restore_decode_content('margic', array('intro'), 'margic');
         $contents[] = new restore_decode_content('margic_entries', array('text', 'feedback'), 'margic_entry');
 
@@ -95,6 +96,9 @@ class restore_margic_activity_task extends restore_activity_task {
         $rules[] = new restore_log_rule('margic', 'view', 'view.php?id={course_module}', '{margic}');
         $rules[] = new restore_log_rule('margic', 'add entry', 'edit.php?id={course_module}', '{margic}');
         $rules[] = new restore_log_rule('margic', 'update entry', 'edit.php?id={course_module}', '{margic}');
+        $rules[] = new restore_log_rule('margic', 'add annotation', 'view.php?id={course_module}', '{margic}');
+        $rules[] = new restore_log_rule('margic', 'update annotation', 'view.php?id={course_module}', '{margic}');
+        $rules[] = new restore_log_rule('margic', 'delete annotation', 'view.php?id={course_module}', '{margic}');
         $rules[] = new restore_log_rule('margic', 'update feedback', 'view.php?id={course_module}', '{margic}');
         $rules[] = new restore_log_rule('margic', 'download entries', 'view.php?id={course_module}', '{margic}');
         $rules[] = new restore_log_rule('margic', 'invalid access attempt', 'edit.php?id={course_module}', '{margic}');

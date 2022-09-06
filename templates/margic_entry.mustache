@@ -25,63 +25,6 @@
 
     Example context (json):
     {
-        "cmid": 145,
-        "childentries": [
-            {
-                "id": 1,
-                ...
-            },
-            {
-                "id": 2,
-                ...
-            }
-        ],
-        "haschildren": true,
-        "annotationmode": false,
-        "entrybgc": FFFFFF,
-        "entryareawidth" 40%,
-        "canmanageentries": false,
-        "edittimeends": false,
-        "edittimehasended": false,
-        "caneditentries": true,
-        "entrycanbeedited": true
-        "user": ...
-        "userpicture": ...
-        "singleuser": false,
-        "timecreated": 1658849477,
-        "timemodified": 0,
-        "needsgrading": true,
-        "needsregrading": false,
-        "stats": {
-            "words": 10,
-            "chars": 20,
-            "spaces": 4,
-            "datediff": [
-                {
-                    "d": 10,
-                    "chars": 20,
-                    "spaces": 4,
-                    "datediff":
-                },
-                {
-                    "name": "Quiz 1",
-                    "instructorchoiceacceptgrades": 1,
-                    "grade_modgrade_point": 20.5
-                }
-            ],
-        }
-        ],
-        "gradingform": "<form>string with grading form</form>",
-        "annotations": [
-            {
-                "id": 1,
-                ...
-            },
-            {
-                "id": 2,
-                ...
-            }
-        ],
     }
 }}
 
@@ -125,9 +68,9 @@
                             <br>
                         {{/stats}}
                         <strong>{{#str}}timecreated, mod_margic{{/str}}: </strong> {{#userdate}}{{timecreated}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}}
-                            {{#stats}}{{#datediff}}({{#str}}created, mod_margic, {"years": {{datediff.y}}, "month": {{datediff.m}}, "days": {{datediff.d}}, "hours": {{datediff.h}} } {{/str}})<br>{{/datediff}}{{/stats}}
+                            {{#stats}}{{#datediff}}({{#str}}created, mod_margic, {"years": {{datediff.y}}, "month": {{datediff.m}}, "days": {{datediff.d}}, "hours": {{datediff.h}} } {{/str}}){{/datediff}}{{/stats}}
                         </strong>
-                        {{#timemodified}}<strong>{{#str}}lastedited, mod_margic {{/str}}: </strong> {{#userdate}}{{timemodified}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}}</strong><br>{{/timemodified}}
+                        {{#timemodified}}<br><strong>{{#str}}lastedited, mod_margic {{/str}}: </strong> {{#userdate}}{{timemodified}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}}</strong>{{/timemodified}}
                     </div>
                 </div>
                 {{#annotationmode}}

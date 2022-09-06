@@ -173,12 +173,9 @@ if ($fromform = $mform->get_data()) { // If grading form is submitted.
 
         // Trigger module feedback updated event.
         $event = \mod_margic\event\feedback_updated::create(array(
-            'objectid' => $id,
+            'objectid' => $entry->id,
             'context' => $context
         ));
-        $event->add_record_snapshot('course_modules', $cm);
-        $event->add_record_snapshot('course', $course);
-        $event->add_record_snapshot('margic', $moduleinstance);
         $event->trigger();
 
         if ($fromform->sendgradingmessage) {

@@ -7,19 +7,9 @@
 
 /**
  * Represents a match returned by a call to `search`.
+ * @param {string} s - Document text to search
+ * @return {string}
  */
-//  export interface Match {
-//     /** Start offset within the text string of the match. */
-//     start: number;
-//     /** End offset within the text string of the match. */
-//     end: number;
-//     /**
-//      * The number of differences (insertions, deletions or substitutions) between
-//      * the pattern and the approximate match in the text.
-//      */
-//     errors: number;
-//   }
-
   function reverse(s) {
     return s.split("").reverse().join("");
   }
@@ -28,9 +18,10 @@
    * Given the ends of approximate matches for `pattern` in `text`, find
    * the start of the matches.
    *
-   * @param findEndFn - Function for finding the end of matches in
-   * text.
-   * @return Matches with the `start` property set.
+   * @param {string} text
+   * @param {string} pattern
+   * @param {array} matches
+   * @return {obj} Matches with the `start` property set.
    */
   function findMatchStarts(text, pattern, matches) {
     const patRev = reverse(pattern);
@@ -83,6 +74,8 @@
    * This should get inlined into `advanceBlock` below by the JIT.
    *
    * Adapted from https://stackoverflow.com/a/3912218/434243
+   * @param {int} n
+   * @return {bool}
    */
   function oneIfNotZero(n) {
     return ((n | -n) >> 31) & 1;
@@ -94,11 +87,11 @@
    * From Fig 8. on p. 408 of [1], additionally optimized to replace conditional
    * checks with bitwise operations as per Section 4.2.3 of [2].
    *
-   * @param ctx - The pattern context object
-   * @param peq - The `peq` array for the current character (`ctx.peq.get(ch)`)
-   * @param b - The block level
-   * @param hIn - Horizontal input delta ∈ {1,0,-1}
-   * @return Horizontal output delta ∈ {1,0,-1}
+   * @param {obj} ctx - The pattern context object
+   * @param {array} peq - The `peq` array for the current character (`ctx.peq.get(ch)`)
+   * @param {int} b - The block level
+   * @param {obj} hIn - Horizontal input delta ∈ {1,0,-1}
+   * @return {obj} Horizontal output delta ∈ {1,0,-1}
    */
   function advanceBlock(ctx, peq, b, hIn) {
     let pV = ctx.P[b];
@@ -141,6 +134,11 @@
    * with error counts <= maxErrors are discarded.
    *
    * This is the block-based search algorithm from Fig. 9 on p.410 of [1].
+   *
+   * @param {string} text
+   * @param {string} pattern
+   * @param {array} maxErrors
+   * @return {obj} Matches with the `start` property set.
    */
   function findMatchEnds(text, pattern, maxErrors) {
     if (pattern.length === 0) {
@@ -326,6 +324,10 @@
    *
    * Returns the start, and end positions and error counts for each lowest-cost
    * match. Only the "best" matches are returned.
+   * @param {string} text
+   * @param {string} pattern
+   * @param {array} maxErrors
+   * @return {obj} Matches with the `start` property set.
    */
   export default function search(
     text,

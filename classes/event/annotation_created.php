@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The mod_margic entry created event.
+ * The mod_margic annotation created event.
  *
  * @package   mod_margic
  * @copyright 2022 coactum GmbH
@@ -24,20 +24,20 @@
 namespace mod_margic\event;
 
 /**
- * The mod_margic entry created class.
+ * The mod_margic annotation created class.
  *
  * @package   mod_margic
  * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class entry_created extends \core\event\base {
+class annotation_created extends \core\event\base {
 
     /**
      * Init method.
      */
     protected function init() {
         $this->data['crud'] = 'c';
-        $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
+        $this->data['edulevel'] = self::LEVEL_TEACHING;
         $this->data['objecttable'] = 'margic';
     }
 
@@ -47,7 +47,7 @@ class entry_created extends \core\event\base {
      * @return string
      */
     public static function get_name() {
-        return get_string('evententrycreated', 'mod_margic');
+        return get_string('eventannotationcreated', 'mod_margic');
     }
 
     /**
@@ -56,7 +56,7 @@ class entry_created extends \core\event\base {
      * @return string
      */
     public function get_description() {
-        return "The user with the id '$this->userid' has created the entry with the id '$this->objectid' for the margic activity with " .
+        return "The user with the id '$this->userid' has created the annotation with the id '$this->objectid' for the margic activity with " .
             "the course module id '$this->contextinstanceid'";
     }
 
@@ -66,7 +66,7 @@ class entry_created extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/margic/edit.php', array(
+        return new \moodle_url('/mod/margic/view.php', array(
             'id' => $this->contextinstanceid
         ));
     }
@@ -77,13 +77,13 @@ class entry_created extends \core\event\base {
      * @return array of parameters to be passed to legacy add_to_log() function.
      */
     protected function get_legacy_logdata() {
-        $url = new \moodle_url('edit.php', array(
+        $url = new \moodle_url('view.php', array(
             'id' => $this->contextinstanceid
         ));
         return array(
             $this->courseid,
             'margic',
-            'add entry',
+            'add annotation',
             $url->out(),
             $this->objectid,
             $this->contextinstanceid
@@ -94,6 +94,6 @@ class entry_created extends \core\event\base {
      * Get objectid mapping for restore.
      */
     public static function get_objectid_mapping() {
-        return array('db' => 'margic_entries', 'restore' => 'margic_entry');
+        return array('db' => 'margic_annotations', 'restore' => 'margic_annotation');
     }
 }

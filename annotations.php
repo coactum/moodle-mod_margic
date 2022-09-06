@@ -97,6 +97,14 @@ if (has_capability('mod/margic:makeannotations', $context) && $deleteannotation 
     if ($DB->record_exists('margic_annotations', array('id' => $deleteannotation, 'margic' => $moduleinstance->id, 'userid' => $USER->id))) {
         $DB->delete_records('margic_annotations', array('id' => $deleteannotation, 'margic' => $moduleinstance->id, 'userid' => $USER->id));
 
+        // Trigger module annotation deleted event.
+        $event = \mod_margic\event\annotation_deleted::create(array(
+            'objectid' => $deleteannotation,
+            'context' => $context
+        ));
+
+        $event->trigger();
+
         redirect($redirecturl, get_string('annotationdeleted', 'mod_margic'), null, notification::NOTIFY_SUCCESS);
     } else {
         redirect($redirecturl, get_string('notallowedtodothis', 'mod_margic'), null, notification::NOTIFY_ERROR);
@@ -131,6 +139,14 @@ if ($fromform = $mform->get_data()) {
         $annotation->type = $fromform->type;
 
         $DB->update_record('margic_annotations', $annotation);
+
+        // Trigger module annotation updated event.
+        $event = \mod_margic\event\annotation_updated::create(array(
+            'objectid' => $fromform->annotationid,
+            'context' => $context
+        ));
+
+        $event->trigger();
 
         redirect($redirecturl, get_string('annotationedited', 'mod_margic'), null, notification::NOTIFY_SUCCESS);
     } else if ((!isset($fromform->annotationid) || $fromform->annotationid === 0) && isset($fromform->text)) { // New annotation.
@@ -168,7 +184,14 @@ if ($fromform = $mform->get_data()) {
             $annotation->suffix = format_text($fromform->suffix, 2, array('para' => false));;
             $annotation->text = format_text($fromform->text, 2, array('para' => false));
 
-            $DB->insert_record('margic_annotations', $annotation);
+            $newid = $DB->insert_record('margic_annotations', $annotation);
+
+            // Trigger module annotation created event.
+            $event = \mod_margic\event\annotation_created::create(array(
+                'objectid' => $newid,
+                'context' => $context
+            ));
+            $event->trigger();
 
             redirect($redirecturl, get_string('annotationadded', 'mod_margic'), null, notification::NOTIFY_SUCCESS);
         } else {

@@ -228,20 +228,17 @@ if ($form->is_cancelled()) {
     if ($entry && $fromform->entryid) {
         // Trigger module entry updated event.
         $event = \mod_margic\event\entry_updated::create(array(
-            'objectid' => $id,
+            'objectid' => $newentry->id,
             'context' => $context
         ));
     } else {
         // Trigger module entry created event.
         $event = \mod_margic\event\entry_created::create(array(
-            'objectid' => $id,
+            'objectid' => $newentry->id,
             'context' => $context
         ));
     }
 
-    $event->add_record_snapshot('course_modules', $cm);
-    $event->add_record_snapshot('course', $course);
-    $event->add_record_snapshot('margic', $moduleinstance);
     $event->trigger();
 
     if ($moduleinstance->editentrydates && $fromform->timecreated > $timenow) {

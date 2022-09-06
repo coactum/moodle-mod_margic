@@ -21,16 +21,9 @@ export function describe(root, range) {
     const types = [RangeAnchor, TextPositionAnchor, TextQuoteAnchor];
     const result = [];
 
-    // console.log('describe');
-
     for (let type of types) {
       try {
         const anchor = type.fromRange(root, range);
-
-        // console.log('type');
-        // console.log(type);
-        // console.log('anchor');
-        // console.log(anchor);
 
         result.push(anchor.toSelector());
       } catch (error) {
@@ -54,10 +47,6 @@ export function describe(root, range) {
  * @return {obj} achor object
  */
  export function anchor(annotation, root) {
-    // console.log('anchor');
-    // console.log('annotation');
-    // console.log(annotation);
-
     /**
      * Resolve an annotation's selectors to a concrete range.
      *
@@ -65,10 +54,6 @@ export function describe(root, range) {
      * @return {obj}
      */
     const locate = target => {
-
-        // console.log('anchor -> locate');
-        // console.log('target');
-        // console.log(target);
 
       // Only annotations with an associated quote can currently be anchored.
       // This is because the quote is used to verify anchoring with other selector
@@ -88,26 +73,17 @@ export function describe(root, range) {
         // a `Range` later. The `TextRange` representation allows for highlights
         // to be inserted during anchoring other annotations without "breaking"
         // this anchor.
-        // console.log('anchor -> locate -> after htmlAnchor');
-        // console.log('result of htmlAnchor');
-        // console.log(range);
+
+
         const textRange = TextRange.fromRange(range);
-        // console.log('range for anchor');
-        // console.log('textRange');
-        // console.log(textRange);
 
         anchor = { annotation, target, range: textRange };
 
-        // console.log('anchor found');
-        // console.log(anchor);
       } catch (err) {
-        // console.log('Error in try to find textrange');
-        // console.log(err);
+
         anchor = { annotation, target };
       }
 
-    //   console.log('anchor at the end of anchor -> locate');
-    //   console.log(anchor);
       return anchor;
     };
 
@@ -117,23 +93,12 @@ export function describe(root, range) {
      * @param {Anchor} anchor
      */
     const highlight = anchor => {
-        // console.log('highlight');
-        // console.log('highlight resolveAnchor');
+
       const range = resolveAnchor(anchor);
-    //   console.log('range');
-    //   console.log(range);
 
       if (!range) {
-        // console.log('no range');
         return;
       }
-
-    //   console.log('highlight after resolveAnchor');
-    //   console.log('range');
-    //   console.log(range);
-
-    //   console.log('annotation');
-    //   console.log(annotation);
 
       let highlights = [];
 
@@ -143,17 +108,11 @@ export function describe(root, range) {
         highlights = highlightRange(range, false, 'annotated_temp');
       }
 
-    //   console.log('highlights after i should have highlighted range');
-    //   console.log(highlights);
-
       highlights.forEach(h => {
         h._annotation = anchor.annotation;
       });
       anchor.highlights = highlights;
 
-    //   if (this._focusedAnnotations.has(anchor.annotation.$tag)) {
-    //     setHighlightsFocused(highlights, true);
-    //   }
     };
 
     // Remove existing anchors for this annotation.
@@ -164,15 +123,10 @@ export function describe(root, range) {
       annotation.target = [];
     }
     const anchors = annotation.target.map(locate);
-    // console.log('anchors after locate');
-    // console.log(anchors);
 
     for (let anchor of anchors) {
-        // console.log('before highlighting anchor');
-        // console.log('anchor');
-        // console.log(anchor);
+
         highlight(anchor);
-        // console.log('after highlighting anchor');
     }
 
     // Set flag indicating whether anchoring succeeded. For each target,
@@ -182,9 +136,6 @@ export function describe(root, range) {
       anchors.length > 0 &&
       anchors.every(anchor => anchor.target.selector && !anchor.range);
 
-    // console.log('anchor ends');
-    // console.log('anchors');
-    // console.log(anchors);
     return anchors;
 }
 
@@ -198,9 +149,6 @@ export function describe(root, range) {
  * @return {Range|null}
  */
 function resolveAnchor(anchor) {
-    // console.log('resolveAnchor');
-    // console.log('anchor');
-    // console.log(anchor);
 
     if (!anchor.range) {
       return null;
@@ -225,9 +173,6 @@ function resolveAnchor(anchor) {
  * @return {HighlightElement[]} - Elements wrapping text in `normedRange` to add a highlight effect
  */
  function highlightRange(range, annotationid = false, cssClass = 'annotated', color = 'FFFF00') {
-    // console.log('highlightRange');
-    // console.log('range');
-    // console.log(range);
 
     const textNodes = wholeTextNodesInRange(range);
 
@@ -376,11 +321,6 @@ function isNodeInRange(range, node) {
  * @return {obj} - range
  */
  function querySelector(anchor, options = {}) {
-    // console.log('querySelector');
-    // console.log('anchor');
-    // console.log(anchor);
-    // console.log('options');
-    // console.log(options);
 
     return anchor.toRange(options);
 }
@@ -401,11 +341,6 @@ function isNodeInRange(range, node) {
     let position = null;
     let quote = null;
     let range = null;
-
-    // console.log('html.js -> anchor() -> selectors');
-    // console.log(selectors);
-
-    // console.log('htmlAnchor()');
 
     // Collect all the selectors
     for (let selector of selectors) {
@@ -429,16 +364,10 @@ function isNodeInRange(range, node) {
      * @return {Range} range
      */
     const maybeAssertQuote = range => {
-        // console.log('maybeAssertQuote');
-        // console.log('range');
-        // console.log(range);
-        // console.log('quote');
-        // console.log(quote);
+
       if (quote?.exact && range.toString() !== quote.exact) {
         throw new Error('quote mismatch');
       } else {
-        // console.log('range found!');
-        // console.log(range);
         return range;
       }
     };
@@ -447,20 +376,12 @@ function isNodeInRange(range, node) {
 
     try {
         if (range) {
-            // console.log('html.js -> anchor() range RangeAnchor.fromSelector');
 
           let anchor = RangeAnchor.fromSelector(root, range);
-
-        //   console.log('anchor');
-        //   console.log(anchor);
 
           queryselector = querySelector(anchor, options);
 
           if (queryselector) {
-
-            // console.log('htmlAnchor queryselector for RangeAnchor');
-            // console.log(queryselector);
-
             return queryselector;
           } else {
             return maybeAssertQuote;
@@ -470,17 +391,10 @@ function isNodeInRange(range, node) {
         try {
             if (position) {
 
-                // console.log('html.js -> anchor() position TextPositionAnchor.fromSelector');
-
-                // console.log('position');
-
                 let anchor = TextPositionAnchor.fromSelector(root, position);
 
                 queryselector = querySelector(anchor, options);
                 if (queryselector) {
-
-                    // console.log('htmlAnchor queryselector for TextPositionAnchor');
-                    // console.log(queryselector);
                     return queryselector;
                   } else {
                     return maybeAssertQuote;
@@ -490,16 +404,9 @@ function isNodeInRange(range, node) {
             try {
                 if (quote) {
 
-                    // console.log('html.js -> anchor() quote TextQuoteAnchor.fromSelector');
-
-                    // console.log('quote');
-                    // console.log('htmlAnchor queryselector for TextQuoteAnchor');
-
                     let anchor = TextQuoteAnchor.fromSelector(root, quote);
 
                     queryselector = querySelector(anchor, options);
-
-                    // console.log(queryselector);
 
                     return queryselector;
                 }
@@ -526,9 +433,6 @@ function isNodeInRange(range, node) {
  * @param {HighlightElement[]} highlights - The highlight elements returned by `highlightRange`
  */
  function removeHighlights(highlights) {
-
-    // console.log('removeHighlights highlights');
-    // console.log(highlights);
 
     for (var i = 0; i < highlights.length; i++) {
         if (highlights[i].parentNode) {

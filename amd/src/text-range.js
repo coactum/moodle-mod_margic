@@ -33,30 +33,10 @@ function previousSiblingsTextLength(node) {
   let sibling = node.previousSibling;
   let length = 0;
 
-  // console.log('*** START ***');
-  // console.log(length, sibling);
-
   while (sibling) {
     length += nodeTextLength(sibling);
     sibling = sibling.previousSibling;
-    // console.log(length, sibling);
   }
-
-  // if (length == 29) {
-  //   console.log('LENGTH = 29 !!!!!');
-
-  //   // console.log('trace');
-  //   // console.trace();
-  //   // length = 0;
-  // }
-
-  // console.log('previousSiblingsTextLength node');
-  // console.log(node);
-
-  // console.log('previousSiblingsTextLength length');
-  // console.log(length);
-
-  // console.log('*** END ***');
 
   return length;
 }
@@ -71,13 +51,6 @@ function previousSiblingsTextLength(node) {
  */
 function resolveOffsets(element, ...offsets) {
 
-  // console.log('text-range.js -> resolveOffsets');
-  // console.log('element');
-  // console.log(element);
-
-  // console.log('offsets');
-  // console.log(offsets);
-
   let nextOffset = offsets.shift();
   const nodeIter = /** @type {Document} */ (
     element.ownerDocument
@@ -88,23 +61,11 @@ function resolveOffsets(element, ...offsets) {
   let textNode;
   let length = 0;
 
-  // console.log('nextOffset');
-  // console.log(nextOffset);
-
-  // console.log('currentNode');
-  // console.log(currentNode);
-
-  // console.log('offsets');
-  // console.log(offsets);
-
   // Find the text node containing the `nextOffset`th character from the start
   // of `element`.
   while (nextOffset !== undefined && currentNode) {
     textNode = /** @type {Text} */ (currentNode);
-    // console.log('textNode');
-    // console.log(textNode);
-    // console.log('offsets');
-    // console.log(offsets);
+
     if (length + textNode.data.length > nextOffset) {
       results.push({ node: textNode, offset: nextOffset - length });
       nextOffset = offsets.shift();
@@ -116,32 +77,13 @@ function resolveOffsets(element, ...offsets) {
 
   // Boundary case.
   while (nextOffset !== undefined && textNode && length === nextOffset) {
-  //     console.log('boundary case');
-  //     console.log('nextOffset');
-  //     console.log(nextOffset);
-
-  //     console.log('textNode');
-  //     console.log(textNode);
-
-  //     console.log('length');
-  //     console.log(length);
-  //     console.log('offsets');
-  // console.log(offsets);
-
     results.push({ node: textNode, offset: textNode.data.length });
     nextOffset = offsets.shift();
   }
 
   if (nextOffset !== undefined) {
-  //   console.log('nextOffset');
-  //   console.log(nextOffset);
-  //   console.log('offsets');
-  // console.log(offsets);
     throw new RangeError('Offset exceeds text length');
   }
-
-  // console.log('results');
-  // console.log(results);
 
   return results;
 }
@@ -266,15 +208,6 @@ export class TextPosition {
    * @return {TextPosition}
    */
   static fromPoint(node, offset) {
-    // console.log('fromPoint');
-    // console.log('node');
-    // console.log(node);
-
-    // console.log('trace');
-    // console.trace();
-
-    // console.log('offset');
-    // console.log(offset);
 
     switch (node.nodeType) {
       case Node.TEXT_NODE: {
@@ -334,6 +267,7 @@ export class TextRange {
    * given ancestor. See `TextPosition.relativeTo`.
    *
    * @param {Element} element
+   * @return {Range}
    */
   relativeTo(element) {
     return new TextRange(
@@ -362,16 +296,14 @@ export class TextRange {
       this.start.offset <= this.end.offset
     ) {
       // Fast path for start and end points in same element.
-      // console.log('TextRange -> toRange()');
-      // console.log(this.start.element,this.start.offset,this.end.offset);
       [start, end] = resolveOffsets(
         this.start.element,
         this.start.offset,
         this.end.offset
       );
     } else {
-      start = this.start.resolve({ direction: RESOLVE_FORWARDS });
-      end = this.end.resolve({ direction: RESOLVE_BACKWARDS });
+      start = this.start.resolve({direction: RESOLVE_FORWARDS});
+      end = this.end.resolve({direction: RESOLVE_BACKWARDS});
     }
 
     const range = new Range();
@@ -387,11 +319,6 @@ export class TextRange {
    * @return {TextRange}
    */
   static fromRange(range) {
-    // console.log('TextRange fromRange');
-    // console.log('range');
-    // console.log(range);
-    // console.log(range.startContainer);
-    // console.log(range.startOffset);
     const start = TextPosition.fromPoint(
       range.startContainer,
       range.startOffset
@@ -406,6 +333,7 @@ export class TextRange {
    * @param {Element} root
    * @param {number} start
    * @param {number} end
+   * @return {Range}
    */
   static fromOffsets(root, start, end) {
     return new TextRange(

@@ -62,8 +62,6 @@ export const init = (cmid, canmakeannotations, myuserid) => {
 
         if (selectedrange.cloneContents().textContent !== '' && canmakeannotations) {
 
-            // console.log('mouseup in originaltext');
-
             removeAllTempHighlights(); // Remove other temporary highlights.
 
             resetForms(); // Reset the annotation forms.
@@ -99,7 +97,9 @@ export const init = (cmid, canmakeannotations, myuserid) => {
 
             $('.annotation-form-' + entry + ' select').val(1);
 
-            $('#annotationpreview-temp-' + entry).html(newannotation.target[0].selector[2].exact);
+            // Prevent JavaScript injection (if annotated text in original entry is JavaScript code in script tags).
+            $('#annotationpreview-temp-' + entry).html(
+                newannotation.target[0].selector[2].exact.replaceAll('<', '&lt;').replaceAll('>', '&gt;'));
 
             $('.annotationarea-' + entry + ' .annotation-form').show();
             $('.annotation-form-' + entry + ' #id_text').focus();
@@ -183,15 +183,9 @@ export const init = (cmid, canmakeannotations, myuserid) => {
                 {type: "TextQuoteSelector", exact: annotation.exact, prefix: annotation.prefix, suffix: annotation.suffix}
             ]];
 
-            // console.log('rangeSelectors');
-            // console.log(rangeSelectors);
-
             const target = rangeSelectors.map(selectors => ({
                 selector: selectors,
             }));
-
-            // console.log('target');
-            // console.log(target);
 
             /** @type {AnnotationData} */
             const newannotation = {
@@ -199,11 +193,10 @@ export const init = (cmid, canmakeannotations, myuserid) => {
                 target: target,
             };
 
-            // console.log(newannotation);
-
             anchor(newannotation, $("#entry-" + annotation.entry)[0]);
 
-            $('#annotationpreview-' + annotation.id).html(annotation.exact);
+            // Prevent JavaScript injection (if annotated text in original entry is JavaScript code in script tags).
+            $('#annotationpreview-' + annotation.id).html(annotation.exact.replaceAll('<', '&lt;').replaceAll('>', '&gt;'));
         }
     }
 
@@ -244,7 +237,9 @@ export const init = (cmid, canmakeannotations, myuserid) => {
 
             $('.annotation-form-' + entry + ' select').val(annotations[annotationid].type);
 
-            $('#annotationpreview-temp-' + entry).html($('#annotationpreview-' + annotationid).html());
+            // Prevent JavaScript injection (if annotated text in original entry is JavaScript code in script tags).
+            $('#annotationpreview-temp-' + entry).html(
+                annotations[annotationid].exact.replaceAll('<', '&lt;').replaceAll('>', '&gt;'));
             $('#annotationpreview-temp-' + entry).css('border-color', '#' + annotations[annotationid].color);
 
             $('.annotationarea-' + entry + ' .annotation-form').insertBefore('.annotation-box-' + annotationid);
@@ -282,45 +277,24 @@ export const init = (cmid, canmakeannotations, myuserid) => {
  * @return {object} - The new annotation
  */
 function createAnnotation(root) {
-    // console.log('createAnnotation');
-
     const ranges = [window.getSelection().getRangeAt(0)];
-
-    // console.log('createAnnotation ranges');
-    // console.log(ranges);
 
     if (ranges.collapsed) {
         return null;
     }
 
-    // console.log('createAnnotation -> ROOT');
-    // console.log(root);
-
-    //const info = await this.getDocumentInfo();
     const rangeSelectors = ranges.map(range => describe(root, range));
-
-    // console.log('rangeSelectors');
-    // console.log(rangeSelectors);
 
     const target = rangeSelectors.map(selectors => ({
       selector: selectors,
     }));
-
-    // console.log('target');
-    // console.log(target);
 
     /** @type {AnnotationData} */
     const annotation = {
       target,
     };
 
-    // console.log('Annotation INFORMATION TO SAVE IN THE DB');
-    // console.log(annotation);
-
     anchor(annotation, root);
-
-    // console.log('TEMP');
-    // console.log(temp);
 
     return annotation;
 }

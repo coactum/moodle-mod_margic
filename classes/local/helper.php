@@ -192,18 +192,18 @@ class helper {
         $csv = new csv_export_writer();
         $whichuser = ''; // Leave blank for an admin or teacher.
         if (is_siteadmin($USER->id)) {
-            $whichmargic = ('AND d.margic > 0');
+            $whichmargic = ('AND m.margic > 0');
             $csv->filename = clean_filename(get_string('exportfilenameallentries', 'margic'));
         } else if (has_capability('mod/margic:manageentries', $context)) {
-            $whichmargic = ('AND d.margic = ');
+            $whichmargic = ('AND m.margic = ');
             $whichmargic .= ($margic->id);
             $csv->filename = clean_filename(get_string('exportfilenamemargicentries', 'margic'));
             $csv->filename .= '_'.clean_filename(($course->shortname).'_');
             $csv->filename .= clean_filename(($margic->name));
         } else if (has_capability('mod/margic:addentries', $context)) {
-            $whichmargic = ('AND d.margic = ');
+            $whichmargic = ('AND m.margic = ');
             $whichmargic .= ($margic->id);
-            $whichuser = (' AND d.userid = '.$USER->id); // Not an admin or teacher so can only get their OWN entries.
+            $whichuser = (' AND m.userid = '.$USER->id); // Not an admin or teacher so can only get their OWN entries.
             $csv->filename = clean_filename(get_string('exportfilenamemyentries', 'margic'));
             $csv->filename .= '_'.clean_filename(($course->shortname).'_');
             $csv->filename .= clean_filename(($margic->name));
@@ -230,47 +230,47 @@ class helper {
         // Add the headings to our data array.
         $csv->add_data($fields);
         if ($CFG->dbtype == 'pgsql') {
-            $sql = "SELECT d.id AS entry,
+            $sql = "SELECT m.id AS entry,
                            u.firstname AS firstname,
                            u.lastname AS lastname,
-                           d.margic AS margic,
-                           d.userid AS userid,
-                           to_char(to_timestamp(d.timecreated), 'YYYY-MM-DD HH24:MI:SS') AS timecreated,
-                           to_char(to_timestamp(d.timemodified), 'YYYY-MM-DD HH24:MI:SS') AS timemodified,
-                           d.text AS text,
-                           d.format AS format,
-                           d.rating AS rating,
-                           d.feedback AS feedback,
-                           d.teacher AS teacher,
-                           to_char(to_timestamp(d.timemarked), 'YYYY-MM-DD HH24:MI:SS') AS timemarked,
-                           d.baseentry AS baseentry
+                           m.margic AS margic,
+                           m.userid AS userid,
+                           to_char(to_timestamp(m.timecreated), 'YYYY-MM-DD HH24:MI:SS') AS timecreated,
+                           to_char(to_timestamp(m.timemodified), 'YYYY-MM-DD HH24:MI:SS') AS timemodified,
+                           m.text AS text,
+                           m.format AS format,
+                           m.rating AS rating,
+                           m.feedback AS feedback,
+                           m.teacher AS teacher,
+                           to_char(to_timestamp(m.timemarked), 'YYYY-MM-DD HH24:MI:SS') AS timemarked,
+                           m.baseentry AS baseentry
                       FROM {margic_entries} d
-                      JOIN {user} u ON u.id = d.userid
-                     WHERE d.userid > 0 ";
+                      JOIN {user} u ON u.id = m.userid
+                     WHERE m.userid > 0 ";
         } else {
-            $sql = "SELECT d.id AS entry,
+            $sql = "SELECT m.id AS entry,
                            u.firstname AS 'firstname',
                            u.lastname AS 'lastname',
-                           d.margic AS margic,
-                           d.userid AS userid,
-                           FROM_UNIXTIME(d.timecreated) AS TIMECREATED,
-                           FROM_UNIXTIME(d.timemodified) AS TIMEMODIFIED,
-                           d.text AS text,
-                           d.format AS format,
-                           d.rating AS rating,
-                           d.feedback AS feedback,
-                           d.teacher AS teacher,
-                           FROM_UNIXTIME(d.timemarked) AS TIMEMARKED,
-                           d.baseentry AS baseentry
+                           m.margic AS margic,
+                           m.userid AS userid,
+                           FROM_UNIXTIME(m.timecreated) AS TIMECREATED,
+                           FROM_UNIXTIME(m.timemodified) AS TIMEMODIFIED,
+                           m.text AS text,
+                           m.format AS format,
+                           m.rating AS rating,
+                           m.feedback AS feedback,
+                           m.teacher AS teacher,
+                           FROM_UNIXTIME(m.timemarked) AS TIMEMARKED,
+                           m.baseentry AS baseentry
                       FROM {margic_entries} d
-                      JOIN {user} u ON u.id = d.userid
-                     WHERE d.userid > 0 ";
+                      JOIN {user} u ON u.id = m.userid
+                     WHERE m.userid > 0 ";
         }
 
         $sql .= ($whichmargic);
         $sql .= ($whichuser);
-        $sql .= "       GROUP BY u.lastname, u.firstname, d.margic, d.id
-                  ORDER BY u.lastname ASC, u.firstname ASC, d.margic ASC, d.id ASC";
+        $sql .= "       GROUP BY u.lastname, u.firstname, m.margic, m.id
+                  ORDER BY u.lastname ASC, u.firstname ASC, m.margic ASC, m.id ASC";
 
         // Add the list of users and diaries to our data array.
         if ($ds = $DB->get_records_sql($sql, $fields)) {

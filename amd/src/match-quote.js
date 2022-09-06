@@ -51,6 +51,7 @@ function search(text, str, maxErrors) {
  *
  * @param {string} text
  * @param {string} str
+ * @return {int}
  */
 function textMatchScore(text, str) {
   // `search` will return no matches if either the text or pattern is empty,
@@ -62,7 +63,7 @@ function textMatchScore(text, str) {
 
   const matches = search(text, str, str.length);
 
-  // prettier-ignore
+  // Prettier-ignore.
   return 1 - (matches[0].errors / str.length);
 }
 
@@ -108,6 +109,7 @@ export function matchQuote(text, quote, context = {}) {
    * Compute a score between 0 and 1.0 for a match candidate.
    *
    * @param {StringMatch} match
+   * @return {int}
    */
   const scoreMatch = match => {
     const quoteWeight = 50; // Similarity of matched text to quote.

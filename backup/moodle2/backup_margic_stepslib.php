@@ -111,6 +111,7 @@ class backup_margic_activity_structure_step extends backup_activity_structure_st
         }
 
         // Define file annotations.
+        // component, filearea, elementname.
         $margic->annotate_files('mod_margic', 'intro', null); // This file area has no itemid.
         $entry->annotate_files('mod_margic', 'entry', 'id');
         $entry->annotate_files('mod_margic', 'feedback', 'id');

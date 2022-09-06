@@ -120,7 +120,10 @@ if ($mode == 2 && $priority && $action && $DB->record_exists('margic_errortypes'
 
         if (!$typeswitched) { // If no type with priority+1 search for types with hihgher priority values
             $typeswitched = $DB->get_records_select('margic_errortypes', "margic = $moduleinstance->id AND priority < $type->priority", null, 'priority ASC');
-            $typeswitched = $typeswitched[array_key_last($typeswitched)];
+
+            if ($typeswitched && isset($typeswitched[array_key_first($typeswitched)])) {
+                $typeswitched = $typeswitched[array_key_first($typeswitched)];
+            }
         }
 
     } else if ($type && $action == 2 &&
@@ -132,9 +135,12 @@ if ($mode == 2 && $priority && $action && $DB->record_exists('margic_errortypes'
 
         $typeswitched = $DB->get_record('margic_errortypes', array('margic' => $moduleinstance->id, 'priority' => $type->priority));
 
-        if (!$typeswitched) { // If no type with priority+1 search for types with hihgher priority values
+        if (!$typeswitched) { // If no type with priority+1 search for types with higher priority values
             $typeswitched = $DB->get_records_select('margic_errortypes', "margic = $moduleinstance->id AND priority > $type->priority", null, 'priority ASC');
-            $typeswitched = $typeswitched[array_key_first($typeswitched)];
+
+            if ($typeswitched && isset($typeswitched[array_key_first($typeswitched)])) {
+                $typeswitched = $typeswitched[array_key_first($typeswitched)];
+            }
         }
     } else {
         redirect($redirecturl, get_string('prioritynotchanged', 'mod_margic'), null, notification::NOTIFY_ERROR);

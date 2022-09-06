@@ -53,17 +53,17 @@ class entry extends \core_search\base_mod {
     public function get_document_recordset($modifiedfrom = 0, \context $context = null) {
         global $DB;
 
-        list ($contextjoin, $contextparams) = $this->get_context_restriction_sql($context, 'margic', 'd', SQL_PARAMS_NAMED);
+        list ($contextjoin, $contextparams) = $this->get_context_restriction_sql($context, 'margic', 'm', SQL_PARAMS_NAMED);
         if ($contextjoin === null) {
             return null;
         }
 
-        $sql = "SELECT de.*, d.course
-                  FROM {margic_entries} de
-                  JOIN {margic} d ON d.id = de.margic
+        $sql = "SELECT me.*, m.course
+                  FROM {margic_entries} me
+                  JOIN {margic} m ON m.id = me.margic
           $contextjoin
-                 WHERE de.timemodified >= :timemodified
-              ORDER BY de.timemodified ASC";
+                 WHERE me.timemodified >= :timemodified
+              ORDER BY me.timemodified ASC";
         return $DB->get_recordset_sql($sql, array_merge($contextparams, [
             'timemodified' => $modifiedfrom
         ]));
@@ -101,7 +101,7 @@ class entry extends \core_search\base_mod {
         $doc->set('userid', $entry->userid);
         $doc->set('owneruserid', \core_search\manager::NO_OWNER_ID);
         $doc->set('modified', $entry->timemodified);
-        $doc->set('description1', content_to_text('Feedback: ' . $entry->feedback, $entry->format));
+        $doc->set('description1', content_to_text('Feedback: ' . $entry->feedback, $entry->formatfeedback));
 
         // Check if this document should be considered new.
         if (isset($options['lastindexedtime']) && ($options['lastindexedtime'] < $entry->timemodified)) {

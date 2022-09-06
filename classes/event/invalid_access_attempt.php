@@ -39,7 +39,7 @@ class invalid_access_attempt extends \core\event\base {
      * Init method.
      */
     protected function init() {
-        $this->data['crud'] = 'd';
+        $this->data['crud'] = 'r';
         $this->data['edulevel'] = self::LEVEL_TEACHING;
         $this->data['objecttable'] = 'margic';
     }
@@ -59,8 +59,8 @@ class invalid_access_attempt extends \core\event\base {
      * @return string
      */
     public function get_description() {
-        return "The user with id '$this->userid' attempted illegal access to 'margic' page
-           '{$this->other['file']}' while in the course with id '$this->contextinstanceid'.";
+        return "The user with the id '$this->userid' attempted illegal access to the page
+           '{$this->other['file']}' in the margic activity with the course module id '$this->contextinstanceid'.";
     }
 
     /**
