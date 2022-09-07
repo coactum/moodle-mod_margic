@@ -193,26 +193,26 @@ if ($fromform = $mform->get_data()) { // If grading form is submitted.
             $message = new \core\message\message();
             $message->component = 'mod_margic';
             $message->name = 'gradingmessages';
-            $message->userfrom = core_user::get_noreply_user(); // If the message is 'from' a specific user you can set them here
+            $message->userfrom = core_user::get_noreply_user(); // If the message is 'from' a specific user you can set them here.
             $message->userto = $entry->userid;
             $message->subject = get_string('gradingmailsubject', 'mod_margic');
             $message->fullmessage = get_string('gradingmailfullmessage', 'mod_margic', $obj);
             $message->fullmessageformat = FORMAT_MARKDOWN;
             $message->fullmessagehtml = '<p>' . get_string('gradingmailfullmessagehtml', 'mod_margic', $obj) . '</p>';
             $message->smallmessage = get_string('gradingmailfullmessage', 'mod_margic', $obj);
-            $message->notification = 1; // Because this is a notification generated from Moodle, not a user-to-user message
-            $message->contexturl = $url; // A relevant URL for the notification
+            $message->notification = 1; // Because this is a notification generated from Moodle, not a user-to-user message.
+            $message->contexturl = $url; // A relevant URL for the notification.
             $message->contexturlname = get_string('modulename', 'mod_margic')
-                . ' - ' . get_string('overview', 'mod_margic'); // Link title explaining where users get to for the contexturl
+                . ' - ' . get_string('overview', 'mod_margic'); // Link title explaining where users get to for the contexturl.
 
             $header = '';
             $urllink = '<a href="' . $url . '" target="_blank">' . $url . '</a>';
             $footer = '<br><br> --------------------------------------------------------------------- <br> ' . get_string('mailfooter', 'mod_margic',
                 ['systemname' => get_config('shortname'), 'coursename' => $course->fullname, 'name' => $moduleinstance->name, 'url' => $url]);
-            $content = array('*' => array('header' => $header, 'footer' => $footer)); // Extra content for specific processor
+            $content = array('*' => array('header' => $header, 'footer' => $footer)); // Extra content for specific processor.
             $message->set_additional_content('email', $content);
 
-            // Actually send the message
+            // Actually send the message.
             $messageid = message_send($message);
         }
 

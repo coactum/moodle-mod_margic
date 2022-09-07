@@ -116,7 +116,7 @@ class restore_margic_activity_structure_step extends restore_activity_structure_
         }
 
         $newitemid = $DB->insert_record('margic_entries', $data);
-        $this->set_mapping('margic_entry', $oldid, $newitemid, true);  // The true parameter is necessary for file handling
+        $this->set_mapping('margic_entry', $oldid, $newitemid, true);  // The true parameter is necessary for file handling.
     }
 
     /**

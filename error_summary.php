@@ -79,6 +79,8 @@ require_capability('mod/margic:makeannotations', $context);
 
 // Add type to margic.
 if ($addtomargic) {
+    require_sesskey();
+
     $redirecturl = new moodle_url('/mod/margic/error_summary.php', array('id' => $id));
 
     if ($DB->record_exists('margic_errortype_templates', array('id' => $addtomargic))) {
@@ -104,6 +106,8 @@ if ($addtomargic) {
 
 // Change priority.
 if ($mode == 2 && $priority && $action && $DB->record_exists('margic_errortypes', array('id' => $priority))) {
+    require_sesskey();
+
     $redirecturl = new moodle_url('/mod/margic/error_summary.php', array('id' => $id));
 
     $type = $DB->get_record('margic_errortypes', array('margic' => $moduleinstance->id, 'id' => $priority));
@@ -111,14 +115,14 @@ if ($mode == 2 && $priority && $action && $DB->record_exists('margic_errortypes'
     $prioritychanged = false;
     $oldpriority = 0;
 
-    if ($type && $action == 1 && $type->priority != 1) { // Increase priority (show more in front)
+    if ($type && $action == 1 && $type->priority != 1) { // Increase priority (show more in front).
         $oldpriority = $type->priority;
         $type->priority -= 1;
         $prioritychanged = true;
 
         $typeswitched = $DB->get_record('margic_errortypes', array('margic' => $moduleinstance->id, 'priority' => $type->priority));
 
-        if (!$typeswitched) { // If no type with priority+1 search for types with hihgher priority values
+        if (!$typeswitched) { // If no type with priority+1 search for types with hihgher priority values.
             $typeswitched = $DB->get_records_select('margic_errortypes', "margic = $moduleinstance->id AND priority < $type->priority", null, 'priority ASC');
 
             if ($typeswitched && isset($typeswitched[array_key_first($typeswitched)])) {
@@ -127,7 +131,7 @@ if ($mode == 2 && $priority && $action && $DB->record_exists('margic_errortypes'
         }
 
     } else if ($type && $action == 2 &&
-        $type->priority != $DB->count_records('margic_errortypes', array('margic' => $moduleinstance->id)) + 1) { // Decrease priority (move further back)
+        $type->priority != $DB->count_records('margic_errortypes', array('margic' => $moduleinstance->id)) + 1) { // Decrease priority (move further back).
 
         $oldpriority = $type->priority;
         $type->priority += 1;
@@ -135,7 +139,7 @@ if ($mode == 2 && $priority && $action && $DB->record_exists('margic_errortypes'
 
         $typeswitched = $DB->get_record('margic_errortypes', array('margic' => $moduleinstance->id, 'priority' => $type->priority));
 
-        if (!$typeswitched) { // If no type with priority+1 search for types with higher priority values
+        if (!$typeswitched) { // If no type with priority+1 search for types with higher priority values.
             $typeswitched = $DB->get_records_select('margic_errortypes', "margic = $moduleinstance->id AND priority > $type->priority", null, 'priority ASC');
 
             if ($typeswitched && isset($typeswitched[array_key_first($typeswitched)])) {
@@ -162,6 +166,8 @@ if ($mode == 2 && $priority && $action && $DB->record_exists('margic_errortypes'
 
 // Delete annotation.
 if ($delete !== 0 && $mode) {
+
+    require_sesskey();
 
     $redirecturl = new moodle_url('/mod/margic/error_summary.php', array('id' => $id));
 
@@ -280,7 +286,7 @@ foreach ($errortypetemplates as $id => $templatetype) {
 $errortypetemplates = array_values($errortypetemplates);
 
 // Output page.
-$page = new margic_error_summary($cm->id, $participants, $margicerrortypes, $errortypetemplates);
+$page = new margic_error_summary($cm->id, $participants, $margicerrortypes, $errortypetemplates, sesskey());
 
 echo $OUTPUT->render($page);
 

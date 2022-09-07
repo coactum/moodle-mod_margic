@@ -92,6 +92,8 @@ $redirecturl = new moodle_url('/mod/margic/view.php', $urlparams);
 
 // Delete annotation.
 if (has_capability('mod/margic:makeannotations', $context) && $deleteannotation !== 0) {
+    require_sesskey();
+
     global $USER;
 
     if ($DB->record_exists('margic_annotations', array('id' => $deleteannotation, 'margic' => $moduleinstance->id, 'userid' => $USER->id))) {
@@ -111,7 +113,7 @@ if (has_capability('mod/margic:makeannotations', $context) && $deleteannotation 
     }
 }
 
-// Save annotation
+// Save annotation.
 require_once($CFG->dirroot . '/mod/margic/annotation_form.php');
 
 // Instantiate form.
@@ -179,10 +181,10 @@ if ($fromform = $mform->get_data()) {
             $annotation->endoffset = $fromform->endoffset;
             $annotation->start = $fromform->start;
             $annotation->end = $fromform->end;
-            $annotation->exact = format_text($fromform->exact, 2, array('para' => false));;
-            $annotation->prefix = format_text($fromform->prefix, 2, array('para' => false));;
-            $annotation->suffix = format_text($fromform->suffix, 2, array('para' => false));;
-            $annotation->text = format_text($fromform->text, 2, array('para' => false));
+            $annotation->exact = $fromform->exact;
+            $annotation->prefix = $fromform->prefix;
+            $annotation->suffix = $fromform->suffix;
+            $annotation->text = $fromform->text;
 
             $newid = $DB->insert_record('margic_annotations', $annotation);
 

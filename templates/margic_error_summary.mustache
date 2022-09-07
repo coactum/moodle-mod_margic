@@ -39,10 +39,10 @@
                         <div>
                             {{#canbeedited}}
                                 <a href="errortypes.php?id={{cmid}}&edit={{id}}&mode=2" title="{{#str}}editerrortype, margic {{/str}}"><i class="fa fa-lg fa-pencil" aria-hidden="true" ></i></a>
-                                <a href="error_summary.php?id={{cmid}}&delete={{id}}&mode=2" title="{{#str}}deleteerrortype, margic {{/str}}"><i class="fa fa-lg fa-trash" aria-hidden="true" ></i></a>
+                                <a href="error_summary.php?id={{cmid}}&delete={{id}}&mode=2&sesskey={{sesskey}}" title="{{#str}}deleteerrortype, margic {{/str}}"><i class="fa fa-lg fa-trash" aria-hidden="true" ></i></a>
                             {{/canbeedited}}
-                            <a href="error_summary.php?id={{cmid}}&priority={{id}}&action=1&mode=2" title="{{#str}}movefor, margic {{/str}}"><i class="fa fa-lg fa-arrow-left" aria-hidden="true" ></i></a>
-                            <a href="error_summary.php?id={{cmid}}&priority={{id}}&action=2&mode=2" title="{{#str}}moveback, margic {{/str}}"><i class="fa fa-lg fa-arrow-right" aria-hidden="true" ></i></a>
+                            <a href="error_summary.php?id={{cmid}}&priority={{id}}&action=1&mode=2&sesskey={{sesskey}}" title="{{#str}}movefor, margic {{/str}}"><i class="fa fa-lg fa-arrow-left" aria-hidden="true" ></i></a>
+                            <a href="error_summary.php?id={{cmid}}&priority={{id}}&action=2&mode=2&sesskey={{sesskey}}" title="{{#str}}moveback, margic {{/str}}"><i class="fa fa-lg fa-arrow-right" aria-hidden="true" ></i></a>
                         </div>
                     </th>
                 {{/margicerrortypes}}
@@ -98,10 +98,10 @@
                                 {{#canbeedited}}<a href="errortypes.php?id={{cmid}}&edit={{id}}&mode=1" title="{{#str}}editerrortypetemplate, margic {{/str}}"><i class="fa fa-lg fa-pencil" aria-hidden="true" ></i></a>{{/canbeedited}}
                             </td>
                             <td>
-                                {{#canbeedited}}<a href="error_summary.php?id={{cmid}}&delete={{id}}&mode=1" title="{{#str}}deleteerrortypetemplate, margic {{/str}}"><i class="fa fa-lg fa-trash" aria-hidden="true" ></i></a>{{/canbeedited}}
+                                {{#canbeedited}}<a href="error_summary.php?id={{cmid}}&delete={{id}}&mode=1&sesskey={{sesskey}}" title="{{#str}}deleteerrortypetemplate, margic {{/str}}"><i class="fa fa-lg fa-trash" aria-hidden="true" ></i></a>{{/canbeedited}}
                             </td>
                             <td>
-                                <a href="error_summary.php?id={{cmid}}&addtomargic={{id}}" title="{{#str}}addtomargic, margic {{/str}}"><i class="fa fa-lg fa-plus" aria-hidden="true" ></i></a>
+                                <a href="error_summary.php?id={{cmid}}&addtomargic={{id}}&sesskey={{sesskey}}" title="{{#str}}addtomargic, margic {{/str}}"><i class="fa fa-lg fa-plus" aria-hidden="true" ></i></a>
                             </td>
                         </tr>
                     {{/errortypetemplates}}

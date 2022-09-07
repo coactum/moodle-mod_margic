@@ -152,15 +152,19 @@ class margic {
         if (has_capability('mod/margic:addentries', $context)) {
             switch ($action) {
                 case 'currenttooldest':
+                    require_sesskey();
                     set_user_preference('margic_sortoption', 1);
                     break;
                 case 'oldesttocurrent':
+                    require_sesskey();
                     set_user_preference('margic_sortoption', 2);
                     break;
                 case 'lowestgradetohighest':
+                    require_sesskey();
                     set_user_preference('margic_sortoption', 3);
                     break;
                 case 'highestgradetolowest':
+                    require_sesskey();
                     set_user_preference('margic_sortoption', 4);
                     break;
                 default:
@@ -195,6 +199,8 @@ class margic {
 
         // Page selector.
         if ($pagecount !== 0) {
+
+            require_sesskey();
 
             if ($pagecount < 2) {
                 $pagecount = 2;

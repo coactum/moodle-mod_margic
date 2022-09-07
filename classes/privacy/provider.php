@@ -35,8 +35,6 @@ use core_privacy\local\request\contextlist;
 
 use core_privacy\local\request\user_preference_provider;
 
-use core_grades\component_gradeitem as gradeitem; // needed?
-
 /**
  * Privacy class for requesting user data.
  *
@@ -496,13 +494,7 @@ class provider implements \core_privacy\local\metadata\provider,
             return;
         }
 
-        // Delete advanced grading information.
-        /* $gradingmanager = get_grading_manager($context, 'mod_margic', 'margic');
-        $controller = $gradingmanager->get_active_controller();
-
-        if (isset($controller)) {
-            \core_grading\privacy\provider::delete_instance_data($context);
-        } */
+        // Delete advanced grading information (not implemented yet).
 
         // Delete all ratings in the context.
         \core_rating\privacy\provider::delete_ratings($context, 'mod_margic', 'entry');
@@ -537,16 +529,7 @@ class provider implements \core_privacy\local\metadata\provider,
             // Get the course module.
             $cm = $DB->get_record('course_modules', ['id' => $context->instanceid]);
 
-            // Handle any advanced grading method data first.
-            /* $grades = $DB->get_records('margic_entries', ['margic' => $cm->instance, 'userid' => $userid]);
-            $gradingmanager = get_grading_manager($context, 'margic_entries', 'margic');
-            $controller = $gradingmanager->get_active_controller();
-            foreach ($grades as $grade) {
-                // Delete advanced grading information.
-                if (isset($controller)) {
-                    \core_grading\privacy\provider::delete_instance_data($context, $grade->id);
-                }
-            } */
+            // Handle any advanced grading method data first (not implemented yet).
 
             // Delete ratings.
             $entriessql = "SELECT
@@ -613,16 +596,7 @@ class provider implements \core_privacy\local\metadata\provider,
         list($userinsql, $userinparams) = $DB->get_in_or_equal($userlist->get_userids(), SQL_PARAMS_NAMED);
         $params = array_merge(['margicid' => $cm->instance], $userinparams);
 
-        // Handle any advanced grading method data first.
-        /* $grades = $DB->get_records('margic_entries', ['margic' => $cm->instance, 'userid' => $userid]);
-        $gradingmanager = get_grading_manager($context, 'margic_entries', 'margic');
-        $controller = $gradingmanager->get_active_controller();
-        foreach ($grades as $grade) {
-            // Delete advanced grading information.
-            if (isset($controller)) {
-                \core_grading\privacy\provider::delete_instance_data($context, $grade->id);
-            }
-        } */
+        // Handle any advanced grading method data first (not implemented yet).
 
         // Delete ratings.
         $entriesselect = "SELECT

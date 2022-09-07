@@ -501,7 +501,6 @@ class helper {
                 $editoroptions['autosave'] = false;
 
                 $data = file_prepare_standard_editor($data, 'feedback_' . $entry->id, $editoroptions, $context, 'mod_margic', 'feedback', $data->entry);
-                // $data = file_prepare_standard_filemanager($data, 'attachment', $attachmentoptions, $context, 'mod_margic', 'attachment', $data->entry);
 
                 $data->{'rating_' . $entry->id} = $entry->rating;
 

@@ -194,9 +194,6 @@ export const init = (cmid, canmakeannotations, myuserid) => {
             };
 
             anchor(newannotation, $("#entry-" + annotation.entry)[0]);
-
-            // Prevent JavaScript injection (if annotated text in original entry is JavaScript code in script tags).
-            $('#annotationpreview-' + annotation.id).html(annotation.exact.replaceAll('<', '&lt;').replaceAll('>', '&gt;'));
         }
     }
 

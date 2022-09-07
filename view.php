@@ -92,6 +92,8 @@ if ($pagecount) {
 
 // Toolbar action handler for download.
 if (!empty($action) && $action == 'download' && has_capability('mod/margic:addentries', $context)) {
+    require_sesskey();
+
     // Call download entries function in lib.php.
     helper::download_entries($context, $course, $moduleinstance);
 

@@ -95,6 +95,8 @@ class margic_entry implements renderable, templatable {
     protected $gradingstr;
     /** @var string */
     protected $regradingstr;
+    /** @var string */
+    protected $sesskey;
     /**
      * Construct this renderable.
      * @param object $margic The margic obj
@@ -121,11 +123,12 @@ class margic_entry implements renderable, templatable {
      * @param object $strmanager The strmanager
      * @param string $gradingstr The gradingstr
      * @param string $regradingstr The regradingstr
+     * @param string $sesskey The session key
      */
     public function __construct($margic, $cm, $context, $moduleinstance, $entry, $annotationareawidth,
         $caneditentries, $edittimestarts, $edittimenotstarted, $edittimeends, $edittimehasended, $canmanageentries,
         $course, $singleuser, $annotationmode, $canmakeannotations, $errortypes, $readonly, $grades, $currentgroups, $allowedusers,
-        $strmanager, $gradingstr, $regradingstr) {
+        $strmanager, $gradingstr, $regradingstr, $sesskey) {
 
         $this->margic = $margic;
         $this->cm = $cm;
@@ -153,6 +156,7 @@ class margic_entry implements renderable, templatable {
         $this->strmanager = $strmanager;
         $this->gradingstr = $gradingstr;
         $this->regradingstr = $regradingstr;
+        $this->sesskey = $sesskey;
     }
 
     /**
@@ -183,6 +187,7 @@ class margic_entry implements renderable, templatable {
         $data->textbgc = get_config('margic', 'textbgc');
         $data->errortypes = $this->errortypes;
         $data->readonly = $this->readonly;
+        $data->sesskey = $this->sesskey;
         return $data;
     }
 }

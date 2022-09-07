@@ -105,7 +105,7 @@ function margic_update_instance($margic) {
 
     // If the aggregation type or scale (i.e. max grade) changes then recalculate the grades for the entire margic
     // if scale changes - do we need to recheck the ratings, if ratings higher than scale how do we want to respond?
-    // for count and sum aggregation types the grade we check to make sure they do not exceed the scale (i.e. max score) when calculating the grade
+    // for count and sum aggregation types the grade we check to make sure they do not exceed the scale (i.e. max score) when calculating the grade.
     $oldmargic = $DB->get_record('margic', array('id' => $margic->id));
 
     $updategrades = false;
@@ -468,7 +468,7 @@ function margic_get_recent_mod_activity(&$activities, &$index, $timestart, $cour
             continue;
         }
 
-        if ($groupmode == SEPARATEGROUPS and !$accessallgroups) {
+        if ($groupmode == SEPARATEGROUPS && !$accessallgroups) {
             if (isguestuser()) {
                 // Shortcut - guest user does not belong into any group.
                 continue;
@@ -561,18 +561,6 @@ function margic_print_recent_mod_activity($activity, $courseid, $detail, $modnam
         echo '</a>';
         echo '</div>';
     }
-
-    /* if (isset($activity->grade)) {
-        echo '<div class="grade">';
-
-        if ($CFG->branch > 310) {
-            echo get_string('gradenoun').': ';
-        } else {
-            echo get_string('grade').': ';
-        }
-        echo $activity->grade;
-        echo '</div>';
-    } */
 
     echo '<div class="grade"><strong>';
     echo '<a href="' . $CFG->wwwroot . '/mod/margic/view.php?id=' . $activity->cmid . '">' . get_string('entryadded', 'mod_margic') . '</a>';
@@ -793,7 +781,7 @@ function margic_grade_item_update($margic, $grades = null) {
         'idnumber' => $margic->cmidnumber
     );
 
-    if (! $margic->assessed or $margic->scale == 0) {
+    if (! $margic->assessed || $margic->scale == 0) {
         $params['gradetype'] = GRADE_TYPE_NONE;
     } else if ($margic->scale > 0) {
         $params['gradetype'] = GRADE_TYPE_VALUE;

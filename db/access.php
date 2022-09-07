@@ -71,7 +71,7 @@ $capabilities = array(
     ),
 
     'mod/margic:makeannotations' => array(
-        'riskbitmask' => RISK_XSS | RISK_SPAM,
+        'riskbitmask' => RISK_XSS | RISK_SPAM | RISK_DATALOSS,
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => array(
@@ -94,7 +94,7 @@ $capabilities = array(
     ),
 
     'mod/margic:editdefaulterrortypes' => array(
-        'riskbitmask' => RISK_XSS,
+        'riskbitmask' => RISK_XSS | RISK_DATALOSS,
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => array(

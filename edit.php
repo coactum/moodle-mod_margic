@@ -187,7 +187,7 @@ if ($form->is_cancelled()) {
             $newentry->baseentry = $entry->baseentry;
         }
 
-        // Check if timecreated is not older then connected entries
+        // Check if timecreated is not older then connected entries.
         if ($moduleinstance->editentrydates) {
 
             $baseentry = $DB->get_record('margic_entries', array('margic' => $moduleinstance->id, "id" => $newentry->baseentry));
@@ -285,7 +285,7 @@ if ($entry) {
     $page = new margic_entry($margic, $cm, $context, $moduleinstance, $entry, $margic->get_annotationarea_width(),
         $moduleinstance->editentries, $edittimes->edittimestarts, $edittimes->edittimenotstarted, $edittimes->edittimeends,
         $edittimes->edittimehasended, has_capability('mod/margic:manageentries', $context), $course, false, true, false,
-        false, true, $grades, $currentgroups, $allowedusers, $strmanager, $gradingstr, $regradingstr);
+        false, true, $grades, $currentgroups, $allowedusers, $strmanager, $gradingstr, $regradingstr, sesskey());
 
     echo $OUTPUT->render($page);
 }

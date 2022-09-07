@@ -45,19 +45,23 @@ class margic_error_summary implements renderable, templatable {
     protected $margicerrortypes;
     /** @var object */
     protected $errortypetemplates;
+    /** @var string */
+    protected $sesskey;
     /**
      * Construct this renderable.
      * @param int $cmid The course module id
      * @param array $participants The participants of the margic instance
      * @param array $margicerrortypes The errortypes used in the margic instance
      * @param array $errortypetemplates The errortype templates available for the current user
+     * @param string $sesskey The session key
      */
-    public function __construct($cmid, $participants, $margicerrortypes, $errortypetemplates) {
+    public function __construct($cmid, $participants, $margicerrortypes, $errortypetemplates, $sesskey) {
 
         $this->cmid = $cmid;
         $this->participants = $participants;
         $this->margicerrortypes = $margicerrortypes;
         $this->errortypetemplates = $errortypetemplates;
+        $this->sesskey = $sesskey;
     }
 
     /**
@@ -72,6 +76,7 @@ class margic_error_summary implements renderable, templatable {
         $data->participants = $this->participants;
         $data->margicerrortypes = $this->margicerrortypes;
         $data->errortypetemplates = $this->errortypetemplates;
+        $data->sesskey = $this->sesskey;
 
         return $data;
     }

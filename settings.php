@@ -50,7 +50,7 @@ if ($ADMIN->fulltree) {
 
     // Default width of annotation area.
     $settings->add(new admin_setting_configtext('margic/annotationareawidth', get_string('annotationareawidth', 'margic'),
-        get_string('annotationareawidthall', 'margic'), 40, '/^([2-7]\d|80)+$/')); // Range allowed: 20-80
+        get_string('annotationareawidthall', 'margic'), 40, '/^([2-7]\d|80)+$/')); // Range allowed: 20-80.
 
     // Background color of entry and annotation area.
     $name = 'margic/entrybgc';
