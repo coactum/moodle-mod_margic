@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Class containing data for margic annotations summary
+ * Class containing data for margic error summary
  *
  * @package     mod_margic
  * @copyright   2022 coactum GmbH
@@ -29,7 +29,7 @@ use templatable;
 use stdClass;
 
 /**
- * Class containing data for margic annotations summary
+ * Class containing data for margic error summary
  *
  * @package     mod_margic
  * @copyright   2022 coactum GmbH

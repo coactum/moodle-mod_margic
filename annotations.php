@@ -24,7 +24,7 @@
 
 use core\output\notification;
 
-require_once("../../config.php");
+require(__DIR__.'/../../config.php');
 require_once($CFG->dirroot . '/mod/margic/locallib.php');
 
 global $DB, $CFG;
@@ -91,7 +91,7 @@ $urlparams = array('id' => $id, 'annotationmode' => 1);
 $redirecturl = new moodle_url('/mod/margic/view.php', $urlparams);
 
 // Delete annotation.
-if (has_capability('mod/margic:makeannotations', $context) && $deleteannotation !== 0) {
+if (has_capability('mod/margic:deleteannotations', $context) && $deleteannotation !== 0) {
     require_sesskey();
 
     global $USER;

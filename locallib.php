@@ -73,8 +73,6 @@ class margic {
     /** @var array Array of error messages encountered during the execution of margic related operations. */
     private $errors = array();
 
-    /** @var array Temp helper array with entry nodes sorted by occurance */
-    private $nodepositions = array();
     /**
      * Constructor for the base margic class.
      *

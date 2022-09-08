@@ -12,9 +12,9 @@
  * sometimes referred to as the "Simplified BSD License".
  */
 
-import { matchQuote } from './match-quote';
-import { TextRange, TextPosition } from './text-range';
-import { nodeFromXPath, xpathFromNode } from './xpath';
+import {matchQuote} from './match-quote';
+import {TextRange, TextPosition} from './text-range';
+import {nodeFromXPath, xpathFromNode} from './xpath';
 
 /**
  * @typedef {import('../../types/api').RangeSelector} RangeSelector
@@ -218,7 +218,7 @@ export class TextQuoteAnchor {
    * @return {TextQuoteAnchor}
    */
   static fromSelector(root, selector) {
-    const { prefix, suffix } = selector;
+    const {prefix, suffix} = selector;
     return new TextQuoteAnchor(root, selector.exact, {prefix, suffix});
   }
 

@@ -327,7 +327,7 @@ class helper {
 
         // If maxfiles would be set to an int and more files are given the editor saves them all but saves the overcouting incorrect so that white box is diaplayed.
 
-        // For a file attachments field (not really needed here?).
+        // For a file attachments field (not really needed here).
         $attachmentoptions = array(
             'subdirs' => false,
             'maxfiles' => 1,
@@ -379,13 +379,13 @@ class helper {
     }
 
     /**
-     * Check for existing rating entry in mdl_rating for the current user.
+     * Check for existing rating entry in mdl_rating.
      *
      * @param array $ratingoptions An array of current entry data.
      * @return array $rec An entry was found, so return it for update.
      */
     public static function check_rating_entry($ratingoptions) {
-        global $USER, $DB, $CFG;
+        global $DB, $CFG;
         $params = array();
         $params['contextid'] = $ratingoptions->contextid;
         $params['component'] = $ratingoptions->component;
@@ -411,9 +411,7 @@ class helper {
     }
 
     /**
-     * Check for existing rating entry in mdl_rating for the current user.
-     *
-     * Used in view.php.
+     * Return aggregation string for rating in margic.
      *
      * @param int $aggregate The margic rating method.
      * @return string $aggregatestr Return the language string for the rating method.
@@ -440,7 +438,7 @@ class helper {
                 $aggregatestr = get_string('aggregatesum', 'rating');
                 break;
             default:
-                $aggregatestr = 'AVG'; // Default to this to avoid real breakage - MDL-22270.
+                $aggregatestr = 'AVG'; // Default to this to avoid real breakage.
                 debugging('Incorrect call to get_aggregation_method(), incorrect aggregate method '.$aggregate, DEBUG_DEVELOPER);
         }
         return $aggregatestr;

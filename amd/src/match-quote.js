@@ -1,3 +1,11 @@
+/**
+ * Functions for quote matching for the annotations and highlighting.
+ *
+ * This code originaly is from the Hypothesis project (https://github.com/hypothesis/client)
+ * which is released under the 2-Clause BSD License (https://opensource.org/licenses/BSD-2-Clause),
+ * sometimes referred to as the "Simplified BSD License".
+ */
+
 import approxSearch from './string-match';
 
 /**

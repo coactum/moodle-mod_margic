@@ -27,7 +27,7 @@ use \mod_margic\event\invalid_access_attempt;
 use core\output\notification;
 use mod_margic\output\margic_entry;
 
-require_once("../../config.php");
+require(__DIR__.'/../../config.php');
 require_once('./edit_form.php');
 require_once($CFG->dirroot . '/mod/margic/locallib.php');
 

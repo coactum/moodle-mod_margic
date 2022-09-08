@@ -71,7 +71,18 @@ $capabilities = array(
     ),
 
     'mod/margic:makeannotations' => array(
-        'riskbitmask' => RISK_XSS | RISK_SPAM | RISK_DATALOSS,
+        'riskbitmask' => RISK_XSS | RISK_SPAM,
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_MODULE,
+        'archetypes' => array(
+            'teacher' => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW,
+            'manager' => CAP_ALLOW
+        )
+    ),
+
+    'mod/margic:deleteannotations' => array(
+        'riskbitmask' => RISK_DATALOSS,
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => array(

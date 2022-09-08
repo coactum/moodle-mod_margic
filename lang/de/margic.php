@@ -15,11 +15,11 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Strings for component 'margic', language 'de', version '3.9'.
+ * Strings for component 'margic', language 'de'.
  *
  * @package     mod_margic
  * @category    string
- * @copyright   1999 Martin Dougiamas and contributors
+ * @copyright   2022 coactum GmbH
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -35,7 +35,7 @@ $string['eventannotationdeleted'] = 'Margic Annotation gelöscht';
 $string['eventfeedbackupdated'] = 'Feedback zu Margic Eintrag aktualisiert';
 $string['eventinvalidaccess'] = 'Unberechtigter Zugriff';
 
-// Common
+// Common.
 $string['modulename'] = 'Margic';
 $string['modulenameplural'] = 'Margics';
 $string['modulename_help'] = 'In der Aktivität Margic können Teilnehmerinnen und Teilnehmer unbeschränkt Einträge anlegen welche dann von Lehrenden bewertet und annotiert werden können.
@@ -55,13 +55,13 @@ Kernfeatures des Plugins:
 $string['modulename_link'] = 'mod/margic/view';
 $string['pluginadministration'] = 'Margic Administration';
 
-// General errors
+// General errors.
 $string['erraccessdenied'] = 'Zugang verweigert';
 $string['generalerrorinsert'] = 'Speichern des neuen Margic Eintrags fehlgeschlagen.';
 $string['incorrectcourseid'] = 'Inkorrekte Kurs-ID';
 $string['incorrectmodule'] = 'Inkorrekte Kurs-Modul-ID';
 
-// Entry (template)
+// Entry (template).
 $string['entry'] = 'Eintrag';
 $string['revision'] = 'Überarbeitung';
 $string['baseentry'] = 'Originaleintrag';
@@ -81,7 +81,7 @@ $string['from'] = 'von';
 $string['toggleolderversions'] = 'Ältere Versionen ein- oder ausblenden';
 $string['hoverannotation'] = 'Annotation hervorheben';
 
-// View (and template)
+// View (and template).
 $string['overview'] = 'Übersicht';
 $string['viewentries'] = 'Einträge ansehen';
 $string['startnewentry'] = 'Neuer Eintrag';
@@ -113,7 +113,7 @@ $string['noentriesfound'] = 'Keine Einträge gefunden';
 $string['viewallentries'] = 'Alle Einträge ansehen';
 $string['viewallmargics'] = 'Alle Margics im Kurs anzeigen';
 
-// Annotations
+// Annotations.
 $string['annotationcreated'] = 'Erstellt am {$a}';
 $string['annotationmodified'] = 'Bearbeitet am {$a}';
 $string['editannotation'] = 'Bearbeiten';
@@ -130,7 +130,7 @@ $string['errtypedeleted'] = 'Fehlertyp nicht vorhanden.';
 $string['annotationsarefetched'] = 'Annotationen werden geladen';
 $string['reloadannotations'] = 'Annotationen neu laden';
 
-// mod_form
+// Form: mod_form.
 $string['margicname'] = 'Name der Margic';
 $string['margicdescription'] = 'Beschreibung des Margics';
 $string['margicopentime'] = 'Startzeit';
@@ -140,7 +140,7 @@ $string['margicclosetime_help'] = 'Wenn aktiviert können Sie ein Datum festlege
 $string['annotationareawidth_help'] = 'Die Breite des Annotationsbereichs in Prozent. Mindestens 20 und maximal 80 Prozent.';
 $string['errannotationareawidthinvalid'] = 'Breite ungültig (Minimum: {$a->minwidth}, Maximum: {$a->maxwidth}).';
 
-// edit_form
+// Form: edit_form.
 $string['addnewentry'] = 'Neuen Eintrag anlegen';
 $string['editentry'] = 'Eintrag bearbeiten';
 $string['margicentrydate'] = 'Datum für diesen Eintrag festlegen';
@@ -150,7 +150,7 @@ $string['entryaddedoredited'] = 'Eintrag angelegt oder bearbeitet.';
 $string['timecreatedinvalid'] = 'Änderung fehlgeschlagen. Es gibt bereits jüngere Versionen dieses Beitrags.';
 $string['entryadded'] = 'Eintrag angelegt';
 
-// grading_form
+// Form: grading_form.
 $string['gradeingradebook'] = 'Aktuelle Bewertung aus der Bewertungsübersicht';
 $string['feedbackingradebook'] = 'Aktuelles Feedback aus der Bewertungsübersicht';
 $string['savedrating'] = 'Gespeicherte Bewertung für diesen Eintrag';
@@ -162,7 +162,7 @@ $string['errfeedbacknotupdated'] = 'Rückmeldung und Note konnte nicht aktualisi
 $string['errnograder'] = 'Kein Bewerter.';
 $string['errnofeedbackorratingdisabled'] = 'Keine Rückmeldung oder Bewertung ist deaktiviert.';
 
-// error_summary
+// Error summary.
 $string['errorsummary'] = 'Fehlerauswertung';
 $string['participant'] = 'TeilnehmerIn';
 $string['backtooverview'] = 'Zurück zur Übersicht';
@@ -190,7 +190,7 @@ $string['moveback'] = 'Weiter hinten anzeigen';
 $string['prioritychanged'] = 'Reihenfolge geändert';
 $string['prioritynotchanged'] = 'Reihenfolge konnte nicht geändert werden';
 
-// errortypes_form
+// Form: errortypes_form.
 $string['annotationcolor'] = 'Farbe des Fehlertyps';
 $string['standardtype'] = 'Standard Fehlertyp';
 $string['manualtype'] = 'Manueller Fehlertyp';
@@ -206,11 +206,11 @@ $string['explanationhexcolor'] = 'Farbe des Fehlertyps';
 $string['explanationhexcolor_help'] = 'Die Farbe des Fehlertypen als Hexadezimalwert. Dieser besteht aus genau 6 Zeichen (A-F sowie 0-9) und repräsentiert eine Farbe. Den Hexwert von beliebigen Farben kann man z. B. unter https://www.w3schools.com/colors/colors_picker.asp herausfinden.';
 $string['explanationstandardtype'] = 'Hier kann ausgewählt werden, ob der Fehlertyp ein Standardtyp sein soll. In diesem Fall kann er von allen Lehrenden für ihre Margics ausgewählt und dann in diesen verwendet werden. Andernfalls kann er nur von Ihnen selbst in Ihren Margics verwendet werden.';
 
-// Calendar
+// Calendar.
 $string['calendarend'] = '{$a} schließt';
 $string['calendarstart'] = '{$a} öffnet';
 
-// csv export
+// CSV export.
 $string['pluginname'] = 'Margic';
 $string['userid'] = 'Nutzer-ID';
 $string['timecreated'] = 'Zeitpunkt der Erstellung';
@@ -234,20 +234,21 @@ $string['margic:receivegradingmessages'] = 'Nachrichten über die Bewertung von 
 $string['margic:editdefaulterrortypes'] = 'Standardfehlertyp Vorlagen bearbeiten';
 $string['margic:viewannotations'] = 'Annotationen ansehen';
 $string['margic:makeannotations'] = 'Annotationen anlegen';
+$string['margic:deleteannotations'] = 'Annotationen löschen';
 
-// Recent activity
+// Recent activity.
 $string['newmargicentries'] = 'Neue Margic Einträge';
 
-// User complete
+// User complete.
 $string['noentry'] = 'Kein Eintrag';
 
-// Search
+// Search.
 $string['search'] = 'Suche';
 $string['search:activity'] = 'Margic - Informationen zur Aktivität';
 $string['search:entry'] = 'Margic Einträge';
 $string['search:feedback'] = 'Feedback zum Margic Eintrag';
 
-// Default error type templates
+// Default error type templates.
 $string['grammar_verb'] = 'Grammatik: Verbform';
 $string['grammar_syntax'] = 'Grammatik: Satzbau';
 $string['grammar_congruence'] = 'Grammatik: Kongruenz';
@@ -257,13 +258,13 @@ $string['orthography'] = 'Orthographie';
 $string['punctuation'] = 'Interpunktion';
 $string['other'] = 'Sonstiges';
 
-// lib
+// Lib.
 $string['deletealluserdata'] = 'Alle Einträge, deren Annotationen, Dateien und Bewertungen löschen';
 $string['alluserdatadeleted'] = 'Alle Einträge, deren Annotationen, Dateien und Bewertungen wurden entfernt';
 $string['deleteerrortypes'] = 'Fehlertypen löschen';
 $string['errortypesdeleted'] = 'Fehlertypen gelöscht';
 
-// messages
+// Messages.
 $string['messageprovider:gradingmessages'] = 'Systemnachrichten bei der Bewertung von Einträgen';
 $string['sendgradingmessage'] = 'Ersteller/in des Eintrags sofort über die Bewertung benachrichtigen';
 $string['gradingmailsubject'] = 'Feedback zu Margic-Eintrag erhalten';

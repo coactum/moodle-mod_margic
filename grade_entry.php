@@ -25,7 +25,7 @@
 use core\output\notification;
 use mod_margic\local\helper;
 
-require_once("../../config.php");
+require(__DIR__.'/../../config.php');
 require_once($CFG->dirroot . '/mod/margic/grading_form.php');
 require_once($CFG->dirroot . '/mod/margic/locallib.php');
 

@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Prints the annotation summary for the margic instance.
+ * Prints the error summary for the margic instance.
  *
  * @package     mod_margic
  * @copyright   2022 coactum GmbH

@@ -116,7 +116,7 @@
     mH <<= 1;
 
     mH |= hInIsNegative;
-    pH |= oneIfNotZero(hIn) - hInIsNegative; // set pH[0] if hIn > 0
+    pH |= oneIfNotZero(hIn) - hInIsNegative; // Set pH[0] if hIn > 0.
 
     pV = mH | ~(xV | pH);
     mV = pH & xV;

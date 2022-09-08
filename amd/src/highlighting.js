@@ -77,11 +77,11 @@ export function describe(root, range) {
 
         const textRange = TextRange.fromRange(range);
 
-        anchor = { annotation, target, range: textRange };
+        anchor = {annotation, target, range: textRange};
 
       } catch (err) {
 
-        anchor = { annotation, target };
+        anchor = {annotation, target};
       }
 
       return anchor;
@@ -436,10 +436,8 @@ function isNodeInRange(range, node) {
 
     for (var i = 0; i < highlights.length; i++) {
         if (highlights[i].parentNode) {
-            //var pn = highlights[i].parentNode;
             const children = Array.from(highlights[i].childNodes);
             replaceWith(highlights[i], children);
-            //pn.normalize(); // To Be removed?
         }
     }
 }

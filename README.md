@@ -37,7 +37,7 @@ Core features of the plugin:
 - Write and revise multimedia entries.
 - Individually customizable overview page with all (own) entries available in Margic
 - Extensive possibilities for annotation and evaluation of entries for teachers
-- Customizable error types and accurate error evaluation
+- Customizable error types and detailed error evaluation
 
 ## Quick installation instructions ##
 

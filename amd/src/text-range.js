@@ -10,12 +10,13 @@
  * Return the combined length of text nodes contained in `node`.
  *
  * @param {Node} node
+ * @return {string}
  */
 function nodeTextLength(node) {
   switch (node.nodeType) {
     case Node.ELEMENT_NODE:
     case Node.TEXT_NODE:
-      // nb. `textContent` excludes text in comments and processing instructions
+      // Nb. `textContent` excludes text in comments and processing instructions
       // when called on a parent element, so we don't need to subtract that here.
 
       return /** @type {string} */ (node.textContent).length;
@@ -28,6 +29,7 @@ function nodeTextLength(node) {
  * Return the total length of the text of all previous siblings of `node`.
  *
  * @param {Node} node
+ * @return {int}
  */
 function previousSiblingsTextLength(node) {
   let sibling = node.previousSibling;
@@ -67,7 +69,7 @@ function resolveOffsets(element, ...offsets) {
     textNode = /** @type {Text} */ (currentNode);
 
     if (length + textNode.data.length > nextOffset) {
-      results.push({ node: textNode, offset: nextOffset - length });
+      results.push({node: textNode, offset: nextOffset - length});
       nextOffset = offsets.shift();
     } else {
       currentNode = nodeIter.nextNode();
@@ -76,8 +78,8 @@ function resolveOffsets(element, ...offsets) {
   }
 
   // Boundary case.
-  while (nextOffset !== undefined && textNode && length === nextOffset) {
-    results.push({ node: textNode, offset: textNode.data.length });
+  while (nextOffset !== undefined && length === nextOffset) {
+    results.push({node: textNode, offset: textNode.data.length});
     nextOffset = offsets.shift();
   }
 
@@ -174,7 +176,7 @@ export class TextPosition {
         if (!text) {
           throw err;
         }
-        return { node: text, offset: forwards ? 0 : text.data.length };
+        return {node: text, offset: forwards ? 0 : text.data.length};
       } else {
         throw err;
       }

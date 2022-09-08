@@ -228,8 +228,6 @@ class provider implements \core_privacy\local\metadata\provider,
                     // Write it.
                     writer::with_context($context)->export_data([], $contextdata);
 
-                    // Todo: Store related metadata.
-
                     // Write generic module intro files.
                     helper::export_context_files($context, $user);
 

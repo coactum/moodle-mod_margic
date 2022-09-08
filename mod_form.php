@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot . '/course/moodleform_mod.php');
 
 /**
- * margic settings form.
+ * Margic activity settings form.
  *
  * @package   mod_margic
  * @copyright 2022 coactum GmbH

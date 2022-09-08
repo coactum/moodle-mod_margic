@@ -30,6 +30,7 @@ function xmldb_margic_install() {
 
     global $DB;
 
+    // Create default errortype templates.
     $errortype = new stdClass();
     $errortype->id = 1;
     $errortype->timecreated = time();
