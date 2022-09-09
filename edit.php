@@ -206,7 +206,7 @@ if ($form->is_cancelled()) {
 
         // Update timemodified for base entry.
         $baseentry = $DB->get_record('margic_entries', array('margic' => $moduleinstance->id, "id" => $newentry->baseentry));
-        $baseentry->timemodified = $fromform->timecreated;
+        $baseentry->timemodified = $newentry->timecreated;
         $DB->update_record('margic_entries', $baseentry);
 
         $newentry->feedback = $entry->feedback;

@@ -78,6 +78,10 @@ if ($edit !== 0) {
         $editedtype = $DB->get_record('margic_errortype_templates', array('id' => $edit));
     } else if ($mode == 2) { // If type is margic error type.
         $editedtype = $DB->get_record('margic_errortypes', array('id' => $edit));
+
+        if ($moduleinstance->id !== $editedtype->margic) {
+            redirect($redirecturl, get_string('errortypecantbeedited', 'mod_margic'), null, notification::NOTIFY_ERROR);
+        }
     }
 
     if ($editedtype && $mode == 2 ||
