@@ -63,14 +63,29 @@ class annotation_form extends moodleform {
         $mform->addElement('hidden', 'endcontainer', -1);
         $mform->setType('endcontainer', PARAM_RAW);
 
-        $mform->addElement('hidden', 'startposition', -1);
-        $mform->setType('startposition', PARAM_INT);
+        $mform->addElement('hidden', 'startoffset', -1);
+        $mform->setType('startoffset', PARAM_INT);
 
-        $mform->addElement('hidden', 'endposition', -1);
-        $mform->setType('endposition', PARAM_INT);
+        $mform->addElement('hidden', 'endoffset', -1);
+        $mform->setType('endoffset', PARAM_INT);
+
+        $mform->addElement('hidden', 'start', -1);
+        $mform->setType('start', PARAM_INT);
+
+        $mform->addElement('hidden', 'end', -1);
+        $mform->setType('end', PARAM_INT);
 
         $mform->addElement('hidden', 'annotationid', null);
         $mform->setType('annotationid', PARAM_INT);
+
+        $mform->addElement('hidden', 'exact', -1);
+        $mform->setType('exact', PARAM_RAW);
+
+        $mform->addElement('hidden', 'prefix', -1);
+        $mform->setType('prefix', PARAM_RAW);
+
+        $mform->addElement('hidden', 'suffix', -1);
+        $mform->setType('suffix', PARAM_RAW);
 
         $select = $mform->addElement('select', 'type', '', $this->_customdata['types']);
         $mform->setType('type', PARAM_INT);

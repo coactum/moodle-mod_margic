@@ -27,7 +27,6 @@ namespace mod_margic\event;
  * The mod_margic entry created class.
  *
  * @package   mod_margic
- * @since     Moodle 3.1
  * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -57,7 +56,7 @@ class entry_created extends \core\event\base {
      * @return string
      */
     public function get_description() {
-        return "The user with id '$this->userid' has created an entry for the margic activity with " .
+        return "The user with the id '$this->userid' has created the entry with the id '$this->objectid' for the margic activity with " .
             "the course module id '$this->contextinstanceid'";
     }
 
@@ -89,5 +88,12 @@ class entry_created extends \core\event\base {
             $this->objectid,
             $this->contextinstanceid
         );
+    }
+
+    /**
+     * Get objectid mapping for restore.
+     */
+    public static function get_objectid_mapping() {
+        return array('db' => 'margic_entries', 'restore' => 'margic_entry');
     }
 }

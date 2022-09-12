@@ -21,54 +21,39 @@
  * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later.
  */
+
 defined('MOODLE_INTERNAL') || die();
 
 if ($ADMIN->fulltree) {
 
-    // Availability settings.
-    $settings->add(new admin_setting_heading('mod_margic/availibility', get_string('availability'), ''));
+    // Editability settings.
+    $settings->add(new admin_setting_heading('margic/editability', get_string('editability', 'margic'), ''));
 
-    $settings->add(new admin_setting_configselect('margic/showrecentactivity',
-        get_string('showrecentactivity', 'margic'),
-        get_string('showrecentactivity', 'margic'), 1, array(
+    // Edit all own entries.
+    $settings->add(new admin_setting_configselect('margic/editentries',
+        get_string('editentries', 'margic'),
+        get_string('editentries_help', 'margic'), 1, array(
         '0' => get_string('no'),
         '1' => get_string('yes')
     )));
 
-    $settings->add(new admin_setting_configselect('margic/overview',
-        get_string('showoverview', 'margic'),
-        get_string('showoverview', 'margic'), 1, array(
-        '0' => get_string('no'),
-        '1' => get_string('yes')
-    )));
-
-    // 20201015 Default edit all entries setting.
-    $settings->add(new admin_setting_configselect('margic/editall',
-        get_string('editall', 'margic'),
-        get_string('editall_help', 'margic'), 1, array(
-        '0' => get_string('no'),
-        '1' => get_string('yes')
-    )));
-
-    // 20201119 Default edit the date of any entry setting.
-    $settings->add(new admin_setting_configselect('margic/editdates',
-        get_string('editdates', 'margic'),
-        get_string('editdates_help', 'margic'), 1, array(
+    // Change the date of any new entry.
+    $settings->add(new admin_setting_configselect('margic/editentrydates',
+        get_string('editentrydates', 'margic'),
+        get_string('editentrydates_help', 'margic'), 1, array(
         '0' => get_string('no'),
         '1' => get_string('yes')
     )));
 
     // Appearance settings.
-    $settings->add(new admin_setting_heading('mod_margic/appearance',
-        get_string('appearance'), ''));
+    $settings->add(new admin_setting_heading('margic/appearance', get_string('appearance'), ''));
 
-    // Date format setting.
-    $settings->add(new admin_setting_configtext('mod_margic/dateformat',
-        get_string('dateformat', 'margic'),
-        get_string('configdateformat', 'margic'), 'M d, Y G:i', PARAM_TEXT, 15));
+    // Default width of annotation area.
+    $settings->add(new admin_setting_configtext('margic/annotationareawidth', get_string('annotationareawidth', 'margic'),
+        get_string('annotationareawidthall', 'margic'), 40, '/^([2-7]\d|80)+$/')); // Range allowed: 20-80.
 
-    // margic entry/feedback background colour setting.
-    $name = 'mod_margic/entrybgc';
+    // Background color of entry and annotation area.
+    $name = 'margic/entrybgc';
     $title = get_string('entrybgc_title', 'margic');
     $description = get_string('entrybgc_descr', 'margic');
     $default = get_string('entrybgc_colour', 'margic');
@@ -76,11 +61,11 @@ if ($ADMIN->fulltree) {
     $setting->set_updatedcallback('theme_reset_all_caches');
     $settings->add($setting);
 
-    // margic entry text background colour setting.
-    $name = 'mod_margic/entrytextbgc';
-    $title = get_string('entrytextbgc_title', 'margic');
-    $description = get_string('entrytextbgc_descr', 'margic');
-    $default = get_string('entrytextbgc_colour', 'margic');
+    // Background color of texts.
+    $name = 'margic/textbgc';
+    $title = get_string('textbgc_title', 'margic');
+    $description = get_string('textbgc_descr', 'margic');
+    $default = get_string('textbgc_colour', 'margic');
     $setting = new admin_setting_configcolourpicker($name, $title, $description, $default);
     $setting->set_updatedcallback('theme_reset_all_caches');
     $settings->add($setting);

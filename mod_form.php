@@ -21,12 +21,13 @@
  * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/course/moodleform_mod.php');
 
 /**
- * margic settings form.
+ * Margic activity settings form.
  *
  * @package   mod_margic
  * @copyright 2022 coactum GmbH
@@ -40,7 +41,7 @@ class mod_margic_mod_form extends moodleform_mod {
      * @return void
      */
     public function definition() {
-        global $COURSE;
+        global $DB, $USER;
 
         $mform = &$this->_form;
 
@@ -54,52 +55,101 @@ class mod_margic_mod_form extends moodleform_mod {
 
         $this->standard_intro_elements(get_string('margicdescription', 'margic'));
 
-        // Add the availability header.
-        $mform->addElement('header', 'availibilityhdr', get_string('availability'));
+        $update = optional_param('update', null, PARAM_INT);
 
-        // 20200915 Moved check so daysavailable is hidden unless using weekly format.
-        if ($COURSE->format == 'weeks') {
-            $options = array();
-            $options[0] = get_string('alwaysopen', 'margic');
-            for ($i = 1; $i <= 13; $i ++) {
-                $options[$i] = get_string('numdays', '', $i);
-            }
-            for ($i = 2; $i <= 16; $i ++) {
-                $days = $i * 7;
-                $options[$days] = get_string('numweeks', '', $i);
-            }
-            $options[365] = get_string('numweeks', '', 52);
-            $mform->addElement('select', 'days', get_string('daysavailable', 'margic'), $options);
-            $mform->addHelpButton('days', 'daysavailable', 'margic');
+        if (!isset($update) || $update == 0) {
+            // Add the header for the error types.
+            $mform->addElement('header', 'errortypeshdr', get_string('errortypes', 'margic'));
+            $mform->setExpanded('errortypeshdr');
 
-            $mform->setDefault('days', '7');
-        } else {
-            $mform->setDefault('days', '0');
+            $select = "defaulttype = 1";
+            $select .= " OR userid = " . $USER->id;
+            $errortypetemplates = (array) $DB->get_records_select('margic_errortype_templates', $select);
+
+            $strmanager = get_string_manager();
+
+            $this->add_checkbox_controller(1);
+
+            foreach ($errortypetemplates as $id => $type) {
+                if ($type->defaulttype == 1) {
+                    $name = '<span style="margin-right: 10px; background-color: #' . $type->color . '" title="' . get_string('standardtype', 'mod_margic') .'">(S)</span>';
+                } else {
+                    $name = '<span style="margin-right: 10px; background-color: #' . $type->color . '" title="' . get_string('manualtype', 'mod_margic') .'">(M)</span>';
+                }
+
+                if ($type->defaulttype == 1 && $strmanager->string_exists($type->name, 'mod_margic')) {
+                    $name .= '<span>' . get_string($type->name, 'mod_margic') . '</span>';
+                } else {
+                    $name .= '<span>' . $type->name . '</span>';
+                }
+
+                $mform->addElement('advcheckbox', 'errortypes[' . $id . ']', $name, ' ', array('group' => 1), array(0, 1));
+            }
+
         }
 
+        // Add the header for availability.
+        $mform->addElement('header', 'availibilityhdr', get_string('availability'));
+
         $mform->addElement('date_time_selector', 'timeopen', get_string('margicopentime', 'margic'), array(
-            'optional' => true,
-            'step' => 1
+            'optional' => true
         ));
         $mform->addHelpButton('timeopen', 'margicopentime', 'margic');
 
         $mform->addElement('date_time_selector', 'timeclose', get_string('margicclosetime', 'margic'), array(
-            'optional' => true,
-            'step' => 1
+            'optional' => true
         ));
         $mform->addHelpButton('timeclose', 'margicclosetime', 'margic');
 
-        // 20201015 Added Edit all, enable/disable setting.
-        $mform->addElement('selectyesno', 'editall', get_string('editall', 'margic'));
-        $mform->addHelpButton('editall', 'editall', 'margic');
+        // Edit all setting if user can edit its own entries.
+        if (get_config('margic', 'editentries')) {
+            $mform->addElement('selectyesno', 'editentries', get_string('editentries', 'margic'));
+            $mform->addHelpButton('editentries', 'editentries', 'margic');
+            $mform->setDefault('editentries', 1);
+        }
 
-        // 20201119 Added Edit dates, enable/disable setting.
-        $mform->addElement('selectyesno', 'editdates', get_string('editdates', 'margic'));
-        $mform->addHelpButton('editdates', 'editdates', 'margic');
+        // Edit dates setting if user can modify entry date.
+        if (get_config('margic', 'editentrydates')) {
+            $mform->addElement('selectyesno', 'editentrydates', get_string('editentrydates', 'margic'));
+            $mform->addHelpButton('editentrydates', 'editentrydates', 'margic');
+            $mform->setDefault('editentrydates', 0);
+        }
+
+        // Add the header for appearance.
+        $mform->addElement('header', 'appearancehdr', get_string('appearance'));
+
+        // Width of the annotation area.
+        $mform->addElement('text', 'annotationareawidth', get_string('annotationareawidth', 'margic'));
+        $mform->setType('annotationareawidth', PARAM_INT);
+        $mform->addHelpButton('annotationareawidth', 'annotationareawidth', 'margic');
+
+        if (!isset($update) || $update == 0) { // If not updating existing instance set default to config value.
+            $mform->setDefault('annotationareawidth', get_config('margic', 'annotationareawidth'));
+        }
 
         // Add the rest of the common settings.
         $this->standard_grading_coursemodule_elements();
         $this->standard_coursemodule_elements();
         $this->add_action_buttons();
+    }
+
+    /**
+     * Validate form.
+     *
+     * @param object $data The data from the form.
+     * @param object $files The files from the form.
+     * @return object $errors The errors.
+     */
+    public function validation($data, $files) {
+        $errors = parent::validation($data, $files);
+
+        $minwidth = 20;
+        $maxwidth = 80;
+
+        if (!$data['annotationareawidth'] || $data['annotationareawidth'] < $minwidth || $data['annotationareawidth'] > $maxwidth) {
+            $errors['annotationareawidth'] = get_string('errannotationareawidthinvalid', 'margic', array('minwidth' => $minwidth, 'maxwidth' => $maxwidth));
+        }
+
+        return $errors;
     }
 }

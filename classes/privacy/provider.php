@@ -35,8 +35,6 @@ use core_privacy\local\request\contextlist;
 
 use core_privacy\local\request\user_preference_provider;
 
-use core_grades\component_gradeitem as gradeitem; // needed?
-
 /**
  * Privacy class for requesting user data.
  *
@@ -46,7 +44,8 @@ use core_grades\component_gradeitem as gradeitem; // needed?
  */
 class provider implements \core_privacy\local\metadata\provider,
                           \core_privacy\local\request\core_userlist_provider,
-                          \core_privacy\local\request\plugin\provider {
+                          \core_privacy\local\request\plugin\provider,
+                          \core_privacy\local\request\user_preference_provider {
 
     /**
      * Provides the meta data stored for usera stored by mod_margic.
@@ -64,9 +63,10 @@ class provider implements \core_privacy\local\metadata\provider,
             'timemodified' => 'privacy:metadata:margic_entries:timemodified',
             'text' => 'privacy:metadata:margic_entries:text',
             'rating' => 'privacy:metadata:margic_entries:rating',
-            'entrycomment' => 'privacy:metadata:margic_entries:entrycomment',
+            'feedback' => 'privacy:metadata:margic_entries:feedback',
             'teacher' => 'privacy:metadata:margic_entries:teacher',
             'timemarked' => 'privacy:metadata:margic_entries:timemarked',
+            'baseentry' => 'privacy:metadata:margic_entries:baseentry',
         ], 'privacy:metadata:margic_entries');
 
         // The table 'margic_annotations' stores the annotations made in all margics.
@@ -80,21 +80,22 @@ class provider implements \core_privacy\local\metadata\provider,
             'text' => 'privacy:metadata:margic_annotations:text',
         ], 'privacy:metadata:margic_annotations');
 
-        // The table 'margic_annotation_types' stores the annotation types of all margics.
-        $items->add_database_table('margic_annotation_types', [
-            'userid' => 'privacy:metadata:margic_annotation_types:userid',
-            'timecreated' => 'privacy:metadata:margic_annotation_types:timecreated',
-            'timemodified' => 'privacy:metadata:margic_annotation_types:timemodified',
-            'name' => 'privacy:metadata:margic_annotation_types:name',
-            'color' => 'privacy:metadata:margic_annotation_types:color',
-        ], 'privacy:metadata:margic_annotation_types');
+        // The table 'margic_errortype_templates' stores the errirtype templatess of all margics.
+        $items->add_database_table('margic_errortype_templates', [
+            'timecreated' => 'privacy:metadata:margic_errortype_templates:timecreated',
+            'timemodified' => 'privacy:metadata:margic_errortype_templates:timemodified',
+            'name' => 'privacy:metadata:margic_errortype_templates:name',
+            'color' => 'privacy:metadata:margic_errortype_templates:color',
+            'userid' => 'privacy:metadata:margic_errortype_templates:userid',
+        ], 'privacy:metadata:margic_errortype_templates');
 
         // The margic uses multiple subsystems that save personal data.
         $items->add_subsystem_link('core_files', [], 'privacy:metadata:core_files');
         $items->add_subsystem_link('core_rating', [], 'privacy:metadata:core_rating');
+        $items->add_subsystem_link('core_message', [], 'privacy:metadata:core_message');
 
         // User preferences in the margic.
-        $items->add_user_preference('sortoption', 'privacy:metadata:preference:sortoption');
+        $items->add_user_preference('margic_sortoption', 'privacy:metadata:preference:margic_sortoption');
         $items->add_user_preference('margic_pagecount', 'privacy:metadata:preference:margic_pagecount');
         $items->add_user_preference('margic_activepage', 'privacy:metadata:preference:margic_activepage');
 
@@ -139,8 +140,6 @@ class provider implements \core_privacy\local\metadata\provider,
          ";
 
         $contextlist->add_from_sql($sql, $params);
-
-        // Annotationtypes have no specific contexts.
 
         return $contextlist;
     }
@@ -229,14 +228,13 @@ class provider implements \core_privacy\local\metadata\provider,
                     // Write it.
                     writer::with_context($context)->export_data([], $contextdata);
 
-                    // Todo: Store related metadata.
-
                     // Write generic module intro files.
                     helper::export_context_files($context, $user);
 
                     self::export_entries_data($userid, $margic->id, $margic->contextid);
 
                     self::export_annotations_data($userid, $margic->id, $margic->contextid);
+
                 }
 
             }
@@ -265,10 +263,11 @@ class provider implements \core_privacy\local\metadata\provider,
                     e.text,
                     e.format,
                     e.rating,
-                    e.entrycomment,
-                    e.formatcomment,
+                    e.feedback,
+                    e.formatfeedback,
                     e.teacher,
-                    e.timemarked
+                    e.timemarked,
+                    e.baseentry
                    FROM {margic_entries} e
                    WHERE (
                     e.margic = :margicid AND
@@ -305,15 +304,34 @@ class provider implements \core_privacy\local\metadata\provider,
      */
     protected static function export_entry_data(int $userid, \context $context, $subcontext, $entry) {
 
+        if ($entry->timecreated != 0) {
+            $timecreated = transform::datetime($entry->timecreated);
+        } else {
+            $timecreated = null;
+        }
+
+        if ($entry->timemodified != 0) {
+            $timemodified = transform::datetime($entry->timemodified);
+        } else {
+            $timemodified = null;
+        }
+
+        if ($entry->timemarked != 0) {
+            $timemarked = transform::datetime($entry->timemarked);
+        } else {
+            $timemarked = null;
+        }
+
         // Store related metadata.
         $entrydata = (object) [
             'margic' => $entry->margic,
             'userid' => $entry->userid,
-            'timecreated' => transform::datetime($entry->timecreated),
-            'timemodified' => transform::datetime($entry->timemodified),
+            'timecreated' => $timecreated,
+            'timemodified' => $timemodified,
             'rating' => $entry->rating,
             'teacher' => $entry->teacher,
-            'timemarked' => transform::datetime($entry->timemarked),
+            'timemarked' => $timemarked,
+            'baseentry' => $entry->baseentry,
         ];
 
         $entrydata->text = writer::with_context($context)->rewrite_pluginfile_urls($subcontext, 'mod_margic', 'entry', $entry->id, $entry->text);
@@ -323,9 +341,9 @@ class provider implements \core_privacy\local\metadata\provider,
             'context' => $context,
         ]);
 
-        $entrydata->entrycomment = writer::with_context($context)->rewrite_pluginfile_urls($subcontext, 'mod_margic', 'feedback', $entry->id, $entry->entrycomment);
+        $entrydata->feedback = writer::with_context($context)->rewrite_pluginfile_urls($subcontext, 'mod_margic', 'feedback', $entry->id, $entry->feedback);
 
-        $entrydata->entrycomment = format_text($entrydata->entrycomment, $entry->formatcomment, (object) [
+        $entrydata->feedback = format_text($entrydata->feedback, $entry->formatfeedback, (object) [
             'para'    => false,
             'context' => $context,
         ]);
@@ -396,19 +414,64 @@ class provider implements \core_privacy\local\metadata\provider,
      */
     protected static function export_annotation_data(int $userid, \context $context, $subcontext, $annotation) {
 
+        if ($annotation->timemodified != 0) {
+            $timemodified = transform::datetime($annotation->timemodified);
+        } else {
+            $timemodified = null;
+        }
+
         // Store related metadata.
         $annotationdata = (object) [
             'margic' => $annotation->margic,
             'entry' => $annotation->entry,
             'userid' => $annotation->userid,
             'timecreated' => transform::datetime($annotation->timecreated),
-            'timemodified' => transform::datetime($annotation->timemodified),
+            'timemodified' => $timemodified,
             'type' => $annotation->type,
             'text' => format_text($annotation->text, 2, array('para' => false)),
         ];
 
         // Store the annotation data.
         writer::with_context($context)->export_data($subcontext, $annotationdata);
+    }
+
+    /**
+     * Store all user preferences for the plugin.
+     *
+     * @param   int         $userid The userid of the user whose data is to be exported.
+     */
+    public static function export_user_preferences(int $userid) {
+        $user = \core_user::get_user($userid);
+
+        if ($margicsortoption = get_user_preferences('margic_sortoption', 0, $userid)) {
+            switch ($margicsortoption) {
+                case 1:
+                    $sortoption = get_string('currenttooldest', 'mod_margic');
+                    break;
+                case 2:
+                    $sortoption = get_string('oldesttocurrent', 'mod_margic');
+                    break;
+                case 3:
+                    $sortoption = get_string('lowestgradetohighest', 'mod_margic');
+                    break;
+                case 4:
+                    $sortoption = get_string('highestgradetolowest', 'mod_margic');
+                    break;
+                default:
+                    $sortoption = get_string('currenttooldest', 'mod_margic');
+                    break;
+            }
+
+            writer::export_user_preference('mod_margic', 'margic_sortoption', $margicsortoption, $sortoption);
+        }
+
+        if ($margicpagecount = get_user_preferences('margic_pagecount', 0, $userid)) {
+            writer::export_user_preference('mod_margic', 'margic_pagecount', $margicpagecount, get_string('privacy:metadata:preference:margic_pagecount', 'mod_margic'));
+        }
+
+        if ($margicactivepage = get_user_preferences('margic_activepage', 0, $userid)) {
+            writer::export_user_preference('mod_margic', 'margic_activepage', $margicactivepage, get_string('privacy:metadata:preference:margic_activepage', 'mod_margic'));
+        }
     }
 
     /**
@@ -429,13 +492,7 @@ class provider implements \core_privacy\local\metadata\provider,
             return;
         }
 
-        // Delete advanced grading information.
-        /* $gradingmanager = get_grading_manager($context, 'mod_margic', 'margic');
-        $controller = $gradingmanager->get_active_controller();
-
-        if (isset($controller)) {
-            \core_grading\privacy\provider::delete_instance_data($context);
-        } */
+        // Delete advanced grading information (not implemented yet).
 
         // Delete all ratings in the context.
         \core_rating\privacy\provider::delete_ratings($context, 'mod_margic', 'entry');
@@ -470,16 +527,7 @@ class provider implements \core_privacy\local\metadata\provider,
             // Get the course module.
             $cm = $DB->get_record('course_modules', ['id' => $context->instanceid]);
 
-            // Handle any advanced grading method data first.
-            /* $grades = $DB->get_records('margic_entries', ['margic' => $cm->instance, 'userid' => $userid]);
-            $gradingmanager = get_grading_manager($context, 'margic_entries', 'margic');
-            $controller = $gradingmanager->get_active_controller();
-            foreach ($grades as $grade) {
-                // Delete advanced grading information.
-                if (isset($controller)) {
-                    \core_grading\privacy\provider::delete_instance_data($context, $grade->id);
-                }
-            } */
+            // Handle any advanced grading method data first (not implemented yet).
 
             // Delete ratings.
             $entriessql = "SELECT
@@ -529,7 +577,6 @@ class provider implements \core_privacy\local\metadata\provider,
                 ]);
 
             }
-
         }
     }
 
@@ -547,16 +594,7 @@ class provider implements \core_privacy\local\metadata\provider,
         list($userinsql, $userinparams) = $DB->get_in_or_equal($userlist->get_userids(), SQL_PARAMS_NAMED);
         $params = array_merge(['margicid' => $cm->instance], $userinparams);
 
-        // Handle any advanced grading method data first.
-        /* $grades = $DB->get_records('margic_entries', ['margic' => $cm->instance, 'userid' => $userid]);
-        $gradingmanager = get_grading_manager($context, 'margic_entries', 'margic');
-        $controller = $gradingmanager->get_active_controller();
-        foreach ($grades as $grade) {
-            // Delete advanced grading information.
-            if (isset($controller)) {
-                \core_grading\privacy\provider::delete_instance_data($context, $grade->id);
-            }
-        } */
+        // Handle any advanced grading method data first (not implemented yet).
 
         // Delete ratings.
         $entriesselect = "SELECT

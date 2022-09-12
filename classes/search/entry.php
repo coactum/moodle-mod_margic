@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * margic entries search.
+ * Margic entries search.
  *
  * @package   mod_margic
  * @copyright 2022 coactum GmbH
@@ -29,7 +29,7 @@ require_once($CFG->dirroot . '/mod/margic/lib.php');
 require_once($CFG->dirroot . '/lib/grouplib.php');
 
 /**
- * margic entries search.
+ * Margic entries search.
  *
  * @package   mod_margic
  * @copyright 2022 coactum GmbH
@@ -53,17 +53,17 @@ class entry extends \core_search\base_mod {
     public function get_document_recordset($modifiedfrom = 0, \context $context = null) {
         global $DB;
 
-        list ($contextjoin, $contextparams) = $this->get_context_restriction_sql($context, 'margic', 'd', SQL_PARAMS_NAMED);
+        list ($contextjoin, $contextparams) = $this->get_context_restriction_sql($context, 'margic', 'm', SQL_PARAMS_NAMED);
         if ($contextjoin === null) {
             return null;
         }
 
-        $sql = "SELECT de.*, d.course
-                  FROM {margic_entries} de
-                  JOIN {margic} d ON d.id = de.margic
+        $sql = "SELECT me.*, m.course
+                  FROM {margic_entries} me
+                  JOIN {margic} m ON m.id = me.margic
           $contextjoin
-                 WHERE de.timemodified >= :timemodified
-              ORDER BY de.timemodified ASC";
+                 WHERE me.timemodified >= :timemodified
+              ORDER BY me.timemodified ASC";
         return $DB->get_recordset_sql($sql, array_merge($contextparams, [
             'timemodified' => $modifiedfrom
         ]));
@@ -94,14 +94,14 @@ class entry extends \core_search\base_mod {
         // Prepare associative array with data from DB.
         $doc = \core_search\document_factory::instance($entry->id, $this->componentname, $this->areaname);
         // I am using the entry date (timecreated) for the title.
-        $doc->set('title', content_to_text((date(get_config('mod_margic', 'dateformat'), $entry->timecreated)), $entry->format));
+        $doc->set('title', content_to_text((userdate($entry->timecreated)), $entry->format));
         $doc->set('content', content_to_text('Entry: ' . $entry->text, $entry->format));
         $doc->set('contextid', $context->id);
         $doc->set('courseid', $entry->course);
         $doc->set('userid', $entry->userid);
         $doc->set('owneruserid', \core_search\manager::NO_OWNER_ID);
         $doc->set('modified', $entry->timemodified);
-        $doc->set('description1', content_to_text('Feedback: ' . $entry->entrycomment, $entry->format));
+        $doc->set('description1', content_to_text('Feedback: ' . $entry->feedback, $entry->formatfeedback));
 
         // Check if this document should be considered new.
         if (isset($options['lastindexedtime']) && ($options['lastindexedtime'] < $entry->timemodified)) {
@@ -154,12 +154,8 @@ class entry extends \core_search\base_mod {
         $contextmodule = \context::instance_by_id($doc->get('contextid'));
 
         $entryuserid = $doc->get('userid');
-        if ($entryuserid == $USER->id) {
-            $url = '/mod/margic/view.php';
-        } else {
-            // Teachers see student's entries in the report page.
-            $url = '/mod/margic/report.php#entry-' . $entryuserid;
-        }
+        $url = '/mod/margic/view.php';
+
         return new \moodle_url($url, array(
             'id' => $contextmodule->instanceid
         ));
@@ -189,8 +185,8 @@ class entry extends \core_search\base_mod {
      */
     protected function get_entry($entryid) {
         global $DB;
-        return $DB->get_record_sql("SELECT de.*, d.course FROM {margic_entries} de
-                                      JOIN {margic} d ON d.id = de.margic
-                                     WHERE de.id = ?", array('id' => $entryid), MUST_EXIST);
+        return $DB->get_record_sql("SELECT me.*, m.course FROM {margic_entries} me
+                                      JOIN {margic} m ON m.id = me.margic
+                                     WHERE me.id = ?", array('id' => $entryid), MUST_EXIST);
     }
 }

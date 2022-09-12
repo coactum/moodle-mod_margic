@@ -15,122 +15,106 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Define all the backup steps that will be used by the backup_margic_activity_task
+ * Backup steps for mod_margic are defined here.
  *
- * @package mod_margic
- * @copyright 2022 coactum GmbH
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package     mod_margic
+ * @category    backup
+ * @copyright   2022 coactum GmbH
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 /**
- * Define the complete margic structure for backup, with file and id annotations.
- *
- * @package mod_margic
- * @copyright 2022 coactum GmbH
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * Define the complete structure for backup, with file and id annotations.
  */
 class backup_margic_activity_structure_step extends backup_activity_structure_step {
 
     /**
-     * Define the complete data structure for backup, with file and id annotations
+     * Defines the structure of the resulting xml file.
      *
-     * @return void
+     * @return backup_nested_element The structure wrapped by the common 'activity' element.
      */
     protected function define_structure() {
-
-        // To know if we are including userinfo.
         $userinfo = $this->get_setting_value('userinfo');
 
-        // Define each element separated.
-        $margic = new backup_nested_element('margic', array('id'),
-                                           array('name',
-                                                 'intro',
-                                                 'introformat',
-                                                 'days',
-                                                 'scale',
-                                                 'assessed',
-                                                 'assesstimestart',
-                                                 'assesstimefinish',
-                                                 'timemodified',
-                                                 'timeopen',
-                                                 'timeclose',
-                                                  'editall'));
+        // Replace with the attributes and final elements that the element will handle.
+        $margic = new backup_nested_element('margic', array('id'), array(
+            'name', 'intro', 'introformat', 'timecreated', 'timemodified',
+            'scale', 'assessed', 'assesstimestart', 'assesstimefinish',
+            'timeopen', 'timeclose', 'editentries', 'editentrydates', 'annotationareawidth'));
+
+        $errortypes = new backup_nested_element('errortypes');
+        $errortype = new backup_nested_element('errortype', array('id'), array(
+            'timecreated', 'timemodified', 'name', 'color', 'priority'));
 
         $entries = new backup_nested_element('entries');
-        $entry = new backup_nested_element('entry', array('id'),
-                                           array('userid',
-                                                 'timecreated',
-                                                 'timemodified',
-                                                 'text',
-                                                 'format',
-                                                 'rating',
-                                                 'entrycomment',
-                                                 'teacher',
-                                                 'timemarked',
-                                                 'mailed'));
+        $entry = new backup_nested_element('entry', array('id'), array(
+            'userid', 'timecreated', 'timemodified', 'text', 'format',
+            'rating', 'feedback', 'formatfeedback', 'teacher',
+            'timemarked', 'baseentry'));
 
-        $tags = new backup_nested_element('entriestags');
-        $tag = new backup_nested_element('tag', array('id'),
-                                         array('itemid',
-                                               'rawname'));
+        $annotations = new backup_nested_element('annotations');
+        $annotation = new backup_nested_element('annotation', array('id'), array(
+            'userid', 'timecreated', 'timemodified', 'type', 'startcontainer', 'endcontainer',
+            'startoffset', 'endoffset', 'start', 'end', 'exact', 'prefix', 'suffix', 'text'));
 
         $ratings = new backup_nested_element('ratings');
-        $rating = new backup_nested_element('rating', array('id'),
-                                            array('component',
-                                                  'ratingarea',
-                                                  'scaleid',
-                                                  'value',
-                                                  'userid',
-                                                  'timecreated',
-                                                  'timemodified'));
+        $rating = new backup_nested_element('rating', array('id'), array(
+            'component', 'ratingarea', 'scaleid', 'value', 'userid',
+            'timecreated', 'timemodified'));
 
-        // Build the tree.
+        // Build the tree with these elements with $margic as the root of the backup tree.
+        $margic->add_child($errortypes);
+        $errortypes->add_child($errortype);
+
         $margic->add_child($entries);
         $entries->add_child($entry);
+
+        $entry->add_child($annotations);
+        $annotations->add_child($annotation);
+
         $entry->add_child($ratings);
         $ratings->add_child($rating);
-        $margic->add_child($tags);
-        $tags->add_child($tag);
 
-        // Define sources.
+        // Define the source tables for the elements.
+
         $margic->set_source_table('margic', array('id' => backup::VAR_ACTIVITYID));
 
-        // All the rest of elements only happen if we are including user info.
-        if ($this->get_setting_value('userinfo')) {
+        // Errortypes.
+        $errortype->set_source_table('margic_errortypes', array('margic' => backup::VAR_PARENTID));
+
+        if ($userinfo) {
+
+            // Entries.
             $entry->set_source_table('margic_entries', array('margic' => backup::VAR_PARENTID));
 
+            // Annotations.
+            $annotation->set_source_table('margic_annotations', array('entry' => backup::VAR_PARENTID));
+
+            // Ratings (core).
             $rating->set_source_table('rating', array('contextid'  => backup::VAR_CONTEXTID,
                                                       'itemid'     => backup::VAR_PARENTID,
                                                       'component'  => backup_helper::is_sqlparam('mod_margic'),
                                                       'ratingarea' => backup_helper::is_sqlparam('entry')));
 
             $rating->set_source_alias('rating', 'value');
-
-            if (core_tag_tag::is_enabled('mod_margic', 'margic_entries')) {
-                $tag->set_source_sql('SELECT t.id, ti.itemid, t.rawname
-                                        FROM {tag} t
-                                        JOIN {tag_instance} ti
-                                          ON ti.tagid = t.id
-                                       WHERE ti.itemtype = ?
-                                         AND ti.component = ?
-                                         AND ti.contextid = ?', array(
-                    backup_helper::is_sqlparam('margic_entries'),
-                    backup_helper::is_sqlparam('mod_margic'),
-                    backup::VAR_CONTEXTID));
-            }
         }
 
         // Define id annotations.
         $margic->annotate_ids('scale', 'scale');
-        $entry->annotate_ids('user', 'userid');
-        $entry->annotate_ids('user', 'teacher');
         $rating->annotate_ids('scale', 'scaleid');
         $rating->annotate_ids('user', 'userid');
 
+        if ($userinfo) {
+            $entry->annotate_ids('user', 'userid');
+            $entry->annotate_ids('user', 'teacher');
+            $annotation->annotate_ids('user', 'userid');
+        }
+
         // Define file annotations.
-        $margic->annotate_files('mod_margic', 'intro', null); // This file areas haven't itemid.
-        $entry->annotate_files('mod_margic_entries', 'entry', 'id');
-        $entry->annotate_files('mod_margic_entries', 'attachment', 'id');
+        // component, filearea, elementname.
+        $margic->annotate_files('mod_margic', 'intro', null); // This file area has no itemid.
+        $entry->annotate_files('mod_margic', 'entry', 'id');
+        $entry->annotate_files('mod_margic', 'feedback', 'id');
 
         return $this->prepare_activity_structure($margic);
     }

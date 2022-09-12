@@ -23,7 +23,7 @@
  */
 
 use mod_margic\output\margic_view;
-use mod_margic\local\results;
+use mod_margic\local\helper;
 use core\output\notification;
 
 require(__DIR__.'/../../config.php');
@@ -46,7 +46,7 @@ $action = optional_param('action',  'currententry', PARAM_ALPHANUMEXT);
 $pagecount = optional_param('pagecount', 0, PARAM_INT);
 
 // Param containing the active page.
-$page = optional_param('page', 1, PARAM_INT);
+$page = optional_param('page', 0, PARAM_INT);
 
 // Param if annotation mode is activated.
 $annotationmode = optional_param('annotationmode',  0, PARAM_BOOL); // Annotation mode.
@@ -82,7 +82,7 @@ $canmanageentries = has_capability('mod/margic:manageentries', $context);
 $canaddentries = has_capability('mod/margic:addentries', $context);
 
 if (!$canaddentries) {
-    throw new moodle_exception(get_string('accessdenied', 'margic'));
+    throw new moodle_exception(get_string('erraccessdenied', 'margic'));
 }
 
 if ($pagecount) {
@@ -92,13 +92,22 @@ if ($pagecount) {
 
 // Toolbar action handler for download.
 if (!empty($action) && $action == 'download' && has_capability('mod/margic:addentries', $context)) {
+    require_sesskey();
+
     // Call download entries function in lib.php.
-    results::download_entries($context, $course, $moduleinstance);
+    helper::download_entries($context, $course, $moduleinstance);
+
+    // Trigger module margic entries downloaded event.
+    $event = \mod_margic\event\download_margic_entries::create(array(
+        'objectid' => $id,
+        'context' => $context
+    ));
+    $event->trigger();
 }
 
 // Trigger course_module_viewed event.
 $event = \mod_margic\event\course_module_viewed::create(array(
-    'objectid' => $moduleinstance->id,
+    'objectid' => $id,
     'context' => $context
 ));
 $event->add_record_snapshot('course_modules', $cm);
@@ -125,8 +134,7 @@ if ($annotationmode === 1 && has_capability('mod/margic:viewannotations', $conte
     $PAGE->navbar->add(get_string('viewannotations', 'mod_margic'));
 
     $PAGE->requires->js_call_amd('mod_margic/annotations', 'init',
-        array('annotations' => $margic->get_annotations(),
-            'canmakeannotations' => $canmakeannotations));
+        array( 'cmid' => $cm->id, 'canmakeannotations' => $canmakeannotations, 'myuserid' => $USER->id));
 } else {
     // Header.
     $PAGE->set_url('/mod/margic/view.php', array(
@@ -147,29 +155,9 @@ if ($moduleinstance->intro) {
     echo $OUTPUT->box(format_module_intro('margic', $moduleinstance, $cm->id), 'generalbox mod_introbox', 'newmoduleintro');
 }
 
-// Set start and finish time. Needs to be reworked/simplified?
-if ($course->format == 'weeks' and $moduleinstance->days) {
-    $timestart = $course->startdate + (($coursesections->section - 1) * 604800);
-    if ($moduleinstance->days) {
-        $timefinish = $timestart + (3600 * 24 * $moduleinstance->days);
-    } else {
-        $timefinish = $course->enddate;
-    }
-} else if (! ((($moduleinstance->timeopen == 0 || time() >= $moduleinstance->timeopen)
-    && ($moduleinstance->timeclose == 0 || time() < $moduleinstance->timeclose)))) { // If margic is not available?
-    // If used, set calendar availability time limits on the margics.
-    $timestart = $moduleinstance->timeopen;
-    $timefinish = $moduleinstance->timeclose;
-    $moduleinstance->days = 0;
-} else {
-    // Have no time limits on the margics.
-    $timestart = false;
-    $timefinish = false;
-}
-
 // Get grading of current user when margic is rated.
 if ($moduleinstance->assessed != 0) {
-    $ratingaggregationmode = results::get_margic_aggregation($moduleinstance->assessed) . ' ' . get_string('forallmyentries', 'mod_margic');
+    $ratingaggregationmode = helper::get_margic_aggregation($moduleinstance->assessed) . ' ' . get_string('forallmyentries', 'mod_margic');
     $gradinginfo = grade_get_grades($course->id, 'mod', 'margic', $moduleinstance->id, $USER->id);
     $userfinalgrade = $gradinginfo->items[0]->grades[$USER->id];
     $currentuserrating = $userfinalgrade->str_long_grade;
@@ -178,26 +166,19 @@ if ($moduleinstance->assessed != 0) {
     $currentuserrating = false;
 }
 
-$timenow = time();
-if (!$moduleinstance->timeclose) {
-    $edittimehasended = false;
-    $edittimeends = false;
-} else if ($moduleinstance->timeclose && $timenow < $moduleinstance->timeclose) {
-    $edittimehasended = false;
-    $edittimeends = $moduleinstance->timeclose;
-} else if ($moduleinstance->timeclose && $timenow >= $moduleinstance->timeclose) {
-    $edittimehasended = true;
-    $edittimeends = $moduleinstance->timeclose;
-}
-
 // Handle groups.
 echo groups_print_activity_menu($cm, $CFG->wwwroot . "/mod/margic/view.php?id=$id");
 
+$edittimes = helper::margic_get_edittime_options($moduleinstance);
+
 // Output page.
-$page = new margic_view($cm, $context, $moduleinstance, $margic->get_entries_grouped_by_pagecount(), $margic->get_sortmode(),
-    get_config('mod_margic', 'entrybgc'), get_config('mod_margic', 'entrytextbgc'), $moduleinstance->editall,
-    $edittimeends, $edittimehasended, $canmanageentries, sesskey(), $currentuserrating, $ratingaggregationmode, $course,
-    $userid, $margic->get_pagecountoptions(), $margic->get_pagebar(), count($margic->get_entries()), $annotationmode, $canmakeannotations, $margic->get_annotationtypes_for_form());
+$page = new margic_view($margic, $cm, $context, $moduleinstance, $margic->get_entries_grouped_by_pagecount(),
+    $margic->get_sortmode(), get_config('margic', 'entrybgc'), get_config('margic', 'textbgc'),
+    $margic->get_annotationarea_width(), $moduleinstance->editentries, $edittimes->edittimestarts,
+    $edittimes->edittimenotstarted, $edittimes->edittimeends, $edittimes->edittimehasended, $canmanageentries,
+    sesskey(), $currentuserrating, $ratingaggregationmode, $course, $userid, $margic->get_pagecountoptions(),
+    $margic->get_pagebar(), count($margic->get_entries()), $annotationmode, $canmakeannotations,
+    $margic->get_errortypes_for_form());
 
 echo $OUTPUT->render($page);
 

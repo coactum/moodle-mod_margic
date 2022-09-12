@@ -22,7 +22,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once(__DIR__ . "/../../config.php");
+require(__DIR__.'/../../config.php');
 require_once("lib.php");
 
 $id = required_param('id', PARAM_INT); // Course.
@@ -114,7 +114,7 @@ foreach ($margics as $margic) {
     }
 
     // Description.
-    $table->data[$i][] = format_text($margic->intro, $margic->introformat);
+    $table->data[$i][] = format_module_intro('margic', $margic, $margic->coursemodule);
 
     $i ++;
 }

@@ -50,7 +50,8 @@ class activity extends \core_search\base_activity {
     public function get_search_fileareas() {
         $fileareas = array(
             'intro',
-            MARGIC_INTROATTACHMENT_FILEAREA
+            'entry',
+            'feedback'
         ); // Fileareas.
         return $fileareas;
     }

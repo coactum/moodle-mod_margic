@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Class containing data for margic annotations summary
+ * Class containing data for margic error summary
  *
  * @package     mod_margic
  * @copyright   2022 coactum GmbH
@@ -29,32 +29,39 @@ use templatable;
 use stdClass;
 
 /**
- * Class containing data for margic annotations summary
+ * Class containing data for margic error summary
  *
  * @package     mod_margic
  * @copyright   2022 coactum GmbH
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class margic_annotations_summary implements renderable, templatable {
+class margic_error_summary implements renderable, templatable {
 
     /** @var int */
     protected $cmid;
     /** @var object */
     protected $participants;
     /** @var object */
-    protected $annotationtypes;
-
+    protected $margicerrortypes;
+    /** @var object */
+    protected $errortypetemplates;
+    /** @var string */
+    protected $sesskey;
     /**
      * Construct this renderable.
      * @param int $cmid The course module id
      * @param array $participants The participants of the margic instance
-     * @param array $annotationtypes The annotation types of the margic instance
+     * @param array $margicerrortypes The errortypes used in the margic instance
+     * @param array $errortypetemplates The errortype templates available for the current user
+     * @param string $sesskey The session key
      */
-    public function __construct($cmid, $participants, $annotationtypes) {
+    public function __construct($cmid, $participants, $margicerrortypes, $errortypetemplates, $sesskey) {
 
         $this->cmid = $cmid;
         $this->participants = $participants;
-        $this->annotationtypes = $annotationtypes;
+        $this->margicerrortypes = $margicerrortypes;
+        $this->errortypetemplates = $errortypetemplates;
+        $this->sesskey = $sesskey;
     }
 
     /**
@@ -67,7 +74,9 @@ class margic_annotations_summary implements renderable, templatable {
         $data = new stdClass();
         $data->cmid = $this->cmid;
         $data->participants = $this->participants;
-        $data->annotationtypes = $this->annotationtypes;
+        $data->margicerrortypes = $this->margicerrortypes;
+        $data->errortypetemplates = $this->errortypetemplates;
+        $data->sesskey = $this->sesskey;
 
         return $data;
     }

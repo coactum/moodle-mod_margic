@@ -53,9 +53,9 @@ class mod_margic_entry_form extends moodleform {
         $mform->addElement('hidden', 'entryid');
         $mform->setType('entryid', PARAM_INT);
 
-        $editdates = $this->_customdata['editoroptions']['editdates'];
+        $editentrydates = $this->_customdata['editoroptions']['editentrydates'];
 
-        if ($editdates) {
+        if ($editentrydates) {
             // Add date selector if entry dates can be edited.
             $mform->addElement('date_time_selector', 'timecreated', get_string('margicentrydate', 'margic'));
             $mform->setType('timecreated', PARAM_INT);

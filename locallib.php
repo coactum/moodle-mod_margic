@@ -23,7 +23,7 @@
  */
 
 use mod_margic\local\entrystats;
-use mod_margic\local\results;
+use mod_margic\local\helper;
 
 /**
  * Base class for mod_margic.
@@ -68,7 +68,7 @@ class margic {
     private $annotations = array();
 
     /** @var array Array with all types of annotations */
-    private $annotationtypes = array();
+    private $errortypes = array();
 
     /** @var array Array of error messages encountered during the execution of margic related operations. */
     private $errors = array();
@@ -84,6 +84,21 @@ class margic {
      * @param int $page int The current page number
      */
     public function __construct($id, $m, $userid, $action, $pagecount, $page) {
+
+        /**
+         * Custom sort function for sorting annotations by absolute start position.
+         *
+         * @param int $a First annotation
+         * @param int $b Second annotation
+         * @return bool Sort result
+         */
+        function sortannotation($a, $b) {
+            if ($a->start === $b->start) {
+                return $a->end > $b->end;
+            }
+
+            return $a->start > $b->start;
+        }
 
         global $DB, $USER;
 
@@ -109,18 +124,17 @@ class margic {
 
         $this->annotations = $DB->get_records('margic_annotations', array('margic' => $this->get_course_module()->instance));
 
-        $select = "defaulttype = 1";
-        $select .= " OR userid = " . $USER->id;
-        $this->annotationtypes = (array) $DB->get_records_select('margic_annotation_types', $select);
+        $select = "margic = " . $this->instance->id;
+        $this->errortypes = (array) $DB->get_records_select('margic_errortypes', $select, null, 'priority ASC');
 
         foreach ($this->annotations as $key => $annotation) {
 
-            if (!array_key_exists($annotation->type, $this->annotationtypes) && $DB->record_exists('margic_annotation_types', array('id' => $annotation->type))) {
-                $this->annotationtypes[$annotation->type] = $DB->get_record('margic_annotation_types', array('id' => $annotation->type));
+            if (!array_key_exists($annotation->type, $this->errortypes) && $DB->record_exists('margic_errortypes', array('id' => $annotation->type))) {
+                $this->errortypes[$annotation->type] = $DB->get_record('margic_errortypes', array('id' => $annotation->type));
             }
 
-            if (isset($this->annotationtypes[$annotation->type])) {
-                $this->annotations[$key]->color = $this->annotationtypes[$annotation->type]->color;
+            if (isset($this->errortypes[$annotation->type])) {
+                $this->annotations[$key]->color = $this->errortypes[$annotation->type]->color;
             }
 
         }
@@ -136,34 +150,35 @@ class margic {
         if (has_capability('mod/margic:addentries', $context)) {
             switch ($action) {
                 case 'currenttooldest':
-                    set_user_preference('sortoption['.$id.']', 1);
+                    require_sesskey();
+                    set_user_preference('margic_sortoption', 1);
                     break;
                 case 'oldesttocurrent':
-                    set_user_preference('sortoption['.$id.']', 2);
+                    require_sesskey();
+                    set_user_preference('margic_sortoption', 2);
                     break;
                 case 'lowestgradetohighest':
-                    set_user_preference('sortoption['.$id.']', 3);
+                    require_sesskey();
+                    set_user_preference('margic_sortoption', 3);
                     break;
                 case 'highestgradetolowest':
-                    set_user_preference('sortoption['.$id.']', 4);
-                    break;
-                case 'latestmodified':
-                    set_user_preference('sortoption['.$id.']', 5);
+                    require_sesskey();
+                    set_user_preference('margic_sortoption', 4);
                     break;
                 default:
-                    if (!get_user_preferences('sortoption['.$id.']')) {
-                        set_user_preference('sortoption['.$id.']', 1);
+                    if (!get_user_preferences('margic_sortoption')) {
+                        set_user_preference('margic_sortoption', 1);
                     }
             }
 
-            switch (get_user_preferences('sortoption['.$id.']')) {
+            switch (get_user_preferences('margic_sortoption')) {
                 case 1:
                     $this->sortmode = get_string('currententry', 'mod_margic');
-                    $sortoptions = 'timecreated DESC';
+                    $sortoptions = 'timemodified DESC';
                     break;
                 case 2:
                     $this->sortmode = get_string('oldestentry', 'mod_margic');
-                    $sortoptions = 'timecreated ASC';
+                    $sortoptions = 'timemodified ASC';
                     break;
                 case 3:
                     $this->sortmode = get_string('lowestgradeentry', 'mod_margic');
@@ -173,13 +188,9 @@ class margic {
                     $this->sortmode = get_string('highestgradeentry', 'mod_margic');
                     $sortoptions = 'rating DESC, timemodified DESC';
                     break;
-                case 5:
-                    $this->sortmode = get_string('latestmodifiedentry', 'mod_margic');
-                    $sortoptions = 'timemodified DESC, timecreated DESC';
-                    break;
                 default:
                     $this->sortmode = get_string('currententry', 'mod_margic');
-                    $sortoptions = 'timecreated DESC';
+                    $sortoptions = 'timemodified DESC';
             }
 
         }
@@ -187,18 +198,20 @@ class margic {
         // Page selector.
         if ($pagecount !== 0) {
 
+            require_sesskey();
+
             if ($pagecount < 2) {
                 $pagecount = 2;
             }
 
-            $oldpagecount = get_user_preferences('margic_pagecount_'.$id);
+            $oldpagecount = get_user_preferences('margic_pagecount');
 
             if ($pagecount != $oldpagecount) {
-                set_user_preference('margic_pagecount_'.$id, $pagecount);
+                set_user_preference('margic_pagecount', $pagecount);
             }
 
             $this->pagecount = $pagecount;
-        } else if ($oldpagecount = get_user_preferences('margic_pagecount_'.$id)) {
+        } else if ($oldpagecount = get_user_preferences('margic_pagecount')) {
             $this->pagecount = $oldpagecount;
         } else {
             $this->pagecount = 5;
@@ -211,93 +224,31 @@ class margic {
                 $page = 1;
             }
 
-            $oldpage = get_user_preferences('margic_activepage_'.$id);
+            $oldpage = get_user_preferences('margic_activepage');
 
             if ($page != $oldpage) {
-                set_user_preference('margic_activepage_'.$id, $page);
+                set_user_preference('margic_activepage', $page);
             }
 
             $this->page = $page;
-        }
-
-        // Handling groups.
-        $currentgroups = groups_get_activity_group($this->cm, true);    // Get a list of the currently allowed groups for this course.
-
-        if ($currentgroups) {
-            $allowedusers = get_users_by_capability($this->context, 'mod/margic:addentries', '', $sort = 'lastname ASC, firstname ASC', '', '', $currentgroups);
+        } else if ($oldpage = get_user_preferences('margic_activepage')) {
+            $this->page = $oldpage;
         } else {
-            $allowedusers = true;
+            $this->page = 1;
+
         }
 
+        // Get entries.
         if ($this->mode == 'allentries') {
 
             if ($userid && $userid != 0) {
-                $this->entries = $DB->get_records('margic_entries', array('margic' => $this->instance->id, 'userid' => $userid), $sortoptions);
+                $this->entries = $DB->get_records('margic_entries', array('margic' => $this->instance->id, 'userid' => $userid, 'baseentry' => null), $sortoptions);
             } else {
-                $this->entries = $DB->get_records('margic_entries', array('margic' => $this->instance->id), $sortoptions);
+                $this->entries = $DB->get_records('margic_entries', array('margic' => $this->instance->id, 'baseentry' => null), $sortoptions);
             }
 
         } else if ($this->mode == 'ownentries') {
-            $this->entries = $DB->get_records('margic_entries', array('margic' => $this->instance->id, 'userid' => $USER->id), $sortoptions);
-        }
-
-        $gradingstr = get_string('needsgrading', 'margic');
-        $regradingstr = get_string('needsregrading', 'margic');
-
-        $viewinguserid = $USER->id;
-
-        $strmanager = get_string_manager();
-
-        foreach ($this->entries as $i => $entry) {
-            $this->entries[$i]->user = $DB->get_record('user', array('id' => $entry->userid));
-
-            if (!$currentgroups || ($allowedusers && in_array($this->entries[$i]->user, $allowedusers))) {
-                $this->entries[$i]->stats = entrystats::get_entry_stats($entry->text, $entry->timecreated);
-
-                if (!empty($entry->timecreated) && empty($entry->timemarked)) {
-                    $this->entries[$i]->needsgrading = $gradingstr;
-                } else if (!empty($entry->timemodified) && !empty($entry->timemarked) && $entry->timemodified > $entry->timemarked) {
-                    $this->entries[$i]->needsregrading = $regradingstr;
-                } else {
-                    $this->entries[$i]->needsregrading = false;
-                }
-
-                if ($viewinguserid == $entry->userid) {
-                    $this->entries[$i]->entrycanbeedited = true;
-                } else {
-                    $this->entries[$i]->entrycanbeedited = false;
-                }
-
-                $this->entries[$i]->annotations = array_values($DB->get_records('margic_annotations', array('margic' => $this->cm->instance, 'entry' => $entry->id)));
-
-                foreach ($this->entries[$i]->annotations as $key => $annotation) {
-
-                    if (!$DB->record_exists('margic_annotation_types', array('id' => $annotation->type))) { // If annotation type does not exist.
-                        $this->entries[$i]->annotations[$key]->color = 'FFFF00';
-                        $this->entries[$i]->annotations[$key]->defaulttype = 0;
-                        $this->entries[$i]->annotations[$key]->type = get_string('deletedannotationtype', 'mod_margic');
-                    } else {
-                        $this->entries[$i]->annotations[$key]->color = $this->annotationtypes[$annotation->type]->color;
-                        $this->entries[$i]->annotations[$key]->defaulttype = $this->annotationtypes[$annotation->type]->defaulttype;
-
-                        if ($this->entries[$i]->annotations[$key]->defaulttype == 1 && $strmanager->string_exists($this->annotationtypes[$annotation->type]->name, 'mod_margic')) {
-                            $this->entries[$i]->annotations[$key]->type = get_string($this->annotationtypes[$annotation->type]->name, 'mod_margic');
-                        } else {
-                            $this->entries[$i]->annotations[$key]->type = $this->annotationtypes[$annotation->type]->name;
-                        }
-                    }
-
-                    if (has_capability('mod/margic:makeannotations', $this->context) && $annotation->userid == $USER->id) {
-                        $this->entries[$i]->annotations[$key]->canbeedited = true;
-                    } else {
-                        $this->entries[$i]->annotations[$key]->canbeedited = false;
-                    }
-                }
-
-            } else {
-                unset($this->entries[$i]);
-            }
-
+            $this->entries = $DB->get_records('margic_entries', array('margic' => $this->instance->id, 'userid' => $USER->id, 'baseentry' => null), $sortoptions);
         }
     }
 
@@ -367,56 +318,71 @@ class margic {
     }
 
     /**
-     * Returns the entries for the margic instance with intact keys.
-     *
-     * @return array action
-     */
-    public function get_entries_with_keys() {
-        return $this->entries;
-    }
-
-    /**
      * Returns all annotations for the margic instance.
      *
      * @return array action
      */
     public function get_annotations() {
-        global $DB, $USER;
-
         return $this->annotations;
     }
 
     /**
-     * Returns all annotationtypes.
+     * Returns the width of the annotation area.
      *
-     * @return array action
+     * @return int annotationareawidth
      */
-    public function get_all_annotationtypes() {
-        return $this->annotationtypes;
+    public function get_annotationarea_width() {
+        if (isset($this->instance->annotationareawidth)) {
+            $annotationareawidth = $this->instance->annotationareawidth;
+        } else {
+            $annotationareawidth = get_config('margic', 'annotationareawidth');
+        }
+
+        return $annotationareawidth;
     }
 
     /**
-     * Returns annotationtype array for select form.
+     * Returns all errortypes.
      *
      * @return array action
      */
-    public function get_annotationtypes_for_form() {
+    public function get_margic_errortypes() {
+        return $this->errortypes;
+    }
+
+    /**
+     * Returns errortype array for select form.
+     *
+     * @return array action
+     */
+    public function get_errortypes_for_form() {
         $types = array();
         $strmanager = get_string_manager();
-        foreach ($this->annotationtypes as $key => $type) {
-            if ($type->defaulttype == 1 && $strmanager->string_exists($type->name, 'mod_margic')) {
+        foreach ($this->errortypes as $key => $type) {
+            if ($strmanager->string_exists($type->name, 'mod_margic')) {
                 $types[$key] = get_string($type->name, 'mod_margic');
             } else {
                 $types[$key] = $type->name;
             }
-
-            // if (in_array($this->id, json_decode($types[$key]->unused))) {
-            // unset($types[$key]);
-            // }
-
         }
 
         return $types;
+    }
+
+    /**
+     * Returns all errortype templates.
+     *
+     * @return array action
+     */
+    public function get_all_errortype_templates() {
+        global $USER, $DB;
+
+        $select = "defaulttype = 1";
+        $select .= " OR userid = " . $USER->id;
+
+        $errortypetemplates = (array) $DB->get_records_select('margic_errortype_templates', $select);
+
+        return $errortypetemplates;
     }
 
     /**
@@ -434,6 +400,9 @@ class margic {
 
             if (isset($groupedentries[$this->page])) {
                 return array_values($groupedentries[$this->page]);
+            } else if (isset($groupedentries[1])) { // In case the active page stored is not existent in this margic.
+                set_user_preference('margic_activepage', 1);
+                return array_values($groupedentries[1]);
             } else {
                 return false;
             }
@@ -514,5 +483,171 @@ class margic {
      */
     public function get_sortmode() {
         return $this->sortmode;
+    }
+
+    /**
+     * Prepare the entry for the template.
+     *
+     * @param object $entry The entry to be processed.
+     * @param object $strmanager The moodle strmanager object needed to check error types.
+     * @param object $currentgroups The currentgroups for checking access.
+     * @param object $allowedusers The allowedusers for checking access.
+     * @param object $gradingstr The gradingstr for the template.
+     * @param object $regradingstr The regradingstr for the template.
+     * @param object $readonly If entry is in readonly mode.
+     * @param object $grades The grades for the gradingform.
+     * @param object $canmanageentries If user can manage entries.
+     * @param object $annotationmode If annotationmode is activated.
+     * @return object The entry or false if user is not allowed to see entry.
+     */
+    public function prepare_entry($entry, $strmanager, $currentgroups, $allowedusers, $gradingstr, $regradingstr, $readonly, $grades, $canmanageentries, $annotationmode) {
+        global $DB, $USER, $CFG, $OUTPUT;
+
+        $entry->user = $DB->get_record('user', array('id' => $entry->userid));
+
+        if (!$currentgroups || ($allowedusers && in_array($entry->user, $allowedusers))) {
+            // Get child entries for entry.
+            $entry->childentries = $DB->get_records('margic_entries', array('margic' => $this->instance->id, 'baseentry' => $entry->id), 'timecreated DESC');
+
+            $revisionnr = count($entry->childentries);
+            foreach ($entry->childentries as $ci => $childentry) {
+                $entry->childentries[$ci] = $this->prepare_entry_annotations($childentry, $strmanager, $annotationmode, $readonly);
+                $entry->childentries[$ci]->stats = entrystats::get_entry_stats($childentry->text, $childentry->timecreated);
+                $entry->childentries[$ci]->revision = $revisionnr;
+
+                if ($ci == array_key_first($entry->childentries)) {
+                    $entry->childentries[$ci]->newestentry = true;
+                    if ($USER->id == $childentry->userid && !$readonly) {
+                        $entry->childentries[$ci]->entrycanbeedited = true;
+                    } else {
+                        $entry->childentries[$ci]->entrycanbeedited = false;
+                    }
+                } else {
+                    $entry->childentries[$ci]->entrycanbeedited = false;
+                    $entry->childentries[$ci]->newestentry = false;
+                }
+
+                if ($USER->id == $entry->userid && empty($entry->childentries) && !$readonly) {
+                    $entry->entrycanbeedited = true;
+                } else {
+                    $entry->entrycanbeedited = false;
+                }
+
+                $revisionnr -= 1;
+            }
+
+            $entry->childentries = array_values($entry->childentries);
+
+            if (empty($entry->childentries)) {
+                $entry->haschildren = false;
+            } else {
+                $entry->haschildren = true;
+            }
+
+            // Get entry stats.
+            $entry->stats = entrystats::get_entry_stats($entry->text, $entry->timecreated);
+
+            // Check entry grading.
+            if (!empty($entry->timecreated) && empty($entry->timemarked)) {
+                $entry->needsgrading = $gradingstr;
+            } else if (!empty($entry->timemodified) && !empty($entry->timemarked) && $entry->timemodified > $entry->timemarked) {
+                $entry->needsregrading = $regradingstr;
+            } else {
+                $entry->needsregrading = false;
+            }
+
+            // Check if entry can be edited.
+            if ($USER->id == $entry->userid && empty($entry->childentries)) {
+                $entry->entrycanbeedited = true;
+            } else {
+                $entry->entrycanbeedited = false;
+            }
+
+            require_once($CFG->dirroot . '/mod/margic/annotation_form.php');
+            require_once($CFG->dirroot . '/mod/margic/classes/local/helper.php');
+
+            $entry->user->userpicture = $OUTPUT->user_picture($entry->user,
+            array('courseid' => $this->course->id, 'link' => true, 'includefullname' => true, 'size' => 25));
+
+            // Add feedback area to entry.
+            $entry->gradingform = helper::margic_return_feedback_area_for_entry($this->cm->id, $this->context, $this->course, $this->instance,
+            $entry, $grades, $canmanageentries);
+
+            $entry = $this->prepare_entry_annotations($entry, $strmanager, $annotationmode, $readonly);
+
+            return $entry;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Prepare the annotations for the entry.
+     *
+     * @param object $entry The entry to be processed.
+     * @param object $strmanager The moodle strmanager object needed to check error types in the annotation form.
+     * @param object $annotationmode If annotationmode is activated.
+     * @param object $readonly If entry is in readonly mode.
+     * @return object The entry with its annotations.
+     */
+    private function prepare_entry_annotations($entry, $strmanager, $annotationmode = false, $readonly = false) {
+        global $DB, $USER, $CFG, $OUTPUT;
+
+        // Get annotations for entry.
+        $entry->annotations = array_values($DB->get_records('margic_annotations', array('margic' => $this->cm->instance, 'entry' => $entry->id)));
+
+        foreach ($entry->annotations as $key => $annotation) {
+
+            if (!$DB->record_exists('margic_errortypes', array('id' => $annotation->type))) { // If annotation type does not exist.
+                $entry->annotations[$key]->color = 'FFFF00';
+                $entry->annotations[$key]->type = get_string('deletederrortype', 'mod_margic');
+            } else {
+                $entry->annotations[$key]->color = $this->errortypes[$annotation->type]->color;
+
+                if ($strmanager->string_exists($this->errortypes[$annotation->type]->name, 'mod_margic')) {
+                    $entry->annotations[$key]->type = get_string($this->errortypes[$annotation->type]->name, 'mod_margic');
+                } else {
+                    $entry->annotations[$key]->type = $this->errortypes[$annotation->type]->name;
+                }
+            }
+
+            if (has_capability('mod/margic:makeannotations', $this->context) && $annotation->userid == $USER->id) {
+                $entry->annotations[$key]->canbeedited = true;
+            } else {
+                $entry->annotations[$key]->canbeedited = false;
+            }
+
+            if ($annotationmode) {
+                // Add annotater images to annotations.
+                $annotater = $DB->get_record('user', array('id' => $annotation->userid));
+                $annotaterimage = $OUTPUT->user_picture($annotater, array('courseid' => $this->course->id, 'link' => true, 'includefullname' => true, 'size' => 20));
+                $entry->annotations[$key]->userpicturestr = $annotaterimage;
+
+            } else {
+                $entry->annotationform = false;
+            }
+        }
+
+        // Sort annotations and find its position.
+        usort($entry->annotations, "sortannotation");
+        $pos = 1;
+        foreach ($entry->annotations as $key => $annotation) {
+            $entry->annotations[$key]->position = $pos;
+            $pos += 1;
+        }
+
+        if ($annotationmode) {
+            // Add annotation form.
+            if (!$readonly) {
+                require_once($CFG->dirroot . '/mod/margic/annotation_form.php');
+                $mform = new annotation_form(new moodle_url('/mod/margic/annotations.php', array('id' => $this->cm->id)), array('types' => $this->get_errortypes_for_form()));
+                // Set default data.
+                $mform->set_data(array('id' => $this->cm->id, 'entry' => $entry->id));
+
+                $entry->annotationform = $mform->render();
+            }
+        }
+
+        return $entry;
     }
 }

@@ -24,12 +24,12 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-use mod_margic\local\results;
+use mod_margic\local\helper;
 
 global $CFG;
 
 require_once("$CFG->libdir/formslib.php");
-require_once($CFG->dirroot . '/mod/margic/classes/local/results.php');
+require_once($CFG->dirroot . '/mod/margic/classes/local/helper.php');
 require_once(__DIR__ .'/../../lib/gradelib.php');
 
 /**
@@ -56,7 +56,7 @@ class mod_margic_grading_form extends moodleform {
         $mform->addElement('hidden', 'entry');
         $mform->setType('entry', PARAM_INT);
 
-        $feedbacktext = $this->_customdata['entry']->entrycomment;
+        $feedbacktext = $this->_customdata['entry']->feedback;
 
         $user = $DB->get_record('user', array('id' => $this->_customdata['entry']->userid));
         $userfullname = fullname($user);
@@ -80,22 +80,25 @@ class mod_margic_grading_form extends moodleform {
 
                     $feedbackdisabled = true;
 
-                    $gradebooklinkrating = '<a href="' . $CFG->wwwroot . '/grade/report/grader/index.php?id=' . $this->_customdata['courseid'] . '">' . $gradinginfo->items[0]->grades[$this->_customdata['entry']->userid]->str_long_grade . '</a>';
+                    $gradebooklinkrating = '<a href="' . $CFG->wwwroot . '/grade/report/grader/index.php?id='
+                        . $this->_customdata['courseid'] . '">' . $gradinginfo->items[0]->grades[$this->_customdata['entry']->userid]->str_long_grade . '</a>';
 
-                    $gradebooklinkfeedback = '<a href="' . $CFG->wwwroot . '/grade/report/grader/index.php?id=' . $this->_customdata['courseid'] . '">' . $gradinginfo->items[0]->grades[$this->_customdata['entry']->userid]->str_feedback . '</a>';
+                    $gradebooklinkfeedback = '<a href="' . $CFG->wwwroot . '/grade/report/grader/index.php?id='
+                        . $this->_customdata['courseid'] . '">' . $gradinginfo->items[0]->grades[$this->_customdata['entry']->userid]->str_feedback . '</a>';
 
                     $attr = array('disabled' => 'disabled');
                 }
             }
 
-            $aggregatestr = results::get_margic_aggregation($this->_customdata['margic']->assessed) . ' ' . get_string('forallentries', 'margic') . ' '. $userfullname;
+            $aggregatestr = helper::get_margic_aggregation($this->_customdata['margic']->assessed) . ' ' . get_string('forallentries', 'margic') . ' '. $userfullname;
 
             $mform->addElement('static', 'currentuserrating', $aggregatestr.': ', $currentuserrating);
 
             $mform->addElement('html', '<hr>');
 
             if ($this->_customdata['entry']->timemarked) {
-                $mform->addElement('static', 'currentuserrating', get_string('grader', 'mod_margic'), $this->_customdata['teacherimg'] . ' - ' . userdate($this->_customdata['entry']->timemarked));
+                $mform->addElement('static', 'currentuserrating',
+                    get_string('grader', 'mod_margic'), $this->_customdata['teacherimg'] . ' - ' . userdate($this->_customdata['entry']->timemarked));
                 $mform->addElement('static', 'savedrating', get_string('savedrating', 'mod_margic'), $this->_customdata['entry']->rating);
             }
 
@@ -113,8 +116,12 @@ class mod_margic_grading_form extends moodleform {
             $mform->addElement('static', 'gradebookfeedback', get_string('feedbackingradebook', 'margic') . ': ', $gradebooklinkfeedback);
 
         } else {
-            $mform->addElement('editor', 'feedback_' . $this->_customdata['entry']->id . '_editor', get_string('entrycomment', 'mod_margic'), null, $this->_customdata['editoroptions']);
+            $mform->addElement('editor', 'feedback_' . $this->_customdata['entry']->id . '_editor',
+                get_string('feedback', 'mod_margic'), null, $this->_customdata['editoroptions']);
             $mform->setType('feedback_' . $this->_customdata['entry']->id . '_editor', PARAM_RAW);
+
+            $mform->addElement('selectyesno', 'sendgradingmessage', get_string('sendgradingmessage', 'margic'));
+            $mform->setDefault('sendgradingmessage', 1);
 
             $this->add_action_buttons();
         }

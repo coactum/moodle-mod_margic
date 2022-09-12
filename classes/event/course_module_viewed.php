@@ -27,7 +27,6 @@ namespace mod_margic\event;
  * The mod_margic course module viewed event class.
  *
  * @package   mod_margic
- * @since     Moodle 2.7
  * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -42,17 +41,6 @@ class course_module_viewed extends \core\event\course_module_viewed {
         $this->data['crud'] = 'r';
         $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
         $this->data['objecttable'] = 'margic';
-    }
-
-    /**
-     * Get URL related to the action
-     *
-     * @return \moodle_url
-     */
-    public function get_url() {
-        return new \moodle_url('/mod/margic/view.php', array(
-            'id' => $this->objectid
-        ));
     }
 
     /**
@@ -72,5 +60,12 @@ class course_module_viewed extends \core\event\course_module_viewed {
             $this->objectid,
             $this->contextinstanceid
         );
+    }
+
+    /**
+     * Get objectid mapping for restore.
+     */
+    public static function get_objectid_mapping() {
+        return array('db' => 'margic', 'restore' => 'margic');
     }
 }

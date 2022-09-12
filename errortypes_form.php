@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * File containing the class definition for the annotationtypes form for the margic.
+ * File containing the class definition for the errortypes form for the margic.
  *
  * @package     mod_margic
  * @copyright   2022 coactum GmbH
@@ -34,7 +34,7 @@ require_once("$CFG->libdir/formslib.php");
  * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL Juv3 or later
  */
-class annotation_types_form extends moodleform {
+class errortypes_form extends moodleform {
 
     /**
      * Define the form - called by parent constructor
@@ -48,10 +48,13 @@ class annotation_types_form extends moodleform {
         $mform->addElement('hidden', 'id', null);
         $mform->setType('id', PARAM_INT);
 
+        $mform->addElement('hidden', 'mode', 1);
+        $mform->setType('mode', PARAM_INT);
+
         $mform->addElement('hidden', 'typeid', null);
         $mform->setType('typeid', PARAM_INT);
 
-        $mform->addElement('text', 'typename', get_string('nameofannotationtype', 'mod_margic'));
+        $mform->addElement('text', 'typename', get_string('nameoferrortype', 'mod_margic'));
         $mform->setType('typename', PARAM_TEXT);
         $mform->addRule('typename', null, 'required', null, 'client');
 
@@ -64,13 +67,15 @@ class annotation_types_form extends moodleform {
         $mform->addRule('color', null, 'required', null, 'client');
         $mform->addHelpButton('color', 'explanationhexcolor', 'mod_margic');
 
-        if ($this->_customdata['editdefaulttype']) {
-            $mform->addElement('advcheckbox', 'defaulttype', get_string('defaulttype', 'mod_margic'), get_string('explanationdefaulttype', 'mod_margic'));
-        } else {
-            $mform->addElement('hidden', 'defaulttype', 0);
-        }
+        if ($this->_customdata['mode'] == 1) { // If template error type.
+            if ($this->_customdata['editdefaulttype']) {
+                $mform->addElement('advcheckbox', 'standardtype', get_string('standardtype', 'mod_margic'), get_string('explanationstandardtype', 'mod_margic'));
+            } else {
+                $mform->addElement('hidden', 'standardtype', 0);
+            }
 
-        $mform->setType('defaulttype', PARAM_INT);
+            $mform->setType('standardtype', PARAM_INT);
+        }
 
         $this->add_action_buttons();
     }

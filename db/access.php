@@ -81,9 +81,20 @@ $capabilities = array(
         )
     ),
 
+    'mod/margic:deleteannotations' => array(
+        'riskbitmask' => RISK_DATALOSS,
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_MODULE,
+        'archetypes' => array(
+            'teacher' => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW,
+            'manager' => CAP_ALLOW
+        )
+    ),
+
     'mod/margic:viewannotations' => array(
         'riskbitmask' => RISK_PERSONAL,
-        'captype' => 'write',
+        'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => array(
             'student' => CAP_ALLOW,
@@ -93,12 +104,24 @@ $capabilities = array(
         )
     ),
 
-    'mod/margic:editdefaultannotationtypes' => array(
-        'riskbitmask' => RISK_XSS,
+    'mod/margic:editdefaulterrortypes' => array(
+        'riskbitmask' => RISK_XSS | RISK_DATALOSS,
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => array(
             'manager' => CAP_ALLOW
         )
-    )
+    ),
+
+    'mod/margic:receivegradingmessages' => array(
+        'riskbitmask' => RISK_PERSONAL,
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_MODULE,
+        'archetypes' => array(
+            'student' => CAP_ALLOW,
+            'teacher' => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW,
+            'manager' => CAP_ALLOW
+        )
+    ),
 );

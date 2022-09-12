@@ -23,9 +23,9 @@
  */
 
 use core\output\notification;
-use mod_margic\local\results;
+use mod_margic\local\helper;
 
-require_once("../../config.php");
+require(__DIR__.'/../../config.php');
 require_once($CFG->dirroot . '/mod/margic/grading_form.php');
 require_once($CFG->dirroot . '/mod/margic/locallib.php');
 
@@ -65,6 +65,8 @@ require_login($course, true, $cm);
 
 require_capability('mod/margic:addentries', $context);
 
+$PAGE->set_url('/mod/margic/grade_entry.php', array('id' => $id));
+
 $entry = $DB->get_record('margic_entries', array('id' => $entryid, 'margic' => $cm->instance));
 $grades = make_grades_menu($moduleinstance->scale);
 
@@ -73,10 +75,10 @@ $data = new stdClass();
 $data->id = $id;
 $data->entry = $entry->id;
 $data->timecreated = $entry->timecreated;
-$data->{'feedback_' . $entry->id} = $entry->entrycomment;
-$data->{'feedback_' . $entry->id . 'format'} = $entry->formatcomment;
+$data->{'feedback_' . $entry->id} = $entry->feedback;
+$data->{'feedback_' . $entry->id . 'format'} = $entry->formatfeedback;
 
-list ($editoroptions, $attachmentoptions) = results::margic_get_editor_and_attachment_options($course, $context, $moduleinstance);
+list ($editoroptions, $attachmentoptions) = helper::margic_get_editor_and_attachment_options($course, $context, $moduleinstance);
 
 $data = file_prepare_standard_editor($data, 'feedback_' . $entry->id, $editoroptions, $context, 'mod_margic', 'feedback', $data->entry);
 $data = file_prepare_standard_filemanager($data, 'attachment', $attachmentoptions, $context, 'mod_margic', 'attachment', $data->entry);
@@ -84,7 +86,8 @@ $data = file_prepare_standard_filemanager($data, 'attachment', $attachmentoption
 $data->{'rating_' . $entry->id} = $entry->rating;
 
 // Instantiate gradingform and save submitted data if it exists.
-$mform = new \mod_margic_grading_form(null, array('courseid' => $course->id, 'margic' => $moduleinstance, 'entry' => $entry, 'grades' => $grades, 'teacherimg' => '', 'editoroptions' => $editoroptions));
+$mform = new \mod_margic_grading_form(null,
+    array('courseid' => $course->id, 'margic' => $moduleinstance, 'entry' => $entry, 'grades' => $grades, 'teacherimg' => '', 'editoroptions' => $editoroptions));
 
 $mform->set_data($data);
 
@@ -115,7 +118,7 @@ if ($fromform = $mform->get_data()) { // If grading form is submitted.
         $ratingchanged = false;
     }
 
-    if ($newfeedback != $entry->entrycomment && !($newfeedback == '' && $entry->entrycomment == null)) {
+    if ($newfeedback != $entry->feedback && !($newfeedback == '' && $entry->feedback == null)) {
         $feedbackchanged = true;
     } else {
         $feedbackchanged = false;
@@ -128,11 +131,10 @@ if ($fromform = $mform->get_data()) { // If grading form is submitted.
             $entry->rating = $newrating;
         }
 
-        $entry->entrycomment = $newfeedback;
-        $entry->formatcomment = $fromform->{'feedback_' . $entry->id . '_editor'}['format'];
+        $entry->feedback = $newfeedback;
+        $entry->formatfeedback = $fromform->{'feedback_' . $entry->id . '_editor'}['format'];
         $entry->teacher = $USER->id;
         $entry->timemarked = $timenow;
-        $entry->mailed = 0; // Make sure mail goes out (again).
 
         if (!$DB->update_record("margic_entries", $entry)) {
             redirect(new moodle_url('/mod/margic/view.php', array('id' => $id)), get_string('errfeedbacknotupdated', 'mod_margic'), null, notification::NOTIFY_ERROR);
@@ -156,7 +158,7 @@ if ($fromform = $mform->get_data()) { // If grading form is submitted.
             $ratingoptions->assesstimefinish = $moduleinstance->assesstimefinish;
 
             // Check if there is already a rating, and if so, just update it.
-            if ($rec = results::check_rating_entry($ratingoptions)) {
+            if ($rec = helper::check_rating_entry($ratingoptions)) {
                 $ratingoptions->id = $rec->id;
                 $DB->update_record('rating', $ratingoptions, false);
             } else {
@@ -171,13 +173,48 @@ if ($fromform = $mform->get_data()) { // If grading form is submitted.
 
         // Trigger module feedback updated event.
         $event = \mod_margic\event\feedback_updated::create(array(
-            'objectid' => $moduleinstance->id,
+            'objectid' => $entry->id,
             'context' => $context
         ));
-        $event->add_record_snapshot('course_modules', $cm);
-        $event->add_record_snapshot('course', $course);
-        $event->add_record_snapshot('margic', $moduleinstance);
         $event->trigger();
+
+        if ($fromform->sendgradingmessage) {
+            global $CFG;
+
+            $url = (new \moodle_url("/mod/margic/view.php?id=$id"))->out(false);
+
+            $obj = new stdClass();
+            $obj->user = fullname(core_user::get_user($entry->userid));
+            $obj->teacher = fullname(core_user::get_user($entry->teacher));
+            $obj->margic = format_string($moduleinstance->name, true);
+            $obj->url = $url;
+
+            // Send grading message.
+            $message = new \core\message\message();
+            $message->component = 'mod_margic';
+            $message->name = 'gradingmessages';
+            $message->userfrom = core_user::get_noreply_user(); // If the message is 'from' a specific user you can set them here.
+            $message->userto = $entry->userid;
+            $message->subject = get_string('gradingmailsubject', 'mod_margic');
+            $message->fullmessage = get_string('gradingmailfullmessage', 'mod_margic', $obj);
+            $message->fullmessageformat = FORMAT_MARKDOWN;
+            $message->fullmessagehtml = '<p>' . get_string('gradingmailfullmessagehtml', 'mod_margic', $obj) . '</p>';
+            $message->smallmessage = get_string('gradingmailfullmessage', 'mod_margic', $obj);
+            $message->notification = 1; // Because this is a notification generated from Moodle, not a user-to-user message.
+            $message->contexturl = $url; // A relevant URL for the notification.
+            $message->contexturlname = get_string('modulename', 'mod_margic')
+                . ' - ' . get_string('overview', 'mod_margic'); // Link title explaining where users get to for the contexturl.
+
+            $header = '';
+            $urllink = '<a href="' . $url . '" target="_blank">' . $url . '</a>';
+            $footer = '<br><br> --------------------------------------------------------------------- <br> ' . get_string('mailfooter', 'mod_margic',
+                ['systemname' => get_config('shortname'), 'coursename' => $course->fullname, 'name' => $moduleinstance->name, 'url' => $url]);
+            $content = array('*' => array('header' => $header, 'footer' => $footer)); // Extra content for specific processor.
+            $message->set_additional_content('email', $content);
+
+            // Actually send the message.
+            $messageid = message_send($message);
+        }
 
         // Redirect after updated from feedback and grades.
         redirect(new moodle_url('/mod/margic/view.php', array('id' => $id)), get_string('feedbackupdated', 'mod_margic'), null, notification::NOTIFY_SUCCESS);

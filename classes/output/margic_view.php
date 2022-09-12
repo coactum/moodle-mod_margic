@@ -23,7 +23,6 @@
  */
 namespace mod_margic\output;
 
-use mod_margic\local\results;
 use mod_margic\annotation_form;
 
 use renderable;
@@ -41,6 +40,8 @@ use stdClass;
 class margic_view implements renderable, templatable {
 
     /** @var object */
+    protected $margic;
+    /** @var object */
     protected $cm;
     /** @var int */
     protected $cmid;
@@ -55,11 +56,21 @@ class margic_view implements renderable, templatable {
     /** @var string */
     protected $entrybgc;
     /** @var string */
-    protected $entrytextbgc;
+    protected $textbgc;
+    /** @var int */
+    protected $entryareawidth;
+    /** @var int */
+    protected $annotationareawidth;
     /** @var bool */
     protected $caneditentries;
     /** @var int */
+    protected $edittimestarts;
+    /** @var bool */
+    protected $edittimenotstarted;
+    /** @var int */
     protected $edittimeends;
+    /** @var bool */
+    protected $edittimehasended;
     /** @var bool */
     protected $canmanageentries;
     /** @var string */
@@ -83,17 +94,21 @@ class margic_view implements renderable, templatable {
     /** @var bool */
     protected $canmakeannotations;
     /** @var object */
-    protected $annotationtypes;
+    protected $errortypes;
     /**
      * Construct this renderable.
+     * @param object $margic The margic obj
      * @param object $cm The course module
      * @param object $context The context
      * @param array $moduleinstance The moduleinstance for creating grading form
      * @param array $entries The accessible entries for the margic instance
      * @param string $sortmode Sort mode for the margic instance
      * @param string $entrybgc Background color of the entries
-     * @param string $entrytextbgc Background color of the texts in the entries
+     * @param string $textbgc Background color of the texts in the entries
+     * @param int $annotationareawidth Width of the annotation area
      * @param bool $caneditentries If own entries can be edited
+     * @param int $edittimestarts Time when entries can be edited
+     * @param bool $edittimenotstarted If edit time has not started
      * @param int $edittimeends Time when entries cant be edited anymore
      * @param bool $edittimehasended If edit time has ended
      * @param bool $canmanageentries If entries can be managed
@@ -107,11 +122,14 @@ class margic_view implements renderable, templatable {
      * @param int $entriescount The amount of all entries
      * @param bool $annotationmode If annotation mode is set
      * @param bool $canmakeannotations If user can make annotations
-     * @param array $annotationtypes Array with annotation types for form
+     * @param array $errortypes Array with annotation types for form
      */
-    public function __construct($cm, $context, $moduleinstance, $entries, $sortmode, $entrybgc, $entrytextbgc, $caneditentries, $edittimeends, $edittimehasended, $canmanageentries,
-        $sesskey, $currentuserrating, $ratingaggregationmode, $course, $singleuser, $pagecountoptions, $pagebar, $entriescount, $annotationmode, $canmakeannotations, $annotationtypes) {
+    public function __construct($margic, $cm, $context, $moduleinstance, $entries, $sortmode, $entrybgc, $textbgc, $annotationareawidth,
+        $caneditentries, $edittimestarts, $edittimenotstarted, $edittimeends, $edittimehasended, $canmanageentries, $sesskey,
+        $currentuserrating, $ratingaggregationmode, $course, $singleuser, $pagecountoptions, $pagebar, $entriescount, $annotationmode,
+        $canmakeannotations, $errortypes) {
 
+        $this->margic = $margic;
         $this->cm = $cm;
         $this->cmid = $this->cm->id;
         $this->context = $context;
@@ -119,8 +137,12 @@ class margic_view implements renderable, templatable {
         $this->entries = $entries;
         $this->sortmode = $sortmode;
         $this->entrybgc = $entrybgc;
-        $this->entrytextbgc = $entrytextbgc;
+        $this->textbgc = $textbgc;
+        $this->annotationareawidth = $annotationareawidth;
+        $this->entryareawidth = 100 - $annotationareawidth;
         $this->caneditentries = $caneditentries;
+        $this->edittimestarts = $edittimestarts;
+        $this->edittimenotstarted = $edittimenotstarted;
         $this->edittimeends = $edittimeends;
         $this->edittimehasended = $edittimehasended;
         $this->canmanageentries = $canmanageentries;
@@ -134,7 +156,7 @@ class margic_view implements renderable, templatable {
         $this->entriescount = $entriescount;
         $this->annotationmode = $annotationmode;
         $this->canmakeannotations = $canmakeannotations;
-        $this->annotationtypes = $annotationtypes;
+        $this->errortypes = $errortypes;
     }
 
     /**
@@ -152,38 +174,28 @@ class margic_view implements renderable, templatable {
         if ($this->entries) {
 
             require_once($CFG->dirroot . '/mod/margic/annotation_form.php');
-            require_once($CFG->dirroot . '/mod/margic/classes/local/results.php');
 
             $grades = make_grades_menu($this->moduleinstance->scale); // For select in grading_form.
+            $currentgroups = groups_get_activity_group($this->cm, true);    // Get a list of the currently allowed groups for this course.
+            if ($currentgroups) {
+                $allowedusers = get_users_by_capability($this->context, 'mod/margic:addentries', '', $sort = 'lastname ASC, firstname ASC', '', '', $currentgroups);
+            } else {
+                $allowedusers = true;
+            }
+
+            $strmanager = get_string_manager();
+
+            $gradingstr = get_string('needsgrading', 'margic');
+            $regradingstr = get_string('needsregrading', 'margic');
+
+            $readonly = false;
 
             foreach ($this->entries as $key => $entry) {
-                if ($this->canmanageentries) { // Set user picture for teachers.
-                    $this->entries[$key]->user->userpicture = $OUTPUT->user_picture($entry->user, array('courseid' => $this->course->id, 'link' => true, 'includefullname' => true));
-                }
-
-                // Add feedback area to entry.
-                $this->entries[$key]->gradingform = results::margic_return_feedback_area_for_entry($this->cmid, $this->context, $this->course, $this->moduleinstance,
-                $entry, $grades, $this->canmanageentries);
-
-                // Add annotation form to entry.
-                if ($this->annotationmode) {
-
-                    $mform = new \annotation_form(new \moodle_url('/mod/margic/annotations.php', array('id' => $this->cmid)), array('types' => $this->annotationtypes));
-
-                    // Set default data.
-                    $mform->set_data(array('id' => $this->cmid, 'entry' => $entry->id));
-
-                    $this->entries[$key]->annotationform = $mform->render();
-
-                    foreach ($this->entries[$key]->annotations as $anr => $annotation) {
-                        $annotater = $DB->get_record('user', array('id' => $annotation->userid));
-                        $annotaterimage = $OUTPUT->user_picture($annotater, array('courseid' => $this->course->id, 'link' => true, 'includefullname' => true, 'size' => 20));
-
-                        $this->entries[$key]->annotations[$anr]->userpicturestr = $annotaterimage;
-                    }
-
-                } else {
-                    $this->entries[$key]->annotationform = false;
+                if ($entry) { // Set user picture for teachers.
+                    $this->entries[$key]->entry = $OUTPUT->render(new margic_entry($this->margic, $this->cm, $this->context, $this->moduleinstance,
+                        $entry, $this->annotationareawidth, $this->moduleinstance->editentries, $this->edittimestarts, $this->edittimenotstarted,
+                        $this->edittimeends, $this->edittimehasended, $this->canmanageentries, $this->course, $this->singleuser, $this->annotationmode,
+                        $this->canmakeannotations, $this->errortypes, $readonly, $grades, $currentgroups, $allowedusers, $strmanager, $gradingstr, $regradingstr, $this->sesskey));
                 }
             }
         }
@@ -191,8 +203,12 @@ class margic_view implements renderable, templatable {
         $data->entries = $this->entries;
         $data->sortmode = $this->sortmode;
         $data->entrybgc = $this->entrybgc;
-        $data->entrytextbgc = $this->entrytextbgc;
+        $data->textbgc = $this->textbgc;
+        $data->entryareawidth = $this->entryareawidth;
+        $data->annotationareawidth = $this->annotationareawidth;
         $data->caneditentries = $this->caneditentries;
+        $data->edittimestarts = $this->edittimestarts;
+        $data->edittimenotstarted = $this->edittimenotstarted;
         $data->edittimeends = $this->edittimeends;
         $data->edittimehasended = $this->edittimehasended;
         $data->canmanageentries = $this->canmanageentries;
@@ -205,6 +221,7 @@ class margic_view implements renderable, templatable {
         $data->entriescount = $this->entriescount;
         $data->annotationmode = $this->annotationmode;
         $data->canmakeannotations = $this->canmakeannotations;
+
         return $data;
     }
 }

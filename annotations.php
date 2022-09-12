@@ -24,7 +24,7 @@
 
 use core\output\notification;
 
-require_once("../../config.php");
+require(__DIR__.'/../../config.php');
 require_once($CFG->dirroot . '/mod/margic/locallib.php');
 
 global $DB, $CFG;
@@ -34,6 +34,9 @@ $id = required_param('id', PARAM_INT);
 
 // Module instance ID as alternative.
 $m  = optional_param('m', null, PARAM_INT);
+
+// Param if annotations should be returned via ajax.
+$getannotations = optional_param('getannotations',  0, PARAM_INT);
 
 // Param if annotation should be deleted.
 $deleteannotation = optional_param('deleteannotation',  0, PARAM_INT); // Annotation to be deleted.
@@ -65,24 +68,44 @@ if (! $coursesections = $DB->get_record("course_sections", array(
 
 require_login($course, true, $cm);
 
+// Get annotation (ajax).
+if ($getannotations) {
+    $annotations = $margic->get_annotations();
+    if ($annotations) {
+        echo json_encode($annotations);
+    } else {
+        echo json_encode(array());
+    }
+
+    die;
+}
+
 require_capability('mod/margic:makeannotations', $context);
 
 // Header.
 $PAGE->set_url('/mod/margic/annotations.php', array('id' => $id));
-$PAGE->navbar->add(get_string('startoreditentry', 'mod_margic'));
-$PAGE->set_title(format_string($moduleinstance->name) . ' - ' . get_string('startoreditentry', 'mod_margic'));
-$PAGE->set_heading($course->fullname);
+$PAGE->set_title(format_string($moduleinstance->name));
 
 $urlparams = array('id' => $id, 'annotationmode' => 1);
 
 $redirecturl = new moodle_url('/mod/margic/view.php', $urlparams);
 
 // Delete annotation.
-if (has_capability('mod/margic:makeannotations', $context) && $deleteannotation !== 0) {
+if (has_capability('mod/margic:deleteannotations', $context) && $deleteannotation !== 0) {
+    require_sesskey();
+
     global $USER;
 
     if ($DB->record_exists('margic_annotations', array('id' => $deleteannotation, 'margic' => $moduleinstance->id, 'userid' => $USER->id))) {
         $DB->delete_records('margic_annotations', array('id' => $deleteannotation, 'margic' => $moduleinstance->id, 'userid' => $USER->id));
+
+        // Trigger module annotation deleted event.
+        $event = \mod_margic\event\annotation_deleted::create(array(
+            'objectid' => $deleteannotation,
+            'context' => $context
+        ));
+
+        $event->trigger();
 
         redirect($redirecturl, get_string('annotationdeleted', 'mod_margic'), null, notification::NOTIFY_SUCCESS);
     } else {
@@ -90,11 +113,11 @@ if (has_capability('mod/margic:makeannotations', $context) && $deleteannotation 
     }
 }
 
-// Save annotation
+// Save annotation.
 require_once($CFG->dirroot . '/mod/margic/annotation_form.php');
 
 // Instantiate form.
-$mform = new annotation_form(null, array('types' => $margic->get_annotationtypes_for_form()));
+$mform = new annotation_form(null, array('types' => $margic->get_errortypes_for_form()));
 
 if ($fromform = $mform->get_data()) {
 
@@ -119,21 +142,25 @@ if ($fromform = $mform->get_data()) {
 
         $DB->update_record('margic_annotations', $annotation);
 
+        // Trigger module annotation updated event.
+        $event = \mod_margic\event\annotation_updated::create(array(
+            'objectid' => $fromform->annotationid,
+            'context' => $context
+        ));
+
+        $event->trigger();
+
         redirect($redirecturl, get_string('annotationedited', 'mod_margic'), null, notification::NOTIFY_SUCCESS);
     } else if ((!isset($fromform->annotationid) || $fromform->annotationid === 0) && isset($fromform->text)) { // New annotation.
 
         if ($fromform->startcontainer != -1 && $fromform->endcontainer != -1 &&
-            $fromform->startposition != -1 && $fromform->endposition != -1) {
-
-            if ($fromform->text == '') {
-                redirect($redirecturl, get_string('erremptyannotation', 'mod_margic'), null, notification::NOTIFY_ERROR);
-            }
+            $fromform->startoffset != -1 && $fromform->endoffset != -1) {
 
             if (!isset($fromform->type)) {
                 redirect($redirecturl, get_string('errtypedeleted', 'mod_margic'), null, notification::NOTIFY_ERROR);
             }
 
-            if (preg_match("/[^a-zA-Z0-9()\/[\]]/", $fromform->startcontainer) || preg_match("/[^a-zA-Z0-9()\/[\]]/", $fromform->endcontainer)) {
+            if (preg_match("/[^a-zA-Z0-9()-\/[\]]/", $fromform->startcontainer) || preg_match("/[^a-zA-Z0-9()-\/[\]]/", $fromform->endcontainer)) {
                 redirect($redirecturl, get_string('annotationinvalid', 'mod_margic'), null, notification::NOTIFY_ERROR);
             }
 
@@ -150,11 +177,23 @@ if ($fromform = $mform->get_data()) {
             $annotation->type = $fromform->type;
             $annotation->startcontainer = $fromform->startcontainer;
             $annotation->endcontainer = $fromform->endcontainer;
-            $annotation->startposition = $fromform->startposition;
-            $annotation->endposition = $fromform->endposition;
-            $annotation->text = format_text($fromform->text, 2, array('para' => false));
+            $annotation->startoffset = $fromform->startoffset;
+            $annotation->endoffset = $fromform->endoffset;
+            $annotation->start = $fromform->start;
+            $annotation->end = $fromform->end;
+            $annotation->exact = $fromform->exact;
+            $annotation->prefix = $fromform->prefix;
+            $annotation->suffix = $fromform->suffix;
+            $annotation->text = $fromform->text;
 
-            $DB->insert_record('margic_annotations', $annotation);
+            $newid = $DB->insert_record('margic_annotations', $annotation);
+
+            // Trigger module annotation created event.
+            $event = \mod_margic\event\annotation_created::create(array(
+                'objectid' => $newid,
+                'context' => $context
+            ));
+            $event->trigger();
 
             redirect($redirecturl, get_string('annotationadded', 'mod_margic'), null, notification::NOTIFY_SUCCESS);
         } else {

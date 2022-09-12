@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The mod_margic entries viewed event.
+ * The mod_margic annotation deleted event.
  *
  * @package   mod_margic
  * @copyright 2022 coactum GmbH
@@ -24,20 +24,19 @@
 namespace mod_margic\event;
 
 /**
- * The mod_margic entries viewed event class.
+ * The mod_margic annotation deleted class.
  *
  * @package   mod_margic
- * @since     Moodle 2.7
  * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class entries_viewed extends \core\event\base {
+class annotation_deleted extends \core\event\base {
 
     /**
      * Init method.
      */
     protected function init() {
-        $this->data['crud'] = 'r';
+        $this->data['crud'] = 'd';
         $this->data['edulevel'] = self::LEVEL_TEACHING;
         $this->data['objecttable'] = 'margic';
     }
@@ -48,7 +47,7 @@ class entries_viewed extends \core\event\base {
      * @return string
      */
     public static function get_name() {
-        return get_string('evententriesviewed', 'mod_margic');
+        return get_string('eventannotationdeleted', 'mod_margic');
     }
 
     /**
@@ -57,7 +56,7 @@ class entries_viewed extends \core\event\base {
      * @return string
      */
     public function get_description() {
-        return "The user with id '$this->userid' has viewed the entries for the margic activity with the course module id
+        return "The user with the id '$this->userid' has deleted the annotation with the id '$this->objectid' for the margic activity with the course module id
             '$this->contextinstanceid'";
     }
 
@@ -67,7 +66,7 @@ class entries_viewed extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/margic/report.php', array(
+        return new \moodle_url('/mod/margic/view.php', array(
             'id' => $this->contextinstanceid
         ));
     }
@@ -78,16 +77,23 @@ class entries_viewed extends \core\event\base {
      * @return array of parameters to be passed to legacy add_to_log() function.
      */
     protected function get_legacy_logdata() {
-        $url = new \moodle_url('report.php', array(
+        $url = new \moodle_url('view.php', array(
             'id' => $this->contextinstanceid
         ));
         return array(
             $this->courseid,
             'margic',
-            'report',
+            'delete annotation',
             $url->out(),
             $this->objectid,
             $this->contextinstanceid
         );
+    }
+
+    /**
+     * Get objectid mapping for restore.
+     */
+    public static function get_objectid_mapping() {
+        return array('db' => 'margic_annotations', 'restore' => 'margic_annotation');
     }
 }
