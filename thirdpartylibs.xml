@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<libraries>
+  <library>
+    <location>amd/src/string-match.js</location>
+    <name>approx-string-match-js</name>
+    <license>MIT</license>
+    <version>2.0.0</version>
+    <licenseversion></licenseversion>
+  </library>
+</libraries>
