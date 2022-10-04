@@ -29,6 +29,14 @@ if ($ADMIN->fulltree) {
     // Editability settings.
     $settings->add(new admin_setting_heading('margic/editability', get_string('editability', 'margic'), ''));
 
+    // If default error type templates can be edited by admins or user with capability editdefaulterrortypes.
+    $settings->add(new admin_setting_configselect('margic/defaulterrortypetemplateseditable',
+        get_string('defaulterrortypetemplateseditable', 'margic'),
+        get_string('defaulterrortypetemplateseditable_help', 'margic'), 1, array(
+        '0' => get_string('no'),
+        '1' => get_string('yes')
+    )));
+
     // Edit all own entries.
     $settings->add(new admin_setting_configselect('margic/editentries',
         get_string('editentries', 'margic'),

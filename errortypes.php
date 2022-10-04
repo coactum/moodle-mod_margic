@@ -69,7 +69,7 @@ if (! $coursesections = $DB->get_record("course_sections", array(
 
 require_login($course, true, $cm);
 
-require_capability('mod/margic:makeannotations', $context);
+require_capability('mod/margic:manageerrortypes', $context);
 
 $redirecturl = new moodle_url('/mod/margic/error_summary.php', array('id' => $id));
 
@@ -114,8 +114,10 @@ if (isset($editedtypeid)) {
 if ($mform->is_cancelled()) {
     redirect($redirecturl);
 } else if ($fromform = $mform->get_data()) {
+    $defaulterrortypetemplateseditable = get_config('margic', 'defaulterrortypetemplateseditable');
+
     // In this case you process validated data. $mform->get_data() returns data posted in form.
-    if ($fromform->typeid == 0 && isset($fromform->typename)) { // Create new annotation type.
+    if ($fromform->typeid == 0 && isset($fromform->typename)) { // Create new error type.
 
         $errortype = new stdClass();
         $errortype->timecreated = time();
@@ -154,7 +156,7 @@ if ($mform->is_cancelled()) {
 
         if ($errortype &&
             ($mode == 2 ||
-            (isset($errortype->defaulttype) && $errortype->defaulttype == 1 && has_capability('mod/margic:editdefaulterrortypes', $context))
+            (isset($errortype->defaulttype) && $errortype->defaulttype == 1 && has_capability('mod/margic:editdefaulterrortypes', $context) && $defaulterrortypetemplateseditable)
             || (isset($errortype->defaulttype) && isset($errortype->userid) && $errortype->defaulttype == 0 && $errortype->userid == $USER->id))) {
 
             $errortype->timemodified = time();
@@ -213,7 +215,6 @@ if ($mode == 1) { // If type is template error type.
 
 $PAGE->navbar->add($navtitle);
 
-
 $PAGE->set_title(get_string('modulename', 'mod_margic').': ' . $margicname);
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
@@ -227,7 +228,11 @@ if ($moduleinstance->intro) {
 }
 
 if (isset($editedtypeid) && $mode == 1) {
-    echo $OUTPUT->notification(get_string('changetype', 'mod_margic'), notification::NOTIFY_WARNING);
+    if ($editeddefaulttype) {
+        echo $OUTPUT->notification(get_string('warningeditdefaulterrortypetemplate', 'mod_margic'), notification::NOTIFY_ERROR);
+    }
+
+    echo $OUTPUT->notification(get_string('changetemplate', 'mod_margic'), notification::NOTIFY_WARNING);
 }
 
 $mform->display();

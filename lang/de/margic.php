@@ -175,6 +175,7 @@ $string['errortypecantbeedited'] = 'Fehlertyp konnte nicht geändert werden';
 $string['deleteerrortype'] = 'Fehlertyp entfernen';
 $string['errortypedeleted'] = 'Fehlertyp entfernt';
 $string['deleteerrortypetemplate'] = 'Vorlage löschen';
+$string['deleteerrortypetemplateconfirm'] = 'Soll diese Fehlertyp-Vorlage wirklich gelöscht werden? Dadurch wird die Vorlage für das gesamte System gelöscht und kann nicht mehr in neuen Margics als konkreter Fehlertyp ausgewählt werden. Diese Aktion kann nicht rückgängig gemacht werden!';
 $string['errortypeinvalid'] = 'Fehlertyp ungültig';
 $string['nameoferrortype'] = 'Name des Fehlertyps';
 $string['margicerrortypes'] = 'Margic Fehlertypen';
@@ -199,11 +200,12 @@ $string['custom'] = 'Benutzerdefiniert';
 $string['type'] = 'Art';
 $string['color'] = 'Farbe';
 $string['errnohexcolor'] = 'Kein hexadezimaler Farbwert.';
-$string['changetype'] = 'Die Änderung des Namens oder der Farbe des Fehlertypen wirkt sich nur auf die Vorlage aus und wird daher erst bei der Erstellung neuer Margics wirksam. Die Fehlertypen in bestehenden Margics sind von diesen Änderungen nicht betroffen.';
+$string['warningeditdefaulterrortypetemplate'] = 'WARNUNG: Hierdurch wird die Fehlertyp-Vorlage systemweit geändert. Bei der Erstellung neuer Margics wird dann bei der Auswahl der konkreten Fehlertypen die geänderte Vorlage zur Verfügung stehen.';
+$string['changetemplate'] = 'Die Änderung des Namens oder der Farbe des Fehlertypen wirkt sich nur auf die Vorlage aus und wird daher erst bei der Erstellung neuer Margics wirksam. Die Fehlertypen in bestehenden Margics sind von diesen Änderungen nicht betroffen.';
 $string['explanationtypename'] = 'Name des Fehlertyps';
 $string['explanationtypename_help'] = 'Der Name des Fehlertypen. Für folgende Standardfehlertypen sind bereits Übersetzungen in Moodle hinterlegt: "grammar_verb", "grammar_syntax", "grammar_congruence", "grammar_other", "expression", "orthography", "punctuation" und "other". Alle anderen Namen werden nicht übersetzt.';
 $string['explanationhexcolor'] = 'Farbe des Fehlertyps';
-$string['explanationhexcolor_help'] = 'Die Farbe des Fehlertypen als Hexadezimalwert. Dieser besteht aus genau 6 Zeichen (A-F sowie 0-9) und repräsentiert eine Farbe. Den Hexwert von beliebigen Farben kann man z. B. unter https://www.w3schools.com/colors/colors_picker.asp herausfinden.';
+$string['explanationhexcolor_help'] = 'Die Farbe des Fehlertypen als Hexadezimalwert. Dieser besteht aus genau 6 Zeichen (A-F sowie 0-9) und repräsentiert eine Farbe. Den Hexwert von beliebigen Farben kann man z. B. unter <a href="https://www.w3schools.com/colors/colors_picker.asp" target="_blank">https://www.w3schools.com/colors/colors_picker.asp</a> herausfinden.';
 $string['explanationstandardtype'] = 'Hier kann ausgewählt werden, ob der Fehlertyp ein Standardtyp sein soll. In diesem Fall kann er von allen Lehrenden für ihre Margics ausgewählt und dann in diesen verwendet werden. Andernfalls kann er nur von Ihnen selbst in Ihren Margics verwendet werden.';
 
 // Calendar.
@@ -231,6 +233,9 @@ $string['margic:addinstance'] = 'Margic Instanzen hinzufügen';
 $string['margic:manageentries'] = 'Margic Einträge verwalten';
 $string['margic:rate'] = 'Margic Einträge bewerten';
 $string['margic:receivegradingmessages'] = 'Nachrichten über die Bewertung von Einträgen erhalten';
+$string['margic:manageerrortypes'] = 'Margic Fehlertypen verwalten';
+$string['margic:viewerrorsummary'] = 'Margic Fehlerauswertung ansehen';
+$string['margic:viewerrorsfromallparticipants'] = 'Fehler aller Teilnehmerinnen ansehen';
 $string['margic:editdefaulterrortypes'] = 'Standardfehlertyp Vorlagen bearbeiten';
 $string['margic:viewannotations'] = 'Annotationen ansehen';
 $string['margic:makeannotations'] = 'Annotationen anlegen';
@@ -277,6 +282,8 @@ $string['gradingmailfullmessagehtml'] = 'Hallo {$a->user},<br>
 $string['mailfooter'] = 'Diese Nachricht bezieht sich auf ein Margic in {$a->systemname}. Unter dem folgenden Link finden Sie alle weiteren Informationen. <br> {$a->coursename} -> Margic -> {$a->name} <br> {$a->url}';
 
 // Admin settings.
+$string['defaulterrortypetemplateseditable'] = 'Bearbeitung der Standard Fehlertyp-Vorlagen';
+$string['defaulterrortypetemplateseditable_help'] = 'Wenn aktiviert können Administratoren oder Benutzer mit der Berechtigung editdefaulterrortypes die Standard Fehlertyp-Vorlagen in einem Margic auf der Seite der Fehlerauswertung bearbeiten. Das Bearbeiten einer Vorlage ändert sie im gesamten System, sodass beim Erstellen neuer Margics die geänderte Vorlage bei der Auswahl der konkreten Fehlertypen angezeigt wird. Bestehende konkrete Margic Fehlertypen werden durch das Ändern einer Vorlage nicht verändert. Wird diese Option deaktiviert können Fehlertyp-Vorlagen nicht geändert werden.';
 $string['editentrydates'] = 'Eintragsdatum bearbeiten';
 $string['editentrydates_help'] = 'Wenn aktiviert können Lehrende in jedem Margic festlegen, ob Nutzer/innen das Datum jedes neuen Eintrags bearbeiten können.';
 $string['editentries'] = 'Eigene Einträge bearbeiten';

@@ -175,6 +175,7 @@ $string['errortypecantbeedited'] = 'Error type could not be changed';
 $string['deleteerrortype'] = 'Delete error type';
 $string['errortypedeleted'] = 'Error type deleted';
 $string['deleteerrortypetemplate'] = 'Delete template';
+$string['deleteerrortypetemplateconfirm'] = 'Should this error type template really be deleted? This deletes the template for the entire system so that it can no longer be used as a concrete error type in new Margics. This action cannot be undone!';
 $string['errortypeinvalid'] = 'Error type invalid';
 $string['nameoferrortype'] = 'Name of error type';
 $string['margicerrortypes'] = 'Margic error types';
@@ -199,11 +200,12 @@ $string['custom'] = 'Custom';
 $string['type'] = 'Type';
 $string['color'] = 'Color';
 $string['errnohexcolor'] = 'No hexadecimal value for color.';
-$string['changetype'] = 'Changing the name or color of the error type only affects the template and therefore only takes effect when new Margics are created. The error types in existing Margics are not affected by these changes.';
+$string['warningeditdefaulterrortypetemplate'] = 'WARNING: This will change the error type template system-wide. When creating new Margics, the changed template will then be available for selecting the concrete Margic error types.';
+$string['changetemplate'] = 'Changing the name or color of the error type only affects the template and therefore only takes effect when new Margics are created. The error types in existing Margics are not affected by these changes.';
 $string['explanationtypename'] = 'Name of the error type';
 $string['explanationtypename_help'] = 'The name of the error type. For the following standard error types, translations are already stored in Moodle: "grammar_verb", "grammar_syntax", "grammar_congruence", "grammar_other", "expression", "orthography", "punctuation" and "other". All other names are not translated.';
 $string['explanationhexcolor'] = 'Color of the error type';
-$string['explanationhexcolor_help'] = 'The color of the error type as hexadecimal value. This consists of exactly 6 characters (A-F as well as 0-9) and represents a color. You can find out the hexadecimal value of any color, for example, at https://www.w3schools.com/colors/colors_picker.asp.';
+$string['explanationhexcolor_help'] = 'The color of the error type as hexadecimal value. This consists of exactly 6 characters (A-F as well as 0-9) and represents a color. You can find out the hexadecimal value of any color, for example, at <a href="https://www.w3schools.com/colors/colors_picker.asp" target="_blank">https://www.w3schools.com/colors/colors_picker.asp</a>.';
 $string['explanationstandardtype'] = 'Here you can select whether the error type should be a default type. In this case teachers can select it as error type that can be used in their Margics. Otherwise, only you can add this error type to your Margics.';
 
 // Calendar.
@@ -231,6 +233,9 @@ $string['margic:addinstance'] = 'Add Margic instances';
 $string['margic:manageentries'] = 'Manage Margic entries';
 $string['margic:rate'] = 'Rate Margic entries';
 $string['margic:receivegradingmessages'] = 'Receive messages about the rating of entries';
+$string['margic:manageerrortypes'] = 'Manage Margic error types';
+$string['margic:viewerrorsummary'] = 'View Margic error summary';
+$string['margic:viewerrorsfromallparticipants'] = 'View errors from all participants';
 $string['margic:editdefaulterrortypes'] = 'Edit default error type templates';
 $string['margic:viewannotations'] = 'View annotations';
 $string['margic:makeannotations'] = 'Make annotations';
@@ -251,7 +256,7 @@ $string['search:feedback'] = 'Feedback to Margic entries';
 // Default error type templates.
 $string['grammar_verb'] = 'Grammar: Verb form';
 $string['grammar_syntax'] = 'Grammar: Syntax';
-$string['grammar_congruence'] = 'Grammar: Congruence';
+$string['grammar_congruence'] = 'Grammar: Agreement';
 $string['grammar_other'] = 'Grammar: Other';
 $string['expression'] = 'Expression';
 $string['orthography'] = 'Orthography';
@@ -277,6 +282,8 @@ $string['gradingmailfullmessagehtml'] = 'Greetings {$a->user},<br>
 $string['mailfooter'] = 'This message is about a Margic in {$a->systemname}. You can find all further information under the following link: <br> {$a->coursename} -> Margic -> {$a->name} <br> {$a->url}';
 
 // Admin settings.
+$string['defaulterrortypetemplateseditable'] = 'Editing of the default error type templates';
+$string['defaulterrortypetemplateseditable_help'] = 'If enabled, administrators or users with the editdefaulterrortypes permission can edit the default error type templates in a Margic on the error summary page. Modifying a template changes it throughout the system so that when new Margics are created, the modified template is displayed when the concrete error types are selected. Existing concrete Margic error types are not changed by modifying a template. If no is selected here, error type templates cannot be changed from inside a Margic.';
 $string['editentrydates'] = 'Edit entry dates';
 $string['editentrydates_help'] = 'If enabled, teachers can configure in each Margic whether users can edit their own entries.';
 $string['editentries'] = 'Edit own entries';
