@@ -36,7 +36,7 @@ function xmldb_margic_install() {
     $errortype->timecreated = time();
     $errortype->timemodified = 0;
     $errortype->name = 'grammar_verb';
-    $errortype->color = 'FFFF00';
+    $errortype->color = '0040FF';
     $errortype->defaulttype = 1;
     $errortype->userid = 0;
 
@@ -47,7 +47,7 @@ function xmldb_margic_install() {
     $errortype->timecreated = time();
     $errortype->timemodified = 0;
     $errortype->name = 'grammar_syntax';
-    $errortype->color = 'FFFF00';
+    $errortype->color = '0080FF';
     $errortype->defaulttype = 1;
     $errortype->userid = 0;
 
@@ -58,7 +58,7 @@ function xmldb_margic_install() {
     $errortype->timecreated = time();
     $errortype->timemodified = 0;
     $errortype->name = 'grammar_congruence';
-    $errortype->color = 'FFFF00';
+    $errortype->color = '0489B1';
     $errortype->defaulttype = 1;
     $errortype->userid = 0;
 
@@ -69,7 +69,7 @@ function xmldb_margic_install() {
     $errortype->timecreated = time();
     $errortype->timemodified = 0;
     $errortype->name = 'grammar_other';
-    $errortype->color = 'FFFF00';
+    $errortype->color = '2ECCFA';
     $errortype->defaulttype = 1;
     $errortype->userid = 0;
 
@@ -80,7 +80,7 @@ function xmldb_margic_install() {
     $errortype->timecreated = time();
     $errortype->timemodified = 0;
     $errortype->name = 'expression';
-    $errortype->color = 'FFFF00';
+    $errortype->color = '3ADF00';
     $errortype->defaulttype = 1;
     $errortype->userid = 0;
 
@@ -91,7 +91,7 @@ function xmldb_margic_install() {
     $errortype->timecreated = time();
     $errortype->timemodified = 0;
     $errortype->name = 'orthography';
-    $errortype->color = 'FFFF00';
+    $errortype->color = 'DF0101';
     $errortype->defaulttype = 1;
     $errortype->userid = 0;
 
@@ -113,7 +113,7 @@ function xmldb_margic_install() {
     $errortype->timecreated = time();
     $errortype->timemodified = 0;
     $errortype->name = 'other';
-    $errortype->color = 'FFFF00';
+    $errortype->color = 'F7D358';
     $errortype->defaulttype = 1;
     $errortype->userid = 0;
 

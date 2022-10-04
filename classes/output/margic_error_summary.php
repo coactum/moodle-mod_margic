@@ -47,6 +47,10 @@ class margic_error_summary implements renderable, templatable {
     protected $errortypetemplates;
     /** @var string */
     protected $sesskey;
+    /** @var bool */
+    protected $canmanageerrortypes;
+    /** @var bool */
+    protected $defaulterrortypetemplateseditable;
     /**
      * Construct this renderable.
      * @param int $cmid The course module id
@@ -54,14 +58,18 @@ class margic_error_summary implements renderable, templatable {
      * @param array $margicerrortypes The errortypes used in the margic instance
      * @param array $errortypetemplates The errortype templates available for the current user
      * @param string $sesskey The session key
+     * @param bool $canmanageerrortypes If user can manage errortypes
+     * @param bool $defaulterrortypetemplateseditable If eligible users can edit default error type templates
      */
-    public function __construct($cmid, $participants, $margicerrortypes, $errortypetemplates, $sesskey) {
+    public function __construct($cmid, $participants, $margicerrortypes, $errortypetemplates, $sesskey, $canmanageerrortypes, $defaulterrortypetemplateseditable) {
 
         $this->cmid = $cmid;
         $this->participants = $participants;
         $this->margicerrortypes = $margicerrortypes;
         $this->errortypetemplates = $errortypetemplates;
         $this->sesskey = $sesskey;
+        $this->canmanageerrortypes = $canmanageerrortypes;
+        $this->defaulterrortypetemplateseditable = $defaulterrortypetemplateseditable;
     }
 
     /**
@@ -77,6 +85,8 @@ class margic_error_summary implements renderable, templatable {
         $data->margicerrortypes = $this->margicerrortypes;
         $data->errortypetemplates = $this->errortypetemplates;
         $data->sesskey = $this->sesskey;
+        $data->canmanageerrortypes = $this->canmanageerrortypes;
+        $data->defaulterrortypetemplateseditable = $this->defaulterrortypetemplateseditable;
 
         return $data;
     }

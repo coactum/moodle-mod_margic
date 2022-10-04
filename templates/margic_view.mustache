@@ -54,7 +54,7 @@
                 <a class="btn btn-primary m-1 buttonannotationmode" href="view.php?id={{cmid}}"> {{#str}}hideannotations, mod_margic{{/str}} </a>
             {{/annotationmode}}
         {{/entries.0}}
-        {{#canmanageentries}}<a class="btn btn-primary m-1" href="error_summary.php?id={{cmid}}"> {{#str}}errorsummary, mod_margic{{/str}} </a>{{/canmanageentries}}
+        <a class="btn btn-primary m-1" href="error_summary.php?id={{cmid}}"> {{#str}}errorsummary, mod_margic{{/str}} </a>
 
         {{#entries.0}}<span class="pull-right p-1">
             <a href="view.php?id={{cmid}}&action=download&sesskey={{sesskey}}" class="p-1 pr-2 border-right solid"><i class="fa fa-2x fa-download" title="{{#str}}csvexport, mod_margic{{/str}}"></i></a>

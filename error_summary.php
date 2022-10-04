@@ -75,10 +75,15 @@ if (! $coursesections = $DB->get_record("course_sections", array(
 
 require_login($course, true, $cm);
 
-require_capability('mod/margic:makeannotations', $context);
+require_capability('mod/margic:viewerrorsummary', $context);
+
+$manageerrortypes = has_capability('mod/margic:manageerrortypes', $context);
+$defaulterrortypetemplateseditable = get_config('margic', 'defaulterrortypetemplateseditable');
+
+global $USER;
 
 // Add type to margic.
-if ($addtomargic) {
+if ($addtomargic && $manageerrortypes) {
     require_sesskey();
 
     $redirecturl = new moodle_url('/mod/margic/error_summary.php', array('id' => $id));
@@ -105,7 +110,7 @@ if ($addtomargic) {
 }
 
 // Change priority.
-if ($mode == 2 && $priority && $action && $DB->record_exists('margic_errortypes', array('id' => $priority))) {
+if ($manageerrortypes && $mode == 2 && $priority && $action && $DB->record_exists('margic_errortypes', array('id' => $priority))) {
     require_sesskey();
 
     $redirecturl = new moodle_url('/mod/margic/error_summary.php', array('id' => $id));
@@ -165,7 +170,7 @@ if ($mode == 2 && $priority && $action && $DB->record_exists('margic_errortypes'
 }
 
 // Delete annotation.
-if ($delete !== 0 && $mode) {
+if ($manageerrortypes && $delete !== 0 && $mode) {
 
     require_sesskey();
 
@@ -178,8 +183,6 @@ if ($delete !== 0 && $mode) {
     }
 
     if ($DB->record_exists($table, array('id' => $delete))) {
-
-        global $USER;
 
         $type = $DB->get_record($table, array('id' => $delete));
 
@@ -221,23 +224,29 @@ $participants = array_values(get_enrolled_users($context, 'mod/margic:addentries
 $errortypes = $margic->get_errortypes_for_form();
 
 foreach ($participants as $key => $participant) {
-    $participants[$key]->errors = array();
+    if (has_capability('mod/margic:viewerrorsfromallparticipants', $context) || $participant->id == $USER->id) {
+        $participants[$key]->errors = array();
 
-    foreach ($errortypes as $i => $type) {
-        $sql = "SELECT COUNT(*)
-            FROM {margic_annotations} a
-            JOIN {margic_entries} e ON e.id = a.entry
-            WHERE e.margic = :margic AND
-                e.userid = :userid AND
-                a.type = :atype";
-        $params = array('margic' => $moduleinstance->id, 'userid' => $participant->id, 'atype' => $i);
-        $count = $DB->count_records_sql($sql, $params);
+        foreach ($errortypes as $i => $type) {
+            $sql = "SELECT COUNT(*)
+                FROM {margic_annotations} a
+                JOIN {margic_entries} e ON e.id = a.entry
+                WHERE e.margic = :margic AND
+                    e.userid = :userid AND
+                    a.type = :atype";
+            $params = array('margic' => $moduleinstance->id, 'userid' => $participant->id, 'atype' => $i);
+            $count = $DB->count_records_sql($sql, $params);
 
-        $participants[$key]->errors[$i] = $count;
+            $participants[$key]->errors[$i] = $count;
+        }
+
+        $participants[$key]->errors = array_values($participants[$key]->errors);
+    } else {
+        unset($participants[$key]);
     }
-
-    $participants[$key]->errors = array_values($participants[$key]->errors);
 }
+
+$participants = array_values($participants);
 
 $margicerrortypes = $margic->get_margic_errortypes();
 $strmanager = get_string_manager();
@@ -261,7 +270,7 @@ foreach ($errortypetemplates as $id => $templatetype) {
     if ($templatetype->defaulttype == 1) {
         $errortypetemplates[$id]->type = get_string('standard', 'mod_margic');
 
-        if (has_capability('mod/margic:editdefaulterrortypes', $context)) {
+        if (has_capability('mod/margic:editdefaulterrortypes', $context) && $defaulterrortypetemplateseditable) {
             $errortypetemplates[$id]->canbeedited = true;
         } else {
             $errortypetemplates[$id]->canbeedited = false;
@@ -286,7 +295,7 @@ foreach ($errortypetemplates as $id => $templatetype) {
 $errortypetemplates = array_values($errortypetemplates);
 
 // Output page.
-$page = new margic_error_summary($cm->id, $participants, $margicerrortypes, $errortypetemplates, sesskey());
+$page = new margic_error_summary($cm->id, $participants, $margicerrortypes, $errortypetemplates, sesskey(), $manageerrortypes, $defaulterrortypetemplateseditable);
 
 echo $OUTPUT->render($page);
 

@@ -23,10 +23,12 @@
 
 <div class="margic_error_summary">
     <div class="errortypes collapse show">
-        <div class="d-flex justify-content-between">
-            <button class="btn btn-primary m-1" data-toggle="collapse" data-target=".errortypes" aria-expanded="false" aria-controls=".errortypes" title="{{#str}}switchtotemplatetypes, mod_margic{{/str}}">{{#str}}switchtotemplatetypes, mod_margic{{/str}}</button>
-            <a class="btn btn-primary m-1" href="errortypes.php?id={{cmid}}&mode=2"> {{#str}}adderrortype, mod_margic{{/str}} ({{#str}}modulename, mod_margic{{/str}})</a>
-        </div>
+        {{#canmanageerrortypes}}
+            <div class="d-flex justify-content-between">
+                <button class="btn btn-primary m-1" data-toggle="collapse" data-target=".errortypes" aria-expanded="false" aria-controls=".errortypes" title="{{#str}}switchtotemplatetypes, mod_margic{{/str}}">{{#str}}switchtotemplatetypes, mod_margic{{/str}}</button>
+                <a class="btn btn-primary m-1" href="errortypes.php?id={{cmid}}&mode=2"> {{#str}}adderrortype, mod_margic{{/str}} ({{#str}}modulename, mod_margic{{/str}})</a>
+            </div>
+        {{/canmanageerrortypes}}
 
         <h3>{{#str}}margicerrortypes, mod_margic{{/str}}</h3>
 
@@ -36,14 +38,16 @@
                 {{#margicerrortypes}}
                     <th scope="col">
                         <span style="text-decoration: underline; text-decoration-color: #{{color}}; text-decoration-thickness: 3px;">{{name}}</span>
-                        <div>
-                            {{#canbeedited}}
-                                <a href="errortypes.php?id={{cmid}}&edit={{id}}&mode=2" title="{{#str}}editerrortype, margic {{/str}}"><i class="fa fa-lg fa-pencil" aria-hidden="true" ></i></a>
-                                <a href="error_summary.php?id={{cmid}}&delete={{id}}&mode=2&sesskey={{sesskey}}" title="{{#str}}deleteerrortype, margic {{/str}}"><i class="fa fa-lg fa-trash" aria-hidden="true" ></i></a>
-                            {{/canbeedited}}
-                            <a href="error_summary.php?id={{cmid}}&priority={{id}}&action=1&mode=2&sesskey={{sesskey}}" title="{{#str}}movefor, margic {{/str}}"><i class="fa fa-lg fa-arrow-left" aria-hidden="true" ></i></a>
-                            <a href="error_summary.php?id={{cmid}}&priority={{id}}&action=2&mode=2&sesskey={{sesskey}}" title="{{#str}}moveback, margic {{/str}}"><i class="fa fa-lg fa-arrow-right" aria-hidden="true" ></i></a>
-                        </div>
+                        {{#canmanageerrortypes}}
+                            <div>
+                                {{#canbeedited}}
+                                    <a href="errortypes.php?id={{cmid}}&edit={{id}}&mode=2" title="{{#str}}editerrortype, margic {{/str}}"><i class="fa fa-lg fa-pencil" aria-hidden="true" ></i></a>
+                                    <a href="error_summary.php?id={{cmid}}&delete={{id}}&mode=2&sesskey={{sesskey}}" title="{{#str}}deleteerrortype, margic {{/str}}"><i class="fa fa-lg fa-trash" aria-hidden="true" ></i></a>
+                                {{/canbeedited}}
+                                <a href="error_summary.php?id={{cmid}}&priority={{id}}&action=1&mode=2&sesskey={{sesskey}}" title="{{#str}}movefor, margic {{/str}}"><i class="fa fa-lg fa-arrow-left" aria-hidden="true" ></i></a>
+                                <a href="error_summary.php?id={{cmid}}&priority={{id}}&action=2&mode=2&sesskey={{sesskey}}" title="{{#str}}moveback, margic {{/str}}"><i class="fa fa-lg fa-arrow-right" aria-hidden="true" ></i></a>
+                            </div>
+                        {{/canmanageerrortypes}}
                     </th>
                 {{/margicerrortypes}}
             <thead>
@@ -56,60 +60,62 @@
         </table>
     </div>
 
-    <div class="errortypes collapse">
-        <div class="d-flex justify-content-between">
-            <button class="btn btn-primary m-1" data-toggle="collapse" data-target=".errortypes" aria-expanded="false" aria-controls=".errortypes" title="{{#str}}switchtomargictypes, mod_margic{{/str}}">{{#str}}switchtomargictypes, mod_margic{{/str}}</button>
-            <a class="btn btn-primary m-1" href="errortypes.php?id={{cmid}}&mode=1"> {{#str}}adderrortype, mod_margic{{/str}} ({{#str}}template, mod_margic{{/str}})</a>
+    {{#canmanageerrortypes}}
+        <div class="errortypes collapse">
+            <div class="d-flex justify-content-between">
+                <button class="btn btn-primary m-1" data-toggle="collapse" data-target=".errortypes" aria-expanded="false" aria-controls=".errortypes" title="{{#str}}switchtomargictypes, mod_margic{{/str}}">{{#str}}switchtomargictypes, mod_margic{{/str}}</button>
+                <a class="btn btn-primary m-1" href="errortypes.php?id={{cmid}}&mode=1"> {{#str}}adderrortype, mod_margic{{/str}} ({{#str}}template, mod_margic{{/str}})</a>
+            </div>
+
+            <h3>{{#str}}errortypetemplates, mod_margic{{/str}}</h3>
+
+            {{#errortypetemplates.0}}
+                <table class="table table-striped">
+                    <thead>
+                        <th scope="col">
+                            {{#str}}name{{/str}}
+                        </th>
+                        <th scope="col">
+                            {{#str}}type, mod_margic{{/str}}
+                        </th>
+                        <th scope="col">
+                            {{#str}}color, mod_margic{{/str}}
+                        </th>
+                        <th scope="col">
+                            {{#str}}edit{{/str}}
+                        </th>
+                        <th scope="col">
+                            {{#str}}delete{{/str}}
+                        </th>
+                        <th scope="col">
+                            {{#str}}addtomargic, mod_margic{{/str}}
+                        </th>
+                    <thead>
+                    <tbody>
+                        {{#errortypetemplates}}
+                            <tr>
+                                <td>{{name}}</td>
+                                <td>
+                                    {{type}}
+                                </td>
+                                <td style="background-color: #{{color}}"></td>
+                                <td>
+                                    {{#canbeedited}}<a href="errortypes.php?id={{cmid}}&edit={{id}}&mode=1" title="{{#str}}editerrortypetemplate, margic {{/str}}"><i class="fa fa-lg fa-pencil" aria-hidden="true" ></i></a>{{/canbeedited}}
+                                </td>
+                                <td>
+                                    <a href="error_summary.php?id={{cmid}}&delete={{id}}&mode=1&sesskey={{sesskey}}" title="{{#str}}deleteerrortypetemplate, margic {{/str}}" onclick="return confirm('{{#str}}deleteerrortypetemplateconfirm, margic {{/str}}');"><i class="fa fa-lg fa-trash" aria-hidden="true" ></i></a>
+                                </td>
+                                <td>
+                                    <a href="error_summary.php?id={{cmid}}&addtomargic={{id}}&sesskey={{sesskey}}" title="{{#str}}addtomargic, margic {{/str}}"><i class="fa fa-lg fa-plus" aria-hidden="true" ></i></a>
+                                </td>
+                            </tr>
+                        {{/errortypetemplates}}
+                    </tbody>
+                </table>
+            {{/errortypetemplates.0}}
+            {{^errortypetemplates.0}} {{#str}}notemplatetypes, mod_margic{{/str}} {{/errortypetemplates.0}}
         </div>
-
-        <h3>{{#str}}errortypetemplates, mod_margic{{/str}}</h3>
-
-        {{#errortypetemplates.0}}
-            <table class="table table-striped">
-                <thead>
-                    <th scope="col">
-                        {{#str}}name{{/str}}
-                    </th>
-                    <th scope="col">
-                        {{#str}}type, mod_margic{{/str}}
-                    </th>
-                    <th scope="col">
-                        {{#str}}color, mod_margic{{/str}}
-                    </th>
-                    <th scope="col">
-                        {{#str}}edit{{/str}}
-                    </th>
-                    <th scope="col">
-                        {{#str}}delete{{/str}}
-                    </th>
-                    <th scope="col">
-                        {{#str}}addtomargic, mod_margic{{/str}}
-                    </th>
-                <thead>
-                <tbody>
-                    {{#errortypetemplates}}
-                        <tr>
-                            <td>{{name}}</td>
-                            <td>
-                                {{type}}
-                            </td>
-                            <td style="background-color: #{{color}}"></td>
-                            <td>
-                                {{#canbeedited}}<a href="errortypes.php?id={{cmid}}&edit={{id}}&mode=1" title="{{#str}}editerrortypetemplate, margic {{/str}}"><i class="fa fa-lg fa-pencil" aria-hidden="true" ></i></a>{{/canbeedited}}
-                            </td>
-                            <td>
-                                {{#canbeedited}}<a href="error_summary.php?id={{cmid}}&delete={{id}}&mode=1&sesskey={{sesskey}}" title="{{#str}}deleteerrortypetemplate, margic {{/str}}"><i class="fa fa-lg fa-trash" aria-hidden="true" ></i></a>{{/canbeedited}}
-                            </td>
-                            <td>
-                                <a href="error_summary.php?id={{cmid}}&addtomargic={{id}}&sesskey={{sesskey}}" title="{{#str}}addtomargic, margic {{/str}}"><i class="fa fa-lg fa-plus" aria-hidden="true" ></i></a>
-                            </td>
-                        </tr>
-                    {{/errortypetemplates}}
-                </tbody>
-            </table>
-        {{/errortypetemplates.0}}
-        {{^errortypetemplates.0}} {{#str}}notemplatetypes, mod_margic{{/str}} {{/errortypetemplates.0}}
-    </div>
+    {{/canmanageerrortypes}}
 
     <div class="d-flex justify-content-center">
         <a class="btn btn-primary m-1" href="view.php?id={{cmid}}"> {{#str}}backtooverview, mod_margic{{/str}} </a>
