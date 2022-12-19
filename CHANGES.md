@@ -1,4 +1,7 @@
 ## Changelog ##
+- [1.2.6]:
+    - [Bugfix]: Fix for activity completion for view event.
+    - [Chore]: Some minor changes to reduce moodle validation errors.
 - [1.2.5]:
     - [Bugfix]: Added LICENSE.md
     - [Bugfix]: In print mode now the background of the grading form is also greyed out.
