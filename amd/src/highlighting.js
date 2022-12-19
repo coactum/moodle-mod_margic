@@ -415,6 +415,7 @@ function isNodeInRange(range, node) {
             }
         }
     }
+    return false;
 }
 
 /**

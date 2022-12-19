@@ -147,6 +147,9 @@ if ($annotationmode === 1 && has_capability('mod/margic:viewannotations', $conte
     $PAGE->navbar->add(get_string("viewentries", "margic"));
 }
 
+$completion = new completion_info($course);
+$completion->set_module_viewed($cm);
+
 $PAGE->set_title(get_string('modulename', 'mod_margic').': ' . $margicname);
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
