@@ -21,6 +21,25 @@
     Template for single entry.
 }}
 
+{{#needsclasses}}
+    <style media="screen">
+        .entrybackground {
+            background-color: {{entrybgc}};
+        }
+        .textbackground {
+            background-color: {{textbgc}};
+        }
+    </style>
+    <style>
+        .entryareawidth {
+            width: {{entryareawidth}}%;
+        }
+        .annotationareawidth {
+            width: {{annotationareawidth}}%;
+        }
+    </style>
+{{/needsclasses}}
+
 <div class="margic_entry">
     {{#entry}}
         {{#childentries}}
@@ -28,7 +47,7 @@
         {{/childentries}}
         <div class="{{#haschildren}}ml-5 collapse connectedWith{{id}}{{/haschildren}}">
             <div class="d-flex justify-content-between {{#haschildren}}ml-5{{/haschildren}}">
-                <div class="entry {{^annotationmode}}w-100{{/annotationmode}}" style="background: {{entrybgc}}; {{#annotationmode}}width: {{entryareawidth}}% {{/annotationmode}}">
+                <div class="entry entrybackground {{^annotationmode}}w-100{{/annotationmode}}{{#annotationmode}}entryareawidth{{/annotationmode}}">
                     <h5>
                         {{^haschildren}}
                             {{#str}}entry, mod_margic{{/str}}
@@ -52,7 +71,7 @@
                     </h5>
 
                     {{#text}}
-                        <div id="entry-{{id}}" class="entry originaltext" style="background: {{textbgc}};">{{{text}}}</div>
+                        <div id="entry-{{id}}" class="entry originaltext textbackground">{{{text}}}</div>
                     {{/text}}
                     {{^text}}<p class="text-center"><strong>{{#str}}blankentry, mod_margic{{/str}}</strong></p>{{/text}}
                     <div class="lastedit">
@@ -67,9 +86,9 @@
                     </div>
                 </div>
                 {{#annotationmode}}
-                    <div class="annotationarea annotationarea-{{id}}" style="background: {{entrybgc}}; width: {{annotationareawidth}}%">
+                    <div class="annotationarea annotationarea-{{id}} annotationareawidth entrybackground">
                         {{#annotations}}
-                            <div id="annotation-box-{{id}}" class="annotation-box annotation-box-{{id}}" style="background: {{textbgc}};" tabindex="{{position}}">
+                            <div id="annotation-box-{{id}}" class="annotation-box annotation-box-{{id}} textbackground" tabindex="{{position}}">
                                 <div class="errortypeheader">
                                     <span style="border-left: 10px solid #{{color}}; padding-left: 5px;"> </span>
                                     <strong class="errortype">{{type}}</strong>
@@ -101,7 +120,7 @@
                         {{/annotations}}
 
                         {{#annotationform}}
-                            <div class="annotation-box annotation-form annotation-form-{{id}}" style="background: {{textbgc}};">
+                            <div class="annotation-box annotation-form annotation-form-{{id}} textbackground">
                                 <div class="annotatedtextpreviewdiv">
                                     <span id="annotationpreview-temp-{{id}}" class="annotatedtextpreview">{{#str}}annotatedtextnotfound, mod_margic {{/str}} <i class="fa fa-exclamation text-danger" aria-hidden="true" title="{{#str}}annotatedtextinvalid, margic {{/str}}"></i></span>
                                 </div>
@@ -112,10 +131,10 @@
                 {{/annotationmode}}
             </div>
         </div>
-        <div class="entryfooter mb-2" style="background: {{entrybgc}};">
+        <div class="entryfooter mb-2 entrybackground">
             {{#canmanageentries}}
                 {{#gradingform}}
-                    <div class="gradingform collapse {{#gradingmode}}show{{/gradingmode}}" style="background: {{textbgc}};">
+                    <div class="gradingform collapse {{#gradingmode}}show{{/gradingmode}} textbackground">
                         {{{gradingform}}}
                     </div>
                 {{/gradingform}}

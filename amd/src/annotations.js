@@ -24,7 +24,7 @@
 import $ from 'jquery';
 import {removeAllTempHighlights, anchor, describe} from './highlighting';
 
-export const init = (cmid, canmakeannotations, myuserid) => {
+export const init = (cmid, canmakeannotations, myuserid, focusannotation) => {
 
     var edited = false;
     var annotations = Array();
@@ -118,13 +118,13 @@ export const init = (cmid, canmakeannotations, myuserid) => {
             $('.annotated').mouseenter(function() {
                 var id = this.id.replace('annotated-', '');
                 $('.annotation-box-' + id).addClass('hovered');
-                $('.annotated-' + id).addClass('hovered');
+                $('.annotated-' + id).css("background-color", 'lightblue');
             });
 
             $('.annotated').mouseleave(function() {
                 var id = this.id.replace('annotated-', '');
                 $('.annotation-box-' + id).removeClass('hovered');
-                $('.annotated-' + id).removeClass('hovered');
+                $('.annotated-' + id).css("background-color", $('.annotated-' + id).css('textDecorationColor'));
             });
 
             // Highlight whole temp annotation if part of temp annotation is hovered
@@ -151,13 +151,20 @@ export const init = (cmid, canmakeannotations, myuserid) => {
             // Highlight annotation if hoverannotation button is hovered
             $(document).on('mouseover', '.hoverannotation', function() {
                 var id = this.id.replace('hoverannotation-', '');
-                $('.annotated-' + id).addClass('hovered');
+                $('.annotated-' + id).css("background-color", 'lightblue');
             });
 
             $(document).on('mouseleave', '.hoverannotation', function() {
                 var id = this.id.replace('hoverannotation-', '');
-                $('.annotated-' + id).removeClass('hovered');
+                $('.annotated-' + id).css("background-color", $('.annotated-' + id).css('textDecorationColor'));
             });
+
+
+            // Focus annotation if needed.
+            if (focusannotation != 0) {
+                $('.annotated-' + focusannotation).attr('tabindex', -1);
+                $('.annotated-' + focusannotation).focus();
+            }
 
         },
         complete: function() {

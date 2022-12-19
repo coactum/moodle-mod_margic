@@ -129,7 +129,9 @@ class margic {
 
         foreach ($this->annotations as $key => $annotation) {
 
-            if (!array_key_exists($annotation->type, $this->errortypes) && $DB->record_exists('margic_errortypes', array('id' => $annotation->type))) {
+            if (!array_key_exists($annotation->type, $this->errortypes) &&
+                $DB->record_exists('margic_errortypes', array('id' => $annotation->type))) {
+
                 $this->errortypes[$annotation->type] = $DB->get_record('margic_errortypes', array('id' => $annotation->type));
             }
 
@@ -242,13 +244,16 @@ class margic {
         if ($this->mode == 'allentries') {
 
             if ($userid && $userid != 0) {
-                $this->entries = $DB->get_records('margic_entries', array('margic' => $this->instance->id, 'userid' => $userid, 'baseentry' => null), $sortoptions);
+                $this->entries = $DB->get_records('margic_entries', array('margic' => $this->instance->id, 'userid' => $userid,
+                    'baseentry' => null), $sortoptions);
             } else {
-                $this->entries = $DB->get_records('margic_entries', array('margic' => $this->instance->id, 'baseentry' => null), $sortoptions);
+                $this->entries = $DB->get_records('margic_entries', array('margic' => $this->instance->id,
+                    'baseentry' => null), $sortoptions);
             }
 
         } else if ($this->mode == 'ownentries') {
-            $this->entries = $DB->get_records('margic_entries', array('margic' => $this->instance->id, 'userid' => $USER->id, 'baseentry' => null), $sortoptions);
+            $this->entries = $DB->get_records('margic_entries', array('margic' => $this->instance->id, 'userid' => $USER->id,
+                'baseentry' => null), $sortoptions);
         }
     }
 
@@ -500,14 +505,17 @@ class margic {
      * @param object $annotationmode If annotationmode is activated.
      * @return object The entry or false if user is not allowed to see entry.
      */
-    public function prepare_entry($entry, $strmanager, $currentgroups, $allowedusers, $gradingstr, $regradingstr, $readonly, $grades, $canmanageentries, $annotationmode) {
+    public function prepare_entry($entry, $strmanager, $currentgroups, $allowedusers, $gradingstr, $regradingstr, $readonly,
+        $grades, $canmanageentries, $annotationmode) {
+
         global $DB, $USER, $CFG, $OUTPUT;
 
         $entry->user = $DB->get_record('user', array('id' => $entry->userid));
 
         if (!$currentgroups || ($allowedusers && in_array($entry->user, $allowedusers))) {
             // Get child entries for entry.
-            $entry->childentries = $DB->get_records('margic_entries', array('margic' => $this->instance->id, 'baseentry' => $entry->id), 'timecreated DESC');
+            $entry->childentries = $DB->get_records('margic_entries',
+                array('margic' => $this->instance->id, 'baseentry' => $entry->id), 'timecreated DESC');
 
             $revisionnr = count($entry->childentries);
             foreach ($entry->childentries as $ci => $childentry) {
@@ -570,8 +578,8 @@ class margic {
             array('courseid' => $this->course->id, 'link' => true, 'includefullname' => true, 'size' => 25));
 
             // Add feedback area to entry.
-            $entry->gradingform = helper::margic_return_feedback_area_for_entry($this->cm->id, $this->context, $this->course, $this->instance,
-            $entry, $grades, $canmanageentries);
+            $entry->gradingform = helper::margic_return_feedback_area_for_entry($this->cm->id, $this->context,
+            $this->course, $this->instance, $entry, $grades, $canmanageentries);
 
             $entry = $this->prepare_entry_annotations($entry, $strmanager, $annotationmode, $readonly);
 
@@ -594,7 +602,8 @@ class margic {
         global $DB, $USER, $CFG, $OUTPUT;
 
         // Get annotations for entry.
-        $entry->annotations = array_values($DB->get_records('margic_annotations', array('margic' => $this->cm->instance, 'entry' => $entry->id)));
+        $entry->annotations = array_values($DB->get_records('margic_annotations',
+            array('margic' => $this->cm->instance, 'entry' => $entry->id)));
 
         foreach ($entry->annotations as $key => $annotation) {
 
@@ -620,7 +629,8 @@ class margic {
             if ($annotationmode) {
                 // Add annotater images to annotations.
                 $annotater = $DB->get_record('user', array('id' => $annotation->userid));
-                $annotaterimage = $OUTPUT->user_picture($annotater, array('courseid' => $this->course->id, 'link' => true, 'includefullname' => true, 'size' => 20));
+                $annotaterimage = $OUTPUT->user_picture($annotater,
+                    array('courseid' => $this->course->id, 'link' => true, 'includefullname' => true, 'size' => 20));
                 $entry->annotations[$key]->userpicturestr = $annotaterimage;
 
             } else {
@@ -640,7 +650,8 @@ class margic {
             // Add annotation form.
             if (!$readonly) {
                 require_once($CFG->dirroot . '/mod/margic/annotation_form.php');
-                $mform = new annotation_form(new moodle_url('/mod/margic/annotations.php', array('id' => $this->cm->id)), array('types' => $this->get_errortypes_for_form()));
+                $mform = new annotation_form(new moodle_url('/mod/margic/annotations.php', array('id' => $this->cm->id)),
+                    array('types' => $this->get_errortypes_for_form()));
                 // Set default data.
                 $mform->set_data(array('id' => $this->cm->id, 'entry' => $entry->id));
 

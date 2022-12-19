@@ -72,9 +72,11 @@ class mod_margic_mod_form extends moodleform_mod {
 
             foreach ($errortypetemplates as $id => $type) {
                 if ($type->defaulttype == 1) {
-                    $name = '<span style="margin-right: 10px; background-color: #' . $type->color . '" title="' . get_string('standardtype', 'mod_margic') .'">(S)</span>';
+                    $name = '<span style="margin-right: 10px; background-color: #' . $type->color . '" title="' .
+                        get_string('standardtype', 'mod_margic') .'">(S)</span>';
                 } else {
-                    $name = '<span style="margin-right: 10px; background-color: #' . $type->color . '" title="' . get_string('manualtype', 'mod_margic') .'">(M)</span>';
+                    $name = '<span style="margin-right: 10px; background-color: #' . $type->color . '" title="' .
+                        get_string('manualtype', 'mod_margic') .'">(M)</span>';
                 }
 
                 if ($type->defaulttype == 1 && $strmanager->string_exists($type->name, 'mod_margic')) {
@@ -147,7 +149,8 @@ class mod_margic_mod_form extends moodleform_mod {
         $maxwidth = 80;
 
         if (!$data['annotationareawidth'] || $data['annotationareawidth'] < $minwidth || $data['annotationareawidth'] > $maxwidth) {
-            $errors['annotationareawidth'] = get_string('errannotationareawidthinvalid', 'margic', array('minwidth' => $minwidth, 'maxwidth' => $maxwidth));
+            $errors['annotationareawidth'] = get_string('errannotationareawidthinvalid', 'margic', array('minwidth' => $minwidth,
+            'maxwidth' => $maxwidth));
         }
 
         return $errors;

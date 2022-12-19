@@ -52,7 +52,8 @@ function margic_add_instance($margic) {
 
     // Add expected completion date.
     if (! empty($margic->completionexpected)) {
-        \core_completion\api::update_completion_date_event($margic->coursemodule, 'margic', $margic->id, $margic->completionexpected);
+        \core_completion\api::update_completion_date_event($margic->coursemodule,
+            'margic', $margic->id, $margic->completionexpected);
     }
 
     margic_grade_item_update($margic);
@@ -105,7 +106,8 @@ function margic_update_instance($margic) {
 
     // If the aggregation type or scale (i.e. max grade) changes then recalculate the grades for the entire margic
     // if scale changes - do we need to recheck the ratings, if ratings higher than scale how do we want to respond?
-    // for count and sum aggregation types the grade we check to make sure they do not exceed the scale (i.e. max score) when calculating the grade.
+    // for count and sum aggregation types the grade we check to make sure they do not exceed the scale (i.e. max score)
+    // when calculating the grade.
     $oldmargic = $DB->get_record('margic', array('id' => $margic->id));
 
     $updategrades = false;
@@ -205,6 +207,12 @@ function margic_delete_instance($id) {
  * @return mixed True if module supports feature, null if it doesn't.
  */
 function margic_supports($feature) {
+
+    // Adding support for FEATURE_MOD_PURPOSE (MDL-71457) and providing backward compatibility (pre-v4.0).
+    if (defined('FEATURE_MOD_PURPOSE') && $feature === FEATURE_MOD_PURPOSE) {
+        return MOD_PURPOSE_COLLABORATION;
+    }
+
     switch ($feature) {
         case FEATURE_MOD_INTRO:
             return true;
@@ -249,41 +257,6 @@ function margic_user_outline($course, $user, $mod, $margic) {
 }
 
 /**
- * Prints all the records uploaded by this user.
- *
- * @param object $course
- * @param object $user
- * @param object $mod
- * @param object $margic
- */
-/* function margic_user_complete($course, $user, $mod, $margic) {
-    global $DB, $OUTPUT;
-
-    if ($entry = $DB->get_record("margic_entries", array(
-        "userid" => $user->id,
-        "margic" => $margic->id
-    ))) {
-
-        echo $OUTPUT->box_start();
-
-        if ($entry->timemodified) {
-            echo "<p><font size=\"1\">" . get_string("lastedited") . ": " . userdate($entry->timemodified) . "</font></p>";
-        }
-        if ($entry->text) {
-            echo format_text($entry->text);
-        }
-        if ($entry->teacher) {
-            $grades = make_grades_menu($margic->grade);
-            margic_print_feedback($course, $entry, $grades);
-        }
-
-        echo $OUTPUT->box_end();
-    } else {
-        print_string("noentry", "margic");
-    }
-} */
-
-/**
  * Given a course and a time, this module should find recent activity
  * that has occurred in margic activities and print it out.
  * Return true if there was output, or false if there was none.
@@ -301,6 +274,7 @@ function margic_print_recent_activity($course, $viewfullnames, $timestart) {
         $course->id,
         'margic'
     );
+
     // Moodle branch check.
     if ($CFG->branch < 311) {
         $namefields = user_picture::fields('u', null, 'userid');
@@ -308,6 +282,7 @@ function margic_print_recent_activity($course, $viewfullnames, $timestart) {
         $userfieldsapi = \core_user\fields::for_userpic();
         $namefields = $userfieldsapi->get_sql('u', false, '', 'userid', false)->selects;;
     }
+
     $sql = "SELECT e.id, e.timecreated, cm.id AS cmid, $namefields
               FROM {margic_entries} e
               JOIN {margic} d ON d.id = e.margic
@@ -434,7 +409,12 @@ function margic_get_recent_mod_activity(&$activities, &$index, $timestart, $cour
     $params['timestart'] = $timestart;
     $params['submitted'] = 1;
 
-    $userfields = user_picture::fields('u', null, 'userid');
+    if ($CFG->branch < 311) {
+        $userfields = user_picture::fields('u', null, 'userid');
+    } else {
+        $userfieldsapi = \core_user\fields::for_userpic();
+        $userfields = $userfieldsapi->get_sql('u', false, '', 'userid', false)->selects;
+    }
 
     $entries = $DB->get_records_sql(
         'SELECT e.id, e.timecreated, ' . $userfields .
@@ -518,7 +498,12 @@ function margic_get_recent_mod_activity(&$activities, &$index, $timestart, $cour
             $activity->grade = $grades->items[0]->grades[$entry->userid]->str_long_grade;
         }
 
-        $userfields = explode(',', user_picture::fields());
+        if ($CFG->branch < 311) {
+            $userfields = explode(',', user_picture::fields());
+        } else {
+            $userfields = explode(',', implode(',', \core_user\fields::get_picture_fields()));
+        }
+
         foreach ($userfields as $userfield) {
             if ($userfield == 'id') {
                 // Aliased in SQL above.
@@ -564,7 +549,8 @@ function margic_print_recent_mod_activity($activity, $courseid, $detail, $modnam
     }
 
     echo '<div class="grade"><strong>';
-    echo '<a href="' . $CFG->wwwroot . '/mod/margic/view.php?id=' . $activity->cmid . '">' . get_string('entryadded', 'mod_margic') . '</a>';
+    echo '<a href="' . $CFG->wwwroot . '/mod/margic/view.php?id=' . $activity->cmid . '">'
+        . get_string('entryadded', 'mod_margic') . '</a>';
     echo '</strong></div>';
 
     echo '<div class="user">';
@@ -681,7 +667,8 @@ function margic_reset_userdata($data) {
     if ($data->timeshift) {
         // Any changes to the list of dates that needs to be rolled should be same during course restore and course reset.
         // See MDL-9367.
-        shift_course_mod_dates('margic', array('assesstimestart', 'assesstimefinish', 'timeopen', 'timeclose'), $data->timeshift, $data->courseid);
+        shift_course_mod_dates('margic', array('assesstimestart', 'assesstimefinish', 'timeopen', 'timeclose'),
+            $data->timeshift, $data->courseid);
         $status[] = array('component' => $modulename, 'item' => get_string('datechanged'), 'error' => false);
     }
 
@@ -836,43 +823,6 @@ function margic_scale_used_anywhere($scaleid) {
 }
 
 /**
- * Add a get_coursemodule_info function in case any assignment type wants to add 'extra' information
- * for the course (see resource).
- *
- * Given a course_module object, this function returns any "extra" information that may be needed
- * when printing this activity in a course listing.  See get_array_of_activities() in course/lib.php.
- *
- * @param stdClass $coursemodule The coursemodule object (record).
- * @return cached_cm_info An object on information that the courses
- *                        will know about (most noticeably, an icon).
- */
-/* function margic_get_coursemodule_info($coursemodule) {
-    global $CFG, $DB;
-
-    $dbparams = array('id'=>$coursemodule->instance);
-    $fields = 'id, name, alwaysshowdescription, allowsubmissionsfromdate, intro, introformat, completionsubmit';
-    if (! $assignment = $DB->get_record('assign', $dbparams, $fields)) {
-        return false;
-    }
-
-    $result = new cached_cm_info();
-    $result->name = $assignment->name;
-    if ($coursemodule->showdescription) {
-        if ($assignment->alwaysshowdescription || time() > $assignment->allowsubmissionsfromdate) {
-            // Convert intro to html. Do not filter cached version, filters run at display time.
-            $result->content = format_module_intro('assign', $assignment, $coursemodule->id, false);
-        }
-    }
-
-    // Populate the custom completion rules as key => value pairs, but only if the completion mode is 'automatic'.
-    if ($coursemodule->completion == COMPLETION_TRACKING_AUTOMATIC) {
-        $result->customdata['customcompletionrules']['completionsubmit'] = $assignment->completionsubmit;
-    }
-
-    return $result;
-} */
-
-/**
  * Serves the margic files.
  *
  * @param stdClass $course Course object.
@@ -940,9 +890,11 @@ function margic_extend_navigation_course($margicnode, $course, $coursecontext) {
     $modinfo = get_fast_modinfo($course); // Get mod_fast_modinfo from $course.
     $index = 1; // Set index.
     foreach ($modinfo->get_cms() as $cmid => $cm) { // Search existing course modules for this course.
-        if ($index == 1 && $cm->modname == "margic" && $cm->uservisible && $cm->available) { // Look if module (in this case margic) exists, is uservisible and available.
-            $url = new moodle_url("/mod/" . $cm->modname . "/index.php", array("id" => $course->id)); // Set url for the link in the navigation node.
-            $node = navigation_node::create(get_string('viewallmargics', 'margic'), $url, navigation_node::TYPE_CUSTOM, null , null , null);
+        if ($index == 1 && $cm->modname == "margic" && $cm->uservisible && $cm->available) {
+            $url = new moodle_url("/mod/" . $cm->modname . "/index.php",
+                array("id" => $course->id)); // Set url for the link in the navigation node.
+            $node = navigation_node::create(get_string('viewallmargics', 'margic'), $url,
+                navigation_node::TYPE_CUSTOM, null , null , null);
             $margicnode->add_node($node);
             $index++;
         }

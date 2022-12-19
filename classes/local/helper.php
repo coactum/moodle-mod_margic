@@ -325,7 +325,8 @@ class helper {
             'editentrydates' => $margic->editentrydates, // Custom data (not really for editor).
         );
 
-        // If maxfiles would be set to an int and more files are given the editor saves them all but saves the overcouting incorrect so that white box is diaplayed.
+        // If maxfiles would be set to an int and more files are given the editor saves them all but
+        // saves the overcouting incorrect so that white box is diaplayed.
 
         // For a file attachments field (not really needed here).
         $attachmentoptions = array(
@@ -455,7 +456,8 @@ class helper {
      * @param array $grades
      * @param bool $canmanageentries
      */
-    public static function margic_return_feedback_area_for_entry($cmid, $context, $course, $margic, $entry, $grades, $canmanageentries) {
+    public static function margic_return_feedback_area_for_entry($cmid, $context, $course, $margic, $entry, $grades,
+        $canmanageentries) {
 
         $grade = false;
 
@@ -468,7 +470,8 @@ class helper {
 
             if ($entry->teacher) {
                 $teacher = $DB->get_record('user', array('id' => $entry->teacher));
-                $teacherimage = $OUTPUT->user_picture($teacher, array('courseid' => $course->id, 'link' => true, 'includefullname' => true, 'size' => 30));
+                $teacherimage = $OUTPUT->user_picture($teacher,
+                    array('courseid' => $course->id, 'link' => true, 'includefullname' => true, 'size' => 30));
             } else {
                 $teacherimage = false;
             }
@@ -494,16 +497,19 @@ class helper {
                 $data->{'feedback_' . $entry->id} = $entry->feedback;
                 $data->{'feedback_' . $entry->id . 'format'} = $entry->formatfeedback;
 
-                list ($editoroptions, $attachmentoptions) = self::margic_get_editor_and_attachment_options($course, $context, $margic);
+                list ($editoroptions, $attachmentoptions) = self::margic_get_editor_and_attachment_options($course, $context,
+                    $margic);
 
                 $editoroptions['autosave'] = false;
 
-                $data = file_prepare_standard_editor($data, 'feedback_' . $entry->id, $editoroptions, $context, 'mod_margic', 'feedback', $data->entry);
+                $data = file_prepare_standard_editor($data, 'feedback_' . $entry->id, $editoroptions, $context,
+                    'mod_margic', 'feedback', $data->entry);
 
                 $data->{'rating_' . $entry->id} = $entry->rating;
 
-                $mform = new \mod_margic_grading_form(new \moodle_url('/mod/margic/grade_entry.php', array('id' => $cmid, 'entryid' => $entry->id)),
-                   array('courseid' => $course->id, 'margic' => $margic, 'entry' => $entry, 'grades' => $grades, 'teacherimg' => $teacherimage, 'editoroptions' => $editoroptions));
+                $mform = new \mod_margic_grading_form(new \moodle_url('/mod/margic/grade_entry.php',
+                    array('id' => $cmid, 'entryid' => $entry->id)), array('courseid' => $course->id, 'margic' => $margic,
+                    'entry' => $entry, 'grades' => $grades, 'teacherimg' => $teacherimage, 'editoroptions' => $editoroptions));
 
                 // Set default data.
                 $mform->set_data($data);
@@ -511,7 +517,8 @@ class helper {
                 $feedbackarea .= $mform->render();
             } else if ($feedbacktext || ! empty($entry->rating)) {  // If user is student and has rating or feedback text.
                 $feedbackarea .= '<div class="ratingform" style="background-color: ' . get_config('margic', 'textbgc') . '">';
-                $feedbackarea .= '<h5 class="d-flex justify-content-between"><span>' . get_string('feedback') . ' ' . get_string('from', 'mod_margic') . ' ' . $teacherimage . ' ';
+                $feedbackarea .= '<h5 class="d-flex justify-content-between"><span>' . get_string('feedback') . ' '
+                    . get_string('from', 'mod_margic') . ' ' . $teacherimage . ' ';
                 $feedbackarea .= get_string('at', 'mod_margic') . ' ' . userdate($entry->timemarked) . '</span>';
 
                 $feedbackarea .= '<span><strong>';

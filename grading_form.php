@@ -66,7 +66,8 @@ class mod_margic_grading_form extends moodleform {
 
         if ($this->_customdata['margic']->assessed != 0) { // Append grading area only when grading is not disabled.
 
-            $gradinginfo = grade_get_grades($this->_customdata['courseid'], 'mod', 'margic', $this->_customdata['margic']->id, $this->_customdata['entry']->userid);
+            $gradinginfo = grade_get_grades($this->_customdata['courseid'], 'mod', 'margic',
+                $this->_customdata['margic']->id, $this->_customdata['entry']->userid);
 
             $userfinalgrade = $gradinginfo->items[0]->grades[$this->_customdata['entry']->userid];
             $currentuserrating = $userfinalgrade->str_long_grade;
@@ -74,23 +75,27 @@ class mod_margic_grading_form extends moodleform {
             // If margic already graded.
             if (!empty($gradinginfo->items[0]->grades[$this->_customdata['entry']->userid]->str_long_grade)) {
                 if ($gradingdisabled = $gradinginfo->items[0]->grades[$this->_customdata['entry']->userid]->locked
-                    || $gradinginfo->items[0]->grades[$this->_customdata['entry']->userid]->overridden) { // If the grade was modified from the gradebook disable editing.
+                    || $gradinginfo->items[0]->grades[$this->_customdata['entry']->userid]->overridden) {
 
+                    // If the grade was modified from the gradebook disable editing.
                     global $CFG;
 
                     $feedbackdisabled = true;
 
-                    $gradebooklinkrating = '<a href="' . $CFG->wwwroot . '/grade/report/grader/index.php?id='
-                        . $this->_customdata['courseid'] . '">' . $gradinginfo->items[0]->grades[$this->_customdata['entry']->userid]->str_long_grade . '</a>';
+                    $gradebooklinkrating = '<a href="' . $CFG->wwwroot . '/grade/report/grader/index.php?id=' .
+                        $this->_customdata['courseid'] . '">' .
+                        $gradinginfo->items[0]->grades[$this->_customdata['entry']->userid]->str_long_grade . '</a>';
 
-                    $gradebooklinkfeedback = '<a href="' . $CFG->wwwroot . '/grade/report/grader/index.php?id='
-                        . $this->_customdata['courseid'] . '">' . $gradinginfo->items[0]->grades[$this->_customdata['entry']->userid]->str_feedback . '</a>';
+                    $gradebooklinkfeedback = '<a href="' . $CFG->wwwroot . '/grade/report/grader/index.php?id=' .
+                        $this->_customdata['courseid'] . '">' .
+                        $gradinginfo->items[0]->grades[$this->_customdata['entry']->userid]->str_feedback . '</a>';
 
                     $attr = array('disabled' => 'disabled');
                 }
             }
 
-            $aggregatestr = helper::get_margic_aggregation($this->_customdata['margic']->assessed) . ' ' . get_string('forallentries', 'margic') . ' '. $userfullname;
+            $aggregatestr = helper::get_margic_aggregation($this->_customdata['margic']->assessed) . ' '
+                . get_string('forallentries', 'margic') . ' '. $userfullname;
 
             $mform->addElement('static', 'currentuserrating', $aggregatestr.': ', $currentuserrating);
 
@@ -98,22 +103,27 @@ class mod_margic_grading_form extends moodleform {
 
             if ($this->_customdata['entry']->timemarked) {
                 $mform->addElement('static', 'currentuserrating',
-                    get_string('grader', 'mod_margic'), $this->_customdata['teacherimg'] . ' - ' . userdate($this->_customdata['entry']->timemarked));
-                $mform->addElement('static', 'savedrating', get_string('savedrating', 'mod_margic'), $this->_customdata['entry']->rating);
+                    get_string('grader', 'mod_margic'), $this->_customdata['teacherimg'] . ' - '
+                        . userdate($this->_customdata['entry']->timemarked));
+                $mform->addElement('static', 'savedrating', get_string('savedrating', 'mod_margic'),
+                    $this->_customdata['entry']->rating);
             }
 
-            $select = $mform->addElement('select', 'rating_' . $this->_customdata['entry']->id, get_string('newrating', 'margic') . ': ', $this->_customdata['grades'], $attr);
+            $select = $mform->addElement('select', 'rating_' . $this->_customdata['entry']->id,
+                get_string('newrating', 'margic') . ': ', $this->_customdata['grades'], $attr);
             $mform->setType('rating_' . $this->_customdata['entry']->id, PARAM_INT);
             $mform->setDefault('rating_' . $this->_customdata['entry']->id, 0);
 
             if ($feedbackdisabled) { // Disable rating and show rating from gradebook if override is set there.
-                $mform->addElement('static', 'gradebookrating', get_string('gradeingradebook', 'margic') . ': ', $gradebooklinkrating);
+                $mform->addElement('static', 'gradebookrating', get_string('gradeingradebook', 'margic')
+                    . ': ', $gradebooklinkrating);
             }
         }
 
         // Feedback text.
         if ($feedbackdisabled) { // If override is set in the gradebook show feedback from there and dont show editor.
-            $mform->addElement('static', 'gradebookfeedback', get_string('feedbackingradebook', 'margic') . ': ', $gradebooklinkfeedback);
+            $mform->addElement('static', 'gradebookfeedback', get_string('feedbackingradebook', 'margic')
+                . ': ', $gradebooklinkfeedback);
 
         } else {
             $mform->addElement('editor', 'feedback_' . $this->_customdata['entry']->id . '_editor',

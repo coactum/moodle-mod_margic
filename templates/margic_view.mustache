@@ -21,6 +21,22 @@
     Overview.
 }}
 
+<style media="screen">
+    .entrybackground {
+        background-color: {{entrybgc}};
+    }
+    .textbackground {
+        background-color: {{textbgc}};
+    }
+</style>
+<style>
+    .entryareawidth {
+        width: {{entryareawidth}}%;
+    }
+    .annotationareawidth {
+        width: {{annotationareawidth}}%;
+    }
+</style>
 <div class="margic_view">
     {{#edittimehasended}}{{#edittimeends}}<div class="alert alert-danger alert-block fade in" role="alert"><button type="button" class="close" data-dismiss="alert">×</button>{{#str}}editingended, mod_margic, {{#userdate}}{{edittimeends}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}}{{/str}}</div>{{/edittimeends}}{{/edittimehasended}}
     {{#edittimenotstarted}}{{#edittimestarts}}<div class="alert alert-warning alert-block fade in" role="alert"><button type="button" class="close" data-dismiss="alert">×</button>{{#str}}editingstarts, mod_margic, {{#userdate}}{{edittimestarts}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}}{{/str}}</div>{{/edittimestarts}}{{/edittimenotstarted}}
@@ -92,21 +108,21 @@
     </form>
 
     <div class="d-flex justify-content-between">
-        <div class="align-self-center entriesheader {{^annotationmode}}w-100{{/annotationmode}}" style="background: {{entrybgc}}; {{#annotationmode}}width: {{entryareawidth}}% {{/annotationmode}}">
+        <div class="align-self-center entriesheader {{^annotationmode}}w-100{{/annotationmode}}{{#annotationmode}}entryareawidth{{/annotationmode}} entrybackground">
             <h4 class="text-center">
                 {{#canmanageentries}}{{#str}}entries, mod_margic{{/str}}{{/canmanageentries}}
                 {{^canmanageentries}}{{#str}}myentries, mod_margic{{/str}}{{/canmanageentries}}
             </h4>
         </div>
         {{#annotationmode}}
-            <div class="align-self-center annotationsheader" style="background: {{entrybgc}}; width: {{annotationareawidth}}%">
+            <div class="align-self-center annotationsheader entrybackground annotationareawidth">
                 <h4 class="text-center">
                     {{#str}} annotations, mod_margic {{/str}}
                     {{#annotationmode}}
                         <button class="btn btn-secondary margic-btn-round-small pull-right" data-toggle="collapse" data-target=".collapseAnnotation" aria-expanded="false" aria-controls="collapseAnnotation" title="{{#str}}toggleallannotations, mod_margic{{/str}}"><i class="fa fa-lg fa-caret-down"></i></button>
                     {{/annotationmode}}
                 </h4>
-                <div id="overlay" style="background: {{entrybgc}}"><div id="overlaytext"><span class="pr-2">{{#str}}annotationsarefetched, mod_margic{{/str}}</span> <a href="view.php?id={{cmid}}&annotationmode=1" class="btn btn-secondary margic-btn-round-small" title="{{#str}}reloadannotations, mod_margic{{/str}}"><i class="fa fa-lg fa-refresh"></i></a></div></div>
+                <div id="overlay" class="entrybackground"><div id="overlaytext"><span class="pr-2">{{#str}}annotationsarefetched, mod_margic{{/str}}</span> <a href="view.php?id={{cmid}}&annotationmode=1" class="btn btn-secondary margic-btn-round-small" title="{{#str}}reloadannotations, mod_margic{{/str}}"><i class="fa fa-lg fa-refresh"></i></a></div></div>
             </div>
         {{/annotationmode}}
     </div>

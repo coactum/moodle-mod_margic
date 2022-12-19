@@ -76,6 +76,12 @@ $redirecturl = new moodle_url('/mod/margic/error_summary.php', array('id' => $id
 if ($edit !== 0) {
     if ($mode == 1) { // If type is template error type.
         $editedtype = $DB->get_record('margic_errortype_templates', array('id' => $edit));
+
+        if (isset($editedtype->defaulttype) && $editedtype->defaulttype == 1
+            && !get_config('margic', 'defaulterrortypetemplateseditable')) {
+
+                redirect($redirecturl, get_string('notallowedtodothis', 'mod_margic'), null, notification::NOTIFY_ERROR);
+        }
     } else if ($mode == 2) { // If type is margic error type.
         $editedtype = $DB->get_record('margic_errortypes', array('id' => $edit));
 
@@ -85,8 +91,11 @@ if ($edit !== 0) {
     }
 
     if ($editedtype && $mode == 2 ||
-        ((isset($editedtype->defaulttype) && $editedtype->defaulttype == 1 && has_capability('mod/margic:editdefaulterrortypes', $context))
-        || (isset($editedtype->defaulttype) && isset($editedtype->userid) && $editedtype->defaulttype == 0 && $editedtype->userid == $USER->id))) {
+        ((isset($editedtype->defaulttype) && $editedtype->defaulttype == 1 &&
+        has_capability('mod/margic:editdefaulterrortypes', $context))
+        || (isset($editedtype->defaulttype) && isset($editedtype->userid) &&
+        $editedtype->defaulttype == 0 && $editedtype->userid == $USER->id))) {
+
         $editedtypeid = $edit;
         $editedtypename = $editedtype->name;
         $editedcolor = $editedtype->color;
@@ -98,14 +107,16 @@ if ($edit !== 0) {
 }
 
 // Instantiate form.
-$mform = new errortypes_form(null, array('editdefaulttype' => has_capability('mod/margic:editdefaulterrortypes', $context), 'mode' => $mode));
+$mform = new errortypes_form(null, array('editdefaulttype' => has_capability('mod/margic:editdefaulterrortypes', $context),
+    'mode' => $mode));
 
 if (isset($editedtypeid)) {
     if ($mode == 1) { // If type is template error type.
         $mform->set_data(array('id' => $id, 'mode' => $mode, 'typeid' => $editedtypeid,
             'typename' => $editedtypename, 'color' => $editedcolor, 'standardtype' => $editeddefaulttype));
     } else if ($mode == 2) {
-        $mform->set_data(array('id' => $id, 'mode' => $mode, 'typeid' => $editedtypeid, 'typename' => $editedtypename, 'color' => $editedcolor));
+        $mform->set_data(array('id' => $id, 'mode' => $mode, 'typeid' => $editedtypeid, 'typename' => $editedtypename,
+            'color' => $editedcolor));
     }
 } else {
     $mform->set_data(array('id' => $id, 'mode' => $mode));
@@ -125,7 +136,9 @@ if ($mform->is_cancelled()) {
         $errortype->name = format_text($fromform->typename, 1, array('para' => false));
         $errortype->color = $fromform->color;
 
-        if (isset($fromform->standardtype) && $fromform->standardtype === 1 && has_capability('mod/margic:editdefaulterrortypes', $context)) {
+        if (isset($fromform->standardtype) && $fromform->standardtype === 1 &&
+            has_capability('mod/margic:editdefaulterrortypes', $context)) {
+
             $errortype->userid = 0;
             $errortype->defaulttype = 1;
         } else {
@@ -156,8 +169,10 @@ if ($mform->is_cancelled()) {
 
         if ($errortype &&
             ($mode == 2 ||
-            (isset($errortype->defaulttype) && $errortype->defaulttype == 1 && has_capability('mod/margic:editdefaulterrortypes', $context) && $defaulterrortypetemplateseditable)
-            || (isset($errortype->defaulttype) && isset($errortype->userid) && $errortype->defaulttype == 0 && $errortype->userid == $USER->id))) {
+            (isset($errortype->defaulttype) && $errortype->defaulttype == 1 &&
+            has_capability('mod/margic:editdefaulterrortypes', $context) && $defaulterrortypetemplateseditable)
+            || (isset($errortype->defaulttype) && isset($errortype->userid) && $errortype->defaulttype == 0
+            && $errortype->userid == $USER->id))) {
 
             $errortype->timemodified = time();
             $errortype->name = format_text($fromform->typename, 1, array('para' => false));
@@ -218,13 +233,19 @@ $PAGE->navbar->add($navtitle);
 $PAGE->set_title(get_string('modulename', 'mod_margic').': ' . $margicname);
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
-$PAGE->force_settings_menu();
+
+if ($CFG->branch < 400) {
+    $PAGE->force_settings_menu();
+}
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading($margicname);
 
-if ($moduleinstance->intro) {
-    echo $OUTPUT->box(format_module_intro('margic', $moduleinstance, $cm->id), 'generalbox mod_introbox', 'newmoduleintro');
+if ($CFG->branch < 400) {
+    echo $OUTPUT->heading($margicname);
+
+    if ($moduleinstance->intro) {
+        echo $OUTPUT->box(format_module_intro('margic', $moduleinstance, $cm->id), 'generalbox', 'intro');
+    }
 }
 
 if (isset($editedtypeid) && $mode == 1) {
@@ -234,6 +255,8 @@ if (isset($editedtypeid) && $mode == 1) {
 
     echo $OUTPUT->notification(get_string('changetemplate', 'mod_margic'), notification::NOTIFY_WARNING);
 }
+
+echo $OUTPUT->heading($navtitle, 4);
 
 $mform->display();
 

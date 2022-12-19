@@ -74,7 +74,8 @@ class restore_margic_activity_task extends restore_activity_task {
         // Define the rules.
 
         $rules[] = new restore_decode_rule('MARGICINDEX', '/mod/margic/index.php?id=$1', 'course');
-        $rules[] = new restore_decode_rule('MARGICVIEWBYID', '/mod/margic/view.php?id=$1&userid=$2', array('course_module', 'userid'));
+        $rules[] = new restore_decode_rule('MARGICVIEWBYID', '/mod/margic/view.php?id=$1&userid=$2',
+            array('course_module', 'userid'));
         $rules[] = new restore_decode_rule('MARGICEDITVIEW', '/mod/margic/edit.php?id=$1', array('course_module'));
         $rules[] = new restore_decode_rule('MARGICANNOTATIONSUMMARY', '/mod/margic/error_summary.php?id=$1', 'course_module');
         $rules[] = new restore_decode_rule('MARGICERRORTYPES', '/mod/margic/errortypes.php?id=$1', array('course_module'));
