@@ -89,11 +89,6 @@ if ($entryid) {
     $title = get_string('addnewentry', 'mod_margic');
 }
 
-$PAGE->set_url('/mod/margic/edit.php', array('id' => $id));
-$PAGE->navbar->add($title);
-$PAGE->set_title(format_string($moduleinstance->name) . ' - ' . $title);
-$PAGE->set_heading($course->fullname);
-
 $data = new stdClass();
 $data->id = $cm->id;
 
@@ -104,20 +99,23 @@ if ($DB->record_exists('margic_entries', array('margic' => $moduleinstance->id, 
     $notnewestentry = false;
     // Prevent editing of entries that are not the newest version of a base entry or a unedited entry.
     if (isset($entry->baseentry)) { // If entry has a base entry check if this entry is the newest childentry.
-        $otherchildentries = $DB->get_records('margic_entries', array('margic' => $moduleinstance->id, 'baseentry' => $entry->baseentry), 'timecreated DESC');
+        $otherchildentries = $DB->get_records('margic_entries',
+            array('margic' => $moduleinstance->id, 'baseentry' => $entry->baseentry), 'timecreated DESC');
 
         if ($entry->timecreated < $otherchildentries[array_key_first($otherchildentries)]->timecreated) {
             $notnewestentry = true;
         }
     } else { // If this entry has no base entry check if it has childentries and cant therefore be edited.
-        $childentries = $DB->get_records('margic_entries', array('margic' => $moduleinstance->id, 'baseentry' => $entry->id), 'timecreated DESC');
+        $childentries = $DB->get_records('margic_entries', array('margic' => $moduleinstance->id, 'baseentry' => $entry->id),
+            'timecreated DESC');
 
         if (!empty($childentries)) {
             $notnewestentry = true;
         }
     }
 
-    if ($entry->userid != $USER->id || $notnewestentry) { // Prevent editing of entries not started by this user or if it is not the newest child entry.
+    // Prevent editing of entries not started by this user or if it is not the newest child entry.
+    if ($entry->userid != $USER->id || $notnewestentry) {
         // Trigger invalid_access_attempt with redirect to the view page.
         $params = array(
             'objectid' => $id,
@@ -150,7 +148,8 @@ if ($DB->record_exists('margic_entries', array('margic' => $moduleinstance->id, 
 list ($editoroptions, $attachmentoptions) = helper::margic_get_editor_and_attachment_options($course, $context, $moduleinstance);
 
 $data = file_prepare_standard_editor($data, 'text', $editoroptions, $context, 'mod_margic', 'entry', $data->entryid);
-$data = file_prepare_standard_filemanager($data, 'attachment', $attachmentoptions, $context, 'mod_margic', 'attachment', $data->entryid);
+$data = file_prepare_standard_filemanager($data, 'attachment', $attachmentoptions, $context,
+    'mod_margic', 'attachment', $data->entryid);
 
 // Create form.
 $form = new mod_margic_entry_form(null, array('margic' => $moduleinstance->editentrydates, 'editoroptions' => $editoroptions));
@@ -193,13 +192,16 @@ if ($form->is_cancelled()) {
             $baseentry = $DB->get_record('margic_entries', array('margic' => $moduleinstance->id, "id" => $newentry->baseentry));
 
             if ($newentry->timecreated < $baseentry->timemodified) {
-                redirect(new moodle_url('/mod/margic/view.php?id=' . $cm->id), get_string('timecreatedinvalid', 'mod_margic'), null, notification::NOTIFY_ERROR);
+                redirect(new moodle_url('/mod/margic/view.php?id=' . $cm->id), get_string('timecreatedinvalid', 'mod_margic'),
+                    null, notification::NOTIFY_ERROR);
             }
 
-            $connectedentries = $DB->get_records('margic_entries', array('margic' => $moduleinstance->id, 'baseentry' => $newentry->baseentry), 'timecreated DESC');
+            $connectedentries = $DB->get_records('margic_entries',
+                array('margic' => $moduleinstance->id, 'baseentry' => $newentry->baseentry), 'timecreated DESC');
 
             if ($connectedentries && $newentry->timecreated < $connectedentries[array_key_first($connectedentries)]->timecreated) {
-                redirect(new moodle_url('/mod/margic/view.php?id=' . $cm->id), get_string('timecreatedinvalid', 'mod_margic'), null, notification::NOTIFY_ERROR);
+                redirect(new moodle_url('/mod/margic/view.php?id=' . $cm->id), get_string('timecreatedinvalid', 'mod_margic'),
+                    null, notification::NOTIFY_ERROR);
             }
 
         }
@@ -216,9 +218,11 @@ if ($form->is_cancelled()) {
         throw new moodle_exception(get_string('generalerrorinsert', 'margic'));
     }
 
-    $fromform = file_postupdate_standard_editor($fromform, 'text', $editoroptions, $editoroptions['context'], 'mod_margic', 'entry', $newentry->id);
+    $fromform = file_postupdate_standard_editor($fromform, 'text', $editoroptions, $editoroptions['context'],
+        'mod_margic', 'entry', $newentry->id);
 
-    $entrytext = file_rewrite_pluginfile_urls($fromform->text, 'pluginfile.php', $context->id, 'mod_margic', 'entry', $newentry->id);
+    $entrytext = file_rewrite_pluginfile_urls($fromform->text, 'pluginfile.php', $context->id,
+        'mod_margic', 'entry', $newentry->id);
 
     $newentry->text = format_text($entrytext, $fromform->textformat, array('para' => false));
     $newentry->format = $fromform->textformat;
@@ -245,16 +249,28 @@ if ($form->is_cancelled()) {
         redirect(new moodle_url('/mod/margic/view.php?id=' . $cm->id), get_string('entryaddedoredited', 'mod_margic') .
             ' ' . get_string('editdateinfuture', 'mod_margic'), null, notification::NOTIFY_WARNING);
     } else {
-        redirect(new moodle_url('/mod/margic/view.php?id=' . $cm->id), get_string('entryaddedoredited', 'mod_margic'), null, notification::NOTIFY_SUCCESS);
+        redirect(new moodle_url('/mod/margic/view.php?id=' . $cm->id), get_string('entryaddedoredited', 'mod_margic'),
+            null, notification::NOTIFY_SUCCESS);
     }
 
 }
 
-echo $OUTPUT->header();
-echo $OUTPUT->heading(format_string($moduleinstance->name));
+$PAGE->set_url('/mod/margic/edit.php', array('id' => $id));
+$PAGE->navbar->add($title);
+$PAGE->set_title(format_string($moduleinstance->name) . ' - ' . $title);
+$PAGE->set_heading($course->fullname);
+if ($CFG->branch < 400) {
+    $PAGE->force_settings_menu();
+}
 
-if ($moduleinstance->intro) {
-    echo $OUTPUT->box(format_module_intro('margic', $moduleinstance, $cm->id), 'generalbox mod_introbox', 'newmoduleintro');
+echo $OUTPUT->header();
+
+if ($CFG->branch < 400) {
+    echo $OUTPUT->heading(format_string($moduleinstance->name));
+
+    if ($moduleinstance->intro) {
+        echo $OUTPUT->box(format_module_intro('margic', $moduleinstance, $cm->id), 'generalbox', 'intro');
+    }
 }
 
 echo $OUTPUT->heading($title, 4);
@@ -268,7 +284,8 @@ if ($entry) {
     $currentgroups = groups_get_activity_group($cm, true);    // Get a list of the currently allowed groups for this course.
 
     if ($currentgroups) {
-        $allowedusers = get_users_by_capability($context, 'mod/margic:addentries', '', $sort = 'lastname ASC, firstname ASC', '', '', $currentgroups);
+        $allowedusers = get_users_by_capability($context, 'mod/margic:addentries', '', $sort = 'lastname ASC, firstname ASC',
+            '', '', $currentgroups);
     } else {
         $allowedusers = true;
     }
@@ -285,7 +302,7 @@ if ($entry) {
     $page = new margic_entry($margic, $cm, $context, $moduleinstance, $entry, $margic->get_annotationarea_width(),
         $moduleinstance->editentries, $edittimes->edittimestarts, $edittimes->edittimenotstarted, $edittimes->edittimeends,
         $edittimes->edittimehasended, has_capability('mod/margic:manageentries', $context), $course, false, true, false,
-        false, true, $grades, $currentgroups, $allowedusers, $strmanager, $gradingstr, $regradingstr, sesskey());
+        false, true, $grades, $currentgroups, $allowedusers, $strmanager, $gradingstr, $regradingstr, sesskey(), true);
 
     echo $OUTPUT->render($page);
 }

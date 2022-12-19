@@ -20,7 +20,6 @@
 
     Annotations summary.
 }}
-
 <div class="margic_error_summary">
     <div class="errortypes collapse show">
         {{#canmanageerrortypes}}
@@ -34,23 +33,25 @@
 
         <table class="table table-striped">
             <thead>
-                <th scope="col">{{#str}}participant, mod_margic{{/str}}</th>
-                {{#margicerrortypes}}
-                    <th scope="col">
-                        <span style="text-decoration: underline; text-decoration-color: #{{color}}; text-decoration-thickness: 3px;">{{name}}</span>
-                        {{#canmanageerrortypes}}
-                            <div>
-                                {{#canbeedited}}
-                                    <a href="errortypes.php?id={{cmid}}&edit={{id}}&mode=2" title="{{#str}}editerrortype, margic {{/str}}"><i class="fa fa-lg fa-pencil" aria-hidden="true" ></i></a>
-                                    <a href="error_summary.php?id={{cmid}}&delete={{id}}&mode=2&sesskey={{sesskey}}" title="{{#str}}deleteerrortype, margic {{/str}}"><i class="fa fa-lg fa-trash" aria-hidden="true" ></i></a>
-                                {{/canbeedited}}
-                                <a href="error_summary.php?id={{cmid}}&priority={{id}}&action=1&mode=2&sesskey={{sesskey}}" title="{{#str}}movefor, margic {{/str}}"><i class="fa fa-lg fa-arrow-left" aria-hidden="true" ></i></a>
-                                <a href="error_summary.php?id={{cmid}}&priority={{id}}&action=2&mode=2&sesskey={{sesskey}}" title="{{#str}}moveback, margic {{/str}}"><i class="fa fa-lg fa-arrow-right" aria-hidden="true" ></i></a>
-                            </div>
-                        {{/canmanageerrortypes}}
-                    </th>
-                {{/margicerrortypes}}
-            <thead>
+                <tr>
+                    <th scope="col">{{#str}}participant, mod_margic{{/str}}</th>
+                    {{#margicerrortypes}}
+                        <th scope="col">
+                            <span style="text-decoration: underline; text-decoration-color: #{{color}}; text-decoration-thickness: 3px;">{{name}}</span>
+                            {{#canmanageerrortypes}}
+                                <div>
+                                    {{#canbeedited}}
+                                        <a href="errortypes.php?id={{cmid}}&edit={{id}}&mode=2" title="{{#str}}editerrortype, margic {{/str}}"><i class="fa fa-lg fa-pencil" aria-hidden="true" ></i></a>
+                                        <a href="error_summary.php?id={{cmid}}&delete={{id}}&mode=2&sesskey={{sesskey}}" title="{{#str}}deleteerrortype, margic {{/str}}"><i class="fa fa-lg fa-trash" aria-hidden="true" ></i></a>
+                                    {{/canbeedited}}
+                                    <a href="error_summary.php?id={{cmid}}&priority={{id}}&action=1&mode=2&sesskey={{sesskey}}" title="{{#str}}movefor, margic {{/str}}"><i class="fa fa-lg fa-arrow-left" aria-hidden="true" ></i></a>
+                                    <a href="error_summary.php?id={{cmid}}&priority={{id}}&action=2&mode=2&sesskey={{sesskey}}" title="{{#str}}moveback, margic {{/str}}"><i class="fa fa-lg fa-arrow-right" aria-hidden="true" ></i></a>
+                                </div>
+                            {{/canmanageerrortypes}}
+                        </th>
+                    {{/margicerrortypes}}
+                </tr>
+            </thead>
             <tbody>
                 {{#participants}}
                     <tr><td>{{firstname}} {{lastname}}</td>
@@ -72,25 +73,27 @@
             {{#errortypetemplates.0}}
                 <table class="table table-striped">
                     <thead>
-                        <th scope="col">
-                            {{#str}}name{{/str}}
-                        </th>
-                        <th scope="col">
-                            {{#str}}type, mod_margic{{/str}}
-                        </th>
-                        <th scope="col">
-                            {{#str}}color, mod_margic{{/str}}
-                        </th>
-                        <th scope="col">
-                            {{#str}}edit{{/str}}
-                        </th>
-                        <th scope="col">
-                            {{#str}}delete{{/str}}
-                        </th>
-                        <th scope="col">
-                            {{#str}}addtomargic, mod_margic{{/str}}
-                        </th>
-                    <thead>
+                        <tr>
+                            <th scope="col">
+                                {{#str}}name{{/str}}
+                            </th>
+                            <th scope="col">
+                                {{#str}}type, mod_margic{{/str}}
+                            </th>
+                            <th scope="col">
+                                {{#str}}color, mod_margic{{/str}}
+                            </th>
+                            <th scope="col">
+                                {{#str}}edit{{/str}}
+                            </th>
+                            <th scope="col">
+                                {{#str}}delete{{/str}}
+                            </th>
+                            <th scope="col">
+                                {{#str}}addtomargic, mod_margic{{/str}}
+                            </th>
+                        </tr>
+                    </thead>
                     <tbody>
                         {{#errortypetemplates}}
                             <tr>
@@ -103,7 +106,7 @@
                                     {{#canbeedited}}<a href="errortypes.php?id={{cmid}}&edit={{id}}&mode=1" title="{{#str}}editerrortypetemplate, margic {{/str}}"><i class="fa fa-lg fa-pencil" aria-hidden="true" ></i></a>{{/canbeedited}}
                                 </td>
                                 <td>
-                                    <a href="error_summary.php?id={{cmid}}&delete={{id}}&mode=1&sesskey={{sesskey}}" title="{{#str}}deleteerrortypetemplate, margic {{/str}}" onclick="return confirm('{{#str}}deleteerrortypetemplateconfirm, margic {{/str}}');"><i class="fa fa-lg fa-trash" aria-hidden="true" ></i></a>
+                                    {{#canbedeleted}}<a href="error_summary.php?id={{cmid}}&delete={{id}}&mode=1&sesskey={{sesskey}}" title="{{#str}}deleteerrortypetemplate, margic {{/str}}" onclick="return confirm('{{#str}}deleteerrortypetemplateconfirm, margic {{/str}}');"><i class="fa fa-lg fa-trash" aria-hidden="true" ></i></a>{{/canbedeleted}}
                                 </td>
                                 <td>
                                     <a href="error_summary.php?id={{cmid}}&addtomargic={{id}}&sesskey={{sesskey}}" title="{{#str}}addtomargic, margic {{/str}}"><i class="fa fa-lg fa-plus" aria-hidden="true" ></i></a>

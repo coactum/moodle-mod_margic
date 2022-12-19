@@ -56,8 +56,8 @@ class annotation_updated extends \core\event\base {
      * @return string
      */
     public function get_description() {
-        return "The user with the id '$this->userid' has updated the annotation with the id '$this->objectid' for the margic activity with the course module id
-            '$this->contextinstanceid'";
+        return "The user with the id '$this->userid' has updated the annotation with the id '$this->objectid
+            ' for the margic activity with the course module id '$this->contextinstanceid'";
     }
 
     /**

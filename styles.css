@@ -133,11 +133,10 @@
 .path-mod-margic .annotated_temp:hover,
 .path-mod-margic .hovered,
 .path-mod-margic .errortypeheader .hovered {
-    background-color: lightblue !important;
+    background-color: lightblue;
 }
 
 .path-mod-margic .annotation-box {
-    background-color: white;
     border: 1px solid #dbdbdb;
     border-radius: 2px;
     padding: 10px;
@@ -227,20 +226,7 @@
     }
 
     .path-mod-margic #page {
-        margin-top: 0 !important;
-    }
-
-    .path-mod-margic .entry,
-    .path-mod-margic .entriesheader,
-    .path-mod-margic .entryfooter,
-    .path-mod-margic .annotationsheader,
-    .path-mod-margic .annotationarea {
-        background-color: #f2f2f2 !important;
-    }
-
-    .path-mod-margic .entry .entry,
-    .path-mod-margic .annotation-box {
-        background-color: white !important;
+        margin-top: 0;
     }
 
     .path-mod-margic .needsedit,

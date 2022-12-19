@@ -69,7 +69,8 @@ class errortypes_form extends moodleform {
 
         if ($this->_customdata['mode'] == 1) { // If template error type.
             if ($this->_customdata['editdefaulttype']) {
-                $mform->addElement('advcheckbox', 'standardtype', get_string('standardtype', 'mod_margic'), get_string('explanationstandardtype', 'mod_margic'));
+                $mform->addElement('advcheckbox', 'standardtype', get_string('standardtype', 'mod_margic'),
+                    get_string('explanationstandardtype', 'mod_margic'));
             } else {
                 $mform->addElement('hidden', 'standardtype', 0);
             }

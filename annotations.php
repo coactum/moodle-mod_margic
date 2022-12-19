@@ -96,8 +96,11 @@ if (has_capability('mod/margic:deleteannotations', $context) && $deleteannotatio
 
     global $USER;
 
-    if ($DB->record_exists('margic_annotations', array('id' => $deleteannotation, 'margic' => $moduleinstance->id, 'userid' => $USER->id))) {
-        $DB->delete_records('margic_annotations', array('id' => $deleteannotation, 'margic' => $moduleinstance->id, 'userid' => $USER->id));
+    if ($DB->record_exists('margic_annotations', array('id' => $deleteannotation, 'margic' => $moduleinstance->id,
+        'userid' => $USER->id))) {
+
+        $DB->delete_records('margic_annotations', array('id' => $deleteannotation, 'margic' => $moduleinstance->id,
+            'userid' => $USER->id));
 
         // Trigger module annotation deleted event.
         $event = \mod_margic\event\annotation_deleted::create(array(
@@ -122,8 +125,9 @@ $mform = new annotation_form(null, array('types' => $margic->get_errortypes_for_
 if ($fromform = $mform->get_data()) {
 
     // In this case you process validated data. $mform->get_data() returns data posted in form.
-    if ((isset($fromform->annotationid) && $fromform->annotationid !== 0) && isset($fromform->text)) { // Update existing annotation.
-        $annotation = $DB->get_record('margic_annotations', array('margic' => $cm->instance, 'entry' => $fromform->entry, 'id' => $fromform->annotationid));
+    if ((isset($fromform->annotationid) && $fromform->annotationid !== 0) && isset($fromform->text)) { // Update annotation.
+        $annotation = $DB->get_record('margic_annotations', array('margic' => $cm->instance, 'entry' => $fromform->entry,
+            'id' => $fromform->annotationid));
 
         // Prevent changes by user in hidden form fields.
         if (!$annotation) {
@@ -150,6 +154,9 @@ if ($fromform = $mform->get_data()) {
 
         $event->trigger();
 
+        $urlparams = array('id' => $id, 'annotationmode' => 1, 'focusannotation' => $fromform->annotationid);
+        $redirecturl = new moodle_url('/mod/margic/view.php', $urlparams);
+
         redirect($redirecturl, get_string('annotationedited', 'mod_margic'), null, notification::NOTIFY_SUCCESS);
     } else if ((!isset($fromform->annotationid) || $fromform->annotationid === 0) && isset($fromform->text)) { // New annotation.
 
@@ -160,7 +167,9 @@ if ($fromform = $mform->get_data()) {
                 redirect($redirecturl, get_string('errtypedeleted', 'mod_margic'), null, notification::NOTIFY_ERROR);
             }
 
-            if (preg_match("/[^a-zA-Z0-9()-\/[\]]/", $fromform->startcontainer) || preg_match("/[^a-zA-Z0-9()-\/[\]]/", $fromform->endcontainer)) {
+            if (preg_match("/[^a-zA-Z0-9()-\/[\]]/", $fromform->startcontainer)
+                || preg_match("/[^a-zA-Z0-9()-\/[\]]/", $fromform->endcontainer)) {
+
                 redirect($redirecturl, get_string('annotationinvalid', 'mod_margic'), null, notification::NOTIFY_ERROR);
             }
 
@@ -194,6 +203,9 @@ if ($fromform = $mform->get_data()) {
                 'context' => $context
             ));
             $event->trigger();
+
+            $urlparams = array('id' => $id, 'annotationmode' => 1, 'focusannotation' => $newid);
+            $redirecturl = new moodle_url('/mod/margic/view.php', $urlparams);
 
             redirect($redirecturl, get_string('annotationadded', 'mod_margic'), null, notification::NOTIFY_SUCCESS);
         } else {

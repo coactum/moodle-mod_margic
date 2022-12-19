@@ -97,6 +97,8 @@ class margic_entry implements renderable, templatable {
     protected $regradingstr;
     /** @var string */
     protected $sesskey;
+    /** @var bool */
+    protected $needsclasses;
     /**
      * Construct this renderable.
      * @param object $margic The margic obj
@@ -124,11 +126,12 @@ class margic_entry implements renderable, templatable {
      * @param string $gradingstr The gradingstr
      * @param string $regradingstr The regradingstr
      * @param string $sesskey The session key
+     * @param bool $needsclasses If classes for bachgroundcolor and areawidth should be defined
      */
     public function __construct($margic, $cm, $context, $moduleinstance, $entry, $annotationareawidth,
         $caneditentries, $edittimestarts, $edittimenotstarted, $edittimeends, $edittimehasended, $canmanageentries,
         $course, $singleuser, $annotationmode, $canmakeannotations, $errortypes, $readonly, $grades, $currentgroups, $allowedusers,
-        $strmanager, $gradingstr, $regradingstr, $sesskey) {
+        $strmanager, $gradingstr, $regradingstr, $sesskey, $needsclasses) {
 
         $this->margic = $margic;
         $this->cm = $cm;
@@ -157,6 +160,7 @@ class margic_entry implements renderable, templatable {
         $this->gradingstr = $gradingstr;
         $this->regradingstr = $regradingstr;
         $this->sesskey = $sesskey;
+        $this->needsclasses = $needsclasses;
     }
 
     /**
@@ -188,6 +192,7 @@ class margic_entry implements renderable, templatable {
         $data->errortypes = $this->errortypes;
         $data->readonly = $this->readonly;
         $data->sesskey = $this->sesskey;
+        $data->needsclasses = $this->needsclasses;
         return $data;
     }
 }

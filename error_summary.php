@@ -128,15 +128,16 @@ if ($manageerrortypes && $mode == 2 && $priority && $action && $DB->record_exist
         $typeswitched = $DB->get_record('margic_errortypes', array('margic' => $moduleinstance->id, 'priority' => $type->priority));
 
         if (!$typeswitched) { // If no type with priority+1 search for types with hihgher priority values.
-            $typeswitched = $DB->get_records_select('margic_errortypes', "margic = $moduleinstance->id AND priority < $type->priority", null, 'priority ASC');
+            $typeswitched = $DB->get_records_select('margic_errortypes',
+                "margic = $moduleinstance->id AND priority < $type->priority", null, 'priority ASC');
 
             if ($typeswitched && isset($typeswitched[array_key_first($typeswitched)])) {
                 $typeswitched = $typeswitched[array_key_first($typeswitched)];
             }
         }
 
-    } else if ($type && $action == 2 &&
-        $type->priority != $DB->count_records('margic_errortypes', array('margic' => $moduleinstance->id)) + 1) { // Decrease priority (move further back).
+    } else if ($type && $action == 2 && $type->priority != $DB->count_records('margic_errortypes',
+        array('margic' => $moduleinstance->id)) + 1) { // Decrease priority (move further back).
 
         $oldpriority = $type->priority;
         $type->priority += 1;
@@ -145,7 +146,8 @@ if ($manageerrortypes && $mode == 2 && $priority && $action && $DB->record_exist
         $typeswitched = $DB->get_record('margic_errortypes', array('margic' => $moduleinstance->id, 'priority' => $type->priority));
 
         if (!$typeswitched) { // If no type with priority+1 search for types with higher priority values.
-            $typeswitched = $DB->get_records_select('margic_errortypes', "margic = $moduleinstance->id AND priority > $type->priority", null, 'priority ASC');
+            $typeswitched = $DB->get_records_select('margic_errortypes',
+                "margic = $moduleinstance->id AND priority > $type->priority", null, 'priority ASC');
 
             if ($typeswitched && isset($typeswitched[array_key_first($typeswitched)])) {
                 $typeswitched = $typeswitched[array_key_first($typeswitched)];
@@ -211,13 +213,19 @@ $PAGE->navbar->add(get_string('errorsummary', 'mod_margic'));
 $PAGE->set_title(get_string('modulename', 'mod_margic').': ' . $margicname);
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
-$PAGE->force_settings_menu();
+
+if ($CFG->branch < 400) {
+    $PAGE->force_settings_menu();
+}
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading($margicname);
 
-if ($moduleinstance->intro) {
-    echo $OUTPUT->box(format_module_intro('margic', $moduleinstance, $cm->id), 'generalbox mod_introbox', 'newmoduleintro');
+if ($CFG->branch < 400) {
+    echo $OUTPUT->heading($margicname);
+
+    if ($moduleinstance->intro) {
+        echo $OUTPUT->box(format_module_intro('margic', $moduleinstance, $cm->id), 'generalbox', 'intro');
+    }
 }
 
 $participants = array_values(get_enrolled_users($context, 'mod/margic:addentries'));
@@ -272,16 +280,23 @@ foreach ($errortypetemplates as $id => $templatetype) {
 
         if (has_capability('mod/margic:editdefaulterrortypes', $context) && $defaulterrortypetemplateseditable) {
             $errortypetemplates[$id]->canbeedited = true;
+            $errortypetemplates[$id]->canbedeleted = true;
+        } else if (has_capability('mod/margic:editdefaulterrortypes', $context)) {
+            $errortypetemplates[$id]->canbeedited = false;
+            $errortypetemplates[$id]->canbedeleted = true;
         } else {
             $errortypetemplates[$id]->canbeedited = false;
+            $errortypetemplates[$id]->canbedeleted = false;
         }
     } else {
         $errortypetemplates[$id]->type = get_string('custom', 'mod_margic');
 
         if ($templatetype->userid === $USER->id) {
             $errortypetemplates[$id]->canbeedited = true;
+            $errortypetemplates[$id]->canbedeleted = true;
         } else {
             $errortypetemplates[$id]->canbeedited = false;
+            $errortypetemplates[$id]->canbedeleted = false;
         }
     }
 
@@ -295,7 +310,8 @@ foreach ($errortypetemplates as $id => $templatetype) {
 $errortypetemplates = array_values($errortypetemplates);
 
 // Output page.
-$page = new margic_error_summary($cm->id, $participants, $margicerrortypes, $errortypetemplates, sesskey(), $manageerrortypes, $defaulterrortypetemplateseditable);
+$page = new margic_error_summary($cm->id, $participants, $margicerrortypes, $errortypetemplates, sesskey(),
+    $manageerrortypes, $defaulterrortypetemplateseditable);
 
 echo $OUTPUT->render($page);
 

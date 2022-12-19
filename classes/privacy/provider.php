@@ -334,14 +334,16 @@ class provider implements \core_privacy\local\metadata\provider,
             'baseentry' => $entry->baseentry,
         ];
 
-        $entrydata->text = writer::with_context($context)->rewrite_pluginfile_urls($subcontext, 'mod_margic', 'entry', $entry->id, $entry->text);
+        $entrydata->text = writer::with_context($context)->rewrite_pluginfile_urls($subcontext, 'mod_margic',
+            'entry', $entry->id, $entry->text);
 
         $entrydata->text = format_text($entrydata->text, $entry->format, (object) [
             'para'    => false,
             'context' => $context,
         ]);
 
-        $entrydata->feedback = writer::with_context($context)->rewrite_pluginfile_urls($subcontext, 'mod_margic', 'feedback', $entry->id, $entry->feedback);
+        $entrydata->feedback = writer::with_context($context)->rewrite_pluginfile_urls($subcontext, 'mod_margic',
+            'feedback', $entry->id, $entry->feedback);
 
         $entrydata->feedback = format_text($entrydata->feedback, $entry->formatfeedback, (object) [
             'para'    => false,
@@ -355,7 +357,8 @@ class provider implements \core_privacy\local\metadata\provider,
             ->export_area_files($subcontext, 'mod_margic', 'feedback', $entry->id);
 
         // Store all ratings against this entry as the entry belongs to the user. All ratings on it are ratings of their content.
-        \core_rating\privacy\provider::export_area_ratings($userid, $context, $subcontext, 'mod_margic', 'entry', $entry->id, false);
+        \core_rating\privacy\provider::export_area_ratings($userid, $context, $subcontext, 'mod_margic',
+            'entry', $entry->id, false);
     }
 
     /**
@@ -466,11 +469,13 @@ class provider implements \core_privacy\local\metadata\provider,
         }
 
         if ($margicpagecount = get_user_preferences('margic_pagecount', 0, $userid)) {
-            writer::export_user_preference('mod_margic', 'margic_pagecount', $margicpagecount, get_string('privacy:metadata:preference:margic_pagecount', 'mod_margic'));
+            writer::export_user_preference('mod_margic', 'margic_pagecount', $margicpagecount,
+                get_string('privacy:metadata:preference:margic_pagecount', 'mod_margic'));
         }
 
         if ($margicactivepage = get_user_preferences('margic_activepage', 0, $userid)) {
-            writer::export_user_preference('mod_margic', 'margic_activepage', $margicactivepage, get_string('privacy:metadata:preference:margic_activepage', 'mod_margic'));
+            writer::export_user_preference('mod_margic', 'margic_activepage', $margicactivepage,
+                get_string('privacy:metadata:preference:margic_activepage', 'mod_margic'));
         }
     }
 
@@ -544,7 +549,8 @@ class provider implements \core_privacy\local\metadata\provider,
                 'userid' => $userid,
             ];
 
-            \core_rating\privacy\provider::delete_ratings_select($context, 'mod_margic', 'entry', "IN ($entriessql)", $entriesparams);
+            \core_rating\privacy\provider::delete_ratings_select($context, 'mod_margic',
+                'entry', "IN ($entriessql)", $entriesparams);
 
             // Delete all files from the entries.
             $fs = get_file_storage();

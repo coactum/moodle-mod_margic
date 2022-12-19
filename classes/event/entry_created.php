@@ -56,8 +56,8 @@ class entry_created extends \core\event\base {
      * @return string
      */
     public function get_description() {
-        return "The user with the id '$this->userid' has created the entry with the id '$this->objectid' for the margic activity with " .
-            "the course module id '$this->contextinstanceid'";
+        return "The user with the id '$this->userid' has created the entry with the id '$this->objectid
+            ' for the margic activity with the course module id '$this->contextinstanceid'";
     }
 
     /**

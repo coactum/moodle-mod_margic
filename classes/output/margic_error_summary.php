@@ -61,7 +61,8 @@ class margic_error_summary implements renderable, templatable {
      * @param bool $canmanageerrortypes If user can manage errortypes
      * @param bool $defaulterrortypetemplateseditable If eligible users can edit default error type templates
      */
-    public function __construct($cmid, $participants, $margicerrortypes, $errortypetemplates, $sesskey, $canmanageerrortypes, $defaulterrortypetemplateseditable) {
+    public function __construct($cmid, $participants, $margicerrortypes, $errortypetemplates, $sesskey, $canmanageerrortypes,
+        $defaulterrortypetemplateseditable) {
 
         $this->cmid = $cmid;
         $this->participants = $participants;

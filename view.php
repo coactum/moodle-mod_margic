@@ -51,6 +51,9 @@ $page = optional_param('page', 0, PARAM_INT);
 // Param if annotation mode is activated.
 $annotationmode = optional_param('annotationmode',  0, PARAM_BOOL); // Annotation mode.
 
+// Param with id of annotation that should be focused.
+$focusannotation = optional_param('focusannotation',  0, PARAM_INT); // ID of annotation.
+
 $margic = margic::get_margic_instance($id, $m, $userid, $action, $pagecount, $page);
 
 $moduleinstance = $margic->get_module_instance();
@@ -134,7 +137,8 @@ if ($annotationmode === 1 && has_capability('mod/margic:viewannotations', $conte
     $PAGE->navbar->add(get_string('viewannotations', 'mod_margic'));
 
     $PAGE->requires->js_call_amd('mod_margic/annotations', 'init',
-        array( 'cmid' => $cm->id, 'canmakeannotations' => $canmakeannotations, 'myuserid' => $USER->id));
+        array( 'cmid' => $cm->id, 'canmakeannotations' => $canmakeannotations, 'myuserid' => $USER->id,
+        'focusannotation' => $focusannotation));
 } else {
     // Header.
     $PAGE->set_url('/mod/margic/view.php', array(
@@ -146,18 +150,25 @@ if ($annotationmode === 1 && has_capability('mod/margic:viewannotations', $conte
 $PAGE->set_title(get_string('modulename', 'mod_margic').': ' . $margicname);
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
-$PAGE->force_settings_menu();
+
+if ($CFG->branch < 400) {
+    $PAGE->force_settings_menu();
+}
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading($margicname);
 
-if ($moduleinstance->intro) {
-    echo $OUTPUT->box(format_module_intro('margic', $moduleinstance, $cm->id), 'generalbox mod_introbox', 'newmoduleintro');
+if ($CFG->branch < 400) {
+    echo $OUTPUT->heading($margicname);
+
+    if ($moduleinstance->intro) {
+        echo $OUTPUT->box(format_module_intro('margic', $moduleinstance, $cm->id), 'generalbox', 'intro');
+    }
 }
 
 // Get grading of current user when margic is rated.
 if ($moduleinstance->assessed != 0) {
-    $ratingaggregationmode = helper::get_margic_aggregation($moduleinstance->assessed) . ' ' . get_string('forallmyentries', 'mod_margic');
+    $ratingaggregationmode = helper::get_margic_aggregation($moduleinstance->assessed) . ' ' .
+        get_string('forallmyentries', 'mod_margic');
     $gradinginfo = grade_get_grades($course->id, 'mod', 'margic', $moduleinstance->id, $USER->id);
     $userfinalgrade = $gradinginfo->items[0]->grades[$USER->id];
     $currentuserrating = $userfinalgrade->str_long_grade;
