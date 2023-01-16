@@ -650,7 +650,7 @@ class margic {
             // Add annotation form.
             if (!$readonly) {
                 require_once($CFG->dirroot . '/mod/margic/annotation_form.php');
-                $mform = new annotation_form(new moodle_url('/mod/margic/annotations.php', array('id' => $this->cm->id)),
+                $mform = new mod_margic_annotation_form(new moodle_url('/mod/margic/annotations.php', array('id' => $this->cm->id)),
                     array('types' => $this->get_errortypes_for_form()));
                 // Set default data.
                 $mform->set_data(array('id' => $this->cm->id, 'entry' => $entry->id));

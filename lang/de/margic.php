@@ -131,7 +131,7 @@ $string['annotationsarefetched'] = 'Annotationen werden geladen';
 $string['reloadannotations'] = 'Annotationen neu laden';
 
 // Form: mod_form.
-$string['margicname'] = 'Name der Margic';
+$string['margicname'] = 'Name des Margic';
 $string['margicdescription'] = 'Beschreibung des Margics';
 $string['margicopentime'] = 'Startzeit';
 $string['margicopentime_help'] = 'Wenn aktiviert können Sie das Datum festlegen, ab dem Einträge im Margic erstellt werden können.';
@@ -191,7 +191,7 @@ $string['moveback'] = 'Weiter hinten anzeigen';
 $string['prioritychanged'] = 'Reihenfolge geändert';
 $string['prioritynotchanged'] = 'Reihenfolge konnte nicht geändert werden';
 
-// Form: errortypes_form.
+// Form: mod_margic_errortypes_form.
 $string['annotationcolor'] = 'Farbe des Fehlertyps';
 $string['standardtype'] = 'Standard Fehlertyp';
 $string['manualtype'] = 'Manueller Fehlertyp';
@@ -293,10 +293,8 @@ $string['annotationareawidthall'] = 'Die Breite des Annotationsbereichs in Proze
 $string['editability'] = 'Bearbeitbarkeit';
 $string['entrybgc_title'] = 'Hintergrundfarbe für die Einträge und Annotationen';
 $string['entrybgc_descr'] = 'Hier kann die Hintergrundfarbe der Bereiche für die Einträge und Annotationen festgelegt werden.';
-$string['entrybgc_colour'] = '#C8E5FD';
 $string['textbgc_title'] = 'Hintergrundfarbe der Texte';
 $string['textbgc_descr'] = 'Hier kann die Hintergrundfarbe der Texte in den Einträgen und Annotationen festgelegt werden.';
-$string['textbgc_colour'] = '#F9F5F0';
 
 // Privacy.
 $string['privacy:metadata:margic_entries'] = 'Enthält die gespeicherten Benutzereinträge aller Margics.';

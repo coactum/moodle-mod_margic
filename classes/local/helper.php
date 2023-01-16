@@ -229,43 +229,24 @@ class helper {
         );
         // Add the headings to our data array.
         $csv->add_data($fields);
-        if ($CFG->dbtype == 'pgsql') {
-            $sql = "SELECT m.id AS entry,
-                           u.firstname AS firstname,
-                           u.lastname AS lastname,
-                           m.margic AS margic,
-                           m.userid AS userid,
-                           to_char(to_timestamp(m.timecreated), 'YYYY-MM-DD HH24:MI:SS') AS timecreated,
-                           to_char(to_timestamp(m.timemodified), 'YYYY-MM-DD HH24:MI:SS') AS timemodified,
-                           m.text AS text,
-                           m.format AS format,
-                           m.rating AS rating,
-                           m.feedback AS feedback,
-                           m.teacher AS teacher,
-                           to_char(to_timestamp(m.timemarked), 'YYYY-MM-DD HH24:MI:SS') AS timemarked,
-                           m.baseentry AS baseentry
-                      FROM {margic_entries} m
-                      JOIN {user} u ON u.id = m.userid
-                     WHERE m.userid > 0 ";
-        } else {
-            $sql = "SELECT m.id AS entry,
-                           u.firstname AS 'firstname',
-                           u.lastname AS 'lastname',
-                           m.margic AS margic,
-                           m.userid AS userid,
-                           FROM_UNIXTIME(m.timecreated) AS TIMECREATED,
-                           FROM_UNIXTIME(m.timemodified) AS TIMEMODIFIED,
-                           m.text AS text,
-                           m.format AS format,
-                           m.rating AS rating,
-                           m.feedback AS feedback,
-                           m.teacher AS teacher,
-                           FROM_UNIXTIME(m.timemarked) AS TIMEMARKED,
-                           m.baseentry AS baseentry
-                      FROM {margic_entries} m
-                      JOIN {user} u ON u.id = m.userid
-                     WHERE m.userid > 0 ";
-        }
+
+        $sql = "SELECT m.id AS entry,
+                    u.firstname AS 'firstname',
+                    u.lastname AS 'lastname',
+                    m.margic AS margic,
+                    m.userid AS userid,
+                    m.timecreated AS TIMECREATED,
+                    m.timemodified AS TIMEMODIFIED,
+                    m.text AS text,
+                    m.format AS format,
+                    m.rating AS rating,
+                    m.feedback AS feedback,
+                    m.teacher AS teacher,
+                    m.timemarked AS TIMEMARKED,
+                    m.baseentry AS baseentry
+                    FROM {margic_entries} m
+                    JOIN {user} u ON u.id = m.userid
+                    WHERE m.userid > 0 ";
 
         $sql .= ($whichmargic);
         $sql .= ($whichuser);
@@ -275,8 +256,22 @@ class helper {
         // Add the list of users and diaries to our data array.
         if ($ms = $DB->get_records_sql($sql, $fields)) {
             foreach ($ms as $m) {
-                if ($m->timemodified == '1970-01-01 00:00:00') {
-                    $m->timemodified = '';
+                if ($m->timecreated == 0) {
+                    $timecreated = '';
+                } else {
+                    $timecreated = date('Y-m-d H:i:s', $m->timecreated);
+                }
+
+                if ($m->timemodified == 0) {
+                    $timemodified = '';
+                } else {
+                    $timemodofied = date('Y-m-d H:i:s', $m->timemodified);
+                }
+
+                if ($m->timemarked == null) {
+                    $timemarked = '';
+                } else {
+                    $timemarked = date('Y-m-d H:i:s', $m->timemarked);
                 }
 
                 $output = array(
@@ -285,13 +280,13 @@ class helper {
                     $m->lastname,
                     $m->margic,
                     $m->userid,
-                    $m->timecreated,
-                    $m->timemodified,
+                    $timecreated,
+                    $timemodofied,
                     $m->format,
                     $m->rating,
                     $m->feedback,
                     $m->teacher,
-                    $m->timemarked,
+                    $timemarked,
                     $m->baseentry,
                     format_text($m->text, $m->format, array('para' => false))
                 );

@@ -107,8 +107,8 @@ if ($edit !== 0) {
 }
 
 // Instantiate form.
-$mform = new errortypes_form(null, array('editdefaulttype' => has_capability('mod/margic:editdefaulterrortypes', $context),
-    'mode' => $mode));
+$mform = new \mod_margic_errortypes_form(null,
+    array('editdefaulttype' => has_capability('mod/margic:editdefaulterrortypes', $context), 'mode' => $mode));
 
 if (isset($editedtypeid)) {
     if ($mode == 1) { // If type is template error type.

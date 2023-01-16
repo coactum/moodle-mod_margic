@@ -34,7 +34,7 @@ require_once("$CFG->libdir/formslib.php");
  * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL Juv3 or later
  */
-class errortypes_form extends moodleform {
+class mod_margic_errortypes_form extends moodleform {
 
     /**
      * Define the form - called by parent constructor

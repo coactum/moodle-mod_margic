@@ -64,7 +64,7 @@ if ($ADMIN->fulltree) {
     $name = 'margic/entrybgc';
     $title = get_string('entrybgc_title', 'margic');
     $description = get_string('entrybgc_descr', 'margic');
-    $default = get_string('entrybgc_colour', 'margic');
+    $default = '#C8E5FD';
     $setting = new admin_setting_configcolourpicker($name, $title, $description, $default);
     $setting->set_updatedcallback('theme_reset_all_caches');
     $settings->add($setting);
@@ -73,7 +73,7 @@ if ($ADMIN->fulltree) {
     $name = 'margic/textbgc';
     $title = get_string('textbgc_title', 'margic');
     $description = get_string('textbgc_descr', 'margic');
-    $default = get_string('textbgc_colour', 'margic');
+    $default = '#F9F5F0';
     $setting = new admin_setting_configcolourpicker($name, $title, $description, $default);
     $setting->set_updatedcallback('theme_reset_all_caches');
     $settings->add($setting);

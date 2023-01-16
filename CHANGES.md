@@ -1,7 +1,13 @@
 ## Changelog ##
+- [1.2.7]:
+    - [Chore]: Renamed some classes for compatibility with moodle coding guidelines.
+    - [Chore]: Default values for background colors in the plugin settings are not stored in language strings anymore.
+    - [Bugfix]: Changed date handling while creating the download file with the entries to support cross-database usage of the plugin.
+
 - [1.2.6]:
     - [Bugfix]: Fix for activity completion for view event.
     - [Chore]: Some minor changes to reduce moodle validation errors.
+
 - [1.2.5]:
     - [Bugfix]: Added LICENSE.md
     - [Bugfix]: In print mode now the background of the grading form is also greyed out.
