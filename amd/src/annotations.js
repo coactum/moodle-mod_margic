@@ -171,7 +171,7 @@ export const init = (cmid, canmakeannotations, myuserid, focusannotation) => {
             $('#overlay').hide();
         },
         error: function() {
-            // alert('Error fetching annotations');
+            // For output: alert('Error fetching annotations');
         }
     });
 

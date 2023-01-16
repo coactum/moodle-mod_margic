@@ -191,7 +191,7 @@ $string['moveback'] = 'Display further back';
 $string['prioritychanged'] = 'Order changed';
 $string['prioritynotchanged'] = 'Order could not be changed';
 
-// Form: errortypes_form.
+// Form: mod_margic_errortypes_form.
 $string['annotationcolor'] = 'Color of the error type';
 $string['standardtype'] = 'Standard error type';
 $string['manualtype'] = 'Manual error type';
@@ -293,10 +293,8 @@ $string['annotationareawidthall'] = 'The width of the annotation area in percent
 $string['editability'] = 'Editability';
 $string['entrybgc_title'] = 'Background color for the entries and annotations';
 $string['entrybgc_descr'] = 'Here you can set the background color of the areas for the entries and annotations.';
-$string['entrybgc_colour'] = '#C8E5FD';
 $string['textbgc_title'] = 'Background color of the texts';
 $string['textbgc_descr'] = 'Here you can set the background color of the texts in the entries and annotations.';
-$string['textbgc_colour'] = '#F9F5F0';
 
 // Privacy.
 $string['privacy:metadata:margic_entries'] = 'Contains the user entries saved in all margics.';

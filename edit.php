@@ -210,8 +210,6 @@ if ($form->is_cancelled()) {
         $baseentry = $DB->get_record('margic_entries', array('margic' => $moduleinstance->id, "id" => $newentry->baseentry));
         $baseentry->timemodified = $newentry->timecreated;
         $DB->update_record('margic_entries', $baseentry);
-
-        $newentry->feedback = $entry->feedback;
     }
 
     if (! $newentry->id = $DB->insert_record("margic_entries", $newentry)) {

@@ -120,7 +120,7 @@ if (has_capability('mod/margic:deleteannotations', $context) && $deleteannotatio
 require_once($CFG->dirroot . '/mod/margic/annotation_form.php');
 
 // Instantiate form.
-$mform = new annotation_form(null, array('types' => $margic->get_errortypes_for_form()));
+$mform = new mod_margic_annotation_form(null, array('types' => $margic->get_errortypes_for_form()));
 
 if ($fromform = $mform->get_data()) {
 
