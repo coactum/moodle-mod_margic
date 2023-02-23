@@ -188,15 +188,14 @@ if ($fromform = $mform->get_data()) {
             $annotation->endcontainer = $fromform->endcontainer;
             $annotation->startoffset = $fromform->startoffset;
             $annotation->endoffset = $fromform->endoffset;
-            $annotation->start = $fromform->start;
-            $annotation->end = $fromform->end;
+            $annotation->annotationstart = $fromform->annotationstart;
+            $annotation->annotationend = $fromform->annotationend;
             $annotation->exact = $fromform->exact;
             $annotation->prefix = $fromform->prefix;
             $annotation->suffix = $fromform->suffix;
             $annotation->text = $fromform->text;
 
             $newid = $DB->insert_record('margic_annotations', $annotation);
-
             // Trigger module annotation created event.
             $event = \mod_margic\event\annotation_created::create(array(
                 'objectid' => $newid,

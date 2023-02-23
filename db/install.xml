@@ -68,8 +68,8 @@
         <FIELD NAME="endcontainer" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="End container of the annotation"/>
         <FIELD NAME="startoffset" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Start position of the annotation"/>
         <FIELD NAME="endoffset" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="End position of the annotation"/>
-        <FIELD NAME="start" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Start of the annotation"/>
-        <FIELD NAME="end" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="End of the annotation"/>
+        <FIELD NAME="annotationstart" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Start of the annotation"/>
+        <FIELD NAME="annotationend" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="End of the annotation"/>
         <FIELD NAME="exact" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="Exact annotated text"/>
         <FIELD NAME="prefix" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="Prefix before the annotated text"/>
         <FIELD NAME="suffix" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="Suffix after the annotated text"/>

@@ -82,10 +82,10 @@ export const init = (cmid, canmakeannotations, myuserid, focusannotation) => {
                 newannotation.target[0].selector[0].endOffset);
 
             // TextPositionSelector.
-            $('.annotation-form-' + entry + ' input[name="start"]').val(
-                newannotation.target[0].selector[1].start);
-            $('.annotation-form-' + entry + ' input[name="end"]').val(
-                newannotation.target[0].selector[1].end);
+            $('.annotation-form-' + entry + ' input[name="annotationstart"]').val(
+                newannotation.target[0].selector[1].annotationstart);
+            $('.annotation-form-' + entry + ' input[name="annotationend"]').val(
+                newannotation.target[0].selector[1].annotationend);
 
             // TextQuoteSelector.
             $('.annotation-form-' + entry + ' input[name="exact"]').val(
@@ -186,7 +186,8 @@ export const init = (cmid, canmakeannotations, myuserid, focusannotation) => {
             const rangeSelectors = [[
                 {type: "RangeSelector", startContainer: annotation.startcontainer, startOffset: parseInt(annotation.startoffset),
                 endContainer: annotation.endcontainer, endOffset: parseInt(annotation.endoffset)},
-                {type: "TextPositionSelector", start: parseInt(annotation.start), end: parseInt(annotation.end)},
+                {type: "TextPositionSelector", annotationstart: parseInt(annotation.annotationstart),
+                annotationend: parseInt(annotation.annotationend)},
                 {type: "TextQuoteSelector", exact: annotation.exact, prefix: annotation.prefix, suffix: annotation.suffix}
             ]];
 
@@ -229,8 +230,8 @@ export const init = (cmid, canmakeannotations, myuserid, focusannotation) => {
             $('.annotation-form-' + entry + ' input[name="endcontainer"]').val(annotations[annotationid].endcontainer);
             $('.annotation-form-' + entry + ' input[name="startoffset"]').val(annotations[annotationid].startoffset);
             $('.annotation-form-' + entry + ' input[name="endoffset"]').val(annotations[annotationid].endoffset);
-            $('.annotation-form-' + entry + ' input[name="start"]').val(annotations[annotationid].start);
-            $('.annotation-form-' + entry + ' input[name="end"]').val(annotations[annotationid].end);
+            $('.annotation-form-' + entry + ' input[name="annotationstart"]').val(annotations[annotationid].annotationstart);
+            $('.annotation-form-' + entry + ' input[name="annotationend"]').val(annotations[annotationid].annotationend);
             $('.annotation-form-' + entry + ' input[name="exact"]').val(annotations[annotationid].exact);
             $('.annotation-form-' + entry + ' input[name="prefix"]').val(annotations[annotationid].prefix);
             $('.annotation-form-' + entry + ' input[name="suffix"]').val(annotations[annotationid].suffix);

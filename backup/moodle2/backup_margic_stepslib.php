@@ -55,7 +55,7 @@ class backup_margic_activity_structure_step extends backup_activity_structure_st
         $annotations = new backup_nested_element('annotations');
         $annotation = new backup_nested_element('annotation', array('id'), array(
             'userid', 'timecreated', 'timemodified', 'type', 'startcontainer', 'endcontainer',
-            'startoffset', 'endoffset', 'start', 'end', 'exact', 'prefix', 'suffix', 'text'));
+            'startoffset', 'endoffset', 'annotationstart', 'annotationend', 'exact', 'prefix', 'suffix', 'text'));
 
         $ratings = new backup_nested_element('ratings');
         $rating = new backup_nested_element('rating', array('id'), array(

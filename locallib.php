@@ -93,11 +93,11 @@ class margic {
          * @return bool Sort result
          */
         function sortannotation($a, $b) {
-            if ($a->start === $b->start) {
-                return $a->end > $b->end;
+            if ($a->annotationstart === $b->annotationstart) {
+                return $a->annotationend > $b->annotationend;
             }
 
-            return $a->start > $b->start;
+            return $a->annotationstart > $b->annotationstart;
         }
 
         global $DB, $USER;
