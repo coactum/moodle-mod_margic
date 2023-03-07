@@ -231,8 +231,8 @@ class helper {
         $csv->add_data($fields);
 
         $sql = "SELECT m.id AS entry,
-                    u.firstname AS 'firstname',
-                    u.lastname AS 'lastname',
+                    u.firstname AS firstname,
+                    u.lastname AS lastname,
                     m.margic AS margic,
                     m.userid AS userid,
                     m.timecreated AS TIMECREATED,

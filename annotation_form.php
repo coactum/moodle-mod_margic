@@ -69,11 +69,11 @@ class mod_margic_annotation_form extends moodleform {
         $mform->addElement('hidden', 'endoffset', -1);
         $mform->setType('endoffset', PARAM_INT);
 
-        $mform->addElement('hidden', 'start', -1);
-        $mform->setType('start', PARAM_INT);
+        $mform->addElement('hidden', 'annotationstart', -1);
+        $mform->setType('annotationstart', PARAM_INT);
 
-        $mform->addElement('hidden', 'end', -1);
-        $mform->setType('end', PARAM_INT);
+        $mform->addElement('hidden', 'annotationend', -1);
+        $mform->setType('annotationend', PARAM_INT);
 
         $mform->addElement('hidden', 'annotationid', null);
         $mform->setType('annotationid', PARAM_INT);

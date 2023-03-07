@@ -157,8 +157,8 @@ class provider implements \core_privacy\local\metadata\provider,
         }
 
         $params = [
-            'instanceid'    => $context->id,
-            'modulename'    => 'margic',
+            'instanceid' => $context->id,
+            'modulename' => 'margic',
         ];
 
         // Find users with margic entries.
@@ -338,7 +338,7 @@ class provider implements \core_privacy\local\metadata\provider,
             'entry', $entry->id, $entry->text);
 
         $entrydata->text = format_text($entrydata->text, $entry->format, (object) [
-            'para'    => false,
+            'para' => false,
             'context' => $context,
         ]);
 
@@ -346,7 +346,7 @@ class provider implements \core_privacy\local\metadata\provider,
             'feedback', $entry->id, $entry->feedback);
 
         $entrydata->feedback = format_text($entrydata->feedback, $entry->formatfeedback, (object) [
-            'para'    => false,
+            'para' => false,
             'context' => $context,
         ]);
 

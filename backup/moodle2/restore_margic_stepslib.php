@@ -153,7 +153,28 @@ class restore_margic_activity_structure_step extends restore_activity_structure_
         $data->userid = $this->get_mappingid('user', $data->userid);
         $data->type = $this->get_mappingid('margic_errortype', $data->type);
 
+        // For backups made with older plugin versions (pre 2023030700)
+        // to handle renamed db fields start and end in the margic_annotations table.
+        if (!isset($data->annotationstart)) {
+            if ($data->start) {
+                $data->annotationstart = (int) $data->start;
+                unset($data->start);
+            } else {
+                $data->annotationstart = 0;
+            }
+        }
+
+        if (!isset($data->annotationend)) {
+            if ($data->end) {
+                $data->annotationend = (int) $data->end;
+                unset($data->end);
+            } else {
+                $data->annotationend = 0;
+            }
+        }
+
         $newitemid = $DB->insert_record('margic_annotations', $data);
+
         $this->set_mapping('margic_annotation', $oldid, $newitemid);
     }
 

@@ -32,6 +32,17 @@ function xmldb_margic_upgrade($oldversion) {
     global $DB;
 
     $dbman = $DB->get_manager();
-
+    if ($oldversion < 2023030700) {
+        $table = new xmldb_table('margic_annotations');
+        $field = new xmldb_field('end', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $field2 = new xmldb_field('start', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->rename_field($table, $field, 'annotationend');
+        }
+        if ($dbman->field_exists($table, $field2)) {
+            $dbman->rename_field($table, $field2, 'annotationstart');
+        }
+        upgrade_mod_savepoint(true, 2023030700, 'margic');
+    }
     return true;
 }

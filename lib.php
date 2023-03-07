@@ -398,11 +398,11 @@ function margic_get_recent_mod_activity(&$activities, &$index, $timestart, $cour
 
     if ($groupid) {
         $groupselect = 'AND gm.groupid = :groupid';
-        $groupjoin   = 'JOIN {groups_members} gm ON  gm.userid=u.id';
+        $groupjoin = 'JOIN {groups_members} gm ON  gm.userid=u.id';
         $params['groupid'] = $groupid;
     } else {
         $groupselect = '';
-        $groupjoin   = '';
+        $groupjoin = '';
     }
 
     $params['cminstance'] = $cm->instance;
@@ -430,11 +430,11 @@ function margic_get_recent_mod_activity(&$activities, &$index, $timestart, $cour
          return;
     }
 
-    $groupmode       = groups_get_activity_groupmode($cm, $course);
-    $cmcontext       = context_module::instance($cm->id);
-    $grader          = has_capability('moodle/grade:viewall', $cmcontext);
+    $groupmode = groups_get_activity_groupmode($cm, $course);
+    $cmcontext = context_module::instance($cm->id);
+    $grader = has_capability('moodle/grade:viewall', $cmcontext);
     $accessallgroups = has_capability('moodle/site:accessallgroups', $cmcontext);
-    $viewfullnames   = has_capability('moodle/site:viewfullnames', $cmcontext);
+    $viewfullnames = has_capability('moodle/site:viewfullnames', $cmcontext);
     $teacher = has_capability('mod/margic:manageentries', $cmcontext);
 
     $show = array();
@@ -488,12 +488,12 @@ function margic_get_recent_mod_activity(&$activities, &$index, $timestart, $cour
     foreach ($show as $entry) {
         $activity = new stdClass();
 
-        $activity->type         = 'margic';
-        $activity->cmid         = $cm->id;
-        $activity->name         = $aname;
-        $activity->sectionnum   = $cm->sectionnum;
-        $activity->timestamp    = $entry->timecreated;
-        $activity->user         = new stdClass();
+        $activity->type = 'margic';
+        $activity->cmid = $cm->id;
+        $activity->name = $aname;
+        $activity->sectionnum = $cm->sectionnum;
+        $activity->timestamp = $entry->timecreated;
+        $activity->user = new stdClass();
         if ($grader) {
             $activity->grade = $grades->items[0]->grades[$entry->userid]->str_long_grade;
         }
