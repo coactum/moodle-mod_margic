@@ -35,7 +35,7 @@ global $DB, $USER;
 $id = required_param('id', PARAM_INT);
 
 // Module instance ID as alternative.
-$m  = optional_param('d', null, PARAM_INT);
+$m = optional_param('m', null, PARAM_INT);
 
 // ID of the entry to be graded.
 $entryid = required_param('entryid', PARAM_INT);

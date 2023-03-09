@@ -37,10 +37,10 @@ global $DB;
 $id = required_param('id', PARAM_INT);
 
 // Module instance ID as alternative.
-$m  = optional_param('d', null, PARAM_INT);
+$m = optional_param('m', null, PARAM_INT);
 
 // ID of the entry to be edited (if existing).
-$entryid = optional_param('entryid', '', PARAM_INT);
+$entryid = optional_param('entryid', '0', PARAM_INT);
 
 $margic = margic::get_margic_instance($id, $m, false, 'currententry', 0, 1);
 

@@ -93,11 +93,11 @@ class margic {
          * @return bool Sort result
          */
         function sortannotation($a, $b) {
-            if ($a->start === $b->start) {
-                return $a->end > $b->end;
+            if ($a->annotationstart === $b->annotationstart) {
+                return $a->annotationend > $b->annotationend;
             }
 
-            return $a->start > $b->start;
+            return $a->annotationstart > $b->annotationstart;
         }
 
         global $DB, $USER;
@@ -268,7 +268,7 @@ class margic {
      * @param int $page int The current page number
      * @return string action
      */
-    public static function get_margic_instance($id, $m = null, $userid, $action, $pagecount, $page) {
+    public static function get_margic_instance($id, $m, $userid, $action, $pagecount, $page) {
 
         static $inst = null;
         if ($inst === null) {

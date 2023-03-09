@@ -33,7 +33,7 @@ global $DB, $CFG;
 $id = required_param('id', PARAM_INT);
 
 // Module instance ID as alternative.
-$m  = optional_param('m', null, PARAM_INT);
+$m = optional_param('m', null, PARAM_INT);
 
 // Param if annotations should be returned via ajax.
 $getannotations = optional_param('getannotations',  0, PARAM_INT);
@@ -188,15 +188,14 @@ if ($fromform = $mform->get_data()) {
             $annotation->endcontainer = $fromform->endcontainer;
             $annotation->startoffset = $fromform->startoffset;
             $annotation->endoffset = $fromform->endoffset;
-            $annotation->start = $fromform->start;
-            $annotation->end = $fromform->end;
+            $annotation->annotationstart = $fromform->annotationstart;
+            $annotation->annotationend = $fromform->annotationend;
             $annotation->exact = $fromform->exact;
             $annotation->prefix = $fromform->prefix;
             $annotation->suffix = $fromform->suffix;
             $annotation->text = $fromform->text;
 
             $newid = $DB->insert_record('margic_annotations', $annotation);
-
             // Trigger module annotation created event.
             $event = \mod_margic\event\annotation_created::create(array(
                 'objectid' => $newid,

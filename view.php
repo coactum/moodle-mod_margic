@@ -34,7 +34,7 @@ require_once($CFG->dirroot . '/mod/margic/locallib.php');
 $id = required_param('id', PARAM_INT);
 
 // Module instance ID as alternative.
-$m  = optional_param('m', null, PARAM_INT);
+$m = optional_param('m', null, PARAM_INT);
 
 // Param containing user id if only entries for one user should be displayed.
 $userid = optional_param('userid',  0, PARAM_INT); // User id.

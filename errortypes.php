@@ -34,13 +34,13 @@ require_once($CFG->dirroot . '/mod/margic/errortypes_form.php');
 $id = required_param('id', PARAM_INT);
 
 // Module instance ID as alternative.
-$m  = optional_param('m', null, PARAM_INT);
+$m = optional_param('m', null, PARAM_INT);
 
 // If template (1) or margic (2) error type.
-$mode  = optional_param('mode', 1, PARAM_INT);
+$mode = optional_param('mode', 1, PARAM_INT);
 
 // ID of type that should be edited.
-$edit  = optional_param('edit', 0, PARAM_INT);
+$edit = optional_param('edit', 0, PARAM_INT);
 
 $margic = margic::get_margic_instance($id, $m, false, 'currententry', 0, 1);
 
