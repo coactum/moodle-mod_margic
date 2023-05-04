@@ -38,7 +38,7 @@ export const init = (cmid, canmakeannotations, myuserid, focusannotation) => {
     $('.annotation-form div.row').removeClass('row');
 
     // Onclick listener if form is canceled.
-    $(document).on('click', '#id_cancel', function(e) {
+    $(document).on('click', '.margic_entry #id_cancel', function(e) {
         e.preventDefault();
 
         removeAllTempHighlights(); // Remove other temporary highlights.
@@ -49,7 +49,7 @@ export const init = (cmid, canmakeannotations, myuserid, focusannotation) => {
     });
 
     // Listen for return key pressed to submit annotation form.
-    $('textarea').keypress(function(e) {
+    $('.margic_entry textarea').keypress(function(e) {
         if (e.which == 13) {
             $(this).parents(':eq(2)').submit();
             e.preventDefault();
