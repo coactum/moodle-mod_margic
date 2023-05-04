@@ -94,10 +94,10 @@ class margic {
          */
         function sortannotation($a, $b) {
             if ($a->annotationstart === $b->annotationstart) {
-                return $a->annotationend > $b->annotationend;
+                return $a->annotationend <=> $b->annotationend;
             }
 
-            return $a->annotationstart > $b->annotationstart;
+            return $a->annotationstart <=> $b->annotationstart;
         }
 
         global $DB, $USER;
@@ -620,7 +620,7 @@ class margic {
                 }
             }
 
-            if (has_capability('mod/margic:makeannotations', $this->context) && $annotation->userid == $USER->id) {
+            if (has_capability('mod/margic:makeannotations', $this->context) && $annotation->userid == $USER->id && !$readonly) {
                 $entry->annotations[$key]->canbeedited = true;
             } else {
                 $entry->annotations[$key]->canbeedited = false;
