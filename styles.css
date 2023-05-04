@@ -122,6 +122,7 @@
 .path-mod-margic .annotated_temp {
     background-color: yellow;
     cursor: pointer;
+    -webkit-print-color-adjust: exact;
 }
 
 .path-mod-margic .hovered .annotated,
@@ -225,7 +226,9 @@
         display: none;
     }
 
-    .path-mod-margic #page {
+    .path-mod-margic #page,
+    .path-mod-margic #page.drawers,
+    .path-mod-margic #page.drawers .main-inner {
         margin-top: 0;
     }
 
