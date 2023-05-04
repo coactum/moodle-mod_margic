@@ -56,7 +56,7 @@
                 {{/currentuserrating}}
         {{/entries.0}}{{/ratingaggregationmode}}
         {{^ratingaggregationmode}}{{#str}}norating, mod_margic{{/str}}{{/ratingaggregationmode}}
-        {{#entries.0}}<span class="pull-right pr-5">
+        {{#entries.0}}<span class="float-right">
             <strong>{{#str}}sorting, mod_margic{{/str}}</strong>{{#sortmode}}<strong>: </strong>{{sortmode}}{{/sortmode}}
         </span>{{/entries.0}}
     </div>
@@ -76,7 +76,7 @@
         {{/entries.0}}
         <a class="btn btn-primary m-1" href="error_summary.php?id={{cmid}}"> {{#str}}errorsummary, mod_margic{{/str}} </a>
 
-        {{#entries.0}}<span class="pull-right p-1">
+        {{#entries.0}}<span class="float-right p-1">
             <a href="view.php?id={{cmid}}&action=download&sesskey={{sesskey}}" class="p-1 pr-2 border-right solid"><i class="fa fa-2x fa-download" title="{{#str}}csvexport, mod_margic{{/str}}"></i></a>
             <a href="view.php?id={{cmid}}&action=currenttooldest&sesskey={{sesskey}}" class="p-1"><i class="fa fa-2x fa-arrow-down" title="{{#str}}currenttooldest, mod_margic{{/str}}"></i></a>
             <a href="view.php?id={{cmid}}&action=oldesttocurrent&sesskey={{sesskey}}" class="p-1"><i class="fa fa-2x fa-arrow-up" title="{{#str}}oldesttocurrent, mod_margic{{/str}}"></i></a>
@@ -123,7 +123,7 @@
                 <h4 class="text-center">
                     {{#str}} annotations, mod_margic {{/str}}
                     {{#annotationmode}}
-                        <button class="btn btn-secondary margic-btn-round-small pull-right" data-toggle="collapse" data-target=".collapseAnnotation" aria-expanded="false" aria-controls="collapseAnnotation" title="{{#str}}toggleallannotations, mod_margic{{/str}}"><i class="fa fa-lg fa-caret-down"></i></button>
+                        <button class="btn btn-secondary margic-btn-round-small float-right" data-toggle="collapse" data-target=".collapseAnnotation" aria-expanded="false" aria-controls="collapseAnnotation" title="{{#str}}toggleallannotations, mod_margic{{/str}}"><i class="fa fa-lg fa-caret-down"></i></button>
                     {{/annotationmode}}
                 </h4>
                 <div id="overlay" class="entrybackground"><div id="overlaytext"><span class="pr-2">{{#str}}annotationsarefetched, mod_margic{{/str}}</span> <a href="view.php?id={{cmid}}&annotationmode=1" class="btn btn-secondary margic-btn-round-small" title="{{#str}}reloadannotations, mod_margic{{/str}}"><i class="fa fa-lg fa-refresh"></i></a></div></div>
