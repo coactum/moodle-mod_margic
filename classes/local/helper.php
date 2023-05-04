@@ -465,8 +465,12 @@ class helper {
 
             if ($entry->teacher) {
                 $teacher = $DB->get_record('user', array('id' => $entry->teacher));
-                $teacherimage = $OUTPUT->user_picture($teacher,
+                if ($teacher) {
+                    $teacherimage = $OUTPUT->user_picture($teacher,
                     array('courseid' => $course->id, 'link' => true, 'includefullname' => true, 'size' => 30));
+                } else {
+                    $teacherimage = false;
+                }
             } else {
                 $teacherimage = false;
             }
