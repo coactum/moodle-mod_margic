@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xl="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="-4.898305 -3 24 24" width="24" height="24">
+  <defs/>
+  <g id="Canvas_1" stroke-dasharray="none" fill="none" fill-opacity="1" stroke-opacity="1" stroke="none">
+    <title>Canvas 1</title>
+    <g id="Canvas_1_Layer_1">
+      <title>Layer 1</title>
+      <g id="Group_3">
+        <title>Canvas_1_Layer_1</title>
+        <g id="Group_35">
+          <title>Graphic_3</title>
+          <g id="Graphic_36">
+            <title>Bézier</title>
+            <path d="M 5.86 -2.6346732 L -3.5 -2.6346732 L -4.4 -2.6346732 L -4.4 20.634673 L -3.5 20.634673 L 12.7 20.634673 L 13.6 20.634673 L 13.6 5.02482 L 6.76 -2.6346732 Z" stroke="black" stroke-linecap="butt" stroke-linejoin="round" stroke-width="1"/>
+          </g>
+        </g>
+        <g id="Group_29">
+          <title>Graphic_6</title>
+          <g id="Graphic_30">
+            <title>Bézier</title>
+            <path d="M 5.211135 6.534824 C 5.211135 6.534824 10.086135 5.0065744 13.648635 6.942357 C 13.648635 6.840474 13.648635 5.4141076 13.648635 5.4141076 L 6.523635 -2.6346732 C 6.523635 -2.6346732 4.836135 -2.6346732 4.648635 -2.6346732 C 7.179885 1.135009 5.211135 6.534824 5.211135 6.534824 Z" stroke="black" stroke-linecap="butt" stroke-linejoin="round" stroke-width="1"/>
+          </g>
+        </g>
+        <g id="Group_25">
+          <title>Graphic_8</title>
+          <g id="Graphic_26">
+            <path d="M 5.1228315 15.21852 L -2.1829573 15.21852 L -2.1829573 14.16082 L 5.1228315 14.16082 Z M 11.384936 12.045426 L -2.1829573 12.045426 L -2.1829573 13.103123 L 11.384936 13.103123 Z M 11.384936 9.93003 L -2.1829573 9.93003 L -2.1829573 10.987728 L 11.384936 10.987728 Z M 11.384936 7.814635 L -2.1829573 7.814635 L -2.1829573 8.872333 L 11.384936 8.872333 Z" fill="black"/>
+          </g>
+        </g>
+        <g id="Group_23">
+          <title>Graphic_20</title>
+          <g id="Graphic_24">
+            <path d="M 18.632378 .7532962 C 19.222205 1.3024263 19.261456 2.2407807 18.719602 2.838528 L 14.019073 8.023917 C 13.477218 8.621664 12.551296 8.661442 11.961468 8.112312 L 11.425261 7.613103 C 10.835433 7.0639715 10.796182 6.125617 11.338038 5.52787 L 16.038566 .34248116 C 16.580422 -.25526604 17.506344 -.29504372 18.096171 .25408673 Z" fill="black"/>
+          </g>
+        </g>
+        <g id="Group_21">
+          <title>Graphic_19</title>
+          <g id="Graphic_22"/>
+        </g>
+        <g id="Group_19">
+          <title>Graphic_18</title>
+          <g id="Graphic_20"/>
+        </g>
+        <g id="Group_17">
+          <title>Graphic_17</title>
+          <g id="Graphic_18">
+            <path d="M 17.596283 4.068478 L 10.020726 12.425454 L 7.344235 9.933638 L 14.919792 1.5766615 Z" fill="black"/>
+          </g>
+        </g>
+        <g id="Group_15">
+          <title>Graphic_16</title>
+          <g id="Graphic_16">
+            <path d="M 16.573323 4.118114 L 9.493308 11.928434 L 7.863913 10.411465 L 14.943928 2.6011457 Z" fill="white"/>
+          </g>
+        </g>
+        <g id="Group_13">
+          <title>Graphic_15</title>
+          <g id="Graphic_14">
+            <path d="M 15.53673 4.155058 L 9.178909 11.168687 L 8.651141 10.677335 L 15.008961 3.6637055 Z" fill="black"/>
+          </g>
+        </g>
+        <g id="Group_11">
+          <title>Graphic_14</title>
+          <g id="Graphic_12">
+            <path d="M 14.4186 2.1145587 L 17.112097 4.622209 L 16.617414 5.1679175 L 13.923916 2.6602678 Z" fill="black"/>
+          </g>
+        </g>
+        <g id="Group_9">
+          <title>Graphic_13</title>
+          <g id="Graphic_10">
+            <path d="M 14.912684 1.5755245 L 17.596542 4.0742 L 17.10186 4.6199095 L 14.418002 2.1212337 Z" fill="black"/>
+          </g>
+        </g>
+        <g id="Group_6">
+          <title>Graphic_12</title>
+          <g id="Graphic_8"/>
+          <g id="Graphic_7">
+            <path d="M 7.485205 10.457393 L 5.870959 14.340351 L 9.453389 12.31525 Z" fill="white"/>
+            <path d="M 7.485205 10.457393 L 5.870959 14.340351 L 9.453389 12.31525 Z" stroke="black" stroke-linecap="butt" stroke-linejoin="round" stroke-width=".644299"/>
+          </g>
+        </g>
+        <g id="Group_4">
+          <title>Graphic_11</title>
+          <g id="Graphic_5"/>
+        </g>
+        <g id="Graphic_38">
+          <rect x="0" y="7.814635" width="5.301695" height="1.05" fill="red"/>
+        </g>
+        <g id="Graphic_39">
+          <rect x="-1.098305" y="9.934144" width="2.301695" height="1.05" fill="blue"/>
+        </g>
+        <g id="Graphic_40">
+          <rect x="2.301695" y="9.934144" width="4" height="1.05" fill="#fdc900"/>
+        </g>
+        <g id="Graphic_41">
+          <rect x="-.29830505" y="14.165394" width="2.301695" height="1.05" fill="red"/>
+        </g>
+        <g id="Graphic_42">
+          <rect x="-.8" y="12.04977" width="5.301695" height="1.05" fill="#009800"/>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>
