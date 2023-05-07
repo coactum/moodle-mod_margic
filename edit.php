@@ -152,7 +152,8 @@ $data = file_prepare_standard_filemanager($data, 'attachment', $attachmentoption
     'mod_margic', 'attachment', $data->entryid);
 
 // Create form.
-$form = new mod_margic_entry_form(null, array('editentrydates' => $moduleinstance->editentrydates, 'editoroptions' => $editoroptions));
+$form = new mod_margic_entry_form(null,
+    array('editentrydates' => $moduleinstance->editentrydates, 'editoroptions' => $editoroptions));
 
 // Set existing data for this entry.
 $form->set_data($data);
