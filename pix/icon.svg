@@ -1,76 +1,187 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xl="http://www.w3.org/1999/xlink" viewBox="-4.898305 -3 30 30" width="30" height="30">
+<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xl="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="-4.898305 -3 24 24" width="24" height="24">
   <defs/>
-  <g id="Canvas_1" fill="none" stroke="none" stroke-dasharray="none" fill-opacity="1" stroke-opacity="1">
+  <g id="Canvas_1" stroke-dasharray="none" fill="none" fill-opacity="1" stroke-opacity="1" stroke="none">
     <title>Canvas 1</title>
     <g id="Canvas_1_Layer_1">
       <title>Layer 1</title>
-      <g id="Graphic_21"/>
-      <g id="Graphic_3">
-        <title>polygon4575</title>
-        <path d="M 11.4 0 L 1 0 L -17763568e-22 0 L -17763568e-22 24 L 1 24 L 19 24 L 20 24 L 20 7.9 L 12.4 0 Z" fill="#286aa6"/>
+      <g id="Group_2">
+        <title>Canvas_1</title>
+        <g id="Group_3">
+          <title>Canvas_1_Layer_1</title>
+          <g id="Group_4">
+            <title>Group_2</title>
+            <g id="Group_5">
+              <title>Group_3</title>
+              <g id="Group_53">
+                <title>Group_35</title>
+                <g id="Group_54">
+                  <title>Graphic_36</title>
+                  <g id="Graphic_55">
+                    <path d="M 6.506231 -3 L -3.8937686 -3 L -4.8937686 -3 L -4.8937686 21 L -3.8937686 21 L 14.106231 21 L 15.106231 21 L 15.106231 4.9 L 7.506231 -3 Z" fill="#286aa6"/>
+                  </g>
+                </g>
+              </g>
+              <g id="Group_50">
+                <title>Group_33</title>
+                <g id="Group_51">
+                  <title>Graphic_34</title>
+                  <g id="Graphic_52">
+                    <path d="M 6.106231 -2 L -2.8937686 -2 L -3.8937686 -2 L -3.8937686 20 L -2.8937686 20 L 13.106231 20 L 14.106231 20 L 14.106231 5.3 L 7.106231 -2 Z" fill="#bfd7f0"/>
+                  </g>
+                </g>
+              </g>
+              <g id="Group_47">
+                <title>Group_31</title>
+                <g id="Group_48">
+                  <title>Graphic_32</title>
+                  <g id="Graphic_49">
+                    <path d="M 5.7062314 -1 L -1.8937686 -1 L -2.8937686 -1 L -2.8937686 19 L -1.8937686 19 L 12.106231 19 L 13.106231 19 L 13.106231 5.7 L 6.706231 -1 Z" fill="#6da5da"/>
+                  </g>
+                </g>
+              </g>
+              <g id="Group_44">
+                <title>Group_29</title>
+                <g id="Group_45">
+                  <title>Graphic_30</title>
+                  <g id="Graphic_46">
+                    <path d="M 6.106231 6 C 6.106231 6 11.306231 4.5 15.106231 6.4 C 15.106231 6.3 15.106231 4.9 15.106231 4.9 L 7.506231 -3 C 7.506231 -3 5.7062314 -3 5.5062314 -3 C 8.206231 .7 6.106231 6 6.106231 6 Z" fill="#286aa6"/>
+                  </g>
+                </g>
+              </g>
+              <g id="Group_41">
+                <title>Group_27</title>
+                <g id="Group_42">
+                  <title>Graphic_28</title>
+                  <g id="Graphic_43">
+                    <path d="M 13.506231 4.8 C 12.606231 4.6 11.506231 4.5 10.406231 4.5 C 9.306231 4.5 8.306231 4.6 7.406231 4.8 C 7.806231 3.2 8.106231 .7 7.206231 -1.6 Z" fill="#c0d8f1"/>
+                  </g>
+                </g>
+              </g>
+              <g id="Group_38">
+                <title>Group_25</title>
+                <g id="Group_39">
+                  <title>Graphic_26</title>
+                  <g id="Graphic_40">
+                    <path d="M 5.7079264 14.5339 L -1.2920736 14.5339 L -1.2920736 13.533899 L 5.7079264 13.533899 Z M 11.707926 11.533899 L -1.2920736 11.533899 L -1.2920736 12.533899 L 11.707926 12.533899 Z M 11.707926 9.533899 L -1.2920736 9.533899 L -1.2920736 10.533899 L 11.707926 10.533899 Z M 11.707926 7.533899 L -1.2920736 7.533899 L -1.2920736 8.533899 L 11.707926 8.533899 Z" fill="#bed6ef"/>
+                  </g>
+                </g>
+              </g>
+              <g id="Group_35">
+                <title>Group_23</title>
+                <g id="Group_36">
+                  <title>Graphic_24</title>
+                  <g id="Graphic_37">
+                    <path d="M 18.65202 .857757 C 19.21716 1.376932 19.25477 2.264099 18.735594 2.829239 L 14.23181 7.731764 C 13.712634 8.296904 12.825467 8.334512 12.260327 7.815337 L 11.746563 7.34336 C 11.181423 6.824184 11.143815 5.937017 11.662991 5.371877 L 16.166775 .469352 C 16.685951 -.095788 17.573118 -.1333958 18.138258 .3857795 Z" fill="#942326"/>
+                  </g>
+                </g>
+              </g>
+              <g id="Group_32">
+                <title>Group_21</title>
+                <g id="Group_33">
+                  <title>Graphic_22</title>
+                  <g id="Graphic_34">
+                    <path d="M 13.718046 7.259787 C 13.43486 7.568045 13.040563 7.58476 12.732304 7.301573 L 12.218541 6.829596 C 11.910282 6.546409 11.893568 6.152113 12.176754 5.843854 L 16.68054 .9413295 C 16.963726 .6330712 17.35802 .6163567 17.66628 .899543 L 18.180044 1.3715207 C 18.4883 1.654707 18.505017 2.0490036 18.22183 2.357262 Z" fill="#a20f1f"/>
+                  </g>
+                </g>
+              </g>
+              <g id="Group_29">
+                <title>Group_19</title>
+                <g id="Group_30">
+                  <title>Graphic_20</title>
+                  <g id="Graphic_31">
+                    <path d="M 16.518334 2.14912 L 17.194302 1.4133054 L 17.690654 1.8692873 L 17.014686 2.605102 Z" fill="#c32e32"/>
+                  </g>
+                </g>
+              </g>
+              <g id="Group_26">
+                <title>Group_17</title>
+                <g id="Group_27">
+                  <title>Graphic_18</title>
+                  <g id="Graphic_28">
+                    <path d="M 17.659293 3.992095 L 10.400816 11.893197 L 7.836351 9.53731 L 15.094828 1.6362076 Z" fill="#b4af38"/>
+                  </g>
+                </g>
+              </g>
+              <g id="Group_23">
+                <title>Group_15</title>
+                <g id="Group_24">
+                  <title>Graphic_16</title>
+                  <g id="Graphic_25">
+                    <path d="M 16.67915 4.0390234 L 9.895473 11.423289 L 8.334278 9.989071 L 15.117954 2.604806 Z" fill="#dbd88b"/>
+                  </g>
+                </g>
+              </g>
+              <g id="Group_20">
+                <title>Group_13</title>
+                <g id="Group_21">
+                  <title>Graphic_14</title>
+                  <g id="Graphic_22">
+                    <path d="M 15.685943 4.073952 L 9.594234 10.704987 L 9.088556 10.240438 L 15.180265 3.609403 Z" fill="#ebe8ba"/>
+                  </g>
+                </g>
+              </g>
+              <g id="Group_17">
+                <title>Group_11</title>
+                <g id="Group_18">
+                  <title>Graphic_12</title>
+                  <g id="Graphic_19">
+                    <path d="M 14.614613 2.1447624 L 17.195373 4.51562 L 16.721395 5.03156 L 14.140635 2.660703 Z" fill="#ccc"/>
+                  </g>
+                </g>
+              </g>
+              <g id="Group_14">
+                <title>Group_9</title>
+                <g id="Group_15">
+                  <title>Graphic_10</title>
+                  <g id="Graphic_16">
+                    <path d="M 15.088018 1.6351326 L 17.65954 3.997505 L 17.185565 4.513446 L 14.614041 2.1510733 Z" fill="#999"/>
+                  </g>
+                </g>
+              </g>
+              <g id="Group_9">
+                <title>Group_6</title>
+                <g id="Group_12">
+                  <title>Graphic_8</title>
+                  <g id="Graphic_13">
+                    <path d="M 7.971421 10.071888 L 6.42474 13.74303 L 9.857225 11.828398 Z" fill="#eeeff1"/>
+                  </g>
+                </g>
+                <g id="Group_10">
+                  <title>Graphic_7</title>
+                  <g id="Graphic_11">
+                    <path d="M 7.971421 10.071888 L 6.42474 13.74303 L 9.857225 11.828398 Z" stroke="#62656a" stroke-linecap="butt" stroke-linejoin="round" stroke-width=".644299"/>
+                  </g>
+                </g>
+              </g>
+              <g id="Group_6">
+                <title>Group_4</title>
+                <g id="Group_7">
+                  <title>Graphic_5</title>
+                  <g id="Graphic_8">
+                    <path d="M 7.062153 13.037412 L 8.335848 9.960683 C 8.868718 10.453149 8.950557 10.518669 9.924773 11.41308 Z" fill="#9c9ea3"/>
+                  </g>
+                </g>
+              </g>
+            </g>
+          </g>
+        </g>
       </g>
-      <g id="Graphic_4">
-        <title>polygon4582</title>
-        <path d="M 11 1 L 2 1 L 1 1 L 1 23 L 2 23 L 18 23 L 19 23 L 19 8.3 L 12 1 Z" fill="#bfd7f0"/>
+      <g id="Graphic_60">
+        <rect x=".4" y="7.528884" width="5.301695" height="1" fill="red"/>
       </g>
-      <g id="Graphic_5">
-        <title>polygon4589</title>
-        <path d="M 10.6 2 L 3 2 L 2 2 L 2 22 L 3 22 L 17 22 L 18 22 L 18 8.7 L 11.6 2 Z" fill="#6da5da"/>
+      <g id="Graphic_59">
+        <rect x="-.8" y="9.540342" width="2.301695" height="1" fill="blue"/>
       </g>
-      <g id="Graphic_6">
-        <title>path4598</title>
-        <path d="M 11 9 C 11 9 16.2 7.5 20 9.4 C 20 9.3 20 7.9 20 7.9 L 12.4 0 C 12.4 0 10.6 0 10.4 0 C 13.1 3.7 11 9 11 9 Z" fill="#286aa6"/>
+      <g id="Graphic_58">
+        <rect x="2.6" y="9.540342" width="4" height="1" fill="#fdc900"/>
       </g>
-      <g id="Graphic_7">
-        <title>path4613</title>
-        <path d="M 18.4 7.8 C 17.5 7.6 16.4 7.5 15.3 7.5 C 14.2 7.5 13.2 7.6 12.3 7.8 C 12.7 6.2 13 3.7 12.1 1.4 Z" fill="#c0d8f1"/>
+      <g id="Graphic_57">
+        <rect x="0" y="13.542426" width="2.301695" height="1" fill="red"/>
       </g>
-      <g id="Graphic_8">
-        <title>path29</title>
-        <path d="M 10.601695 17.5339 L 3.601695 17.5339 L 3.601695 16.533899 L 10.601695 16.533899 Z M 16.601695 14.533899 L 3.601695 14.533899 L 3.601695 15.533899 L 16.601695 15.533899 Z M 16.601695 12.533899 L 3.601695 12.533899 L 3.601695 13.533899 L 16.601695 13.533899 Z M 16.601695 10.533899 L 3.601695 10.533899 L 3.601695 11.533899 L 16.601695 11.533899 Z" fill="#bed6ef"/>
-      </g>
-      <g id="Graphic_20">
-        <title>path57-4</title>
-        <path d="M 23.54579 3.857757 C 24.11093 4.376932 24.148538 5.264099 23.629363 5.829239 L 19.125578 10.731764 C 18.606403 11.296904 17.719236 11.334512 17.154096 10.815337 L 16.640332 10.34336 C 16.075192 9.824184 16.037584 8.937017 16.55676 8.371877 L 21.060544 3.469352 C 21.57972 2.904212 22.466887 2.8666042 23.032027 3.3857795 Z" fill="#942326"/>
-      </g>
-      <g id="Graphic_19">
-        <title>path64-9</title>
-        <path d="M 18.611815 10.259787 C 18.328628 10.568045 17.934332 10.58476 17.626073 10.301573 L 17.11231 9.829596 C 16.804051 9.546409 16.787337 9.152113 17.070523 8.843854 L 21.574308 3.9413295 C 21.857495 3.6330712 22.25179 3.6163567 22.56005 3.899543 L 23.073813 4.3715207 C 23.38207 4.654707 23.398786 5.0490036 23.1156 5.357262 Z" fill="#a20f1f"/>
-      </g>
-      <g id="Graphic_18">
-        <title>rect73-0</title>
-        <path d="M 21.412103 5.14912 L 22.088071 4.4133054 L 22.584423 4.8692873 L 21.908455 5.605102 Z" fill="#c32e32"/>
-      </g>
-      <g id="Graphic_17">
-        <title>rect32-5</title>
-        <path d="M 22.553062 6.992095 L 15.294585 14.893197 L 12.73012 12.53731 L 19.988597 4.6362076 Z" fill="#b4af38"/>
-      </g>
-      <g id="Graphic_16">
-        <title>rect5488-3</title>
-        <path d="M 21.572918 7.0390234 L 14.789242 14.423289 L 13.228047 12.989071 L 20.011723 5.604806 Z" fill="#dbd88b"/>
-      </g>
-      <g id="Graphic_15">
-        <title>rect46-9</title>
-        <path d="M 20.579712 7.073952 L 14.488003 13.704987 L 13.982325 13.240438 L 20.074034 6.609403 Z" fill="#ebe8ba"/>
-      </g>
-      <g id="Graphic_14">
-        <title>rect11-1</title>
-        <path d="M 19.508382 5.1447624 L 22.089142 7.51562 L 21.615164 8.03156 L 19.034404 5.660703 Z" fill="#ccc"/>
-      </g>
-      <g id="Graphic_13">
-        <title>rect11-0-2</title>
-        <path d="M 19.981787 4.6351326 L 22.55331 6.997505 L 22.079334 7.513446 L 19.50781 5.1510733 Z" fill="#999"/>
-      </g>
-      <g id="Graphic_12">
-        <title>path2960-8</title>
-        <path d="M 12.86519 13.071888 L 11.318509 16.74303 L 14.750994 14.828398 Z" fill="#eeeff1"/>
-        <path d="M 12.86519 13.071888 L 11.318509 16.74303 L 14.750994 14.828398 Z" stroke="#62656a" stroke-linecap="butt" stroke-linejoin="miter" stroke-width=".6442989"/>
-      </g>
-      <g id="Graphic_11">
-        <title>path2982-1</title>
-        <path d="M 11.955922 16.037412 L 13.229617 12.960683 C 13.762487 13.453149 13.844326 13.518669 14.818542 14.41308 Z" fill="#9c9ea3"/>
+      <g id="Graphic_56">
+        <rect x="-.50169496" y="11.530967" width="5.301695" height="1" fill="#009800"/>
       </g>
     </g>
   </g>

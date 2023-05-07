@@ -41,7 +41,7 @@
                     {{#userdate}}{{timecreated}} ,{{#str}} strftimedatetimeshort, core_langconfig {{/str}}{{/userdate}}
                     {{#canmanageentries}}{{^singleuser}}<a class="ml-2" href="view.php?id={{cmid}}&userid={{userid}}"><i class="fa fa-user fa-lg" title="{{#str}}getallentriesofuser, mod_margic{{/str}}"></i></a>{{/singleuser}}{{/canmanageentries}}
                     {{^edittimehasended}}{{#caneditentries}}{{#entrycanbeedited}}<a class="ml-2" href="edit.php?id={{cmid}}&entryid={{id}}"><i class="fa fa-pencil fa-lg" title="{{#str}}editthisentry, mod_margic{{/str}}"></i></a>{{/entrycanbeedited}}{{/caneditentries}}{{/edittimehasended}}
-                    {{#newestentry}}<button class="btn btn-secondary margic-btn-round-small pull-right" data-toggle="collapse" data-target=".connectedWith{{baseentry}}" aria-expanded="false" aria-controls=".connectedWith{{baseentry}}" title="{{#str}}toggleolderversions, mod_margic{{/str}}"><i class="fa fa-lg fa-caret-down"></i></button>{{/newestentry}}
+                    {{#newestentry}}<button class="btn btn-secondary margic-btn-round-small float-right" data-toggle="collapse" data-target=".connectedWith{{baseentry}}" aria-expanded="false" aria-controls=".connectedWith{{baseentry}}" title="{{#str}}toggleolderversions, mod_margic{{/str}}"><i class="fa fa-lg fa-caret-down"></i></button>{{/newestentry}}
                 </h5>
 
                 {{#text}}
@@ -67,8 +67,8 @@
                             <div class="errortypeheader">
                                 <span style="border-left: 10px solid #{{color}}; padding-left: 5px;"> </span>
                                 <strong class="errortype">{{type}}</strong>
-                                <button class="btn btn-secondary margic-btn-round-small pull-right" data-toggle="collapse" data-target=".collapseAnnotation{{id}}" aria-expanded="false" aria-controls="collapseAnnotation{{id}}" title="{{#str}}toggleannotation, mod_margic{{/str}}"><i class="fa fa-lg fa-caret-down"></i></button>
-                                <a id="hoverannotation-{{id}}" class="hoverannotation hoverannotation-{{id}} btn btn-secondary margic-btn-round-small pull-right" aria-expanded="false" title="{{#str}}hoverannotation, mod_margic{{/str}}"><i class="fa fa-lg fa-crosshairs"></i></a>
+                                <button class="btn btn-secondary margic-btn-round-small float-right" data-toggle="collapse" data-target=".collapseAnnotation{{id}}" aria-expanded="false" aria-controls="collapseAnnotation{{id}}" title="{{#str}}toggleannotation, mod_margic{{/str}}"><i class="fa fa-lg fa-caret-down"></i></button>
+                                <a id="hoverannotation-{{id}}" class="hoverannotation hoverannotation-{{id}} btn btn-secondary margic-btn-round-small float-right" aria-expanded="false" title="{{#str}}hoverannotation, mod_margic{{/str}}"><i class="fa fa-lg fa-crosshairs"></i></a>
                             </div>
                             <div class="collapse collapseAnnotation collapseAnnotation{{id}}">
                                 <div class="d-flex justify-content-between annotationauthor">
@@ -88,7 +88,7 @@
                                     {{^text}}-{{/text}}
                                 </span>
                                 {{#canbeedited}}
-                                    <span class="pull-right"><a href="javascript:void(0);" title="{{#str}}editannotation, margic {{/str}}"><i id="edit-annotation-{{id}}" class="fa fa-lg fa-pencil m-r-1 edit-annotation" aria-hidden="true" ></i></a><a href="annotations.php?id={{cmid}}&deleteannotation={{id}}&sesskey={{sesskey}}" title="{{#str}}deleteannotation, margic {{/str}}"><i id="delete-annotation-{{id}}" class="fa fa-lg fa-trash delete-annotation" aria-hidden="true"></i></a></span>
+                                    <span class="float-right"><a href="javascript:void(0);" title="{{#str}}editannotation, margic {{/str}}"><i id="edit-annotation-{{id}}" class="fa fa-lg fa-pencil m-r-1 edit-annotation" aria-hidden="true" ></i></a><a href="annotations.php?id={{cmid}}&deleteannotation={{id}}&sesskey={{sesskey}}" title="{{#str}}deleteannotation, margic {{/str}}"><i id="delete-annotation-{{id}}" class="fa fa-lg fa-trash delete-annotation" aria-hidden="true"></i></a></span>
                                 {{/canbeedited}}
                             </div>
                         </div>

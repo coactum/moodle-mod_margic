@@ -44,25 +44,6 @@ class course_module_viewed extends \core\event\course_module_viewed {
     }
 
     /**
-     * Return the legacy event log data.
-     *
-     * @return array|null
-     */
-    protected function get_legacy_logdata() {
-        $url = new \moodle_url('view.php', array(
-            'id' => $this->contextinstanceid
-        ));
-        return array(
-            $this->courseid,
-            'margic',
-            'view',
-            $url->out(),
-            $this->objectid,
-            $this->contextinstanceid
-        );
-    }
-
-    /**
      * Get objectid mapping for restore.
      */
     public static function get_objectid_mapping() {

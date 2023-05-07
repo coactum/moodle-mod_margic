@@ -46,9 +46,9 @@ class mod_margic_entry_form extends moodleform {
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
 
-        $mform->addElement('hidden', 'margic');
-        $mform->setType('margic', PARAM_INT);
-        $mform->setDefault('margic', $this->_customdata['margic']);
+        $mform->addElement('hidden', 'editentrydates');
+        $mform->setType('editentrydates', PARAM_INT);
+        $mform->setDefault('editentrydates', $this->_customdata['editentrydates']);
 
         $mform->addElement('hidden', 'entryid');
         $mform->setType('entryid', PARAM_INT);
@@ -59,8 +59,8 @@ class mod_margic_entry_form extends moodleform {
             // Add date selector if entry dates can be edited.
             $mform->addElement('date_time_selector', 'timecreated', get_string('margicentrydate', 'margic'));
             $mform->setType('timecreated', PARAM_INT);
-            $mform->hideIf('timecreated', 'margic', 'neq', '1');
-            $mform->disabledIf('timecreated', 'margic', 'neq', '1');
+            $mform->hideIf('timecreated', 'editentrydates', 'neq', '1');
+            $mform->disabledIf('timecreated', 'editentrydates', 'neq', '1');
         } else {
             $mform->addElement('hidden', 'timecreated');
             $mform->setType('timecreated', PARAM_INT);

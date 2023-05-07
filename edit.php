@@ -130,7 +130,7 @@ if ($DB->record_exists('margic_entries', array('margic' => $moduleinstance->id, 
     }
 
     $data->entryid = $entry->id;
-    $data->timecreated = $entry->timecreated;
+    $data->timecreated = time();
     $data->text = $entry->text;
     $data->textformat = $entry->format;
 
@@ -152,7 +152,8 @@ $data = file_prepare_standard_filemanager($data, 'attachment', $attachmentoption
     'mod_margic', 'attachment', $data->entryid);
 
 // Create form.
-$form = new mod_margic_entry_form(null, array('margic' => $moduleinstance->editentrydates, 'editoroptions' => $editoroptions));
+$form = new mod_margic_entry_form(null,
+    array('editentrydates' => $moduleinstance->editentrydates, 'editoroptions' => $editoroptions));
 
 // Set existing data for this entry.
 $form->set_data($data);
@@ -191,7 +192,7 @@ if ($form->is_cancelled()) {
 
             $baseentry = $DB->get_record('margic_entries', array('margic' => $moduleinstance->id, "id" => $newentry->baseentry));
 
-            if ($newentry->timecreated < $baseentry->timemodified) {
+            if ($newentry->timecreated <= $baseentry->timemodified) {
                 redirect(new moodle_url('/mod/margic/view.php?id=' . $cm->id), get_string('timecreatedinvalid', 'mod_margic'),
                     null, notification::NOTIFY_ERROR);
             }
@@ -199,7 +200,7 @@ if ($form->is_cancelled()) {
             $connectedentries = $DB->get_records('margic_entries',
                 array('margic' => $moduleinstance->id, 'baseentry' => $newentry->baseentry), 'timecreated DESC');
 
-            if ($connectedentries && $newentry->timecreated < $connectedentries[array_key_first($connectedentries)]->timecreated) {
+            if ($connectedentries && $newentry->timecreated <= $connectedentries[array_key_first($connectedentries)]->timecreated) {
                 redirect(new moodle_url('/mod/margic/view.php?id=' . $cm->id), get_string('timecreatedinvalid', 'mod_margic'),
                     null, notification::NOTIFY_ERROR);
             }
