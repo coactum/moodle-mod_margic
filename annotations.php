@@ -96,11 +96,10 @@ if (has_capability('mod/margic:deleteannotations', $context) && $deleteannotatio
 
     global $USER;
 
-    if ($DB->record_exists('margic_annotations', array('id' => $deleteannotation, 'margic' => $moduleinstance->id,
-        'userid' => $USER->id))) {
+    $a = $DB->get_record('margic_annotations', array('id' => $deleteannotation, 'margic' => $moduleinstance->id));
+    if (isset($a) && ($moduleinstance->overwriteannotations || $a->userid == $USER->id)) {
 
-        $DB->delete_records('margic_annotations', array('id' => $deleteannotation, 'margic' => $moduleinstance->id,
-            'userid' => $USER->id));
+        $DB->delete_records('margic_annotations', array('id' => $deleteannotation, 'margic' => $moduleinstance->id));
 
         // Trigger module annotation deleted event.
         $event = \mod_margic\event\annotation_deleted::create(array(
@@ -132,7 +131,7 @@ if ($fromform = $mform->get_data()) {
         // Prevent changes by user in hidden form fields.
         if (!$annotation) {
             redirect($redirecturl, get_string('annotationinvalid', 'mod_margic'), null, notification::NOTIFY_ERROR);
-        } else if ($annotation->userid != $USER->id) {
+        } else if (!$moduleinstance->overwriteannotations && $annotation->userid != $USER->id) {
             redirect($redirecturl, get_string('notallowedtodothis', 'mod_margic'), null, notification::NOTIFY_ERROR);
         }
 
@@ -143,6 +142,10 @@ if ($fromform = $mform->get_data()) {
         $annotation->timemodified = time();
         $annotation->text = format_text($fromform->text, 2, array('para' => false));
         $annotation->type = $fromform->type;
+
+        if ($moduleinstance->overwriteannotations) {
+            $annotation->userid = $USER->id;
+        }
 
         $DB->update_record('margic_annotations', $annotation);
 

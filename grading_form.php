@@ -101,10 +101,18 @@ class mod_margic_grading_form extends moodleform {
 
             $mform->addElement('html', '<hr>');
 
-            if ($this->_customdata['entry']->timemarked) {
-                $mform->addElement('static', 'currentuserrating',
-                    get_string('grader', 'mod_margic'), $this->_customdata['teacherimg'] . ' - '
+            if (isset($this->_customdata['hasteacher'])) {
+
+                if ($this->_customdata['entry']->timemarked) {
+                    $mform->addElement('static', 'currentuserrating',
+                        get_string('grader', 'mod_margic'), $this->_customdata['teacherimg'] . ' - '
                         . userdate($this->_customdata['entry']->timemarked));
+
+                } else {
+                    $mform->addElement('static', 'currentuserrating',
+                        get_string('grader', 'mod_margic'), $this->_customdata['teacherimg']);
+                }
+
                 $mform->addElement('static', 'savedrating', get_string('savedrating', 'mod_margic'),
                     $this->_customdata['entry']->rating);
             }
@@ -131,7 +139,6 @@ class mod_margic_grading_form extends moodleform {
             $mform->setType('feedback_' . $this->_customdata['entry']->id . '_editor', PARAM_RAW);
 
             $mform->addElement('selectyesno', 'sendgradingmessage', get_string('sendgradingmessage', 'margic'));
-            $mform->setDefault('sendgradingmessage', 1);
 
             $this->add_action_buttons();
         }

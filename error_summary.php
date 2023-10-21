@@ -95,7 +95,15 @@ if ($addtomargic && $manageerrortypes) {
         $type = $DB->get_record('margic_errortype_templates', array('id' => $addtomargic));
 
         if ($type->defaulttype == 1 || ($type->defaulttype == 0 && $type->userid == $USER->id)) {
-            $type->priority = count($margic->get_margic_errortypes()) + 1;
+
+            $etypes = $margic->get_margic_errortypes();
+
+            if ($etypes) {
+                $type->priority = $etypes[array_key_last($etypes)]->priority + 1;
+            } else {
+                $type->priority = 1;
+            }
+
             $type->margic = $moduleinstance->id;
 
             $DB->insert_record('margic_errortypes', $type);
@@ -117,17 +125,20 @@ if ($manageerrortypes && $mode == 2 && $priority && $action && $DB->record_exist
 
     $type = $DB->get_record('margic_errortypes', array('margic' => $moduleinstance->id, 'id' => $priority));
 
+    $etypes = $margic->get_margic_errortypes();
+
     $prioritychanged = false;
     $oldpriority = 0;
 
-    if ($type && $action == 1 && $type->priority != 1) { // Increase priority (show more in front).
+    // Increase priority (show more in front).
+    if ($type && $action == 1 && $type->priority != $etypes[array_key_first($etypes)]->priority) {
         $oldpriority = $type->priority;
         $type->priority -= 1;
         $prioritychanged = true;
 
         $typeswitched = $DB->get_record('margic_errortypes', array('margic' => $moduleinstance->id, 'priority' => $type->priority));
 
-        if (!$typeswitched) { // If no type with priority+1 search for types with hihgher priority values.
+        if (!$typeswitched) { // If no type with priority+1 search for types with higher priority values.
             $typeswitched = $DB->get_records_select('margic_errortypes',
                 "margic = $moduleinstance->id AND priority < $type->priority", null, 'priority ASC');
 

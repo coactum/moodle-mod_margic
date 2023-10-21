@@ -129,6 +129,12 @@ class margic {
 
         foreach ($this->annotations as $key => $annotation) {
 
+            // Check if annotation creation time should be shown.
+            if (!has_capability('mod/margic:viewotherusersannotationtimes', $context) && $annotation->userid != $USER->id) {
+                $this->annotations[$key]->timecreated = false;
+                $this->annotations[$key]->timemodified = false;
+            }
+
             if (!array_key_exists($annotation->type, $this->errortypes) &&
                 $DB->record_exists('margic_errortypes', array('id' => $annotation->type))) {
 
@@ -512,6 +518,17 @@ class margic {
 
         $entry->user = $DB->get_record('user', array('id' => $entry->userid));
 
+        // Check if entry creation time should be shown.
+        if (!has_capability('mod/margic:viewotherusersentrytimes', $this->context) && $entry->userid != $USER->id) {
+            $entry->timecreated = false;
+            $entry->timemodified = false;
+        }
+
+        // Check if feedback time should be shown.
+        if (!has_capability('mod/margic:viewotherusersfeedbacktimes', $this->context) && $entry->teacher != $USER->id) {
+            $entry->timemarked = false;
+        }
+
         if (!$currentgroups || ($allowedusers && in_array($entry->user, $allowedusers))) {
             // Get child entries for entry.
             $entry->childentries = $DB->get_records('margic_entries',
@@ -519,6 +536,15 @@ class margic {
 
             $revisionnr = count($entry->childentries);
             foreach ($entry->childentries as $ci => $childentry) {
+
+                // Check if child entry creation time should be shown.
+                if (!has_capability('mod/margic:viewotherusersentrytimes', $this->context) &&
+                    $childentry->userid != $USER->id) {
+
+                    $entry->childentries[$ci]->timecreated = false;
+                    $entry->childentries[$ci]->timemodified = false;
+                }
+
                 $entry->childentries[$ci] = $this->prepare_entry_annotations($childentry, $strmanager, $annotationmode, $readonly);
                 $entry->childentries[$ci]->stats = entrystats::get_entry_stats($childentry->text, $childentry->timecreated);
                 $entry->childentries[$ci]->revision = $revisionnr;
@@ -579,7 +605,7 @@ class margic {
 
             // Add feedback area to entry.
             $entry->gradingform = helper::margic_return_feedback_area_for_entry($this->cm->id, $this->context,
-            $this->course, $this->instance, $entry, $grades, $canmanageentries);
+                $this->course, $this->instance, $entry, $grades, $canmanageentries, $this->instance->sendgradingmessage);
 
             $entry = $this->prepare_entry_annotations($entry, $strmanager, $annotationmode, $readonly);
 
@@ -607,6 +633,12 @@ class margic {
 
         foreach ($entry->annotations as $key => $annotation) {
 
+            // Check if annotation creation time should be shown.
+            if (!has_capability('mod/margic:viewotherusersannotationtimes', $this->context) && $annotation->userid != $USER->id) {
+                $entry->annotations[$key]->timecreated = false;
+                $entry->annotations[$key]->timemodified = false;
+            }
+
             if (!$DB->record_exists('margic_errortypes', array('id' => $annotation->type))) { // If annotation type does not exist.
                 $entry->annotations[$key]->color = 'FFFF00';
                 $entry->annotations[$key]->type = get_string('deletederrortype', 'mod_margic');
@@ -620,7 +652,10 @@ class margic {
                 }
             }
 
-            if (has_capability('mod/margic:makeannotations', $this->context) && $annotation->userid == $USER->id && !$readonly) {
+            if (has_capability('mod/margic:makeannotations', $this->context) &&
+                ($this->instance->overwriteannotations || $annotation->userid == $USER->id) &&
+                !$readonly) {
+
                 $entry->annotations[$key]->canbeedited = true;
             } else {
                 $entry->annotations[$key]->canbeedited = false;

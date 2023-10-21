@@ -53,6 +53,14 @@ if ($ADMIN->fulltree) {
         '1' => get_string('yes')
     )));
 
+    // Set if entry creators should be notified about feedback for their entries by default.
+    $settings->add(new admin_setting_configselect('margic/sendgradingmessage',
+        get_string('sendgradingmessagedefault', 'margic'),
+        get_string('sendgradingmessagedefault_help', 'margic'), 1, array(
+        '0' => get_string('no'),
+        '1' => get_string('yes')
+    )));
+
     // Appearance settings.
     $settings->add(new admin_setting_heading('margic/appearance', get_string('appearance'), ''));
 

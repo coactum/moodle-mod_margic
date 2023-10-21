@@ -77,6 +77,7 @@ $data->entry = $entry->id;
 $data->timecreated = $entry->timecreated;
 $data->{'feedback_' . $entry->id} = $entry->feedback;
 $data->{'feedback_' . $entry->id . 'format'} = $entry->formatfeedback;
+$data->sendgradingmessage = $moduleinstance->sendgradingmessage;
 
 list ($editoroptions, $attachmentoptions) = helper::margic_get_editor_and_attachment_options($course, $context, $moduleinstance);
 
@@ -193,7 +194,7 @@ if ($fromform = $mform->get_data()) { // If grading form is submitted.
             $obj = new stdClass();
             $obj->user = fullname(core_user::get_user($entry->userid));
             $obj->teacher = fullname(core_user::get_user($entry->teacher));
-            $obj->margic = format_string($moduleinstance->name, true);
+            $obj->margic = format_string($moduleinstance->name);
             $obj->url = $url;
 
             // Send grading message.
@@ -225,13 +226,16 @@ if ($fromform = $mform->get_data()) { // If grading form is submitted.
         }
 
         // Redirect after updated from feedback and grades.
-        redirect(new moodle_url('/mod/margic/view.php', array('id' => $id)), get_string('feedbackupdated', 'mod_margic'),
-            null, notification::NOTIFY_SUCCESS);
+        redirect(new moodle_url('/mod/margic/view.php',
+            array('id' => $id, 'focusgradingform' => $entry->id, 'annotationmode' => 1)),
+            get_string('feedbackupdated', 'mod_margic'), null, notification::NOTIFY_SUCCESS);
     } else {
-        redirect(new moodle_url('/mod/margic/view.php', array('id' => $id)), get_string('errfeedbacknotupdated', 'mod_margic'),
-            null, notification::NOTIFY_ERROR);
+        redirect(new moodle_url('/mod/margic/view.php',
+            array('id' => $id, 'focusgradingform' => $entry->id, 'annotationmode' => 1)),
+            get_string('errfeedbacknotupdated', 'mod_margic'), null, notification::NOTIFY_ERROR);
     }
 } else {
-    redirect(new moodle_url('/mod/margic/view.php', array('id' => $id)), get_string('errfeedbacknotupdated', 'mod_margic'),
-        null, notification::NOTIFY_ERROR);
+    redirect(new moodle_url('/mod/margic/view.php',
+        array('id' => $id, 'focusgradingform' => $entry->id, 'annotationmode' => 1)),
+        get_string('errfeedbacknotupdated', 'mod_margic'), null, notification::NOTIFY_ERROR);
 }

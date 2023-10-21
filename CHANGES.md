@@ -1,4 +1,17 @@
 ## Changelog ##
+
+- [1.3.0]:
+    - [Bugfix]: Fixed a bug that prevented the order of Margic error types (that were subsequently added to an instance from an error type template) from being changed under certain conditions.
+    - [Bugfix]: Deleting error types now triggers a confirm prompt.
+    - [Bugfix]: Removed doubled triggering of the download_margic_entries event.
+    - [Feature]: Added a color picker for creating error types and templates.
+    - [Improvement]: The default value for the feedback notification for the entries can now be set. Administrators can set the default value in the admin settings. This is then taken as the default value when a new margic is created, but can be changed there by teachers for the entire margic. Of course, teachers can deviate from the default value for each grading in the actual grading form. If the admin does not change the default value, it remains true as it was until now.
+    - [Improvement]: You can now prevent the displaying of timestamps for entries, annotations and feedback. There are now three new capabilities: "viewotherusersentrytimes" determines whether a user sees when an entry made by other users was created. "viewotherusersannotationtimes" determines whether a user can see when annotations were created by other users. "viewotherusersfeedbacktimes" determines whether a user can see when other teachers have given feedback on an entry. All three capabilities are activated for all users by default, but you can now withdraw these permission for individual roles (e.g. if you do not want the participants to see the times at which the teachers create their annotations or when they give feedback).
+    - [Improvement]: You can now define for each Margic if teachers can overwrite and delete the annotations made by other teachers.
+    - [Improvement]: If you save feedback or grading the page now jumps to the changed feedback after if is saved.
+    - [Improvement]: Annotation button now in a different color when annotation mode is activated.
+	- [Change]: Removed the link to index.php in the course navigation (use the course block instead).
+
 - [1.2.9]:
     - Ensured compatibility with Moodle 4.2.
         - [Layout]: Minor layout fixes because of the new versions of the bootstrap and fontawesome libraries.

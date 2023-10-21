@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'mod_margic';
-$plugin->release = '1.2.9';        // User-friendly version number.
-$plugin->version = 2023050400;        // The current module version (Date: YYYYMMDDXX).
+$plugin->release = '1.3.0';        // User-friendly version number.
+$plugin->version = 2023100300;        // The current module version (Date: YYYYMMDDXX).
 $plugin->requires = 2020061507;      // Requires Moodle 3.9.
 $plugin->maturity = MATURITY_STABLE;

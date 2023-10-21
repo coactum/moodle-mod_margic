@@ -111,7 +111,6 @@ $string['editingended'] = 'Editing period ended on {$a}';
 $string['notstarted'] = 'You have not added any entries to this Margic yet';
 $string['noentriesfound'] = 'No entries found';
 $string['viewallentries'] = 'View all entries';
-$string['viewallmargics'] = 'View all margics in course';
 
 // Annotations.
 $string['annotationcreated'] = 'Created at {$a}';
@@ -139,6 +138,8 @@ $string['margicclosetime'] = 'Close time';
 $string['margicclosetime_help'] = 'If activated, you can set a date until which entries can be created or edited in the Margic.';
 $string['annotationareawidth_help'] = 'The width of the annotation area in percent. Minimum 20 and maximum 80 percent.';
 $string['errannotationareawidthinvalid'] = 'Width invalid (minimum: {$a->minwidth}%, maximum: {$a->maxwidth}%).';
+$string['overwriteannotations'] = 'Overwrite annotations';
+$string['overwriteannotations_help'] = 'Here you can define whether teachers can overwrite and delete annotations made by other teachers.';
 
 // Form: edit_form.
 $string['addnewentry'] = 'Add new entry';
@@ -161,6 +162,8 @@ $string['feedbackupdated'] = 'Feedback and / or rating updated';
 $string['errfeedbacknotupdated'] = 'Feedback and grade not updated';
 $string['errnograder'] = 'No grader.';
 $string['errnofeedbackorratingdisabled'] = 'No feedback or rating disabled.';
+$string['defaultforsendgradingmessage'] = 'Default value for feedback notification';
+$string['defaultforsendgradingmessage_help'] = 'Here you can set the default value for the feedback notification. This is pre-filled in the rating form, but can also be manually changed there for each rating.';
 
 // Error summary.
 $string['errorsummary'] = 'Error summary';
@@ -176,6 +179,7 @@ $string['deleteerrortype'] = 'Delete error type';
 $string['errortypedeleted'] = 'Error type deleted';
 $string['deleteerrortypetemplate'] = 'Delete template';
 $string['deleteerrortypetemplateconfirm'] = 'Should this error type template really be deleted? This deletes the template for the entire system so that it can no longer be used as a concrete error type in new Margics. This action cannot be undone!';
+$string['deleteerrortypeconfirm'] = 'Do you really want to delete this error type? This will remove it from the Margic and display it as Deleted type for existing annotations. This action cannot be undone!';
 $string['errortypeinvalid'] = 'Error type invalid';
 $string['nameoferrortype'] = 'Name of error type';
 $string['margicerrortypes'] = 'Margic error types';
@@ -240,6 +244,9 @@ $string['margic:editdefaulterrortypes'] = 'Edit default error type templates';
 $string['margic:viewannotations'] = 'View annotations';
 $string['margic:makeannotations'] = 'Make annotations';
 $string['margic:deleteannotations'] = 'Delete annotations';
+$string['margic:viewotherusersentrytimes'] = 'View time of creation for foreign entries ';
+$string['margic:viewotherusersannotationtimes'] = 'View time of creation for foreign annotations ';
+$string['margic:viewotherusersfeedbacktimes'] = 'View the time of the grading by other teachers ';
 
 // Recent activity.
 $string['newmargicentries'] = 'New Margic entries';
@@ -288,6 +295,8 @@ $string['editentrydates'] = 'Edit entry dates';
 $string['editentrydates_help'] = 'If enabled, teachers can configure in each Margic whether users can edit their own entries.';
 $string['editentries'] = 'Edit own entries';
 $string['editentries_help'] = 'If enabled, teachers can configure in each Margic whether users can edit the date of each new entry.';
+$string['sendgradingmessagedefault'] = 'Notify entry creators about feedback';
+$string['sendgradingmessagedefault_help'] = 'Set the default value for the feedback forms in all Margics. Defines if entry creators should be notified if the teacher grades an entry. Can be changed in each Margic or in the feedback form itself.';
 $string['annotationareawidth'] = 'Width of the annotation area';
 $string['annotationareawidthall'] = 'The width of the annotation area in percent for all margics. Can be overridden by teachers in the individual margics. Minimum 20 and maximum 80 percent.';
 $string['editability'] = 'Editability';

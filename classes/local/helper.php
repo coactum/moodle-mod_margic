@@ -180,13 +180,6 @@ class helper {
         $data = new stdClass();
         $data->margic = $margic->id;
 
-        // Trigger download_margic_entries event.
-        $event = \mod_margic\event\download_margic_entries::create(array(
-            'objectid' => $data->margic,
-            'context' => $context
-        ));
-        $event->trigger();
-
         // Construct sql query and filename based on admin, teacher, or student.
         // Add filename details based on course and margic activity name.
         $csv = new csv_export_writer();
@@ -450,9 +443,10 @@ class helper {
      * @param object $entry
      * @param array $grades
      * @param bool $canmanageentries
+     * @param bool $sendgradingmessage
      */
     public static function margic_return_feedback_area_for_entry($cmid, $context, $course, $margic, $entry, $grades,
-        $canmanageentries) {
+        $canmanageentries, $sendgradingmessage) {
 
         $grade = false;
 
@@ -467,12 +461,15 @@ class helper {
                 $teacher = $DB->get_record('user', array('id' => $entry->teacher));
                 if ($teacher) {
                     $teacherimage = $OUTPUT->user_picture($teacher,
-                    array('courseid' => $course->id, 'link' => true, 'includefullname' => true, 'size' => 30));
+                        array('courseid' => $course->id, 'link' => true, 'includefullname' => true, 'size' => 30));
+                    $hasteacher = true;
                 } else {
                     $teacherimage = false;
+                    $hasteacher = false;
                 }
             } else {
                 $teacherimage = false;
+                $hasteacher = false;
             }
 
             $feedbackarea = '';
@@ -495,6 +492,7 @@ class helper {
                 $data->timecreated = $entry->timecreated;
                 $data->{'feedback_' . $entry->id} = $entry->feedback;
                 $data->{'feedback_' . $entry->id . 'format'} = $entry->formatfeedback;
+                $data->sendgradingmessage = $sendgradingmessage;
 
                 list ($editoroptions, $attachmentoptions) = self::margic_get_editor_and_attachment_options($course, $context,
                     $margic);
@@ -508,7 +506,8 @@ class helper {
 
                 $mform = new \mod_margic_grading_form(new \moodle_url('/mod/margic/grade_entry.php',
                     array('id' => $cmid, 'entryid' => $entry->id)), array('courseid' => $course->id, 'margic' => $margic,
-                    'entry' => $entry, 'grades' => $grades, 'teacherimg' => $teacherimage, 'editoroptions' => $editoroptions));
+                    'entry' => $entry, 'grades' => $grades, 'teacherimg' => $teacherimage, 'editoroptions' => $editoroptions,
+                    'hasteacher' => $hasteacher));
 
                 // Set default data.
                 $mform->set_data($data);
@@ -518,9 +517,12 @@ class helper {
                 $feedbackarea .= '<div class="ratingform" style="background-color: ' . get_config('margic', 'textbgc') . '">';
                 $feedbackarea .= '<h5 class="d-flex justify-content-between"><span>' . get_string('feedback') . ' '
                     . get_string('from', 'mod_margic') . ' ' . $teacherimage . ' ';
-                $feedbackarea .= get_string('at', 'mod_margic') . ' ' . userdate($entry->timemarked) . '</span>';
 
-                $feedbackarea .= '<span><strong>';
+                if ($entry->timemarked) {
+                    $feedbackarea .= get_string('at', 'mod_margic') . ' ' . userdate($entry->timemarked);
+                }
+
+                $feedbackarea .= '</span><span><strong>';
 
                 if ($margic->assessed > 0) {
                     // Gradebook preference.
@@ -529,7 +531,7 @@ class helper {
                     ));
 
                     // Branch check for string compatibility.
-                    if (! empty($grades)) {
+                    if (! empty($grades) && $entry->rating) {
                         if ($CFG->branch > 310) {
                             $feedbackarea .= get_string('gradenoun') . ': ';
                         } else {

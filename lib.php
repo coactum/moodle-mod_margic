@@ -51,7 +51,7 @@ function margic_add_instance($margic) {
     helper::margic_update_calendar($margic, $margic->coursemodule);
 
     // Add expected completion date.
-    if (! empty($margic->completionexpected)) {
+    if (!empty($margic->completionexpected)) {
         \core_completion\api::update_completion_date_event($margic->coursemodule,
             'margic', $margic->id, $margic->completionexpected);
     }
@@ -132,7 +132,7 @@ function margic_update_instance($margic) {
     helper::margic_update_calendar($margic, $margic->coursemodule);
 
     // Update completion date.
-    $completionexpected = (! empty($margic->completionexpected)) ? $margic->completionexpected : null;
+    $completionexpected = (!empty($margic->completionexpected)) ? $margic->completionexpected : null;
     \core_completion\api::update_completion_date_event($margic->coursemodule, 'margic', $margic->id, $completionexpected);
 
     // Update grade.
@@ -280,7 +280,7 @@ function margic_print_recent_activity($course, $viewfullnames, $timestart) {
         $namefields = user_picture::fields('u', null, 'userid');
     } else {
         $userfieldsapi = \core_user\fields::for_userpic();
-        $namefields = $userfieldsapi->get_sql('u', false, '', 'userid', false)->selects;;
+        $namefields = $userfieldsapi->get_sql('u', false, '', 'userid', false)->selects;
     }
 
     $sql = "SELECT e.id, e.timecreated, cm.id AS cmid, $namefields
@@ -352,6 +352,7 @@ function margic_print_recent_activity($course, $viewfullnames, $timestart) {
     echo $OUTPUT->heading(get_string('newmargicentries', 'margic') . ':', 6);
 
     foreach ($show as $entry) {
+
         $cm = $modinfo->get_cm($entry->cmid);
         $context = context_module::instance($entry->cmid);
         $link = $CFG->wwwroot . '/mod/margic/view.php?id=' . $cm->id;
@@ -484,7 +485,8 @@ function margic_get_recent_mod_activity(&$activities, &$index, $timestart, $cour
         $grades = grade_get_grades($courseid, 'mod', 'margic', $cm->instance, $userids);
     }
 
-    $aname = format_string($cm->name, true);
+    $aname = format_string($cm->name);
+
     foreach ($show as $entry) {
         $activity = new stdClass();
 
@@ -494,7 +496,7 @@ function margic_get_recent_mod_activity(&$activities, &$index, $timestart, $cour
         $activity->sectionnum = $cm->sectionnum;
         $activity->timestamp = $entry->timecreated;
         $activity->user = new stdClass();
-        if ($grader) {
+        if ($grader && $grades->items && isset($entry->userid)) {
             $activity->grade = $grades->items[0]->grades[$entry->userid]->str_long_grade;
         }
 
@@ -875,28 +877,4 @@ function margic_pluginfile($course, $cm, $context, $filearea, $args, $forcedownl
 
     // Finally send the file.
     send_stored_file($file, null, 0, $forcedownload, $options);
-}
-
-/**
- * Extends the global navigation tree by adding mod_margic nodes if there is a relevant content.
- *
- * This can be called by an AJAX request so do not rely on $PAGE as it might not be set up properly.
- *
- * @param navigation_node $margicnode An object representing the navigation tree node.
- * @param  stdClass $course Course object
- * @param  context_course $coursecontext Course context
- */
-function margic_extend_navigation_course($margicnode, $course, $coursecontext) {
-    $modinfo = get_fast_modinfo($course); // Get mod_fast_modinfo from $course.
-    $index = 1; // Set index.
-    foreach ($modinfo->get_cms() as $cmid => $cm) { // Search existing course modules for this course.
-        if ($index == 1 && $cm->modname == "margic" && $cm->uservisible && $cm->available) {
-            $url = new moodle_url("/mod/" . $cm->modname . "/index.php",
-                array("id" => $course->id)); // Set url for the link in the navigation node.
-            $node = navigation_node::create(get_string('viewallmargics', 'margic'), $url,
-                navigation_node::TYPE_CUSTOM, null , null , null);
-            $margicnode->add_node($node);
-            $index++;
-        }
-    }
 }

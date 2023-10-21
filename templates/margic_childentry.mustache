@@ -37,8 +37,10 @@
                             {{{userpicture}}}
                         {{/canmanageentries}}
                     {{/userpicture}}{{/user}}
-                    {{#str}}at, mod_margic {{/str}}
-                    {{#userdate}}{{timecreated}} ,{{#str}} strftimedatetimeshort, core_langconfig {{/str}}{{/userdate}}
+                    {{#timecreated}}
+                        {{#str}}at, mod_margic {{/str}}
+                        {{#userdate}}{{timecreated}} ,{{#str}} strftimedatetimeshort, core_langconfig {{/str}}{{/userdate}}
+                    {{/timecreated}}
                     {{#canmanageentries}}{{^singleuser}}<a class="ml-2" href="view.php?id={{cmid}}&userid={{userid}}"><i class="fa fa-user fa-lg" title="{{#str}}getallentriesofuser, mod_margic{{/str}}"></i></a>{{/singleuser}}{{/canmanageentries}}
                     {{^edittimehasended}}{{#caneditentries}}{{#entrycanbeedited}}<a class="ml-2" href="edit.php?id={{cmid}}&entryid={{id}}"><i class="fa fa-pencil fa-lg" title="{{#str}}editthisentry, mod_margic{{/str}}"></i></a>{{/entrycanbeedited}}{{/caneditentries}}{{/edittimehasended}}
                     {{#newestentry}}<button class="btn btn-secondary margic-btn-round-small float-right" data-toggle="collapse" data-target=".connectedWith{{baseentry}}" aria-expanded="false" aria-controls=".connectedWith{{baseentry}}" title="{{#str}}toggleolderversions, mod_margic{{/str}}"><i class="fa fa-lg fa-caret-down"></i></button>{{/newestentry}}
@@ -76,8 +78,10 @@
                                         {{{userpicturestr}}}
                                     </span>
                                     <span class="align-self-center">
-                                        {{^timemodified}}{{#userdate}}{{timecreated}}, {{#str}} strftimedatetimeshort, core_langconfig {{/str}}{{/userdate}} <i class="fa fa-hourglass-start" aria-hidden="true" title="{{#str}}annotationcreated, margic, {{#userdate}}{{timecreated}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}} {{/str}}"></i> {{/timemodified}}
-                                        {{#timemodified}}{{#userdate}}{{timemodified}}, {{#str}} strftimedatetimeshort, core_langconfig {{/str}}{{/userdate}} <i class="fa fa-hourglass-end" aria-hidden="true" title="{{#str}}annotationmodified, margic, {{#userdate}}{{timemodified}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}} {{/str}}"></i>{{/timemodified}}
+                                        {{#timecreated}}
+                                            {{^timemodified}}{{#userdate}}{{timecreated}}, {{#str}} strftimedatetimeshort, core_langconfig {{/str}}{{/userdate}} <i class="fa fa-hourglass-start" aria-hidden="true" title="{{#str}}annotationcreated, margic, {{#userdate}}{{timecreated}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}} {{/str}}"></i> {{/timemodified}}
+                                            {{#timemodified}}{{#userdate}}{{timemodified}}, {{#str}} strftimedatetimeshort, core_langconfig {{/str}}{{/userdate}} <i class="fa fa-hourglass-end" aria-hidden="true" title="{{#str}}annotationmodified, margic, {{#userdate}}{{timemodified}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}} {{/str}}"></i>{{/timemodified}}
+                                        {{/timecreated}}
                                     </span>
                                 </div>
                                 <div class="annotatedtextpreviewdiv">

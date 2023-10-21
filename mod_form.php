@@ -117,6 +117,15 @@ class mod_margic_mod_form extends moodleform_mod {
             $mform->setDefault('editentrydates', 0);
         }
 
+        // Set if entry creators should be notified about feedback for their entries by default.
+        $mform->addElement('selectyesno', 'sendgradingmessage', get_string('defaultforsendgradingmessage', 'margic'));
+        $mform->addHelpButton('sendgradingmessage', 'defaultforsendgradingmessage', 'margic');
+        $mform->setDefault('sendgradingmessage', get_config('margic', 'sendgradingmessage'));
+
+        // Set if teachers can overwrite the annotations made by other teachers.
+        $mform->addElement('selectyesno', 'overwriteannotations', get_string('overwriteannotations', 'margic'));
+        $mform->addHelpButton('overwriteannotations', 'overwriteannotations', 'margic');
+
         // Add the header for appearance.
         $mform->addElement('header', 'appearancehdr', get_string('appearance'));
 
@@ -127,6 +136,8 @@ class mod_margic_mod_form extends moodleform_mod {
 
         if (!isset($update) || $update == 0) { // If not updating existing instance set default to config value.
             $mform->setDefault('annotationareawidth', get_config('margic', 'annotationareawidth'));
+
+            $mform->setDefault('overwriteannotations', 0);
         }
 
         // Add the rest of the common settings.

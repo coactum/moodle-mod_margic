@@ -54,6 +54,9 @@ $annotationmode = optional_param('annotationmode',  0, PARAM_BOOL); // Annotatio
 // Param with id of annotation that should be focused.
 $focusannotation = optional_param('focusannotation',  0, PARAM_INT); // ID of annotation.
 
+// Param with id of grading form that should be focused.
+$focusgradingform = optional_param('focusgradingform',  0, PARAM_INT); // ID of grading form.
+
 $margic = margic::get_margic_instance($id, $m, $userid, $action, $pagecount, $page);
 
 $moduleinstance = $margic->get_module_instance();
@@ -138,7 +141,8 @@ if ($annotationmode === 1 && has_capability('mod/margic:viewannotations', $conte
 
     $PAGE->requires->js_call_amd('mod_margic/annotations', 'init',
         array( 'cmid' => $cm->id, 'canmakeannotations' => $canmakeannotations, 'myuserid' => $USER->id,
-        'focusannotation' => $focusannotation));
+        'focusannotation' => $focusannotation, 'focusgradingform' => $focusgradingform,
+        'overwriteannotations' => $moduleinstance->overwriteannotations));
 } else {
     // Header.
     $PAGE->set_url('/mod/margic/view.php', array(

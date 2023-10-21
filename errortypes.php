@@ -98,7 +98,7 @@ if ($edit !== 0) {
 
         $editedtypeid = $edit;
         $editedtypename = $editedtype->name;
-        $editedcolor = $editedtype->color;
+        $editedcolor = '#' . $editedtype->color;
 
         if ($mode == 1) {
             $editeddefaulttype = $editedtype->defaulttype;
@@ -147,7 +147,13 @@ if ($mform->is_cancelled()) {
         }
 
         if ($mode == 2) { // If type is margic error type.
-            $errortype->priority = $margic->get_margic_errortypes()[array_key_last($margic->get_margic_errortypes())]->priority + 1;
+            $etypes = $margic->get_margic_errortypes();
+            if ($etypes) {
+                $errortype->priority = $etypes[array_key_last($etypes)]->priority + 1;
+            } else {
+                $errortype->priority = 1;
+            }
+
             $errortype->margic = $moduleinstance->id;
         }
 
