@@ -111,7 +111,6 @@ $string['editingended'] = 'Der Bearbeitungszeitraum endete am {$a}';
 $string['notstarted'] = 'Sie haben noch keine Margic Einträge angelegt';
 $string['noentriesfound'] = 'Keine Einträge gefunden';
 $string['viewallentries'] = 'Alle Einträge ansehen';
-$string['viewallmargics'] = 'Alle Margics im Kurs anzeigen';
 
 // Annotations.
 $string['annotationcreated'] = 'Erstellt am {$a}';
@@ -139,6 +138,10 @@ $string['margicclosetime'] = 'Endzeitpunkt';
 $string['margicclosetime_help'] = 'Wenn aktiviert können Sie ein Datum festlegen, bis zu dem Einträge im Margic anlegen oder bearbeitet werden können.';
 $string['annotationareawidth_help'] = 'Die Breite des Annotationsbereichs in Prozent. Mindestens 20 und maximal 80 Prozent.';
 $string['errannotationareawidthinvalid'] = 'Breite ungültig (Minimum: {$a->minwidth}, Maximum: {$a->maxwidth}).';
+$string['defaultforsendgradingmessage'] = 'Standardwert für die Benachrichtigung bei Feedback';
+$string['defaultforsendgradingmessage_help'] = 'Hier kann der Standardwert für die Benachrichtigung bei Feedback eingestellt werden. Dieser wird im Bewertungsformular vorausgefüllt, kann dort aber bei jeder Bewertung auch manuell verändert werden.';
+$string['overwriteannotations'] = 'Annotationen überschreiben';
+$string['overwriteannotations_help'] = 'Hier kann festgelegt werden, ob Lehrende die Annotationen anderer Lehrender überschreiben sowie löschen dürfen';
 
 // Form: edit_form.
 $string['addnewentry'] = 'Neuen Eintrag anlegen';
@@ -176,6 +179,7 @@ $string['deleteerrortype'] = 'Fehlertyp entfernen';
 $string['errortypedeleted'] = 'Fehlertyp entfernt';
 $string['deleteerrortypetemplate'] = 'Vorlage löschen';
 $string['deleteerrortypetemplateconfirm'] = 'Soll diese Fehlertyp-Vorlage wirklich gelöscht werden? Dadurch wird die Vorlage für das gesamte System gelöscht und kann nicht mehr in neuen Margics als konkreter Fehlertyp ausgewählt werden. Diese Aktion kann nicht rückgängig gemacht werden!';
+$string['deleteerrortypeconfirm'] = 'Soll dieser Fehlertyp wirklich gelöscht werden? Dadurch wird er aus dem Margic entfernt und bei bestehenden Annotationen als Gelöschter Typ angezeigt. Diese Aktion kann nicht rückgängig gemacht werden!';
 $string['errortypeinvalid'] = 'Fehlertyp ungültig';
 $string['nameoferrortype'] = 'Name des Fehlertyps';
 $string['margicerrortypes'] = 'Margic Fehlertypen';
@@ -240,6 +244,9 @@ $string['margic:editdefaulterrortypes'] = 'Standardfehlertyp Vorlagen bearbeiten
 $string['margic:viewannotations'] = 'Annotationen ansehen';
 $string['margic:makeannotations'] = 'Annotationen anlegen';
 $string['margic:deleteannotations'] = 'Annotationen löschen';
+$string['margic:viewotherusersentrytimes'] = 'Zeitpunkt der Erstellung fremder Einträge ansehen';
+$string['margic:viewotherusersannotationtimes'] = 'Zeitpunkt der Erstellung fremder Annotationen ansehen';
+$string['margic:viewotherusersfeedbacktimes'] = 'Zeitpunkt der Bewertung durch andere Lehrende ansehen';
 
 // Recent activity.
 $string['newmargicentries'] = 'Neue Margic Einträge';
@@ -288,6 +295,8 @@ $string['editentrydates'] = 'Eintragsdatum bearbeiten';
 $string['editentrydates_help'] = 'Wenn aktiviert können Lehrende in jedem Margic festlegen, ob Nutzer/innen das Datum jedes neuen Eintrags bearbeiten können.';
 $string['editentries'] = 'Eigene Einträge bearbeiten';
 $string['editentries_help'] = 'Wenn aktiviert können Lehrende in jedem Margic festlegen, ob Nutzer/innen ihre eigenen Einträge bearbeiten können.';
+$string['sendgradingmessagedefault'] = 'Ersteller/innen von Einträgen über Bewertung informieren';
+$string['sendgradingmessagedefault_help'] = 'Legt den Standardwert für die Bewertungs-Formulare in allen Margics fest. Bestimmt, ob die Ersteller/innen von Einträgen benachrichtigt werden sollen, wenn Lehrende einen Eintrag bewerten. Kann in jedem Margic oder im Bewertungsformular selbst geändert werden.';
 $string['annotationareawidth'] = 'Breite des Annotationsbereichs';
 $string['annotationareawidthall'] = 'Die Breite des Annotationsbereichs in Prozent für alle Margics. Kann von Lehrenden in den einzelnen Margics überschrieben werden. Minimal 20 and maximal 80 Prozent.';
 $string['editability'] = 'Bearbeitbarkeit';

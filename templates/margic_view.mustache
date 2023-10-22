@@ -27,18 +27,18 @@
 
 <style media="screen">
     .entrybackground {
-        background-color: {{entrybgc}};
+        background-color: {{entrybgc}}
     }
     .textbackground {
-        background-color: {{textbgc}};
+        background-color: {{textbgc}}
     }
 </style>
 <style>
     .entryareawidth {
-        width: {{entryareawidth}}%;
+        width: {{entryareawidth}}%
     }
     .annotationareawidth {
-        width: {{annotationareawidth}}%;
+        width: {{annotationareawidth}}%
     }
 </style>
 <div class="margic_view">
@@ -64,14 +64,14 @@
     <div class="pb-1 actionbuttons">
         {{^edittimehasended}}{{^edittimenotstarted}}<a class="btn btn-primary mr-1" href="edit.php?id={{cmid}}"> {{#str}}startnewentry, mod_margic{{/str}} </a>{{/edittimenotstarted}}{{/edittimehasended}}
         {{#entries.0}}
-            {{#canmanageentries}}<button class="btn btn-primary" data-toggle="collapse" data-target=".gradingform" aria-expanded="false" aria-controls=".gradingform" title="{{#str}}togglegradingform, mod_margic{{/str}}">{{#str}}togglegradingform, mod_margic{{/str}}</button>{{/canmanageentries}}
+            {{#canmanageentries}}<button class="btn btn-primary gradingbutton" data-toggle="collapse" data-target=".gradingform" aria-expanded="false" aria-controls=".gradingform" title="{{#str}}togglegradingform, mod_margic{{/str}}">{{#str}}togglegradingform, mod_margic{{/str}}</button>{{/canmanageentries}}
             {{#canmanageentries}}{{#singleuser}}<a class="btn btn-primary m-1" href="view.php?id={{cmid}}"> {{#str}}viewallentries, mod_margic{{/str}} </a>{{/singleuser}}{{/canmanageentries}}
             {{^annotationmode}}
                 {{#canmakeannotations}}<a class="btn btn-primary m-1 buttonannotationmode" href="view.php?id={{cmid}}&annotationmode=1"> {{#str}}annotations, mod_margic{{/str}} </a>{{/canmakeannotations}}
                 {{^canmakeannotations}}<a class="btn btn-primary m-1 buttonannotationmode" href="view.php?id={{cmid}}&annotationmode=1"> {{#str}}viewannotations, mod_margic{{/str}} </a>{{/canmakeannotations}}
             {{/annotationmode}}
             {{#annotationmode}}
-                <a class="btn btn-primary m-1 buttonannotationmode" href="view.php?id={{cmid}}"> {{#str}}hideannotations, mod_margic{{/str}} </a>
+                <a class="btn btn-info m-1 buttonannotationmode" href="view.php?id={{cmid}}"> {{#str}}hideannotations, mod_margic{{/str}} </a>
             {{/annotationmode}}
         {{/entries.0}}
         <a class="btn btn-primary m-1" href="error_summary.php?id={{cmid}}"> {{#str}}errorsummary, mod_margic{{/str}} </a>

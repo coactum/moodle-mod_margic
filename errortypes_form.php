@@ -41,7 +41,7 @@ class mod_margic_errortypes_form extends moodleform {
      */
     public function definition() {
 
-        global $OUTPUT;
+        global $OUTPUT, $CFG;
 
         $mform = $this->_form; // Don't forget the underscore!
 
@@ -62,7 +62,12 @@ class mod_margic_errortypes_form extends moodleform {
             $mform->addHelpButton('typename', 'explanationtypename', 'mod_margic');
         }
 
-        $mform->addElement('text', 'color', get_string('annotationcolor', 'mod_margic'));
+        MoodleQuickForm::registerElementType('colorpicker',
+        "$CFG->dirroot/mod/margic/classes/forms/mod_margic_colorpicker_form_element.php",
+        'mod_margic_colorpicker_form_element');
+
+        $mform->addElement('colorpicker', 'color', get_string('explanationhexcolor', 'mod_margic'));
+
         $mform->setType('color', PARAM_ALPHANUM);
         $mform->addRule('color', null, 'required', null, 'client');
         $mform->addHelpButton('color', 'explanationhexcolor', 'mod_margic');
@@ -88,7 +93,7 @@ class mod_margic_errortypes_form extends moodleform {
      * @return array Array with errors
      */
     public function validation($data, $files) {
-        $errors = array();
+        $errors = [];
 
         if (strlen($data['color']) !== 6 || preg_match("/[^a-fA-F0-9]/", $data['color'])) {
             $errors['color'] = get_string('errnohexcolor', 'mod_margic');

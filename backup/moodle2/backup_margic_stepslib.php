@@ -37,30 +37,30 @@ class backup_margic_activity_structure_step extends backup_activity_structure_st
         $userinfo = $this->get_setting_value('userinfo');
 
         // Replace with the attributes and final elements that the element will handle.
-        $margic = new backup_nested_element('margic', array('id'), array(
+        $margic = new backup_nested_element('margic', ['id'], [
             'name', 'intro', 'introformat', 'timecreated', 'timemodified',
             'scale', 'assessed', 'assesstimestart', 'assesstimefinish',
-            'timeopen', 'timeclose', 'editentries', 'editentrydates', 'annotationareawidth'));
+            'timeopen', 'timeclose', 'editentries', 'editentrydates', 'annotationareawidth', ]);
 
         $errortypes = new backup_nested_element('errortypes');
-        $errortype = new backup_nested_element('errortype', array('id'), array(
-            'timecreated', 'timemodified', 'name', 'color', 'priority'));
+        $errortype = new backup_nested_element('errortype', ['id'], [
+            'timecreated', 'timemodified', 'name', 'color', 'priority', ]);
 
         $entries = new backup_nested_element('entries');
-        $entry = new backup_nested_element('entry', array('id'), array(
+        $entry = new backup_nested_element('entry', ['id'], [
             'userid', 'timecreated', 'timemodified', 'text', 'format',
             'rating', 'feedback', 'formatfeedback', 'teacher',
-            'timemarked', 'baseentry'));
+            'timemarked', 'baseentry', ]);
 
         $annotations = new backup_nested_element('annotations');
-        $annotation = new backup_nested_element('annotation', array('id'), array(
+        $annotation = new backup_nested_element('annotation', ['id'], [
             'userid', 'timecreated', 'timemodified', 'type', 'startcontainer', 'endcontainer',
-            'startoffset', 'endoffset', 'annotationstart', 'annotationend', 'exact', 'prefix', 'suffix', 'text'));
+            'startoffset', 'endoffset', 'annotationstart', 'annotationend', 'exact', 'prefix', 'suffix', 'text', ]);
 
         $ratings = new backup_nested_element('ratings');
-        $rating = new backup_nested_element('rating', array('id'), array(
+        $rating = new backup_nested_element('rating', ['id'], [
             'component', 'ratingarea', 'scaleid', 'value', 'userid',
-            'timecreated', 'timemodified'));
+            'timecreated', 'timemodified', ]);
 
         // Build the tree with these elements with $margic as the root of the backup tree.
         $margic->add_child($errortypes);
@@ -77,24 +77,24 @@ class backup_margic_activity_structure_step extends backup_activity_structure_st
 
         // Define the source tables for the elements.
 
-        $margic->set_source_table('margic', array('id' => backup::VAR_ACTIVITYID));
+        $margic->set_source_table('margic', ['id' => backup::VAR_ACTIVITYID]);
 
         // Errortypes.
-        $errortype->set_source_table('margic_errortypes', array('margic' => backup::VAR_PARENTID));
+        $errortype->set_source_table('margic_errortypes', ['margic' => backup::VAR_PARENTID]);
 
         if ($userinfo) {
 
             // Entries.
-            $entry->set_source_table('margic_entries', array('margic' => backup::VAR_PARENTID));
+            $entry->set_source_table('margic_entries', ['margic' => backup::VAR_PARENTID]);
 
             // Annotations.
-            $annotation->set_source_table('margic_annotations', array('entry' => backup::VAR_PARENTID));
+            $annotation->set_source_table('margic_annotations', ['entry' => backup::VAR_PARENTID]);
 
             // Ratings (core).
-            $rating->set_source_table('rating', array('contextid' => backup::VAR_CONTEXTID,
+            $rating->set_source_table('rating', ['contextid' => backup::VAR_CONTEXTID,
                                                       'itemid' => backup::VAR_PARENTID,
                                                       'component' => backup_helper::is_sqlparam('mod_margic'),
-                                                      'ratingarea' => backup_helper::is_sqlparam('entry')));
+                                                      'ratingarea' => backup_helper::is_sqlparam('entry'), ]);
 
             $rating->set_source_alias('rating', 'value');
         }

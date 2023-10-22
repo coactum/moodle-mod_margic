@@ -41,7 +41,7 @@ class entry extends \core_search\base_mod {
      *
      * @var array Internal quick static cache.
      */
-    protected $entriesdata = array();
+    protected $entriesdata = [];
 
     /**
      * Returns recordset containing required data for indexing margic entries.
@@ -65,7 +65,7 @@ class entry extends \core_search\base_mod {
                  WHERE me.timemodified >= :timemodified
               ORDER BY me.timemodified ASC";
         return $DB->get_recordset_sql($sql, array_merge($contextparams, [
-            'timemodified' => $modifiedfrom
+            'timemodified' => $modifiedfrom,
         ]));
     }
 
@@ -76,7 +76,7 @@ class entry extends \core_search\base_mod {
      * @param array $options
      * @return \core_search\document
      */
-    public function get_document($entry, $options = array()) {
+    public function get_document($entry, $options = []) {
         try {
             $cm = $this->get_cm('margic', $entry->margic, $entry->course);
             $context = \context_module::instance($cm->id);
@@ -156,9 +156,7 @@ class entry extends \core_search\base_mod {
         $entryuserid = $doc->get('userid');
         $url = '/mod/margic/view.php';
 
-        return new \moodle_url($url, array(
-            'id' => $contextmodule->instanceid
-        ));
+        return new \moodle_url($url, ['id' => $contextmodule->instanceid]);
     }
 
     /**
@@ -169,9 +167,7 @@ class entry extends \core_search\base_mod {
      */
     public function get_context_url(\core_search\document $doc) {
         $contextmodule = \context::instance_by_id($doc->get('contextid'));
-        return new \moodle_url('/mod/margic/view.php', array(
-            'id' => $contextmodule->instanceid
-        ));
+        return new \moodle_url('/mod/margic/view.php', ['id' => $contextmodule->instanceid]);
     }
 
     /**
@@ -187,6 +183,6 @@ class entry extends \core_search\base_mod {
         global $DB;
         return $DB->get_record_sql("SELECT me.*, m.course FROM {margic_entries} me
                                       JOIN {margic} m ON m.id = me.margic
-                                     WHERE me.id = ?", array('id' => $entryid), MUST_EXIST);
+                                     WHERE me.id = ?", ['id' => $entryid], MUST_EXIST);
     }
 }

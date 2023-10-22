@@ -24,12 +24,18 @@
 import $ from 'jquery';
 import {removeAllTempHighlights, anchor, describe} from './highlighting';
 
-export const init = (cmid, canmakeannotations, myuserid, focusannotation) => {
+export const init = (cmid, canmakeannotations, myuserid, focusannotation, focusgradingform, overwriteannotations) => {
 
     var edited = false;
     var annotations = Array();
 
     var newannotation = false;
+
+    // Focus grading form.
+    if (focusgradingform) {
+        $('.gradingform').addClass('show');
+        $('#id_feedback_' + focusgradingform + '_editoreditable').focus();
+    }
 
     // Remove col-mds from moodle form.
     $('.annotation-form div.col-md-3').removeClass('col-md-3');
@@ -216,7 +222,7 @@ export const init = (cmid, canmakeannotations, myuserid, focusannotation) => {
             removeAllTempHighlights(); // Remove other temporary highlights.
             resetForms(); // Remove old form contents.
             edited = false;
-        } else if (canmakeannotations && myuserid == annotations[annotationid].userid) {
+        } else if (canmakeannotations && (overwriteannotations || myuserid == annotations[annotationid].userid)) {
             removeAllTempHighlights(); // Remove other temporary highlights.
             resetForms(); // Remove old form contents.
 

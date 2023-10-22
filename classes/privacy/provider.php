@@ -80,7 +80,7 @@ class provider implements \core_privacy\local\metadata\provider,
             'text' => 'privacy:metadata:margic_annotations:text',
         ], 'privacy:metadata:margic_annotations');
 
-        // The table 'margic_errortype_templates' stores the errirtype templatess of all margics.
+        // The table 'margic_errortype_templates' stores the errortype templates of all margics.
         $items->add_database_table('margic_errortype_templates', [
             'timecreated' => 'privacy:metadata:margic_errortype_templates:timecreated',
             'timemodified' => 'privacy:metadata:margic_errortype_templates:timemodified',
@@ -114,7 +114,7 @@ class provider implements \core_privacy\local\metadata\provider,
         $params = [
             'modulename' => 'margic',
             'contextlevel' => CONTEXT_MODULE,
-            'userid' => $userid
+            'userid' => $userid,
         ];
 
         // Get contexts for entries.
@@ -431,7 +431,7 @@ class provider implements \core_privacy\local\metadata\provider,
             'timecreated' => transform::datetime($annotation->timecreated),
             'timemodified' => $timemodified,
             'type' => $annotation->type,
-            'text' => format_text($annotation->text, 2, array('para' => false)),
+            'text' => format_text($annotation->text, 2, ['para' => false]),
         ];
 
         // Store the annotation data.

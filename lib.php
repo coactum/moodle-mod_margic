@@ -51,7 +51,7 @@ function margic_add_instance($margic) {
     helper::margic_update_calendar($margic, $margic->coursemodule);
 
     // Add expected completion date.
-    if (! empty($margic->completionexpected)) {
+    if (!empty($margic->completionexpected)) {
         \core_completion\api::update_completion_date_event($margic->coursemodule,
             'margic', $margic->id, $margic->completionexpected);
     }
@@ -63,7 +63,7 @@ function margic_add_instance($margic) {
         $priority = 1;
         foreach ($margic->errortypes as $id => $checked) {
             if ($checked) {
-                $type = $DB->get_record('margic_errortype_templates', array('id' => $id));
+                $type = $DB->get_record('margic_errortype_templates', ['id' => $id]);
                 $type->margic = $margic->id;
                 $type->priority = $priority;
 
@@ -108,7 +108,7 @@ function margic_update_instance($margic) {
     // if scale changes - do we need to recheck the ratings, if ratings higher than scale how do we want to respond?
     // for count and sum aggregation types the grade we check to make sure they do not exceed the scale (i.e. max score)
     // when calculating the grade.
-    $oldmargic = $DB->get_record('margic', array('id' => $margic->id));
+    $oldmargic = $DB->get_record('margic', ['id' => $margic->id]);
 
     $updategrades = false;
 
@@ -132,7 +132,7 @@ function margic_update_instance($margic) {
     helper::margic_update_calendar($margic, $margic->coursemodule);
 
     // Update completion date.
-    $completionexpected = (! empty($margic->completionexpected)) ? $margic->completionexpected : null;
+    $completionexpected = (!empty($margic->completionexpected)) ? $margic->completionexpected : null;
     \core_completion\api::update_completion_date_event($margic->coursemodule, 'margic', $margic->id, $completionexpected);
 
     // Update grade.
@@ -153,13 +153,13 @@ function margic_update_instance($margic) {
 function margic_delete_instance($id) {
     global $DB;
 
-    if (!$margic = $DB->get_record("margic", array("id" => $id))) {
+    if (!$margic = $DB->get_record("margic", ["id" => $id])) {
         return false;
     }
     if (!$cm = get_coursemodule_from_instance('margic', $margic->id)) {
         return false;
     }
-    if (!$course = $DB->get_record('course', array('id' => $cm->course))) {
+    if (!$course = $DB->get_record('course', ['id' => $cm->course])) {
         return false;
     }
 
@@ -176,16 +176,16 @@ function margic_delete_instance($id) {
     margic_grade_item_delete($margic);
 
     // Delete entries.
-    $DB->delete_records("margic_entries", array("margic" => $margic->id));
+    $DB->delete_records("margic_entries", ["margic" => $margic->id]);
 
     // Delete annotations.
-    $DB->delete_records("margic_annotations", array("margic" => $margic->id));
+    $DB->delete_records("margic_annotations", ["margic" => $margic->id]);
 
     // Delete error types for margic.
-    $DB->delete_records("margic_errortypes", array("margic" => $margic->id));
+    $DB->delete_records("margic_errortypes", ["margic" => $margic->id]);
 
     // Delete margic, else return false.
-    if (!$DB->delete_records("margic", array("id" => $margic->id))) {
+    if (!$DB->delete_records("margic", ["id" => $margic->id])) {
         return false;
     }
 
@@ -248,7 +248,7 @@ function margic_supports($feature) {
 function margic_user_outline($course, $user, $mod, $margic) {
     global $DB;
 
-    if ($count = $DB->count_records("margic_entries", array("userid" => $user->id, "margic" => $margic->id))) {
+    if ($count = $DB->count_records("margic_entries", ["userid" => $user->id, "margic" => $margic->id])) {
         $result = new stdClass();
         $result->info = $count . ' ' .  get_string("entries");
         return $result;
@@ -269,18 +269,18 @@ function margic_user_outline($course, $user, $mod, $margic) {
 function margic_print_recent_activity($course, $viewfullnames, $timestart) {
     global $CFG, $USER, $DB, $OUTPUT;
 
-    $params = array(
+    $params = [
         $timestart,
         $course->id,
-        'margic'
-    );
+        'margic',
+    ];
 
     // Moodle branch check.
     if ($CFG->branch < 311) {
         $namefields = user_picture::fields('u', null, 'userid');
     } else {
         $userfieldsapi = \core_user\fields::for_userpic();
-        $namefields = $userfieldsapi->get_sql('u', false, '', 'userid', false)->selects;;
+        $namefields = $userfieldsapi->get_sql('u', false, '', 'userid', false)->selects;
     }
 
     $sql = "SELECT e.id, e.timecreated, cm.id AS cmid, $namefields
@@ -297,7 +297,7 @@ function margic_print_recent_activity($course, $viewfullnames, $timestart) {
 
     $modinfo = get_fast_modinfo($course);
 
-    $show = array();
+    $show = [];
 
     foreach ($newentries as $entry) {
         if (! array_key_exists($entry->cmid, $modinfo->get_cms())) {
@@ -352,6 +352,7 @@ function margic_print_recent_activity($course, $viewfullnames, $timestart) {
     echo $OUTPUT->heading(get_string('newmargicentries', 'margic') . ':', 6);
 
     foreach ($show as $entry) {
+
         $cm = $modinfo->get_cm($entry->cmid);
         $context = context_module::instance($entry->cmid);
         $link = $CFG->wwwroot . '/mod/margic/view.php?id=' . $cm->id;
@@ -382,13 +383,13 @@ function margic_get_recent_mod_activity(&$activities, &$index, $timestart, $cour
     if ($COURSE->id == $courseid) {
         $course = $COURSE;
     } else {
-        $course = $DB->get_record('course', array('id' => $courseid));
+        $course = $DB->get_record('course', ['id' => $courseid]);
     }
 
     $modinfo = get_fast_modinfo($course);
 
     $cm = $modinfo->get_cm($cmid);
-    $params = array();
+    $params = [];
     if ($userid) {
         $userselect = 'AND u.id = :userid';
         $params['userid'] = $userid;
@@ -437,7 +438,7 @@ function margic_get_recent_mod_activity(&$activities, &$index, $timestart, $cour
     $viewfullnames = has_capability('moodle/site:viewfullnames', $cmcontext);
     $teacher = has_capability('mod/margic:manageentries', $cmcontext);
 
-    $show = array();
+    $show = [];
     foreach ($entries as $entry) {
         if ($entry->userid == $USER->id) {
             $show[] = $entry;
@@ -477,14 +478,15 @@ function margic_get_recent_mod_activity(&$activities, &$index, $timestart, $cour
 
     if ($grader) {
         require_once($CFG->libdir.'/gradelib.php');
-        $userids = array();
+        $userids = [];
         foreach ($show as $id => $entry) {
             $userids[] = $entry->userid;
         }
         $grades = grade_get_grades($courseid, 'mod', 'margic', $cm->instance, $userids);
     }
 
-    $aname = format_string($cm->name, true);
+    $aname = format_string($cm->name);
+
     foreach ($show as $entry) {
         $activity = new stdClass();
 
@@ -494,7 +496,7 @@ function margic_get_recent_mod_activity(&$activities, &$index, $timestart, $cour
         $activity->sectionnum = $cm->sectionnum;
         $activity->timestamp = $entry->timecreated;
         $activity->user = new stdClass();
-        if ($grader) {
+        if ($grader && $grades->items && isset($entry->userid)) {
             $activity->grade = $grades->items[0]->grades[$entry->userid]->str_long_grade;
         }
 
@@ -581,7 +583,7 @@ function margic_reset_course_form_definition(&$mform) {
  * @return array
  */
 function margic_reset_course_form_defaults($course) {
-    return array('reset_margic_all' => 1, 'reset_margic_errortypes' => 1);
+    return ['reset_margic_all' => 1, 'reset_margic_errortypes' => 1];
 }
 
 /**
@@ -598,16 +600,16 @@ function margic_reset_userdata($data) {
     require_once($CFG->dirroot . '/rating/lib.php');
 
     $modulename = get_string('modulenameplural', 'margic');
-    $status = array();
+    $status = [];
 
     // Get margics in course that should be resetted.
     $sql = "SELECT m.id
                 FROM {margic} m
                 WHERE m.course = ?";
 
-    $params = array(
-        $data->courseid
-    );
+    $params = [
+        $data->courseid,
+    ];
 
     $margics = $DB->get_records_sql($sql, $params);
 
@@ -648,18 +650,18 @@ function margic_reset_userdata($data) {
         // Delete all entries.
         $DB->delete_records_select('margic_entries', "margic IN ($sql)", $params);
 
-        $status[] = array(
+        $status[] = [
             'component' => $modulename,
             'item' => get_string('alluserdatadeleted', 'margic'),
-            'error' => false
-        );
+            'error' => false,
+        ];
     }
 
     // Delete errortypes.
     if (!empty($data->reset_margic_errortypes) ) {
         $DB->delete_records_select('margic_errortypes', "margic IN ($sql)", $params);
 
-        $status[] = array('component' => $modulename, 'item' => get_string('errortypesdeleted', 'margic'), 'error' => false);
+        $status[] = ['component' => $modulename, 'item' => get_string('errortypesdeleted', 'margic'), 'error' => false];
 
     }
 
@@ -667,9 +669,9 @@ function margic_reset_userdata($data) {
     if ($data->timeshift) {
         // Any changes to the list of dates that needs to be rolled should be same during course restore and course reset.
         // See MDL-9367.
-        shift_course_mod_dates('margic', array('assesstimestart', 'assesstimefinish', 'timeopen', 'timeclose'),
+        shift_course_mod_dates('margic', ['assesstimestart', 'assesstimefinish', 'timeopen', 'timeclose'],
             $data->timeshift, $data->courseid);
-        $status[] = array('component' => $modulename, 'item' => get_string('datechanged'), 'error' => false);
+        $status[] = ['component' => $modulename, 'item' => get_string('datechanged'), 'error' => false];
     }
 
     return $status;
@@ -683,7 +685,7 @@ function margic_reset_userdata($data) {
 function margic_reset_gradebook($courseid) {
     global $DB;
 
-    $params = array($courseid);
+    $params = [$courseid];
 
     $sql = "SELECT ma.*, cm.idnumber as cmidnumber, ma.course as courseid
               FROM {margic} ma, {course_modules} cm, {modules} m
@@ -764,10 +766,10 @@ function margic_grade_item_update($margic, $grades = null) {
     global $CFG;
     require_once($CFG->libdir . '/gradelib.php');
 
-    $params = array(
+    $params = [
         'itemname' => $margic->name,
-        'idnumber' => $margic->cmidnumber
-    );
+        'idnumber' => $margic->cmidnumber,
+    ];
 
     if (! $margic->assessed || $margic->scale == 0) {
         $params['gradetype'] = GRADE_TYPE_NONE;
@@ -799,9 +801,9 @@ function margic_grade_item_delete($margic) {
 
     require_once($CFG->libdir . '/gradelib.php');
 
-    return grade_update('mod/margic', $margic->course, 'mod', 'margic', $margic->id, 0, null, array(
-        'deleted' => 1
-    ));
+    return grade_update('mod/margic', $margic->course, 'mod', 'margic', $margic->id, 0, null, [
+        'deleted' => 1,
+    ]);
 }
 
 /**
@@ -834,7 +836,7 @@ function margic_scale_used_anywhere($scaleid) {
  * @param array $options Additional options affecting the file serving.
  * @return bool False if file not found, does not return if found - just send the file.
  */
-function margic_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options = array()) {
+function margic_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options = []) {
     global $DB, $USER;
 
     if ($context->contextlevel != CONTEXT_MODULE) {
@@ -849,9 +851,7 @@ function margic_pluginfile($course, $cm, $context, $filearea, $args, $forcedownl
 
     // Args[0] should be the entry id.
     $entryid = intval(array_shift($args));
-    $entry = $DB->get_record('margic_entries', array(
-        'id' => $entryid
-    ), 'id, userid', MUST_EXIST);
+    $entry = $DB->get_record('margic_entries', ['id' => $entryid], 'id, userid', MUST_EXIST);
 
     $canmanage = has_capability('mod/margic:manageentries', $context);
     if (! $canmanage && ! has_capability('mod/margic:addentries', $context)) {
@@ -875,28 +875,4 @@ function margic_pluginfile($course, $cm, $context, $filearea, $args, $forcedownl
 
     // Finally send the file.
     send_stored_file($file, null, 0, $forcedownload, $options);
-}
-
-/**
- * Extends the global navigation tree by adding mod_margic nodes if there is a relevant content.
- *
- * This can be called by an AJAX request so do not rely on $PAGE as it might not be set up properly.
- *
- * @param navigation_node $margicnode An object representing the navigation tree node.
- * @param  stdClass $course Course object
- * @param  context_course $coursecontext Course context
- */
-function margic_extend_navigation_course($margicnode, $course, $coursecontext) {
-    $modinfo = get_fast_modinfo($course); // Get mod_fast_modinfo from $course.
-    $index = 1; // Set index.
-    foreach ($modinfo->get_cms() as $cmid => $cm) { // Search existing course modules for this course.
-        if ($index == 1 && $cm->modname == "margic" && $cm->uservisible && $cm->available) {
-            $url = new moodle_url("/mod/" . $cm->modname . "/index.php",
-                array("id" => $course->id)); // Set url for the link in the navigation node.
-            $node = navigation_node::create(get_string('viewallmargics', 'margic'), $url,
-                navigation_node::TYPE_CUSTOM, null , null , null);
-            $margicnode->add_node($node);
-            $index++;
-        }
-    }
 }

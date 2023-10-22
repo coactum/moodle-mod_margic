@@ -54,6 +54,9 @@ $annotationmode = optional_param('annotationmode',  0, PARAM_BOOL); // Annotatio
 // Param with id of annotation that should be focused.
 $focusannotation = optional_param('focusannotation',  0, PARAM_INT); // ID of annotation.
 
+// Param with id of grading form that should be focused.
+$focusgradingform = optional_param('focusgradingform',  0, PARAM_INT); // ID of grading form.
+
 $margic = margic::get_margic_instance($id, $m, $userid, $action, $pagecount, $page);
 
 $moduleinstance = $margic->get_module_instance();
@@ -73,9 +76,7 @@ if (!$moduleinstance) {
     throw new moodle_exception(get_string('incorrectmodule', 'margic'));
 }
 
-if (! $coursesections = $DB->get_record("course_sections", array(
-    "id" => $cm->section
-))) {
+if (! $coursesections = $DB->get_record("course_sections", ["id" => $cm->section])) {
     throw new moodle_exception(get_string('incorrectmodule', 'margic'));
 }
 
@@ -90,7 +91,7 @@ if (!$canaddentries) {
 
 if ($pagecount) {
     // Redirect if pagecount is updated.
-    redirect(new moodle_url('/mod/margic/view.php', array('id' => $id)), null, null, null);
+    redirect(new moodle_url('/mod/margic/view.php', ['id' => $id]), null, null, null);
 }
 
 // Toolbar action handler for download.
@@ -101,49 +102,37 @@ if (!empty($action) && $action == 'download' && has_capability('mod/margic:adden
     helper::download_entries($context, $course, $moduleinstance);
 
     // Trigger module margic entries downloaded event.
-    $event = \mod_margic\event\download_margic_entries::create(array(
-        'objectid' => $id,
-        'context' => $context
-    ));
+    $event = \mod_margic\event\download_margic_entries::create(['objectid' => $id, 'context' => $context]);
     $event->trigger();
 }
 
 // Trigger course_module_viewed event.
-$event = \mod_margic\event\course_module_viewed::create(array(
-    'objectid' => $id,
-    'context' => $context
-));
+$event = \mod_margic\event\course_module_viewed::create(['objectid' => $id, 'context' => $context]);
 $event->add_record_snapshot('course_modules', $cm);
 $event->add_record_snapshot('course', $course);
 $event->add_record_snapshot('margic', $moduleinstance);
 $event->trigger();
 
 // Get the name for this margic activity.
-$margicname = format_string($moduleinstance->name, true, array(
-    'context' => $context
-));
+$margicname = format_string($moduleinstance->name, true, ['context' => $context]);
 
 $canmakeannotations = has_capability('mod/margic:makeannotations', $context);
 
 // Add javascript and navbar element if annotationmode is activated and user has capability.
 if ($annotationmode === 1 && has_capability('mod/margic:viewannotations', $context)) {
 
-    $PAGE->set_url('/mod/margic/view.php', array(
-        'id' => $cm->id,
-        'annotationmode' => 1,
-    ));
+    $PAGE->set_url('/mod/margic/view.php', ['id' => $cm->id, 'annotationmode' => 1]);
 
-    $PAGE->navbar->add(get_string("viewentries", "margic"), new moodle_url('/mod/margic/view.php', array('id' => $cm->id)));
+    $PAGE->navbar->add(get_string("viewentries", "margic"), new moodle_url('/mod/margic/view.php', ['id' => $cm->id]));
     $PAGE->navbar->add(get_string('viewannotations', 'mod_margic'));
 
     $PAGE->requires->js_call_amd('mod_margic/annotations', 'init',
-        array( 'cmid' => $cm->id, 'canmakeannotations' => $canmakeannotations, 'myuserid' => $USER->id,
-        'focusannotation' => $focusannotation));
+        ['cmid' => $cm->id, 'canmakeannotations' => $canmakeannotations, 'myuserid' => $USER->id,
+        'focusannotation' => $focusannotation, 'focusgradingform' => $focusgradingform,
+        'overwriteannotations' => $moduleinstance->overwriteannotations, ]);
 } else {
     // Header.
-    $PAGE->set_url('/mod/margic/view.php', array(
-        'id' => $cm->id
-    ));
+    $PAGE->set_url('/mod/margic/view.php', ['id' => $cm->id]);
     $PAGE->navbar->add(get_string("viewentries", "margic"));
 }
 

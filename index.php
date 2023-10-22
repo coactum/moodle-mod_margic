@@ -27,9 +27,7 @@ require_once("lib.php");
 
 $id = required_param('id', PARAM_INT); // Course.
 
-if (! $course = $DB->get_record('course', array(
-    'id' => $id
-))) {
+if (! $course = $DB->get_record('course', ['id' => $id])) {
     throw new moodle_exception(get_string('incorrectcourseid', 'margic'));
 }
 
@@ -38,9 +36,7 @@ require_course_login($course);
 // Header.
 $strmargics = get_string('modulenameplural', 'margic');
 $PAGE->set_pagelayout('incourse');
-$PAGE->set_url('/mod/margic/index.php', array(
-    'id' => $id
-));
+$PAGE->set_url('/mod/margic/index.php', ['id' => $id]);
 $PAGE->navbar->add($strmargics);
 $PAGE->set_title($strmargics);
 $PAGE->set_heading($course->fullname);
@@ -65,8 +61,8 @@ $timenow = time();
 // Table data.
 $table = new html_table();
 
-$table->head = array();
-$table->align = array();
+$table->head = [];
+$table->align = [];
 if ($usesections) {
     // Add column heading based on the course format. e.g. Week, Topic.
     $table->head[] = get_string('sectionname', 'format_' . $course->format);
@@ -102,9 +98,7 @@ foreach ($margics as $margic) {
     }
 
     // Link.
-    $margicname = format_string($margic->name, true, array(
-        'context' => $context
-    ));
+    $margicname = format_string($margic->name, true, ['context' => $context]);
     if (! $margic->visible) {
         // Show dimmed if the mod is hidden.
         $table->data[$i][] = "<a class=\"dimmed\" href=\"view.php?id=$margic->coursemodule\">" . $margicname . "</a>";
@@ -124,9 +118,7 @@ echo "<br />";
 echo html_writer::table($table);
 
 // Trigger course module instance list event.
-$params = array(
-    'context' => context_course::instance($course->id)
-);
+$params = ['context' => context_course::instance($course->id)];
 $event = \mod_margic\event\course_module_instance_list_viewed::create($params);
 $event->add_record_snapshot('course', $course);
 $event->trigger();

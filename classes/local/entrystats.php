@@ -46,7 +46,7 @@ class entrystats {
 
         $cleantext = preg_replace('#<[^>]+>#', ' ', $entrytext, -1, $replacementspacescount);
 
-        $entrystats = array();
+        $entrystats = [];
         $entrystats['words'] = self::get_stats_words($cleantext);
         $entrystats['chars'] = self::get_stats_chars($cleantext) - $replacementspacescount;
         $entrystats['sentences'] = self::get_stats_sentences($cleantext);

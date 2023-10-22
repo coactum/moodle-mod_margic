@@ -53,12 +53,12 @@ class restore_margic_activity_task extends restore_activity_task {
      * @return array.
      */
     public static function define_decode_contents() {
-        $contents = array();
+        $contents = [];
 
         // Define the contents (files).
-        // tablename, array(field1, field 2), $mapping.
-        $contents[] = new restore_decode_content('margic', array('intro'), 'margic');
-        $contents[] = new restore_decode_content('margic_entries', array('text', 'feedback'), 'margic_entry');
+        // tablename, [field1, field 2], $mapping.
+        $contents[] = new restore_decode_content('margic', ['intro'], 'margic');
+        $contents[] = new restore_decode_content('margic_entries', ['text', 'feedback'], 'margic_entry');
 
         return $contents;
     }
@@ -69,16 +69,16 @@ class restore_margic_activity_task extends restore_activity_task {
      * @return array.
      */
     public static function define_decode_rules() {
-        $rules = array();
+        $rules = [];
 
         // Define the rules.
 
         $rules[] = new restore_decode_rule('MARGICINDEX', '/mod/margic/index.php?id=$1', 'course');
         $rules[] = new restore_decode_rule('MARGICVIEWBYID', '/mod/margic/view.php?id=$1&userid=$2',
-            array('course_module', 'userid'));
-        $rules[] = new restore_decode_rule('MARGICEDITVIEW', '/mod/margic/edit.php?id=$1', array('course_module'));
+            ['course_module', 'userid']);
+        $rules[] = new restore_decode_rule('MARGICEDITVIEW', '/mod/margic/edit.php?id=$1', ['course_module']);
         $rules[] = new restore_decode_rule('MARGICANNOTATIONSUMMARY', '/mod/margic/error_summary.php?id=$1', 'course_module');
-        $rules[] = new restore_decode_rule('MARGICERRORTYPES', '/mod/margic/errortypes.php?id=$1', array('course_module'));
+        $rules[] = new restore_decode_rule('MARGICERRORTYPES', '/mod/margic/errortypes.php?id=$1', ['course_module']);
 
         return $rules;
     }
@@ -91,7 +91,7 @@ class restore_margic_activity_task extends restore_activity_task {
      * @return array.
      */
     public static function define_restore_log_rules() {
-        $rules = array();
+        $rules = [];
 
         // Define the rules.
         $rules[] = new restore_log_rule('margic', 'view', 'view.php?id={course_module}', '{margic}');
@@ -117,7 +117,7 @@ class restore_margic_activity_task extends restore_activity_task {
      * activity level. All them are rules not linked to any module instance (cmid = 0)
      */
     public static function define_restore_log_rules_for_course() {
-        $rules = array();
+        $rules = [];
 
         $rules[] = new restore_log_rule('margic', 'view all', 'index.php?id={course}', null);
 

@@ -36,7 +36,7 @@ class restore_margic_activity_structure_step extends restore_activity_structure_
      * @return restore_path_element[].
      */
     protected function define_structure() {
-        $paths = array();
+        $paths = [];
 
         $userinfo = $this->get_setting_value('userinfo');
 

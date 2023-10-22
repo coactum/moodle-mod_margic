@@ -67,9 +67,7 @@ if (!$moduleinstance) {
     throw new moodle_exception(get_string('incorrectmodule', 'margic'));
 }
 
-if (! $coursesections = $DB->get_record("course_sections", array(
-    "id" => $cm->section
-))) {
+if (! $coursesections = $DB->get_record("course_sections", ["id" => $cm->section])) {
     throw new moodle_exception(get_string('incorrectmodule', 'margic'));
 }
 
@@ -86,16 +84,24 @@ global $USER;
 if ($addtomargic && $manageerrortypes) {
     require_sesskey();
 
-    $redirecturl = new moodle_url('/mod/margic/error_summary.php', array('id' => $id));
+    $redirecturl = new moodle_url('/mod/margic/error_summary.php', ['id' => $id]);
 
-    if ($DB->record_exists('margic_errortype_templates', array('id' => $addtomargic))) {
+    if ($DB->record_exists('margic_errortype_templates', ['id' => $addtomargic])) {
 
         global $USER;
 
-        $type = $DB->get_record('margic_errortype_templates', array('id' => $addtomargic));
+        $type = $DB->get_record('margic_errortype_templates', ['id' => $addtomargic]);
 
         if ($type->defaulttype == 1 || ($type->defaulttype == 0 && $type->userid == $USER->id)) {
-            $type->priority = count($margic->get_margic_errortypes()) + 1;
+
+            $etypes = $margic->get_margic_errortypes();
+
+            if ($etypes) {
+                $type->priority = $etypes[array_key_last($etypes)]->priority + 1;
+            } else {
+                $type->priority = 1;
+            }
+
             $type->margic = $moduleinstance->id;
 
             $DB->insert_record('margic_errortypes', $type);
@@ -110,24 +116,27 @@ if ($addtomargic && $manageerrortypes) {
 }
 
 // Change priority.
-if ($manageerrortypes && $mode == 2 && $priority && $action && $DB->record_exists('margic_errortypes', array('id' => $priority))) {
+if ($manageerrortypes && $mode == 2 && $priority && $action && $DB->record_exists('margic_errortypes', ['id' => $priority])) {
     require_sesskey();
 
-    $redirecturl = new moodle_url('/mod/margic/error_summary.php', array('id' => $id));
+    $redirecturl = new moodle_url('/mod/margic/error_summary.php', ['id' => $id]);
 
-    $type = $DB->get_record('margic_errortypes', array('margic' => $moduleinstance->id, 'id' => $priority));
+    $type = $DB->get_record('margic_errortypes', ['margic' => $moduleinstance->id, 'id' => $priority]);
+
+    $etypes = $margic->get_margic_errortypes();
 
     $prioritychanged = false;
     $oldpriority = 0;
 
-    if ($type && $action == 1 && $type->priority != 1) { // Increase priority (show more in front).
+    // Increase priority (show more in front).
+    if ($type && $action == 1 && $type->priority != $etypes[array_key_first($etypes)]->priority) {
         $oldpriority = $type->priority;
         $type->priority -= 1;
         $prioritychanged = true;
 
-        $typeswitched = $DB->get_record('margic_errortypes', array('margic' => $moduleinstance->id, 'priority' => $type->priority));
+        $typeswitched = $DB->get_record('margic_errortypes', ['margic' => $moduleinstance->id, 'priority' => $type->priority]);
 
-        if (!$typeswitched) { // If no type with priority+1 search for types with hihgher priority values.
+        if (!$typeswitched) { // If no type with priority+1 search for types with higher priority values.
             $typeswitched = $DB->get_records_select('margic_errortypes',
                 "margic = $moduleinstance->id AND priority < $type->priority", null, 'priority ASC');
 
@@ -137,13 +146,13 @@ if ($manageerrortypes && $mode == 2 && $priority && $action && $DB->record_exist
         }
 
     } else if ($type && $action == 2 && $type->priority != $DB->count_records('margic_errortypes',
-        array('margic' => $moduleinstance->id)) + 1) { // Decrease priority (move further back).
+        ['margic' => $moduleinstance->id]) + 1) { // Decrease priority (move further back).
 
         $oldpriority = $type->priority;
         $type->priority += 1;
         $prioritychanged = true;
 
-        $typeswitched = $DB->get_record('margic_errortypes', array('margic' => $moduleinstance->id, 'priority' => $type->priority));
+        $typeswitched = $DB->get_record('margic_errortypes', ['margic' => $moduleinstance->id, 'priority' => $type->priority]);
 
         if (!$typeswitched) { // If no type with priority+1 search for types with higher priority values.
             $typeswitched = $DB->get_records_select('margic_errortypes',
@@ -176,7 +185,7 @@ if ($manageerrortypes && $delete !== 0 && $mode) {
 
     require_sesskey();
 
-    $redirecturl = new moodle_url('/mod/margic/error_summary.php', array('id' => $id));
+    $redirecturl = new moodle_url('/mod/margic/error_summary.php', ['id' => $id]);
 
     if ($mode == 1) { // If type is template error type.
         $table = 'margic_errortype_templates';
@@ -184,15 +193,15 @@ if ($manageerrortypes && $delete !== 0 && $mode) {
         $table = 'margic_errortypes';
     }
 
-    if ($DB->record_exists($table, array('id' => $delete))) {
+    if ($DB->record_exists($table, ['id' => $delete])) {
 
-        $type = $DB->get_record($table, array('id' => $delete));
+        $type = $DB->get_record($table, ['id' => $delete]);
 
         if ($mode == 2 ||
             ($type->defaulttype == 1 && has_capability('mod/margic:editdefaulterrortypes', $context))
             || ($type->defaulttype == 0 && $type->userid == $USER->id)) {
 
-            $DB->delete_records($table, array('id' => $delete));
+            $DB->delete_records($table, ['id' => $delete]);
             redirect($redirecturl, get_string('errortypedeleted', 'mod_margic'), null, notification::NOTIFY_SUCCESS);
         } else {
             redirect($redirecturl, get_string('notallowedtodothis', 'mod_margic'), null, notification::NOTIFY_ERROR);
@@ -203,11 +212,9 @@ if ($manageerrortypes && $delete !== 0 && $mode) {
 }
 
 // Get the name for this margic activity.
-$margicname = format_string($moduleinstance->name, true, array(
-    'context' => $context
-));
+$margicname = format_string($moduleinstance->name, true, ['context' => $context]);
 
-$PAGE->set_url('/mod/margic/error_summary.php', array('id' => $cm->id));
+$PAGE->set_url('/mod/margic/error_summary.php', ['id' => $cm->id]);
 $PAGE->navbar->add(get_string('errorsummary', 'mod_margic'));
 
 $PAGE->set_title(get_string('modulename', 'mod_margic').': ' . $margicname);
@@ -233,7 +240,7 @@ $errortypes = $margic->get_errortypes_for_form();
 
 foreach ($participants as $key => $participant) {
     if (has_capability('mod/margic:viewerrorsfromallparticipants', $context) || $participant->id == $USER->id) {
-        $participants[$key]->errors = array();
+        $participants[$key]->errors = [];
 
         foreach ($errortypes as $i => $type) {
             $sql = "SELECT COUNT(*)
@@ -242,7 +249,7 @@ foreach ($participants as $key => $participant) {
                 WHERE e.margic = :margic AND
                     e.userid = :userid AND
                     a.type = :atype";
-            $params = array('margic' => $moduleinstance->id, 'userid' => $participant->id, 'atype' => $i);
+            $params = ['margic' => $moduleinstance->id, 'userid' => $participant->id, 'atype' => $i];
             $count = $DB->count_records_sql($sql, $params);
 
             $participants[$key]->errors[$i] = $count;

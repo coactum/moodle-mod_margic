@@ -44,5 +44,26 @@ function xmldb_margic_upgrade($oldversion) {
         }
         upgrade_mod_savepoint(true, 2023030700, 'margic');
     }
+
+    if ($oldversion < 2023100300) { // Added column for default value for send grading messages.
+        $table = new xmldb_table('margic');
+        $field = new xmldb_field('sendgradingmessage', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '1', 'editentrydates');
+
+        // Conditionally launch add field for table.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        $field = new xmldb_field('overwriteannotations', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0',
+            'annotationareawidth');
+
+        // Conditionally launch add field for table.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        upgrade_mod_savepoint(true, 2023100300, 'margic');
+    }
+
     return true;
 }

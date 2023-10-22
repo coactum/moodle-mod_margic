@@ -67,11 +67,11 @@ class helper {
         // The MOOTYPER_EVENT_TYPE_OPEN event should only be an action event if no close time is specified.
         $event->type = empty($margic->timeclose) ? CALENDAR_EVENT_TYPE_ACTION : CALENDAR_EVENT_TYPE_STANDARD;
 
-        if ($event->id = $DB->get_field('event', 'id', array(
+        if ($event->id = $DB->get_field('event', 'id', [
             'modulename' => 'margic',
             'instance' => $margic->id,
-            'eventtype' => $event->eventtype
-        ))) {
+            'eventtype' => $event->eventtype,
+        ])) {
 
             if ((! empty($margic->timeopen)) && ($margic->timeopen > 0)) {
                 // Calendar event exists so update it.
@@ -112,11 +112,11 @@ class helper {
         $event = new stdClass();
         $event->type = CALENDAR_EVENT_TYPE_ACTION;
         $event->eventtype = MARGIC_EVENT_TYPE_CLOSE;
-        if ($event->id = $DB->get_field('event', 'id', array(
+        if ($event->id = $DB->get_field('event', 'id', [
             'modulename' => 'margic',
             'instance' => $margic->id,
-            'eventtype' => $event->eventtype
-        ))) {
+            'eventtype' => $event->eventtype,
+        ])) {
             if ((! empty($margic->timeclose)) && ($margic->timeclose > 0)) {
                 // Calendar event exists so update it.
                 $event->name = get_string('calendarend', 'margic', $margic->name);
@@ -180,13 +180,6 @@ class helper {
         $data = new stdClass();
         $data->margic = $margic->id;
 
-        // Trigger download_margic_entries event.
-        $event = \mod_margic\event\download_margic_entries::create(array(
-            'objectid' => $data->margic,
-            'context' => $context
-        ));
-        $event->trigger();
-
         // Construct sql query and filename based on admin, teacher, or student.
         // Add filename details based on course and margic activity name.
         $csv = new csv_export_writer();
@@ -210,8 +203,8 @@ class helper {
         }
         $csv->filename .= '_'.clean_filename(gmdate("Ymd_Hi").'GMT.csv');
 
-        $fields = array();
-        $fields = array(
+        $fields = [];
+        $fields = [
             get_string('id', 'margic'),
             get_string('firstname'),
             get_string('lastname'),
@@ -225,8 +218,8 @@ class helper {
             get_string('teacher', 'margic'),
             get_string('timemarked', 'margic'),
             get_string('baseentry', 'margic'),
-            get_string('text', 'margic')
-        );
+            get_string('text', 'margic'),
+        ];
         // Add the headings to our data array.
         $csv->add_data($fields);
 
@@ -274,7 +267,7 @@ class helper {
                     $timemarked = date('Y-m-d H:i:s', $m->timemarked);
                 }
 
-                $output = array(
+                $output = [
                     $m->entry,
                     $m->firstname,
                     $m->lastname,
@@ -288,8 +281,8 @@ class helper {
                     $m->teacher,
                     $timemarked,
                     $m->baseentry,
-                    format_text($m->text, $m->format, array('para' => false))
-                );
+                    format_text($m->text, $m->format, ['para' => false]),
+                ];
                 $csv->add_data($output);
             }
         }
@@ -310,7 +303,7 @@ class helper {
         $maxbytes = $course->maxbytes;
 
         // For the editor.
-        $editoroptions = array(
+        $editoroptions = [
             'trusttext' => true,
             'maxfiles' => EDITOR_UNLIMITED_FILES,
             'maxbytes' => $maxbytes,
@@ -318,22 +311,22 @@ class helper {
             'subdirs' => false,
 
             'editentrydates' => $margic->editentrydates, // Custom data (not really for editor).
-        );
+        ];
 
         // If maxfiles would be set to an int and more files are given the editor saves them all but
         // saves the overcouting incorrect so that white box is diaplayed.
 
         // For a file attachments field (not really needed here).
-        $attachmentoptions = array(
+        $attachmentoptions = [
             'subdirs' => false,
             'maxfiles' => 1,
-            'maxbytes' => $maxbytes
-        );
+            'maxbytes' => $maxbytes,
+        ];
 
-        return array(
+        return [
             $editoroptions,
-            $attachmentoptions
-        );
+            $attachmentoptions,
+        ];
     }
 
     /**
@@ -382,7 +375,7 @@ class helper {
      */
     public static function check_rating_entry($ratingoptions) {
         global $DB, $CFG;
-        $params = array();
+        $params = [];
         $params['contextid'] = $ratingoptions->contextid;
         $params['component'] = $ratingoptions->component;
         $params['ratingarea'] = $ratingoptions->ratingarea;
@@ -450,9 +443,10 @@ class helper {
      * @param object $entry
      * @param array $grades
      * @param bool $canmanageentries
+     * @param bool $sendgradingmessage
      */
     public static function margic_return_feedback_area_for_entry($cmid, $context, $course, $margic, $entry, $grades,
-        $canmanageentries) {
+        $canmanageentries, $sendgradingmessage) {
 
         $grade = false;
 
@@ -464,20 +458,23 @@ class helper {
             require_once(__DIR__ .'/../../../../lib/gradelib.php');
 
             if ($entry->teacher) {
-                $teacher = $DB->get_record('user', array('id' => $entry->teacher));
+                $teacher = $DB->get_record('user', ['id' => $entry->teacher]);
                 if ($teacher) {
                     $teacherimage = $OUTPUT->user_picture($teacher,
-                    array('courseid' => $course->id, 'link' => true, 'includefullname' => true, 'size' => 30));
+                        ['courseid' => $course->id, 'link' => true, 'includefullname' => true, 'size' => 30]);
+                    $hasteacher = true;
                 } else {
                     $teacherimage = false;
+                    $hasteacher = false;
                 }
             } else {
                 $teacherimage = false;
+                $hasteacher = false;
             }
 
             $feedbackarea = '';
 
-            $feedbacktext = format_text($entry->feedback, $entry->formatfeedback, array('para' => false));
+            $feedbacktext = format_text($entry->feedback, $entry->formatfeedback, ['para' => false]);
 
             if ($canmanageentries) { // If user is teacher.
                 if (! $entry->teacher) {
@@ -495,6 +492,7 @@ class helper {
                 $data->timecreated = $entry->timecreated;
                 $data->{'feedback_' . $entry->id} = $entry->feedback;
                 $data->{'feedback_' . $entry->id . 'format'} = $entry->formatfeedback;
+                $data->sendgradingmessage = $sendgradingmessage;
 
                 list ($editoroptions, $attachmentoptions) = self::margic_get_editor_and_attachment_options($course, $context,
                     $margic);
@@ -507,8 +505,9 @@ class helper {
                 $data->{'rating_' . $entry->id} = $entry->rating;
 
                 $mform = new \mod_margic_grading_form(new \moodle_url('/mod/margic/grade_entry.php',
-                    array('id' => $cmid, 'entryid' => $entry->id)), array('courseid' => $course->id, 'margic' => $margic,
-                    'entry' => $entry, 'grades' => $grades, 'teacherimg' => $teacherimage, 'editoroptions' => $editoroptions));
+                    ['id' => $cmid, 'entryid' => $entry->id]), ['courseid' => $course->id, 'margic' => $margic,
+                    'entry' => $entry, 'grades' => $grades, 'teacherimg' => $teacherimage, 'editoroptions' => $editoroptions,
+                    'hasteacher' => $hasteacher, ]);
 
                 // Set default data.
                 $mform->set_data($data);
@@ -518,18 +517,19 @@ class helper {
                 $feedbackarea .= '<div class="ratingform" style="background-color: ' . get_config('margic', 'textbgc') . '">';
                 $feedbackarea .= '<h5 class="d-flex justify-content-between"><span>' . get_string('feedback') . ' '
                     . get_string('from', 'mod_margic') . ' ' . $teacherimage . ' ';
-                $feedbackarea .= get_string('at', 'mod_margic') . ' ' . userdate($entry->timemarked) . '</span>';
 
-                $feedbackarea .= '<span><strong>';
+                if ($entry->timemarked) {
+                    $feedbackarea .= get_string('at', 'mod_margic') . ' ' . userdate($entry->timemarked);
+                }
+
+                $feedbackarea .= '</span><span><strong>';
 
                 if ($margic->assessed > 0) {
                     // Gradebook preference.
-                    $gradinginfo = grade_get_grades($course->id, 'mod', 'margic', $entry->margic, array(
-                        $entry->userid
-                    ));
+                    $gradinginfo = grade_get_grades($course->id, 'mod', 'margic', $entry->margic, [$entry->userid]);
 
                     // Branch check for string compatibility.
-                    if (! empty($grades)) {
+                    if (! empty($grades) && $entry->rating) {
                         if ($CFG->branch > 310) {
                             $feedbackarea .= get_string('gradenoun') . ': ';
                         } else {

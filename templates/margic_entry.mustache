@@ -66,8 +66,10 @@
                                 {{{userpicture}}}
                             {{/canmanageentries}}
                         {{/userpicture}}{{/user}}
-                        {{#str}}at, mod_margic {{/str}}
-                        {{#userdate}}{{timecreated}} ,{{#str}} strftimedatetimeshort, core_langconfig {{/str}}{{/userdate}}
+                        {{#timecreated}}
+                            {{#str}}at, mod_margic {{/str}}
+                            {{#userdate}}{{timecreated}} ,{{#str}} strftimedatetimeshort, core_langconfig {{/str}}{{/userdate}}
+                        {{/timecreated}}
                         {{^readonly}}
                             {{#canmanageentries}}{{^singleuser}}<a class="ml-2" href="view.php?id={{cmid}}&userid={{userid}}"><i class="fa fa-user fa-lg" title="{{#str}}getallentriesofuser, mod_margic{{/str}}"></i></a>{{/singleuser}}{{/canmanageentries}}
                             {{^edittimehasended}}{{#caneditentries}}{{#entrycanbeedited}}<a class="ml-2" href="edit.php?id={{cmid}}&entryid={{id}}"><i class="fa fa-pencil fa-lg" title="{{#str}}editthisentry, mod_margic{{/str}}"></i></a>{{/entrycanbeedited}}{{/caneditentries}}{{/edittimehasended}}
@@ -83,9 +85,12 @@
                             <strong>{{#str}}details, mod_margic{{/str}}:</strong> {{#str}}numwordsraw, mod_margic, { "wordscount": {{words}}, "charscount": {{chars}}, "spacescount": {{spaces}} } {{/str}}
                             <br>
                         {{/stats}}
-                        <strong>{{#str}}timecreated, mod_margic{{/str}}: </strong> {{#userdate}}{{timecreated}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}}
-                            {{#stats}}{{#datediff}}({{#str}}created, mod_margic, {"years": {{datediff.y}}, "month": {{datediff.m}}, "days": {{datediff.d}}, "hours": {{datediff.h}} } {{/str}}){{/datediff}}{{/stats}}
-                        </strong>
+                        {{#timecreated}}
+                            <strong>
+                                {{#str}}timecreated, mod_margic{{/str}}: </strong> {{#userdate}}{{timecreated}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}}
+                                {{#stats}}{{#datediff}}({{#str}}created, mod_margic, {"years": {{datediff.y}}, "month": {{datediff.m}}, "days": {{datediff.d}}, "hours": {{datediff.h}} } {{/str}}){{/datediff}}{{/stats}}
+                            </strong>
+                        {{/timecreated}}
                         {{#timemodified}}<br><strong>{{#str}}lastedited, mod_margic {{/str}}: </strong> {{#userdate}}{{timemodified}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}}</strong>{{/timemodified}}
                     </div>
                 </div>
@@ -105,8 +110,10 @@
                                             {{{userpicturestr}}}
                                         </span>
                                         <span class="align-self-center">
-                                            {{^timemodified}}{{#userdate}}{{timecreated}}, {{#str}} strftimedatetimeshort, core_langconfig {{/str}}{{/userdate}} <i class="fa fa-hourglass-start" aria-hidden="true" title="{{#str}}annotationcreated, margic, {{#userdate}}{{timecreated}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}} {{/str}}"></i> {{/timemodified}}
-                                            {{#timemodified}}{{#userdate}}{{timemodified}}, {{#str}} strftimedatetimeshort, core_langconfig {{/str}}{{/userdate}} <i class="fa fa-hourglass-end" aria-hidden="true" title="{{#str}}annotationmodified, margic, {{#userdate}}{{timemodified}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}} {{/str}}"></i>{{/timemodified}}
+                                            {{#timecreated}}
+                                                {{^timemodified}}{{#userdate}}{{timecreated}}, {{#str}} strftimedatetimeshort, core_langconfig {{/str}}{{/userdate}} <i class="fa fa-hourglass-start" aria-hidden="true" title="{{#str}}annotationcreated, margic, {{#userdate}}{{timecreated}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}} {{/str}}"></i> {{/timemodified}}
+                                                {{#timemodified}}{{#userdate}}{{timemodified}}, {{#str}} strftimedatetimeshort, core_langconfig {{/str}}{{/userdate}} <i class="fa fa-hourglass-end" aria-hidden="true" title="{{#str}}annotationmodified, margic, {{#userdate}}{{timemodified}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}}{{/userdate}} {{/str}}"></i>{{/timemodified}}
+                                            {{/timecreated}}
                                         </span>
                                     </div>
                                     <div class="annotatedtextpreviewdiv">

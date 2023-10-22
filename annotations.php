@@ -60,9 +60,7 @@ if (!$moduleinstance) {
     throw new moodle_exception(get_string('incorrectmodule', 'margic'));
 }
 
-if (! $coursesections = $DB->get_record("course_sections", array(
-    "id" => $cm->section
-))) {
+if (! $coursesections = $DB->get_record("course_sections", ["id" => $cm->section])) {
     throw new moodle_exception(get_string('incorrectmodule', 'margic'));
 }
 
@@ -74,7 +72,7 @@ if ($getannotations) {
     if ($annotations) {
         echo json_encode($annotations);
     } else {
-        echo json_encode(array());
+        echo json_encode([]);
     }
 
     die;
@@ -83,10 +81,10 @@ if ($getannotations) {
 require_capability('mod/margic:makeannotations', $context);
 
 // Header.
-$PAGE->set_url('/mod/margic/annotations.php', array('id' => $id));
+$PAGE->set_url('/mod/margic/annotations.php', ['id' => $id]);
 $PAGE->set_title(format_string($moduleinstance->name));
 
-$urlparams = array('id' => $id, 'annotationmode' => 1);
+$urlparams = ['id' => $id, 'annotationmode' => 1];
 
 $redirecturl = new moodle_url('/mod/margic/view.php', $urlparams);
 
@@ -96,17 +94,13 @@ if (has_capability('mod/margic:deleteannotations', $context) && $deleteannotatio
 
     global $USER;
 
-    if ($DB->record_exists('margic_annotations', array('id' => $deleteannotation, 'margic' => $moduleinstance->id,
-        'userid' => $USER->id))) {
+    $a = $DB->get_record('margic_annotations', ['id' => $deleteannotation, 'margic' => $moduleinstance->id]);
+    if (isset($a) && ($moduleinstance->overwriteannotations || $a->userid == $USER->id)) {
 
-        $DB->delete_records('margic_annotations', array('id' => $deleteannotation, 'margic' => $moduleinstance->id,
-            'userid' => $USER->id));
+        $DB->delete_records('margic_annotations', ['id' => $deleteannotation, 'margic' => $moduleinstance->id]);
 
         // Trigger module annotation deleted event.
-        $event = \mod_margic\event\annotation_deleted::create(array(
-            'objectid' => $deleteannotation,
-            'context' => $context
-        ));
+        $event = \mod_margic\event\annotation_deleted::create(['objectid' => $deleteannotation, 'context' => $context]);
 
         $event->trigger();
 
@@ -120,19 +114,19 @@ if (has_capability('mod/margic:deleteannotations', $context) && $deleteannotatio
 require_once($CFG->dirroot . '/mod/margic/annotation_form.php');
 
 // Instantiate form.
-$mform = new mod_margic_annotation_form(null, array('types' => $margic->get_errortypes_for_form()));
+$mform = new mod_margic_annotation_form(null, ['types' => $margic->get_errortypes_for_form()]);
 
 if ($fromform = $mform->get_data()) {
 
     // In this case you process validated data. $mform->get_data() returns data posted in form.
     if ((isset($fromform->annotationid) && $fromform->annotationid !== 0) && isset($fromform->text)) { // Update annotation.
-        $annotation = $DB->get_record('margic_annotations', array('margic' => $cm->instance, 'entry' => $fromform->entry,
-            'id' => $fromform->annotationid));
+        $annotation = $DB->get_record('margic_annotations', ['margic' => $cm->instance, 'entry' => $fromform->entry,
+            'id' => $fromform->annotationid, ]);
 
         // Prevent changes by user in hidden form fields.
         if (!$annotation) {
             redirect($redirecturl, get_string('annotationinvalid', 'mod_margic'), null, notification::NOTIFY_ERROR);
-        } else if ($annotation->userid != $USER->id) {
+        } else if (!$moduleinstance->overwriteannotations && $annotation->userid != $USER->id) {
             redirect($redirecturl, get_string('notallowedtodothis', 'mod_margic'), null, notification::NOTIFY_ERROR);
         }
 
@@ -141,20 +135,21 @@ if ($fromform = $mform->get_data()) {
         }
 
         $annotation->timemodified = time();
-        $annotation->text = format_text($fromform->text, 2, array('para' => false));
+        $annotation->text = format_text($fromform->text, 2, ['para' => false]);
         $annotation->type = $fromform->type;
+
+        if ($moduleinstance->overwriteannotations) {
+            $annotation->userid = $USER->id;
+        }
 
         $DB->update_record('margic_annotations', $annotation);
 
         // Trigger module annotation updated event.
-        $event = \mod_margic\event\annotation_updated::create(array(
-            'objectid' => $fromform->annotationid,
-            'context' => $context
-        ));
+        $event = \mod_margic\event\annotation_updated::create(['objectid' => $fromform->annotationid, 'context' => $context]);
 
         $event->trigger();
 
-        $urlparams = array('id' => $id, 'annotationmode' => 1, 'focusannotation' => $fromform->annotationid);
+        $urlparams = ['id' => $id, 'annotationmode' => 1, 'focusannotation' => $fromform->annotationid];
         $redirecturl = new moodle_url('/mod/margic/view.php', $urlparams);
 
         redirect($redirecturl, get_string('annotationedited', 'mod_margic'), null, notification::NOTIFY_SUCCESS);
@@ -173,7 +168,7 @@ if ($fromform = $mform->get_data()) {
                 redirect($redirecturl, get_string('annotationinvalid', 'mod_margic'), null, notification::NOTIFY_ERROR);
             }
 
-            if (!$DB->record_exists('margic_entries', array('margic' => $cm->instance, 'id' => $fromform->entry))) {
+            if (!$DB->record_exists('margic_entries', ['margic' => $cm->instance, 'id' => $fromform->entry])) {
                 redirect($redirecturl, get_string('annotationinvalid', 'mod_margic'), null, notification::NOTIFY_ERROR);
             }
 
@@ -197,13 +192,10 @@ if ($fromform = $mform->get_data()) {
 
             $newid = $DB->insert_record('margic_annotations', $annotation);
             // Trigger module annotation created event.
-            $event = \mod_margic\event\annotation_created::create(array(
-                'objectid' => $newid,
-                'context' => $context
-            ));
+            $event = \mod_margic\event\annotation_created::create(['objectid' => $newid, 'context' => $context]);
             $event->trigger();
 
-            $urlparams = array('id' => $id, 'annotationmode' => 1, 'focusannotation' => $newid);
+            $urlparams = ['id' => $id, 'annotationmode' => 1, 'focusannotation' => $newid];
             $redirecturl = new moodle_url('/mod/margic/view.php', $urlparams);
 
             redirect($redirecturl, get_string('annotationadded', 'mod_margic'), null, notification::NOTIFY_SUCCESS);
