@@ -25,13 +25,12 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$messageproviders = array (
-
-    'gradingmessages' => array(
+$messageproviders = [
+    'gradingmessages' => [
         'capability' => 'mod/margic:receivegradingmessages',
-        'defaults' => array(
+        'defaults' => [
             'popup' => MESSAGE_PERMITTED + MESSAGE_DEFAULT_LOGGEDIN + MESSAGE_DEFAULT_LOGGEDOFF,
             'email' => MESSAGE_PERMITTED,
-        ),
-    ),
-);
+        ],
+    ],
+];

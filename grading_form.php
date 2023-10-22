@@ -58,11 +58,11 @@ class mod_margic_grading_form extends moodleform {
 
         $feedbacktext = $this->_customdata['entry']->feedback;
 
-        $user = $DB->get_record('user', array('id' => $this->_customdata['entry']->userid));
+        $user = $DB->get_record('user', ['id' => $this->_customdata['entry']->userid]);
         $userfullname = fullname($user);
 
         $feedbackdisabled = false;
-        $attr = array();
+        $attr = [];
 
         if ($this->_customdata['margic']->assessed != 0) { // Append grading area only when grading is not disabled.
 
@@ -90,7 +90,7 @@ class mod_margic_grading_form extends moodleform {
                         $this->_customdata['courseid'] . '">' .
                         $gradinginfo->items[0]->grades[$this->_customdata['entry']->userid]->str_feedback . '</a>';
 
-                    $attr = array('disabled' => 'disabled');
+                    $attr = ['disabled' => 'disabled'];
                 }
             }
 

@@ -32,34 +32,22 @@ if ($ADMIN->fulltree) {
     // If default error type templates can be edited by admins or user with capability editdefaulterrortypes.
     $settings->add(new admin_setting_configselect('margic/defaulterrortypetemplateseditable',
         get_string('defaulterrortypetemplateseditable', 'margic'),
-        get_string('defaulterrortypetemplateseditable_help', 'margic'), 1, array(
-        '0' => get_string('no'),
-        '1' => get_string('yes')
-    )));
+        get_string('defaulterrortypetemplateseditable_help', 'margic'), 1, ['0' => get_string('no'), '1' => get_string('yes')]));
 
     // Edit all own entries.
     $settings->add(new admin_setting_configselect('margic/editentries',
         get_string('editentries', 'margic'),
-        get_string('editentries_help', 'margic'), 1, array(
-        '0' => get_string('no'),
-        '1' => get_string('yes')
-    )));
+        get_string('editentries_help', 'margic'), 1, ['0' => get_string('no'), '1' => get_string('yes')]));
 
     // Change the date of any new entry.
     $settings->add(new admin_setting_configselect('margic/editentrydates',
         get_string('editentrydates', 'margic'),
-        get_string('editentrydates_help', 'margic'), 1, array(
-        '0' => get_string('no'),
-        '1' => get_string('yes')
-    )));
+        get_string('editentrydates_help', 'margic'), 1, ['0' => get_string('no'), '1' => get_string('yes')]));
 
     // Set if entry creators should be notified about feedback for their entries by default.
     $settings->add(new admin_setting_configselect('margic/sendgradingmessage',
         get_string('sendgradingmessagedefault', 'margic'),
-        get_string('sendgradingmessagedefault_help', 'margic'), 1, array(
-        '0' => get_string('no'),
-        '1' => get_string('yes')
-    )));
+        get_string('sendgradingmessagedefault_help', 'margic'), 1, ['0' => get_string('no'), '1' => get_string('yes')]));
 
     // Appearance settings.
     $settings->add(new admin_setting_heading('margic/appearance', get_string('appearance'), ''));

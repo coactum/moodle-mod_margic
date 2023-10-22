@@ -36,7 +36,7 @@ function xmldb_margic_install() {
     $errortype->timecreated = time();
     $errortype->timemodified = 0;
     $errortype->name = 'grammar_verb';
-    $errortype->color = '0040FF';
+    $errortype->color = '6EB0FC';
     $errortype->defaulttype = 1;
     $errortype->userid = 0;
 
@@ -47,7 +47,7 @@ function xmldb_margic_install() {
     $errortype->timecreated = time();
     $errortype->timemodified = 0;
     $errortype->name = 'grammar_syntax';
-    $errortype->color = '0080FF';
+    $errortype->color = 'BAB2FD';
     $errortype->defaulttype = 1;
     $errortype->userid = 0;
 
@@ -58,7 +58,7 @@ function xmldb_margic_install() {
     $errortype->timecreated = time();
     $errortype->timemodified = 0;
     $errortype->name = 'grammar_congruence';
-    $errortype->color = '0489B1';
+    $errortype->color = '04CDD2';
     $errortype->defaulttype = 1;
     $errortype->userid = 0;
 
@@ -91,7 +91,7 @@ function xmldb_margic_install() {
     $errortype->timecreated = time();
     $errortype->timemodified = 0;
     $errortype->name = 'orthography';
-    $errortype->color = 'DF0101';
+    $errortype->color = 'FF571E';
     $errortype->defaulttype = 1;
     $errortype->userid = 0;
 
@@ -102,7 +102,7 @@ function xmldb_margic_install() {
     $errortype->timecreated = time();
     $errortype->timemodified = 0;
     $errortype->name = 'punctuation';
-    $errortype->color = 'FFFF00';
+    $errortype->color = 'F7D358';
     $errortype->defaulttype = 1;
     $errortype->userid = 0;
 
@@ -113,7 +113,7 @@ function xmldb_margic_install() {
     $errortype->timecreated = time();
     $errortype->timemodified = 0;
     $errortype->name = 'other';
-    $errortype->color = 'F7D358';
+    $errortype->color = 'FFFF00';
     $errortype->defaulttype = 1;
     $errortype->userid = 0;
 

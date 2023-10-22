@@ -61,9 +61,7 @@ if (!$moduleinstance) {
     throw new moodle_exception(get_string('incorrectmodule', 'margic'));
 }
 
-if (! $coursesections = $DB->get_record("course_sections", array(
-    "id" => $cm->section
-))) {
+if (! $coursesections = $DB->get_record("course_sections", ["id" => $cm->section])) {
     throw new moodle_exception(get_string('incorrectmodule', 'margic'));
 }
 
@@ -71,11 +69,11 @@ require_login($course, true, $cm);
 
 require_capability('mod/margic:manageerrortypes', $context);
 
-$redirecturl = new moodle_url('/mod/margic/error_summary.php', array('id' => $id));
+$redirecturl = new moodle_url('/mod/margic/error_summary.php', ['id' => $id]);
 
 if ($edit !== 0) {
     if ($mode == 1) { // If type is template error type.
-        $editedtype = $DB->get_record('margic_errortype_templates', array('id' => $edit));
+        $editedtype = $DB->get_record('margic_errortype_templates', ['id' => $edit]);
 
         if (isset($editedtype->defaulttype) && $editedtype->defaulttype == 1
             && !get_config('margic', 'defaulterrortypetemplateseditable')) {
@@ -83,7 +81,7 @@ if ($edit !== 0) {
                 redirect($redirecturl, get_string('notallowedtodothis', 'mod_margic'), null, notification::NOTIFY_ERROR);
         }
     } else if ($mode == 2) { // If type is margic error type.
-        $editedtype = $DB->get_record('margic_errortypes', array('id' => $edit));
+        $editedtype = $DB->get_record('margic_errortypes', ['id' => $edit]);
 
         if ($moduleinstance->id !== $editedtype->margic) {
             redirect($redirecturl, get_string('errortypecantbeedited', 'mod_margic'), null, notification::NOTIFY_ERROR);
@@ -108,18 +106,18 @@ if ($edit !== 0) {
 
 // Instantiate form.
 $mform = new \mod_margic_errortypes_form(null,
-    array('editdefaulttype' => has_capability('mod/margic:editdefaulterrortypes', $context), 'mode' => $mode));
+    ['editdefaulttype' => has_capability('mod/margic:editdefaulterrortypes', $context), 'mode' => $mode]);
 
 if (isset($editedtypeid)) {
     if ($mode == 1) { // If type is template error type.
-        $mform->set_data(array('id' => $id, 'mode' => $mode, 'typeid' => $editedtypeid,
-            'typename' => $editedtypename, 'color' => $editedcolor, 'standardtype' => $editeddefaulttype));
+        $mform->set_data(['id' => $id, 'mode' => $mode, 'typeid' => $editedtypeid,
+            'typename' => $editedtypename, 'color' => $editedcolor, 'standardtype' => $editeddefaulttype, ]);
     } else if ($mode == 2) {
-        $mform->set_data(array('id' => $id, 'mode' => $mode, 'typeid' => $editedtypeid, 'typename' => $editedtypename,
-            'color' => $editedcolor));
+        $mform->set_data(['id' => $id, 'mode' => $mode, 'typeid' => $editedtypeid, 'typename' => $editedtypename,
+            'color' => $editedcolor, ]);
     }
 } else {
-    $mform->set_data(array('id' => $id, 'mode' => $mode));
+    $mform->set_data(['id' => $id, 'mode' => $mode]);
 }
 
 if ($mform->is_cancelled()) {
@@ -133,7 +131,7 @@ if ($mform->is_cancelled()) {
         $errortype = new stdClass();
         $errortype->timecreated = time();
         $errortype->timemodified = 0;
-        $errortype->name = format_text($fromform->typename, 1, array('para' => false));
+        $errortype->name = format_text($fromform->typename, 1, ['para' => false]);
         $errortype->color = $fromform->color;
 
         if (isset($fromform->standardtype) && $fromform->standardtype === 1 &&
@@ -168,9 +166,9 @@ if ($mform->is_cancelled()) {
     } else if ($fromform->typeid !== 0 && isset($fromform->typename)) { // Update existing annotation type.
 
         if ($mode == 1) { // If type is template error type.
-            $errortype = $DB->get_record('margic_errortype_templates', array('id' => $fromform->typeid));
+            $errortype = $DB->get_record('margic_errortype_templates', ['id' => $fromform->typeid]);
         } else if ($mode == 2) { // If type is margic error type.
-            $errortype = $DB->get_record('margic_errortypes', array('id' => $fromform->typeid));
+            $errortype = $DB->get_record('margic_errortypes', ['id' => $fromform->typeid]);
         }
 
         if ($errortype &&
@@ -181,7 +179,7 @@ if ($mform->is_cancelled()) {
             && $errortype->userid == $USER->id))) {
 
             $errortype->timemodified = time();
-            $errortype->name = format_text($fromform->typename, 1, array('para' => false));
+            $errortype->name = format_text($fromform->typename, 1, ['para' => false]);
             $errortype->color = $fromform->color;
 
             if ($mode == 1 && has_capability('mod/margic:editdefaulterrortypes', $context)) {
@@ -213,14 +211,11 @@ if ($mform->is_cancelled()) {
 }
 
 // Get the name for this margic activity.
-$margicname = format_string($moduleinstance->name, true, array(
-    'context' => $context
-));
+$margicname = format_string($moduleinstance->name, true, ['context' => $context]);
 
-$PAGE->set_url('/mod/margic/errortypes.php', array('id' => $cm->id));
+$PAGE->set_url('/mod/margic/errortypes.php', ['id' => $cm->id]);
 
 $navtitle = '';
-
 
 if (isset($editedtypeid)) {
     $navtitle = get_string('editerrortype', 'mod_margic');

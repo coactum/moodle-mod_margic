@@ -1,5 +1,10 @@
 ## Changelog ##
 
+- [1.3.1]:
+    - Ensured compatibility with Moodle 4.3.
+        - Changed code to comply with new moodle coding standards.
+    - [Bugfix]: Changed default error type template colors for new installations to improve contrast.
+
 - [1.3.0]:
     - [Bugfix]: Fixed a bug that prevented the order of Margic error types (that were subsequently added to an instance from an error type template) from being changed under certain conditions.
     - [Bugfix]: Deleting error types now triggers a confirm prompt.

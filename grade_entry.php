@@ -55,9 +55,7 @@ if (! $course) {
     throw new moodle_exception(get_string('incorrectcourseid', 'margic'));
 }
 
-if (! $coursesections = $DB->get_record("course_sections", array(
-    "id" => $cm->section
-))) {
+if (! $coursesections = $DB->get_record("course_sections", ["id" => $cm->section])) {
     throw new moodle_exception(get_string('incorrectmodule', 'margic'));
 }
 
@@ -65,9 +63,9 @@ require_login($course, true, $cm);
 
 require_capability('mod/margic:addentries', $context);
 
-$PAGE->set_url('/mod/margic/grade_entry.php', array('id' => $id));
+$PAGE->set_url('/mod/margic/grade_entry.php', ['id' => $id]);
 
-$entry = $DB->get_record('margic_entries', array('id' => $entryid, 'margic' => $cm->instance));
+$entry = $DB->get_record('margic_entries', ['id' => $entryid, 'margic' => $cm->instance]);
 $grades = make_grades_menu($moduleinstance->scale);
 
 // Prepare editor for files.
@@ -89,8 +87,8 @@ $data = file_prepare_standard_filemanager($data, 'attachment', $attachmentoption
 $data->{'rating_' . $entry->id} = $entry->rating;
 
 // Instantiate gradingform and save submitted data if it exists.
-$mform = new \mod_margic_grading_form(null, array('courseid' => $course->id, 'margic' => $moduleinstance, 'entry' => $entry,
-    'grades' => $grades, 'teacherimg' => '', 'editoroptions' => $editoroptions));
+$mform = new \mod_margic_grading_form(null, ['courseid' => $course->id, 'margic' => $moduleinstance, 'entry' => $entry,
+    'grades' => $grades, 'teacherimg' => '', 'editoroptions' => $editoroptions, ]);
 
 $mform->set_data($data);
 
@@ -98,12 +96,12 @@ if ($fromform = $mform->get_data()) { // If grading form is submitted.
     // In this case you process validated data.
 
     if ($fromform->entry !== $entryid) {
-        redirect(new moodle_url('/mod/margic/view.php', array('id' => $id)), get_string('errfeedbacknotupdated', 'mod_margic'),
+        redirect(new moodle_url('/mod/margic/view.php', ['id' => $id]), get_string('errfeedbacknotupdated', 'mod_margic'),
             null, notification::NOTIFY_ERROR);
     }
 
     if (!$fromform->{'feedback_' . $entry->id . '_editor'}) {
-        redirect(new moodle_url('/mod/margic/view.php', array('id' => $id)),
+        redirect(new moodle_url('/mod/margic/view.php', ['id' => $id]),
             get_string('errnofeedbackorratingdisabled', 'mod_margic'), null, notification::NOTIFY_ERROR);
     }
 
@@ -113,7 +111,7 @@ if ($fromform = $mform->get_data()) { // If grading form is submitted.
     $newfeedback = file_rewrite_pluginfile_urls($fromform->{'feedback_' . $entry->id}, 'pluginfile.php', $context->id,
         'mod_margic', 'feedback', $entry->id);
 
-    $newfeedback = format_text($newfeedback, $fromform->{'feedback_' . $entry->id . '_editor'}['format'], array('para' => false));
+    $newfeedback = format_text($newfeedback, $fromform->{'feedback_' . $entry->id . '_editor'}['format'], ['para' => false]);
 
     if (isset($fromform->{'rating_' . $entry->id})) {
         $newrating = $fromform->{'rating_' . $entry->id};
@@ -144,7 +142,7 @@ if ($fromform = $mform->get_data()) { // If grading form is submitted.
         $entry->timemarked = $timenow;
 
         if (!$DB->update_record("margic_entries", $entry)) {
-            redirect(new moodle_url('/mod/margic/view.php', array('id' => $id)), get_string('errfeedbacknotupdated', 'mod_margic'),
+            redirect(new moodle_url('/mod/margic/view.php', ['id' => $id]), get_string('errfeedbacknotupdated', 'mod_margic'),
                 null, notification::NOTIFY_ERROR);
         }
 
@@ -180,10 +178,10 @@ if ($fromform = $mform->get_data()) { // If grading form is submitted.
         margic_update_grades($record, $entry->userid);
 
         // Trigger module feedback updated event.
-        $event = \mod_margic\event\feedback_updated::create(array(
+        $event = \mod_margic\event\feedback_updated::create([
             'objectid' => $entry->id,
-            'context' => $context
-        ));
+            'context' => $context,
+        ]);
         $event->trigger();
 
         if ($fromform->sendgradingmessage) {
@@ -217,8 +215,8 @@ if ($fromform = $mform->get_data()) { // If grading form is submitted.
             $urllink = '<a href="' . $url . '" target="_blank">' . $url . '</a>';
             $footer = '<br><br> --------------------------------------------------------------------- <br> '
                 . get_string('mailfooter', 'mod_margic', ['systemname' => get_config('shortname'),
-                'coursename' => $course->fullname, 'name' => $moduleinstance->name, 'url' => $url]);
-            $content = array('*' => array('header' => $header, 'footer' => $footer)); // Extra content for specific processor.
+                'coursename' => $course->fullname, 'name' => $moduleinstance->name, 'url' => $url, ]);
+            $content = ['*' => ['header' => $header, 'footer' => $footer]]; // Extra content for specific processor.
             $message->set_additional_content('email', $content);
 
             // Actually send the message.
@@ -227,15 +225,15 @@ if ($fromform = $mform->get_data()) { // If grading form is submitted.
 
         // Redirect after updated from feedback and grades.
         redirect(new moodle_url('/mod/margic/view.php',
-            array('id' => $id, 'focusgradingform' => $entry->id, 'annotationmode' => 1)),
+            ['id' => $id, 'focusgradingform' => $entry->id, 'annotationmode' => 1]),
             get_string('feedbackupdated', 'mod_margic'), null, notification::NOTIFY_SUCCESS);
     } else {
         redirect(new moodle_url('/mod/margic/view.php',
-            array('id' => $id, 'focusgradingform' => $entry->id, 'annotationmode' => 1)),
+            ['id' => $id, 'focusgradingform' => $entry->id, 'annotationmode' => 1]),
             get_string('errfeedbacknotupdated', 'mod_margic'), null, notification::NOTIFY_ERROR);
     }
 } else {
     redirect(new moodle_url('/mod/margic/view.php',
-        array('id' => $id, 'focusgradingform' => $entry->id, 'annotationmode' => 1)),
+        ['id' => $id, 'focusgradingform' => $entry->id, 'annotationmode' => 1]),
         get_string('errfeedbacknotupdated', 'mod_margic'), null, notification::NOTIFY_ERROR);
 }

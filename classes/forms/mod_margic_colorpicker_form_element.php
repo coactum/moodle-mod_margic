@@ -82,7 +82,7 @@ class mod_margic_colorpicker_form_element extends HTML_QuickForm_text {
      * @return    string Frozen html
      */
     public function getfrozenhtml() {
-        $attributes = array('readonly' => 'readonly');
+        $attributes = ['readonly' => 'readonly'];
         $this->updateAttributes($attributes);
         return $this->_getTabs() . '<input' . $this->_getAttrString($this->_attributes) . '/>' . $this->_getPersistantData();
     }
@@ -95,8 +95,8 @@ class mod_margic_colorpicker_form_element extends HTML_QuickForm_text {
     public function tohtml() {
         global $CFG, $PAGE;
 
-        $PAGE->requires->js_init_call('M.util.init_colour_picker', array('id_color', null));
-        $PAGE->requires->js_call_amd('mod_margic/colorpicker-layout', 'init', array('id_color'));
+        $PAGE->requires->js_init_call('M.util.init_colour_picker', ['id_color', null]);
+        $PAGE->requires->js_call_amd('mod_margic/colorpicker-layout', 'init', ['id_color']);
 
         // Add the class at the last minute.
         if ($this->get_force_ltr()) {

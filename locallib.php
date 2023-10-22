@@ -62,16 +62,16 @@ class margic {
     private $page;
 
     /** @var array Array with all accessible entries of the margic instance */
-    private $entries = array();
+    private $entries = [];
 
     /** @var array Array with all annotations to entries of the margic instance */
-    private $annotations = array();
+    private $annotations = [];
 
     /** @var array Array with all types of annotations */
-    private $errortypes = array();
+    private $errortypes = [];
 
     /** @var array Array of error messages encountered during the execution of margic related operations. */
-    private $errors = array();
+    private $errors = [];
 
     /**
      * Constructor for the base margic class.
@@ -118,11 +118,11 @@ class margic {
 
         $this->cm = cm_info::create($cm);
 
-        $this->instance = $DB->get_record('margic', array('id' => $this->cm->instance));
+        $this->instance = $DB->get_record('margic', ['id' => $this->cm->instance]);
 
         $this->modulename = get_string('modulename', 'mod_margic');
 
-        $this->annotations = $DB->get_records('margic_annotations', array('margic' => $this->get_course_module()->instance));
+        $this->annotations = $DB->get_records('margic_annotations', ['margic' => $this->get_course_module()->instance]);
 
         $select = "margic = " . $this->instance->id;
         $this->errortypes = (array) $DB->get_records_select('margic_errortypes', $select, null, 'priority ASC');
@@ -136,9 +136,9 @@ class margic {
             }
 
             if (!array_key_exists($annotation->type, $this->errortypes) &&
-                $DB->record_exists('margic_errortypes', array('id' => $annotation->type))) {
+                $DB->record_exists('margic_errortypes', ['id' => $annotation->type])) {
 
-                $this->errortypes[$annotation->type] = $DB->get_record('margic_errortypes', array('id' => $annotation->type));
+                $this->errortypes[$annotation->type] = $DB->get_record('margic_errortypes', ['id' => $annotation->type]);
             }
 
             if (isset($this->errortypes[$annotation->type])) {
@@ -250,16 +250,16 @@ class margic {
         if ($this->mode == 'allentries') {
 
             if ($userid && $userid != 0) {
-                $this->entries = $DB->get_records('margic_entries', array('margic' => $this->instance->id, 'userid' => $userid,
-                    'baseentry' => null), $sortoptions);
+                $this->entries = $DB->get_records('margic_entries', ['margic' => $this->instance->id, 'userid' => $userid,
+                    'baseentry' => null, ], $sortoptions);
             } else {
-                $this->entries = $DB->get_records('margic_entries', array('margic' => $this->instance->id,
-                    'baseentry' => null), $sortoptions);
+                $this->entries = $DB->get_records('margic_entries', ['margic' => $this->instance->id,
+                    'baseentry' => null, ], $sortoptions);
             }
 
         } else if ($this->mode == 'ownentries') {
-            $this->entries = $DB->get_records('margic_entries', array('margic' => $this->instance->id, 'userid' => $USER->id,
-                'baseentry' => null), $sortoptions);
+            $this->entries = $DB->get_records('margic_entries', ['margic' => $this->instance->id, 'userid' => $USER->id,
+                'baseentry' => null, ], $sortoptions);
         }
     }
 
@@ -367,7 +367,7 @@ class margic {
      * @return array action
      */
     public function get_errortypes_for_form() {
-        $types = array();
+        $types = [];
         $strmanager = get_string_manager();
         foreach ($this->errortypes as $key => $type) {
             if ($strmanager->string_exists($type->name, 'mod_margic')) {
@@ -434,7 +434,7 @@ class margic {
             unset($groupedentries[0]);
 
             if (isset($groupedentries[2])) {
-                $pagebar = array();
+                $pagebar = [];
                 foreach ($groupedentries as $pagenr => $page) {
                     $obj = new stdClass();
                     if ($pagenr == $this->page) {
@@ -464,9 +464,9 @@ class margic {
      */
     public function get_pagecountoptions() {
 
-        $pagecountoptions = array(2, 3, 4, 5, 6, 7, 8, 9, 10,
+        $pagecountoptions = [2, 3, 4, 5, 6, 7, 8, 9, 10,
             15, 20, 30, 40, 50, 100, 200, 300, 400, 500,
-            1000);
+            1000, ];
 
         foreach ($pagecountoptions as $key => $number) {
             $obj = new stdClass();
@@ -516,7 +516,7 @@ class margic {
 
         global $DB, $USER, $CFG, $OUTPUT;
 
-        $entry->user = $DB->get_record('user', array('id' => $entry->userid));
+        $entry->user = $DB->get_record('user', ['id' => $entry->userid]);
 
         // Check if entry creation time should be shown.
         if (!has_capability('mod/margic:viewotherusersentrytimes', $this->context) && $entry->userid != $USER->id) {
@@ -532,7 +532,7 @@ class margic {
         if (!$currentgroups || ($allowedusers && in_array($entry->user, $allowedusers))) {
             // Get child entries for entry.
             $entry->childentries = $DB->get_records('margic_entries',
-                array('margic' => $this->instance->id, 'baseentry' => $entry->id), 'timecreated DESC');
+                ['margic' => $this->instance->id, 'baseentry' => $entry->id], 'timecreated DESC');
 
             $revisionnr = count($entry->childentries);
             foreach ($entry->childentries as $ci => $childentry) {
@@ -601,7 +601,7 @@ class margic {
             require_once($CFG->dirroot . '/mod/margic/classes/local/helper.php');
 
             $entry->user->userpicture = $OUTPUT->user_picture($entry->user,
-            array('courseid' => $this->course->id, 'link' => true, 'includefullname' => true, 'size' => 25));
+            ['courseid' => $this->course->id, 'link' => true, 'includefullname' => true, 'size' => 25]);
 
             // Add feedback area to entry.
             $entry->gradingform = helper::margic_return_feedback_area_for_entry($this->cm->id, $this->context,
@@ -629,7 +629,7 @@ class margic {
 
         // Get annotations for entry.
         $entry->annotations = array_values($DB->get_records('margic_annotations',
-            array('margic' => $this->cm->instance, 'entry' => $entry->id)));
+            ['margic' => $this->cm->instance, 'entry' => $entry->id]));
 
         foreach ($entry->annotations as $key => $annotation) {
 
@@ -639,7 +639,7 @@ class margic {
                 $entry->annotations[$key]->timemodified = false;
             }
 
-            if (!$DB->record_exists('margic_errortypes', array('id' => $annotation->type))) { // If annotation type does not exist.
+            if (!$DB->record_exists('margic_errortypes', ['id' => $annotation->type])) { // If annotation type does not exist.
                 $entry->annotations[$key]->color = 'FFFF00';
                 $entry->annotations[$key]->type = get_string('deletederrortype', 'mod_margic');
             } else {
@@ -663,9 +663,9 @@ class margic {
 
             if ($annotationmode) {
                 // Add annotater images to annotations.
-                $annotater = $DB->get_record('user', array('id' => $annotation->userid));
+                $annotater = $DB->get_record('user', ['id' => $annotation->userid]);
                 $annotaterimage = $OUTPUT->user_picture($annotater,
-                    array('courseid' => $this->course->id, 'link' => true, 'includefullname' => true, 'size' => 20));
+                    ['courseid' => $this->course->id, 'link' => true, 'includefullname' => true, 'size' => 20]);
                 $entry->annotations[$key]->userpicturestr = $annotaterimage;
 
             } else {
@@ -685,10 +685,10 @@ class margic {
             // Add annotation form.
             if (!$readonly) {
                 require_once($CFG->dirroot . '/mod/margic/annotation_form.php');
-                $mform = new mod_margic_annotation_form(new moodle_url('/mod/margic/annotations.php', array('id' => $this->cm->id)),
-                    array('types' => $this->get_errortypes_for_form()));
+                $mform = new mod_margic_annotation_form(new moodle_url('/mod/margic/annotations.php', ['id' => $this->cm->id]),
+                    ['types' => $this->get_errortypes_for_form()]);
                 // Set default data.
-                $mform->set_data(array('id' => $this->cm->id, 'entry' => $entry->id));
+                $mform->set_data(['id' => $this->cm->id, 'entry' => $entry->id]);
 
                 $entry->annotationform = $mform->render();
             }

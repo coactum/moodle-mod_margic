@@ -66,15 +66,13 @@ class feedback_updated extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/margic/view.php', array(
-            'id' => $this->contextinstanceid
-        ));
+        return new \moodle_url('/mod/margic/view.php', ['id' => $this->contextinstanceid]);
     }
 
     /**
      * Get objectid mapping for restore.
      */
     public static function get_objectid_mapping() {
-        return array('db' => 'margic_entries', 'restore' => 'margic_entry');
+        return ['db' => 'margic_entries', 'restore' => 'margic_entry'];
     }
 }

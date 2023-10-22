@@ -23,7 +23,7 @@
  */
 
 use mod_margic\local\helper;
-use \mod_margic\event\invalid_access_attempt;
+use mod_margic\event\invalid_access_attempt;
 use core\output\notification;
 use mod_margic\output\margic_entry;
 
@@ -57,9 +57,7 @@ if (! $course) {
     throw new moodle_exception(get_string('incorrectcourseid', 'margic'));
 }
 
-if (! $coursesections = $DB->get_record("course_sections", array(
-    "id" => $cm->section
-))) {
+if (! $coursesections = $DB->get_record("course_sections", ["id" => $cm->section])) {
     throw new moodle_exception(get_string('incorrectmodule', 'margic'));
 }
 
@@ -70,13 +68,11 @@ require_capability('mod/margic:addentries', $context);
 // Prevent creating and editing of entries if user is not allowed to edit entry or activity is not available.
 if (($entryid && !$moduleinstance->editentries) || !helper::margic_available($moduleinstance)) {
     // Trigger invalid_access_attempt with redirect to the view page.
-    $params = array(
+    $params = [
         'objectid' => $id,
         'context' => $context,
-        'other' => array(
-            'file' => 'edit.php'
-        )
-    );
+        'other' => ['file' => 'edit.php'],
+    ];
     $event = invalid_access_attempt::create($params);
     $event->trigger();
     redirect('view.php?id='.$id, get_string('editentrynotpossible', 'margic'), null, notification::NOTIFY_ERROR);
@@ -93,20 +89,20 @@ $data = new stdClass();
 $data->id = $cm->id;
 
 // Get the single record specified by firstkey.
-if ($DB->record_exists('margic_entries', array('margic' => $moduleinstance->id, "id" => $entryid))) {
-    $entry = $DB->get_record('margic_entries', array('margic' => $moduleinstance->id, "id" => $entryid));
+if ($DB->record_exists('margic_entries', ['margic' => $moduleinstance->id, "id" => $entryid])) {
+    $entry = $DB->get_record('margic_entries', ['margic' => $moduleinstance->id, "id" => $entryid]);
 
     $notnewestentry = false;
     // Prevent editing of entries that are not the newest version of a base entry or a unedited entry.
     if (isset($entry->baseentry)) { // If entry has a base entry check if this entry is the newest childentry.
         $otherchildentries = $DB->get_records('margic_entries',
-            array('margic' => $moduleinstance->id, 'baseentry' => $entry->baseentry), 'timecreated DESC');
+            ['margic' => $moduleinstance->id, 'baseentry' => $entry->baseentry], 'timecreated DESC');
 
         if ($entry->timecreated < $otherchildentries[array_key_first($otherchildentries)]->timecreated) {
             $notnewestentry = true;
         }
     } else { // If this entry has no base entry check if it has childentries and cant therefore be edited.
-        $childentries = $DB->get_records('margic_entries', array('margic' => $moduleinstance->id, 'baseentry' => $entry->id),
+        $childentries = $DB->get_records('margic_entries', ['margic' => $moduleinstance->id, 'baseentry' => $entry->id],
             'timecreated DESC');
 
         if (!empty($childentries)) {
@@ -117,13 +113,11 @@ if ($DB->record_exists('margic_entries', array('margic' => $moduleinstance->id, 
     // Prevent editing of entries not started by this user or if it is not the newest child entry.
     if ($entry->userid != $USER->id || $notnewestentry) {
         // Trigger invalid_access_attempt with redirect to the view page.
-        $params = array(
+        $params = [
             'objectid' => $id,
             'context' => $context,
-            'other' => array(
-                'file' => 'edit.php'
-            )
-        );
+            'other' => ['file' => 'edit.php'],
+        ];
         $event = invalid_access_attempt::create($params);
         $event->trigger();
         redirect('view.php?id='.$id, get_string('editentrynotpossible', 'margic'), null, notification::NOTIFY_ERROR);
@@ -135,7 +129,7 @@ if ($DB->record_exists('margic_entries', array('margic' => $moduleinstance->id, 
     $data->textformat = $entry->format;
 
     $PAGE->requires->js_call_amd('mod_margic/annotations', 'init',
-        array('cmid' => $cm->id, 'canmakeannotations' => false, 'myuserid' => $USER->id));
+        ['cmid' => $cm->id, 'canmakeannotations' => false, 'myuserid' => $USER->id]);
 } else {
     $entry = false;
 
@@ -153,7 +147,7 @@ $data = file_prepare_standard_filemanager($data, 'attachment', $attachmentoption
 
 // Create form.
 $form = new mod_margic_entry_form(null,
-    array('editentrydates' => $moduleinstance->editentrydates, 'editoroptions' => $editoroptions));
+    ['editentrydates' => $moduleinstance->editentrydates, 'editoroptions' => $editoroptions]);
 
 // Set existing data for this entry.
 $form->set_data($data);
@@ -190,7 +184,7 @@ if ($form->is_cancelled()) {
         // Check if timecreated is not older then connected entries.
         if ($moduleinstance->editentrydates) {
 
-            $baseentry = $DB->get_record('margic_entries', array('margic' => $moduleinstance->id, "id" => $newentry->baseentry));
+            $baseentry = $DB->get_record('margic_entries', ['margic' => $moduleinstance->id, "id" => $newentry->baseentry]);
 
             if ($newentry->timecreated <= $baseentry->timemodified) {
                 redirect(new moodle_url('/mod/margic/view.php?id=' . $cm->id), get_string('timecreatedinvalid', 'mod_margic'),
@@ -198,7 +192,7 @@ if ($form->is_cancelled()) {
             }
 
             $connectedentries = $DB->get_records('margic_entries',
-                array('margic' => $moduleinstance->id, 'baseentry' => $newentry->baseentry), 'timecreated DESC');
+                ['margic' => $moduleinstance->id, 'baseentry' => $newentry->baseentry], 'timecreated DESC');
 
             if ($connectedentries && $newentry->timecreated <= $connectedentries[array_key_first($connectedentries)]->timecreated) {
                 redirect(new moodle_url('/mod/margic/view.php?id=' . $cm->id), get_string('timecreatedinvalid', 'mod_margic'),
@@ -208,7 +202,7 @@ if ($form->is_cancelled()) {
         }
 
         // Update timemodified for base entry.
-        $baseentry = $DB->get_record('margic_entries', array('margic' => $moduleinstance->id, "id" => $newentry->baseentry));
+        $baseentry = $DB->get_record('margic_entries', ['margic' => $moduleinstance->id, "id" => $newentry->baseentry]);
         $baseentry->timemodified = $newentry->timecreated;
         $DB->update_record('margic_entries', $baseentry);
     }
@@ -223,23 +217,23 @@ if ($form->is_cancelled()) {
     $entrytext = file_rewrite_pluginfile_urls($fromform->text, 'pluginfile.php', $context->id,
         'mod_margic', 'entry', $newentry->id);
 
-    $newentry->text = format_text($entrytext, $fromform->textformat, array('para' => false));
+    $newentry->text = format_text($entrytext, $fromform->textformat, ['para' => false]);
     $newentry->format = $fromform->textformat;
 
     $DB->update_record('margic_entries', $newentry);
 
     if ($entry && $fromform->entryid) {
         // Trigger module entry updated event.
-        $event = \mod_margic\event\entry_updated::create(array(
+        $event = \mod_margic\event\entry_updated::create([
             'objectid' => $newentry->id,
-            'context' => $context
-        ));
+            'context' => $context,
+        ]);
     } else {
         // Trigger module entry created event.
-        $event = \mod_margic\event\entry_created::create(array(
+        $event = \mod_margic\event\entry_created::create([
             'objectid' => $newentry->id,
-            'context' => $context
-        ));
+            'context' => $context,
+        ]);
     }
 
     $event->trigger();
@@ -254,7 +248,7 @@ if ($form->is_cancelled()) {
 
 }
 
-$PAGE->set_url('/mod/margic/edit.php', array('id' => $id));
+$PAGE->set_url('/mod/margic/edit.php', ['id' => $id]);
 $PAGE->navbar->add($title);
 $PAGE->set_title(format_string($moduleinstance->name) . ' - ' . $title);
 $PAGE->set_heading($course->fullname);
@@ -295,7 +289,7 @@ if ($entry) {
     $regradingstr = get_string('needsregrading', 'margic');
 
     if ($entry->baseentry) { // If edited entry is child entry get base entry for rendering.
-        $entry = $DB->get_record('margic_entries', array('margic' => $moduleinstance->id, "id" => $entry->baseentry));
+        $entry = $DB->get_record('margic_entries', ['margic' => $moduleinstance->id, "id" => $entry->baseentry]);
     }
 
     $page = new margic_entry($margic, $cm, $context, $moduleinstance, $entry, $margic->get_annotationarea_width(),

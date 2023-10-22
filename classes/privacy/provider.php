@@ -114,7 +114,7 @@ class provider implements \core_privacy\local\metadata\provider,
         $params = [
             'modulename' => 'margic',
             'contextlevel' => CONTEXT_MODULE,
-            'userid' => $userid
+            'userid' => $userid,
         ];
 
         // Get contexts for entries.
@@ -431,7 +431,7 @@ class provider implements \core_privacy\local\metadata\provider,
             'timecreated' => transform::datetime($annotation->timecreated),
             'timemodified' => $timemodified,
             'type' => $annotation->type,
-            'text' => format_text($annotation->text, 2, array('para' => false)),
+            'text' => format_text($annotation->text, 2, ['para' => false]),
         ];
 
         // Store the annotation data.
