@@ -1,5 +1,12 @@
 ## Changelog ##
 
+- [1.4.0]:
+    - Migrated the plugin to Bootstrap 5 for compatibility with Moodle 5.0, 5.1 and 5.2.
+        - Replaced the deprecated `data-toggle` / `data-target` attributes with their `data-bs-*` equivalents in all mustache templates (thanks to NJahreis for the original fix, #18 / #19).
+        - Replaced the remaining Bootstrap 4 markup: alert close buttons now use `btn-close` with `data-bs-dismiss`, alerts use `fade show`, and the directional utility classes were updated (`mr-*`/`ml-*`/`pr-*` → `me-*`/`ms-*`/`pe-*`, `float-right` → `float-end`, `border-right` → `border-end`).
+    - [Change]: The minimum required Moodle version is now 5.0. As Bootstrap 5 is not backwards compatible with the Bootstrap 4 used in Moodle 4.x, this release no longer supports Moodle versions below 5.0. Stay on the 1.3.x releases for Moodle 4.x.
+    - [Chore]: Updated the CI pipeline to moodle-plugin-ci v4 and to test against Moodle 5.0–5.2 (PHP 8.2–8.4, PostgreSQL 16, MariaDB 11.4).
+
 - [1.3.2]:
     - [Bugfix]: Replaced the deprecated message constants MESSAGE_DEFAULT_LOGGEDIN and MESSAGE_DEFAULT_LOGGEDOFF (removed in Moodle 4.5) with MESSAGE_DEFAULT_ENABLED. This fixes the "Undefined constant MESSAGE_DEFAULT_LOGGEDIN" error during upgrades to Moodle 4.5+ (fixes #16, thanks to NJahreis). As MESSAGE_DEFAULT_ENABLED is only available since Moodle 4.0, the minimum required Moodle version is now 4.0.
 
