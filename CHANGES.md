@@ -1,5 +1,8 @@
 ## Changelog ##
 
+- [1.3.2]:
+    - [Bugfix]: Replaced the deprecated message constants MESSAGE_DEFAULT_LOGGEDIN and MESSAGE_DEFAULT_LOGGEDOFF (removed in Moodle 4.5) with MESSAGE_DEFAULT_ENABLED. This fixes the "Undefined constant MESSAGE_DEFAULT_LOGGEDIN" error during upgrades to Moodle 4.5+ (fixes #16, thanks to NJahreis). As MESSAGE_DEFAULT_ENABLED is only available since Moodle 4.0, the minimum required Moodle version is now 4.0.
+
 - [1.3.1]:
     - Ensured compatibility with Moodle 4.3.
         - Changed code to comply with new moodle coding standards.
