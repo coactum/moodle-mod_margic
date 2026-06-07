@@ -1,5 +1,9 @@
 ## Changelog ##
 
+- [1.4.1]:
+    - [Security]: Removed the `RISK_XSS` flag from the `mod/margic:addentries` capability. Entry text submitted by participants is always run through `format_text()` with HTML cleaning enabled before it is stored, so participants cannot inject scripts. Moodle therefore no longer shows an XSS warning when assigning this capability to the student role (the `RISK_SPAM` flag is kept).
+    - [Security]: Set the entry editor option `trusttext` to `false`. Entry text is always cleaned, so trusted (unfiltered) text was never honoured for entries anyway; making this explicit ensures the no-XSS guarantee also holds if the cleaning is ever moved to display time.
+
 - [1.4.0]:
     - Migrated the plugin to Bootstrap 5 for compatibility with Moodle 5.0, 5.1 and 5.2.
         - Replaced the deprecated `data-toggle` / `data-target` attributes with their `data-bs-*` equivalents in all mustache templates (thanks to NJahreis for the original fix, #18 / #19).
