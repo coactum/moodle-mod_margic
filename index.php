@@ -22,7 +22,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require(__DIR__.'/../../config.php');
+require(__DIR__ . '/../../config.php');
 require_once("lib.php");
 
 $id = required_param('id', PARAM_INT); // Course.
@@ -78,7 +78,6 @@ $currentsection = '';
 $i = 0;
 
 foreach ($margics as $margic) {
-
     $context = context_module::instance($margic->coursemodule);
 
     // Section.
@@ -89,7 +88,7 @@ foreach ($margics as $margic) {
         }
         if ($currentsection !== '') {
             $table->data[$i] = 'hr';
-            $i ++;
+            $i++;
         }
         $currentsection = $margic->section;
     }
@@ -110,7 +109,7 @@ foreach ($margics as $margic) {
     // Description.
     $table->data[$i][] = format_module_intro('margic', $margic, $margic->coursemodule);
 
-    $i ++;
+    $i++;
 }
 
 echo "<br />";

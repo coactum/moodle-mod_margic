@@ -24,7 +24,6 @@
 namespace mod_margic\output;
 
 use mod_margic\mod_margic_annotation_form;
-
 use renderable;
 use renderer_base;
 use templatable;
@@ -38,7 +37,6 @@ use stdClass;
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class margic_view implements renderable, templatable {
-
     /** @var object */
     protected $margic;
     /** @var object */
@@ -124,10 +122,34 @@ class margic_view implements renderable, templatable {
      * @param bool $canmakeannotations If user can make annotations
      * @param array $errortypes Array with annotation types for form
      */
-    public function __construct($margic, $cm, $context, $moduleinstance, $entries, $sortmode, $entrybgc, $textbgc,
-        $annotationareawidth, $caneditentries, $edittimestarts, $edittimenotstarted, $edittimeends, $edittimehasended,
-        $canmanageentries, $sesskey, $currentuserrating, $ratingaggregationmode, $course, $singleuser, $pagecountoptions,
-        $pagebar, $entriescount, $annotationmode, $canmakeannotations, $errortypes) {
+    public function __construct(
+        $margic,
+        $cm,
+        $context,
+        $moduleinstance,
+        $entries,
+        $sortmode,
+        $entrybgc,
+        $textbgc,
+        $annotationareawidth,
+        $caneditentries,
+        $edittimestarts,
+        $edittimenotstarted,
+        $edittimeends,
+        $edittimehasended,
+        $canmanageentries,
+        $sesskey,
+        $currentuserrating,
+        $ratingaggregationmode,
+        $course,
+        $singleuser,
+        $pagecountoptions,
+        $pagebar,
+        $entriescount,
+        $annotationmode,
+        $canmakeannotations,
+        $errortypes
+    ) {
 
         $this->margic = $margic;
         $this->cm = $cm;
@@ -172,14 +194,20 @@ class margic_view implements renderable, templatable {
         global $OUTPUT, $DB, $USER, $CFG;
 
         if ($this->entries) {
-
             require_once($CFG->dirroot . '/mod/margic/annotation_form.php');
 
             $grades = make_grades_menu($this->moduleinstance->scale); // For select in grading_form.
             $currentgroups = groups_get_activity_group($this->cm, true);    // Get a list of the currently allowed course groups.
             if ($currentgroups) {
-                $allowedusers = get_users_by_capability($this->context, 'mod/margic:addentries', '',
-                    $sort = 'lastname ASC, firstname ASC', '', '', $currentgroups);
+                $allowedusers = get_users_by_capability(
+                    $this->context,
+                    'mod/margic:addentries',
+                    '',
+                    $sort = 'lastname ASC, firstname ASC',
+                    '',
+                    '',
+                    $currentgroups
+                );
             } else {
                 $allowedusers = true;
             }
@@ -193,12 +221,34 @@ class margic_view implements renderable, templatable {
 
             foreach ($this->entries as $key => $entry) {
                 if ($entry) { // Set user picture for teachers.
-                    $this->entries[$key]->entry = $OUTPUT->render(new margic_entry($this->margic, $this->cm, $this->context,
-                        $this->moduleinstance, $entry, $this->annotationareawidth, $this->moduleinstance->editentries,
-                        $this->edittimestarts, $this->edittimenotstarted, $this->edittimeends, $this->edittimehasended,
-                        $this->canmanageentries, $this->course, $this->singleuser, $this->annotationmode, $this->canmakeannotations,
-                        $this->errortypes, $readonly, $grades, $currentgroups, $allowedusers, $strmanager, $gradingstr,
-                        $regradingstr, $this->sesskey, false));
+                    $this->entries[$key]->entry = $OUTPUT->render(new margic_entry(
+                        $this->margic,
+                        $this->cm,
+                        $this->context,
+                        $this->moduleinstance,
+                        $entry,
+                        $this->annotationareawidth,
+                        $this->moduleinstance->editentries,
+                        $this->edittimestarts,
+                        $this->edittimenotstarted,
+                        $this->edittimeends,
+                        $this->edittimehasended,
+                        $this->canmanageentries,
+                        $this->course,
+                        $this->singleuser,
+                        $this->annotationmode,
+                        $this->canmakeannotations,
+                        $this->errortypes,
+                        $readonly,
+                        $grades,
+                        $currentgroups,
+                        $allowedusers,
+                        $strmanager,
+                        $gradingstr,
+                        $regradingstr,
+                        $this->sesskey,
+                        false
+                    ));
                 }
             }
         }

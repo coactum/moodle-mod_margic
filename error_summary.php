@@ -25,8 +25,8 @@
 use core\output\notification;
 use mod_margic\output\margic_error_summary;
 
-require(__DIR__.'/../../config.php');
-require_once(__DIR__.'/lib.php');
+require(__DIR__ . '/../../config.php');
+require_once(__DIR__ . '/lib.php');
 require_once($CFG->dirroot . '/mod/margic/locallib.php');
 
 // Course_module ID.
@@ -87,13 +87,11 @@ if ($addtomargic && $manageerrortypes) {
     $redirecturl = new moodle_url('/mod/margic/error_summary.php', ['id' => $id]);
 
     if ($DB->record_exists('margic_errortype_templates', ['id' => $addtomargic])) {
-
         global $USER;
 
         $type = $DB->get_record('margic_errortype_templates', ['id' => $addtomargic]);
 
         if ($type->defaulttype == 1 || ($type->defaulttype == 0 && $type->userid == $USER->id)) {
-
             $etypes = $margic->get_margic_errortypes();
 
             if ($etypes) {
@@ -137,17 +135,23 @@ if ($manageerrortypes && $mode == 2 && $priority && $action && $DB->record_exist
         $typeswitched = $DB->get_record('margic_errortypes', ['margic' => $moduleinstance->id, 'priority' => $type->priority]);
 
         if (!$typeswitched) { // If no type with priority+1 search for types with higher priority values.
-            $typeswitched = $DB->get_records_select('margic_errortypes',
-                "margic = $moduleinstance->id AND priority < $type->priority", null, 'priority ASC');
+            $typeswitched = $DB->get_records_select(
+                'margic_errortypes',
+                "margic = $moduleinstance->id AND priority < $type->priority",
+                null,
+                'priority ASC'
+            );
 
             if ($typeswitched && isset($typeswitched[array_key_first($typeswitched)])) {
                 $typeswitched = $typeswitched[array_key_first($typeswitched)];
             }
         }
-
-    } else if ($type && $action == 2 && $type->priority != $DB->count_records('margic_errortypes',
-        ['margic' => $moduleinstance->id]) + 1) { // Decrease priority (move further back).
-
+    } else if (
+        $type && $action == 2 && $type->priority != $DB->count_records(
+            'margic_errortypes',
+            ['margic' => $moduleinstance->id]
+        ) + 1
+    ) { // Decrease priority (move further back).
         $oldpriority = $type->priority;
         $type->priority += 1;
         $prioritychanged = true;
@@ -155,8 +159,12 @@ if ($manageerrortypes && $mode == 2 && $priority && $action && $DB->record_exist
         $typeswitched = $DB->get_record('margic_errortypes', ['margic' => $moduleinstance->id, 'priority' => $type->priority]);
 
         if (!$typeswitched) { // If no type with priority+1 search for types with higher priority values.
-            $typeswitched = $DB->get_records_select('margic_errortypes',
-                "margic = $moduleinstance->id AND priority > $type->priority", null, 'priority ASC');
+            $typeswitched = $DB->get_records_select(
+                'margic_errortypes',
+                "margic = $moduleinstance->id AND priority > $type->priority",
+                null,
+                'priority ASC'
+            );
 
             if ($typeswitched && isset($typeswitched[array_key_first($typeswitched)])) {
                 $typeswitched = $typeswitched[array_key_first($typeswitched)];
@@ -182,7 +190,6 @@ if ($manageerrortypes && $mode == 2 && $priority && $action && $DB->record_exist
 
 // Delete annotation.
 if ($manageerrortypes && $delete !== 0 && $mode) {
-
     require_sesskey();
 
     $redirecturl = new moodle_url('/mod/margic/error_summary.php', ['id' => $id]);
@@ -194,13 +201,15 @@ if ($manageerrortypes && $delete !== 0 && $mode) {
     }
 
     if ($DB->record_exists($table, ['id' => $delete])) {
-
         $type = $DB->get_record($table, ['id' => $delete]);
 
-        if ($mode == 2 ||
-            ($type->defaulttype == 1 && has_capability('mod/margic:editdefaulterrortypes', $context))
-            || ($type->defaulttype == 0 && $type->userid == $USER->id)) {
-
+        if (
+            $mode == 2 ||
+            ($type->defaulttype == 1 &&
+            has_capability('mod/margic:editdefaulterrortypes', $context)) ||
+            ($type->defaulttype == 0 &&
+            $type->userid == $USER->id)
+        ) {
             $DB->delete_records($table, ['id' => $delete]);
             redirect($redirecturl, get_string('errortypedeleted', 'mod_margic'), null, notification::NOTIFY_SUCCESS);
         } else {
@@ -217,7 +226,7 @@ $margicname = format_string($moduleinstance->name, true, ['context' => $context]
 $PAGE->set_url('/mod/margic/error_summary.php', ['id' => $cm->id]);
 $PAGE->navbar->add(get_string('errorsummary', 'mod_margic'));
 
-$PAGE->set_title(get_string('modulename', 'mod_margic').': ' . $margicname);
+$PAGE->set_title(get_string('modulename', 'mod_margic') . ': ' . $margicname);
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
 
@@ -317,8 +326,15 @@ foreach ($errortypetemplates as $id => $templatetype) {
 $errortypetemplates = array_values($errortypetemplates);
 
 // Output page.
-$page = new margic_error_summary($cm->id, $participants, $margicerrortypes, $errortypetemplates, sesskey(),
-    $manageerrortypes, $defaulterrortypetemplateseditable);
+$page = new margic_error_summary(
+    $cm->id,
+    $participants,
+    $margicerrortypes,
+    $errortypetemplates,
+    sesskey(),
+    $manageerrortypes,
+    $defaulterrortypetemplateseditable
+);
 
 echo $OUTPUT->render($page);
 

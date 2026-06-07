@@ -26,8 +26,8 @@ use mod_margic\output\margic_view;
 use mod_margic\local\helper;
 use core\output\notification;
 
-require(__DIR__.'/../../config.php');
-require_once(__DIR__.'/lib.php');
+require(__DIR__ . '/../../config.php');
+require_once(__DIR__ . '/lib.php');
 require_once($CFG->dirroot . '/mod/margic/locallib.php');
 
 // Course_module ID.
@@ -37,10 +37,10 @@ $id = required_param('id', PARAM_INT);
 $m = optional_param('m', null, PARAM_INT);
 
 // Param containing user id if only entries for one user should be displayed.
-$userid = optional_param('userid',  0, PARAM_INT); // User id.
+$userid = optional_param('userid', 0, PARAM_INT); // User id.
 
 // Param containing the requested action.
-$action = optional_param('action',  'currententry', PARAM_ALPHANUMEXT);
+$action = optional_param('action', 'currententry', PARAM_ALPHANUMEXT);
 
 // Param containing the page count.
 $pagecount = optional_param('pagecount', 0, PARAM_INT);
@@ -49,13 +49,13 @@ $pagecount = optional_param('pagecount', 0, PARAM_INT);
 $page = optional_param('page', 0, PARAM_INT);
 
 // Param if annotation mode is activated.
-$annotationmode = optional_param('annotationmode',  0, PARAM_BOOL); // Annotation mode.
+$annotationmode = optional_param('annotationmode', 0, PARAM_BOOL); // Annotation mode.
 
 // Param with id of annotation that should be focused.
-$focusannotation = optional_param('focusannotation',  0, PARAM_INT); // ID of annotation.
+$focusannotation = optional_param('focusannotation', 0, PARAM_INT); // ID of annotation.
 
 // Param with id of grading form that should be focused.
-$focusgradingform = optional_param('focusgradingform',  0, PARAM_INT); // ID of grading form.
+$focusgradingform = optional_param('focusgradingform', 0, PARAM_INT); // ID of grading form.
 
 $margic = margic::get_margic_instance($id, $m, $userid, $action, $pagecount, $page);
 
@@ -120,16 +120,19 @@ $canmakeannotations = has_capability('mod/margic:makeannotations', $context);
 
 // Add javascript and navbar element if annotationmode is activated and user has capability.
 if ($annotationmode === 1 && has_capability('mod/margic:viewannotations', $context)) {
-
     $PAGE->set_url('/mod/margic/view.php', ['id' => $cm->id, 'annotationmode' => 1]);
 
     $PAGE->navbar->add(get_string("viewentries", "margic"), new moodle_url('/mod/margic/view.php', ['id' => $cm->id]));
     $PAGE->navbar->add(get_string('viewannotations', 'mod_margic'));
 
-    $PAGE->requires->js_call_amd('mod_margic/annotations', 'init',
+    $PAGE->requires->js_call_amd(
+        'mod_margic/annotations',
+        'init',
         ['cmid' => $cm->id, 'canmakeannotations' => $canmakeannotations, 'myuserid' => $USER->id,
         'focusannotation' => $focusannotation, 'focusgradingform' => $focusgradingform,
-        'overwriteannotations' => $moduleinstance->overwriteannotations, ]);
+        'overwriteannotations' => $moduleinstance->overwriteannotations,
+        ]
+    );
 } else {
     // Header.
     $PAGE->set_url('/mod/margic/view.php', ['id' => $cm->id]);
@@ -139,7 +142,7 @@ if ($annotationmode === 1 && has_capability('mod/margic:viewannotations', $conte
 $completion = new completion_info($course);
 $completion->set_module_viewed($cm);
 
-$PAGE->set_title(get_string('modulename', 'mod_margic').': ' . $margicname);
+$PAGE->set_title(get_string('modulename', 'mod_margic') . ': ' . $margicname);
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
 
@@ -175,13 +178,34 @@ echo groups_print_activity_menu($cm, $CFG->wwwroot . "/mod/margic/view.php?id=$i
 $edittimes = helper::margic_get_edittime_options($moduleinstance);
 
 // Output page.
-$page = new margic_view($margic, $cm, $context, $moduleinstance, $margic->get_entries_grouped_by_pagecount(),
-    $margic->get_sortmode(), get_config('margic', 'entrybgc'), get_config('margic', 'textbgc'),
-    $margic->get_annotationarea_width(), $moduleinstance->editentries, $edittimes->edittimestarts,
-    $edittimes->edittimenotstarted, $edittimes->edittimeends, $edittimes->edittimehasended, $canmanageentries,
-    sesskey(), $currentuserrating, $ratingaggregationmode, $course, $userid, $margic->get_pagecountoptions(),
-    $margic->get_pagebar(), count($margic->get_entries()), $annotationmode, $canmakeannotations,
-    $margic->get_errortypes_for_form());
+$page = new margic_view(
+    $margic,
+    $cm,
+    $context,
+    $moduleinstance,
+    $margic->get_entries_grouped_by_pagecount(),
+    $margic->get_sortmode(),
+    get_config('margic', 'entrybgc'),
+    get_config('margic', 'textbgc'),
+    $margic->get_annotationarea_width(),
+    $moduleinstance->editentries,
+    $edittimes->edittimestarts,
+    $edittimes->edittimenotstarted,
+    $edittimes->edittimeends,
+    $edittimes->edittimehasended,
+    $canmanageentries,
+    sesskey(),
+    $currentuserrating,
+    $ratingaggregationmode,
+    $course,
+    $userid,
+    $margic->get_pagecountoptions(),
+    $margic->get_pagebar(),
+    count($margic->get_entries()),
+    $annotationmode,
+    $canmakeannotations,
+    $margic->get_errortypes_for_form()
+);
 
 echo $OUTPUT->render($page);
 

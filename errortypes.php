@@ -25,8 +25,8 @@
 use core\output\notification;
 use mod_margic\output\margic_error_summary;
 
-require(__DIR__.'/../../config.php');
-require_once(__DIR__.'/lib.php');
+require(__DIR__ . '/../../config.php');
+require_once(__DIR__ . '/lib.php');
 require_once($CFG->dirroot . '/mod/margic/locallib.php');
 require_once($CFG->dirroot . '/mod/margic/errortypes_form.php');
 
@@ -75,9 +75,10 @@ if ($edit !== 0) {
     if ($mode == 1) { // If type is template error type.
         $editedtype = $DB->get_record('margic_errortype_templates', ['id' => $edit]);
 
-        if (isset($editedtype->defaulttype) && $editedtype->defaulttype == 1
-            && !get_config('margic', 'defaulterrortypetemplateseditable')) {
-
+        if (
+            isset($editedtype->defaulttype) && $editedtype->defaulttype == 1
+            && !get_config('margic', 'defaulterrortypetemplateseditable')
+        ) {
                 redirect($redirecturl, get_string('notallowedtodothis', 'mod_margic'), null, notification::NOTIFY_ERROR);
         }
     } else if ($mode == 2) { // If type is margic error type.
@@ -88,12 +89,17 @@ if ($edit !== 0) {
         }
     }
 
-    if ($editedtype && $mode == 2 ||
-        ((isset($editedtype->defaulttype) && $editedtype->defaulttype == 1 &&
-        has_capability('mod/margic:editdefaulterrortypes', $context))
-        || (isset($editedtype->defaulttype) && isset($editedtype->userid) &&
-        $editedtype->defaulttype == 0 && $editedtype->userid == $USER->id))) {
-
+    if (
+        $editedtype &&
+        $mode == 2 ||
+        ((isset($editedtype->defaulttype) &&
+        $editedtype->defaulttype == 1 &&
+        has_capability('mod/margic:editdefaulterrortypes', $context)) ||
+        (isset($editedtype->defaulttype) &&
+        isset($editedtype->userid) &&
+        $editedtype->defaulttype == 0 &&
+        $editedtype->userid == $USER->id))
+    ) {
         $editedtypeid = $edit;
         $editedtypename = $editedtype->name;
         $editedcolor = '#' . $editedtype->color;
@@ -105,8 +111,10 @@ if ($edit !== 0) {
 }
 
 // Instantiate form.
-$mform = new \mod_margic_errortypes_form(null,
-    ['editdefaulttype' => has_capability('mod/margic:editdefaulterrortypes', $context), 'mode' => $mode]);
+$mform = new \mod_margic_errortypes_form(
+    null,
+    ['editdefaulttype' => has_capability('mod/margic:editdefaulterrortypes', $context), 'mode' => $mode]
+);
 
 if (isset($editedtypeid)) {
     if ($mode == 1) { // If type is template error type.
@@ -127,16 +135,16 @@ if ($mform->is_cancelled()) {
 
     // In this case you process validated data. $mform->get_data() returns data posted in form.
     if ($fromform->typeid == 0 && isset($fromform->typename)) { // Create new error type.
-
         $errortype = new stdClass();
         $errortype->timecreated = time();
         $errortype->timemodified = 0;
         $errortype->name = format_text($fromform->typename, 1, ['para' => false]);
         $errortype->color = $fromform->color;
 
-        if (isset($fromform->standardtype) && $fromform->standardtype === 1 &&
-            has_capability('mod/margic:editdefaulterrortypes', $context)) {
-
+        if (
+            isset($fromform->standardtype) && $fromform->standardtype === 1 &&
+            has_capability('mod/margic:editdefaulterrortypes', $context)
+        ) {
             $errortype->userid = 0;
             $errortype->defaulttype = 1;
         } else {
@@ -157,27 +165,30 @@ if ($mform->is_cancelled()) {
 
         if ($mode == 1) { // If type is template error type.
             $DB->insert_record('margic_errortype_templates', $errortype);
-
         } else if ($mode == 2) { // If type is margic error type.
             $DB->insert_record('margic_errortypes', $errortype);
         }
 
         redirect($redirecturl, get_string('errortypeadded', 'mod_margic'), null, notification::NOTIFY_SUCCESS);
     } else if ($fromform->typeid !== 0 && isset($fromform->typename)) { // Update existing annotation type.
-
         if ($mode == 1) { // If type is template error type.
             $errortype = $DB->get_record('margic_errortype_templates', ['id' => $fromform->typeid]);
         } else if ($mode == 2) { // If type is margic error type.
             $errortype = $DB->get_record('margic_errortypes', ['id' => $fromform->typeid]);
         }
 
-        if ($errortype &&
+        if (
+            $errortype &&
             ($mode == 2 ||
-            (isset($errortype->defaulttype) && $errortype->defaulttype == 1 &&
-            has_capability('mod/margic:editdefaulterrortypes', $context) && $defaulterrortypetemplateseditable)
-            || (isset($errortype->defaulttype) && isset($errortype->userid) && $errortype->defaulttype == 0
-            && $errortype->userid == $USER->id))) {
-
+            (isset($errortype->defaulttype) &&
+            $errortype->defaulttype == 1 &&
+            has_capability('mod/margic:editdefaulterrortypes', $context) &&
+            $defaulterrortypetemplateseditable) ||
+            (isset($errortype->defaulttype) &&
+            isset($errortype->userid) &&
+            $errortype->defaulttype == 0 &&
+            $errortype->userid == $USER->id))
+        ) {
             $errortype->timemodified = time();
             $errortype->name = format_text($fromform->typename, 1, ['para' => false]);
             $errortype->color = $fromform->color;
@@ -195,7 +206,6 @@ if ($mform->is_cancelled()) {
 
             if ($mode == 1) { // If type is template error type.
                 $DB->update_record('margic_errortype_templates', $errortype);
-
             } else if ($mode == 2) { // If type is margic error type.
                 $DB->update_record('margic_errortypes', $errortype);
             }
@@ -204,7 +214,6 @@ if ($mform->is_cancelled()) {
         } else {
             redirect($redirecturl, get_string('errortypecantbeedited', 'mod_margic'), null, notification::NOTIFY_ERROR);
         }
-
     } else {
         redirect($redirecturl, get_string('errortypeinvalid', 'mod_margic'), null, notification::NOTIFY_ERROR);
     }
@@ -231,7 +240,7 @@ if ($mode == 1) { // If type is template error type.
 
 $PAGE->navbar->add($navtitle);
 
-$PAGE->set_title(get_string('modulename', 'mod_margic').': ' . $margicname);
+$PAGE->set_title(get_string('modulename', 'mod_margic') . ': ' . $margicname);
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
 

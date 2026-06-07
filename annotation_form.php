@@ -35,7 +35,6 @@ require_once("$CFG->libdir/formslib.php");
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL Juv3 or later
  */
 class mod_margic_annotation_form extends moodleform {
-
     /**
      * Define the form - called by parent constructor
      */

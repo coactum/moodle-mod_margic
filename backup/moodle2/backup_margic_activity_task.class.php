@@ -25,13 +25,12 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/mod/margic/backup/moodle2/backup_margic_stepslib.php');
+require_once($CFG->dirroot . '/mod/margic/backup/moodle2/backup_margic_stepslib.php');
 
 /**
  * The class provides all the settings and steps to perform one complete backup of mod_margic.
  */
 class backup_margic_activity_task extends backup_activity_task {
-
     /**
      * Defines particular settings for the plugin.
      */
@@ -58,23 +57,23 @@ class backup_margic_activity_task extends backup_activity_task {
         $base = preg_quote($CFG->wwwroot, "/");
 
         // Link to the list of margics.
-        $search = "/(".$base."\/mod\/margic\/index.php\?id\=)([0-9]+)/";
+        $search = "/(" . $base . "\/mod\/margic\/index.php\?id\=)([0-9]+)/";
         $content = preg_replace($search, '$@MARGICINDEX*$2@$', $content);
 
         // Link to margic view by moduleid with optional userid if only entries of one user should be shown.
-        $search = "/(".$base."\/mod\/margic\/view.php\?id\=)([0-9]+)(&|&amp;)userid=([0-9]+)/";
+        $search = "/(" . $base . "\/mod\/margic\/view.php\?id\=)([0-9]+)(&|&amp;)userid=([0-9]+)/";
         $content = preg_replace($search, '$@MARGICVIEWBYID*$2*$4@$', $content);
 
         // Link to the edit page.
-        $search = "/(".$base."\/mod\/margic\/edit.php\?id\=)([0-9]+)/";
+        $search = "/(" . $base . "\/mod\/margic\/edit.php\?id\=)([0-9]+)/";
         $content = preg_replace($search, '$@MARGICEDITVIEW*$2@$', $content);
 
         // Link to the annotation summary by moduleid.
-        $search = "/(".$base."\/mod\/margic\/error_summary.php\?id\=)([0-9]+)/";
+        $search = "/(" . $base . "\/mod\/margic\/error_summary.php\?id\=)([0-9]+)/";
         $content = preg_replace($search, '$@MARGICANNOTATIONSUMMARY*$2@$', $content);
 
         // Link to the page for editing errortypes.
-        $search = "/(".$base."\/mod\/margic\/errortypes.php\?id\=)([0-9]+)/";
+        $search = "/(" . $base . "\/mod\/margic\/errortypes.php\?id\=)([0-9]+)/";
         $content = preg_replace($search, '$@MARGICERRORTYPES*$2@$', $content);
 
         return $content;

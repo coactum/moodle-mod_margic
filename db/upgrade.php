@@ -54,8 +54,16 @@ function xmldb_margic_upgrade($oldversion) {
             $dbman->add_field($table, $field);
         }
 
-        $field = new xmldb_field('overwriteannotations', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0',
-            'annotationareawidth');
+        $field = new xmldb_field(
+            'overwriteannotations',
+            XMLDB_TYPE_INTEGER,
+            '1',
+            null,
+            XMLDB_NOTNULL,
+            null,
+            '0',
+            'annotationareawidth'
+        );
 
         // Conditionally launch add field for table.
         if (!$dbman->field_exists($table, $field)) {

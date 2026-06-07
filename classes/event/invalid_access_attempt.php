@@ -34,7 +34,6 @@ namespace mod_margic\event;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class invalid_access_attempt extends \core\event\base {
-
     /**
      * Init method.
      */
