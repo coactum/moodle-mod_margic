@@ -4,7 +4,9 @@ on: [push, pull_request]
 
 jobs:
   test:
-    runs-on: ubuntu-24.04
+    # ubuntu-24.04 disables io_uring (kernel.io_uring_disabled=2), which makes the
+    # MariaDB service container fail its health check. Stay on 22.04 where it works.
+    runs-on: ubuntu-22.04
 
     services:
       postgres:
