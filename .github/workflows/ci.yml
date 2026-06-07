@@ -4,8 +4,6 @@ on: [push, pull_request]
 
 jobs:
   test:
-    # ubuntu-24.04 disables io_uring (kernel.io_uring_disabled=2), which makes the
-    # MariaDB service container fail its health check. Stay on 22.04 where it works.
     runs-on: ubuntu-22.04
 
     services:
@@ -18,7 +16,10 @@ jobs:
           - 5432:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 3
       mariadb:
-        image: mariadb:11.4
+        # The GitHub runners disable io_uring (kernel.io_uring_disabled=2). MariaDB
+        # 11.x then fails its health check; 10.11 (LTS, supported by Moodle 5.x) is
+        # unaffected, so pin to it.
+        image: mariadb:10.11
         env:
           MYSQL_USER: 'root'
           MYSQL_ALLOW_EMPTY_PASSWORD: "true"
