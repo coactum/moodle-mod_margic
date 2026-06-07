@@ -29,10 +29,23 @@ jobs:
 
     strategy:
       fail-fast: false
+      # Only valid PHP/Moodle combinations are tested (each Moodle branch supports
+      # a specific PHP range). For every branch the lowest supported PHP is run
+      # against PostgreSQL and the highest against MariaDB to cover both databases.
       matrix:
-        php: ['7.3', '7.4', '8.0', '8.1', '8.2']
-        moodle-branch: ['MOODLE_39_STABLE', 'MOODLE_310_STABLE', 'MOODLE_311_STABLE', 'MOODLE_400_STABLE', 'MOODLE_401_STABLE', 'MOODLE_402_STABLE', 'MOODLE_403_STABLE']
-        database: [pgsql, mariadb]
+        include:
+          - {moodle-branch: 'MOODLE_400_STABLE', php: '7.4', database: pgsql}
+          - {moodle-branch: 'MOODLE_400_STABLE', php: '8.0', database: mariadb}
+          - {moodle-branch: 'MOODLE_401_STABLE', php: '7.4', database: pgsql}
+          - {moodle-branch: 'MOODLE_401_STABLE', php: '8.1', database: mariadb}
+          - {moodle-branch: 'MOODLE_402_STABLE', php: '8.0', database: pgsql}
+          - {moodle-branch: 'MOODLE_402_STABLE', php: '8.2', database: mariadb}
+          - {moodle-branch: 'MOODLE_403_STABLE', php: '8.0', database: pgsql}
+          - {moodle-branch: 'MOODLE_403_STABLE', php: '8.2', database: mariadb}
+          - {moodle-branch: 'MOODLE_404_STABLE', php: '8.1', database: pgsql}
+          - {moodle-branch: 'MOODLE_404_STABLE', php: '8.3', database: mariadb}
+          - {moodle-branch: 'MOODLE_405_STABLE', php: '8.1', database: pgsql}
+          - {moodle-branch: 'MOODLE_405_STABLE', php: '8.3', database: mariadb}
 
     steps:
       - name: Check out repository code
