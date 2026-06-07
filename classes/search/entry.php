@@ -36,7 +36,6 @@ require_once($CFG->dirroot . '/lib/grouplib.php');
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class entry extends \core_search\base_mod {
-
     /**
      *
      * @var array Internal quick static cache.
@@ -53,7 +52,7 @@ class entry extends \core_search\base_mod {
     public function get_document_recordset($modifiedfrom = 0, \context $context = null) {
         global $DB;
 
-        list ($contextjoin, $contextparams) = $this->get_context_restriction_sql($context, 'margic', 'm', SQL_PARAMS_NAMED);
+         [$contextjoin, $contextparams] = $this->get_context_restriction_sql($context, 'margic', 'm', SQL_PARAMS_NAMED);
         if ($contextjoin === null) {
             return null;
         }
@@ -82,8 +81,8 @@ class entry extends \core_search\base_mod {
             $context = \context_module::instance($cm->id);
         } catch (\dml_missing_record_exception $ex) {
             // Notify it as we run here as admin, we should see everything.
-            debugging('Error retrieving mod_margic '.$entry->id.' document, not all required data is available: '
-                .$ex->getMessage(), DEBUG_DEVELOPER);
+            debugging('Error retrieving mod_margic ' . $entry->id . ' document, not all required data is available: '
+                . $ex->getMessage(), DEBUG_DEVELOPER);
             return false;
         } catch (\dml_exception $ex) {
             // Notify it as we run here as admin, we should see everything.

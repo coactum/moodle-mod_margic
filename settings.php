@@ -25,36 +25,56 @@
 defined('MOODLE_INTERNAL') || die();
 
 if ($ADMIN->fulltree) {
-
     // Editability settings.
     $settings->add(new admin_setting_heading('margic/editability', get_string('editability', 'margic'), ''));
 
     // If default error type templates can be edited by admins or user with capability editdefaulterrortypes.
-    $settings->add(new admin_setting_configselect('margic/defaulterrortypetemplateseditable',
+    $settings->add(new admin_setting_configselect(
+        'margic/defaulterrortypetemplateseditable',
         get_string('defaulterrortypetemplateseditable', 'margic'),
-        get_string('defaulterrortypetemplateseditable_help', 'margic'), 1, ['0' => get_string('no'), '1' => get_string('yes')]));
+        get_string('defaulterrortypetemplateseditable_help', 'margic'),
+        1,
+        ['0' => get_string('no'), '1' => get_string('yes')]
+    ));
 
     // Edit all own entries.
-    $settings->add(new admin_setting_configselect('margic/editentries',
+    $settings->add(new admin_setting_configselect(
+        'margic/editentries',
         get_string('editentries', 'margic'),
-        get_string('editentries_help', 'margic'), 1, ['0' => get_string('no'), '1' => get_string('yes')]));
+        get_string('editentries_help', 'margic'),
+        1,
+        ['0' => get_string('no'), '1' => get_string('yes')]
+    ));
 
     // Change the date of any new entry.
-    $settings->add(new admin_setting_configselect('margic/editentrydates',
+    $settings->add(new admin_setting_configselect(
+        'margic/editentrydates',
         get_string('editentrydates', 'margic'),
-        get_string('editentrydates_help', 'margic'), 1, ['0' => get_string('no'), '1' => get_string('yes')]));
+        get_string('editentrydates_help', 'margic'),
+        1,
+        ['0' => get_string('no'), '1' => get_string('yes')]
+    ));
 
     // Set if entry creators should be notified about feedback for their entries by default.
-    $settings->add(new admin_setting_configselect('margic/sendgradingmessage',
+    $settings->add(new admin_setting_configselect(
+        'margic/sendgradingmessage',
         get_string('sendgradingmessagedefault', 'margic'),
-        get_string('sendgradingmessagedefault_help', 'margic'), 1, ['0' => get_string('no'), '1' => get_string('yes')]));
+        get_string('sendgradingmessagedefault_help', 'margic'),
+        1,
+        ['0' => get_string('no'), '1' => get_string('yes')]
+    ));
 
     // Appearance settings.
     $settings->add(new admin_setting_heading('margic/appearance', get_string('appearance'), ''));
 
     // Default width of annotation area.
-    $settings->add(new admin_setting_configtext('margic/annotationareawidth', get_string('annotationareawidth', 'margic'),
-        get_string('annotationareawidthall', 'margic'), 40, '/^([2-7]\d|80)+$/')); // Range allowed: 20-80.
+    $settings->add(new admin_setting_configtext(
+        'margic/annotationareawidth',
+        get_string('annotationareawidth', 'margic'),
+        get_string('annotationareawidthall', 'margic'),
+        40,
+        '/^([2-7]\d|80)+$/'
+    )); // Range allowed: 20-80.
 
     // Background color of entry and annotation area.
     $name = 'margic/entrybgc';

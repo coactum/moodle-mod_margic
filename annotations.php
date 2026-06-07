@@ -24,7 +24,7 @@
 
 use core\output\notification;
 
-require(__DIR__.'/../../config.php');
+require(__DIR__ . '/../../config.php');
 require_once($CFG->dirroot . '/mod/margic/locallib.php');
 
 global $DB, $CFG;
@@ -36,10 +36,10 @@ $id = required_param('id', PARAM_INT);
 $m = optional_param('m', null, PARAM_INT);
 
 // Param if annotations should be returned via ajax.
-$getannotations = optional_param('getannotations',  0, PARAM_INT);
+$getannotations = optional_param('getannotations', 0, PARAM_INT);
 
 // Param if annotation should be deleted.
-$deleteannotation = optional_param('deleteannotation',  0, PARAM_INT); // Annotation to be deleted.
+$deleteannotation = optional_param('deleteannotation', 0, PARAM_INT); // Annotation to be deleted.
 
 $margic = margic::get_margic_instance($id, $m, false, 'currententry', 0, 1);
 
@@ -96,7 +96,6 @@ if (has_capability('mod/margic:deleteannotations', $context) && $deleteannotatio
 
     $a = $DB->get_record('margic_annotations', ['id' => $deleteannotation, 'margic' => $moduleinstance->id]);
     if (isset($a) && ($moduleinstance->overwriteannotations || $a->userid == $USER->id)) {
-
         $DB->delete_records('margic_annotations', ['id' => $deleteannotation, 'margic' => $moduleinstance->id]);
 
         // Trigger module annotation deleted event.
@@ -117,7 +116,6 @@ require_once($CFG->dirroot . '/mod/margic/annotation_form.php');
 $mform = new mod_margic_annotation_form(null, ['types' => $margic->get_errortypes_for_form()]);
 
 if ($fromform = $mform->get_data()) {
-
     // In this case you process validated data. $mform->get_data() returns data posted in form.
     if ((isset($fromform->annotationid) && $fromform->annotationid !== 0) && isset($fromform->text)) { // Update annotation.
         $annotation = $DB->get_record('margic_annotations', ['margic' => $cm->instance, 'entry' => $fromform->entry,
@@ -154,17 +152,18 @@ if ($fromform = $mform->get_data()) {
 
         redirect($redirecturl, get_string('annotationedited', 'mod_margic'), null, notification::NOTIFY_SUCCESS);
     } else if ((!isset($fromform->annotationid) || $fromform->annotationid === 0) && isset($fromform->text)) { // New annotation.
-
-        if ($fromform->startcontainer != -1 && $fromform->endcontainer != -1 &&
-            $fromform->startoffset != -1 && $fromform->endoffset != -1) {
-
+        if (
+            $fromform->startcontainer != -1 && $fromform->endcontainer != -1 &&
+            $fromform->startoffset != -1 && $fromform->endoffset != -1
+        ) {
             if (!isset($fromform->type)) {
                 redirect($redirecturl, get_string('errtypedeleted', 'mod_margic'), null, notification::NOTIFY_ERROR);
             }
 
-            if (preg_match("/[^a-zA-Z0-9()-\/[\]]/", $fromform->startcontainer)
-                || preg_match("/[^a-zA-Z0-9()-\/[\]]/", $fromform->endcontainer)) {
-
+            if (
+                preg_match("/[^a-zA-Z0-9()-\/[\]]/", $fromform->startcontainer)
+                || preg_match("/[^a-zA-Z0-9()-\/[\]]/", $fromform->endcontainer)
+            ) {
                 redirect($redirecturl, get_string('annotationinvalid', 'mod_margic'), null, notification::NOTIFY_ERROR);
             }
 

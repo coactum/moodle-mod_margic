@@ -24,7 +24,6 @@
 namespace mod_margic\output;
 
 use mod_margic\mod_margic_annotation_form;
-
 use renderable;
 use renderer_base;
 use templatable;
@@ -38,7 +37,6 @@ use stdClass;
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class margic_entry implements renderable, templatable {
-
     /** @var object */
     protected $margic;
     /** @var object */
@@ -128,10 +126,34 @@ class margic_entry implements renderable, templatable {
      * @param string $sesskey The session key
      * @param bool $needsclasses If classes for bachgroundcolor and areawidth should be defined
      */
-    public function __construct($margic, $cm, $context, $moduleinstance, $entry, $annotationareawidth,
-        $caneditentries, $edittimestarts, $edittimenotstarted, $edittimeends, $edittimehasended, $canmanageentries,
-        $course, $singleuser, $annotationmode, $canmakeannotations, $errortypes, $readonly, $grades, $currentgroups, $allowedusers,
-        $strmanager, $gradingstr, $regradingstr, $sesskey, $needsclasses) {
+    public function __construct(
+        $margic,
+        $cm,
+        $context,
+        $moduleinstance,
+        $entry,
+        $annotationareawidth,
+        $caneditentries,
+        $edittimestarts,
+        $edittimenotstarted,
+        $edittimeends,
+        $edittimehasended,
+        $canmanageentries,
+        $course,
+        $singleuser,
+        $annotationmode,
+        $canmakeannotations,
+        $errortypes,
+        $readonly,
+        $grades,
+        $currentgroups,
+        $allowedusers,
+        $strmanager,
+        $gradingstr,
+        $regradingstr,
+        $sesskey,
+        $needsclasses
+    ) {
 
         $this->margic = $margic;
         $this->cm = $cm;
@@ -173,8 +195,18 @@ class margic_entry implements renderable, templatable {
         $data = new stdClass();
         $data->cmid = $this->cmid;
 
-        $data->entry = $this->margic->prepare_entry($this->entry, $this->strmanager, $this->currentgroups, $this->allowedusers,
-            $this->gradingstr, $this->regradingstr, $this->readonly, $this->grades, $this->canmanageentries, $this->annotationmode);
+        $data->entry = $this->margic->prepare_entry(
+            $this->entry,
+            $this->strmanager,
+            $this->currentgroups,
+            $this->allowedusers,
+            $this->gradingstr,
+            $this->regradingstr,
+            $this->readonly,
+            $this->grades,
+            $this->canmanageentries,
+            $this->annotationmode
+        );
 
         $data->entryareawidth = $this->entryareawidth;
         $data->annotationareawidth = $this->annotationareawidth;

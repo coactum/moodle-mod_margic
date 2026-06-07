@@ -35,7 +35,6 @@ require_once("$CFG->libdir/formslib.php");
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL Juv3 or later
  */
 class mod_margic_errortypes_form extends moodleform {
-
     /**
      * Define the form - called by parent constructor
      */
@@ -62,9 +61,11 @@ class mod_margic_errortypes_form extends moodleform {
             $mform->addHelpButton('typename', 'explanationtypename', 'mod_margic');
         }
 
-        MoodleQuickForm::registerElementType('colorpicker',
-        "$CFG->dirroot/mod/margic/classes/forms/mod_margic_colorpicker_form_element.php",
-        'mod_margic_colorpicker_form_element');
+        MoodleQuickForm::registerElementType(
+            'colorpicker',
+            "$CFG->dirroot/mod/margic/classes/forms/mod_margic_colorpicker_form_element.php",
+            'mod_margic_colorpicker_form_element'
+        );
 
         $mform->addElement('colorpicker', 'color', get_string('explanationhexcolor', 'mod_margic'));
 
@@ -74,8 +75,12 @@ class mod_margic_errortypes_form extends moodleform {
 
         if ($this->_customdata['mode'] == 1) { // If template error type.
             if ($this->_customdata['editdefaulttype']) {
-                $mform->addElement('advcheckbox', 'standardtype', get_string('standardtype', 'mod_margic'),
-                    get_string('explanationstandardtype', 'mod_margic'));
+                $mform->addElement(
+                    'advcheckbox',
+                    'standardtype',
+                    get_string('standardtype', 'mod_margic'),
+                    get_string('explanationstandardtype', 'mod_margic')
+                );
             } else {
                 $mform->addElement('hidden', 'standardtype', 0);
             }

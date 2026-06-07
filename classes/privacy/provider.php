@@ -32,7 +32,6 @@ use core_privacy\local\request\helper;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\transform;
 use core_privacy\local\request\contextlist;
-
 use core_privacy\local\request\user_preference_provider;
 
 /**
@@ -42,11 +41,11 @@ use core_privacy\local\request\user_preference_provider;
  * @copyright 2022 coactum GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class provider implements \core_privacy\local\metadata\provider,
-                          \core_privacy\local\request\core_userlist_provider,
-                          \core_privacy\local\request\plugin\provider,
-                          \core_privacy\local\request\user_preference_provider {
-
+class provider implements
+    \core_privacy\local\metadata\provider,
+    \core_privacy\local\request\core_userlist_provider,
+    \core_privacy\local\request\plugin\provider,
+    \core_privacy\local\request\user_preference_provider {
     /**
      * Provides the meta data stored for usera stored by mod_margic.
      *
@@ -199,7 +198,7 @@ class provider implements \core_privacy\local\metadata\provider,
         $user = $contextlist->get_user();
         $userid = $user->id;
 
-        list ($contextsql, $contextparams) = $DB->get_in_or_equal($contextlist->get_contextids(), SQL_PARAMS_NAMED);
+         [$contextsql, $contextparams] = $DB->get_in_or_equal($contextlist->get_contextids(), SQL_PARAMS_NAMED);
         $params = $contextparams;
 
         $sql = "SELECT
@@ -218,7 +217,6 @@ class provider implements \core_privacy\local\metadata\provider,
 
         if ($margics->valid()) {
             foreach ($margics as $margic) {
-
                 if ($margic) {
                     $context = \context::instance_by_id($margic->contextid);
 
@@ -234,9 +232,7 @@ class provider implements \core_privacy\local\metadata\provider,
                     self::export_entries_data($userid, $margic->id, $margic->contextid);
 
                     self::export_annotations_data($userid, $margic->id, $margic->contextid);
-
                 }
-
             }
         }
 
@@ -334,16 +330,26 @@ class provider implements \core_privacy\local\metadata\provider,
             'baseentry' => $entry->baseentry,
         ];
 
-        $entrydata->text = writer::with_context($context)->rewrite_pluginfile_urls($subcontext, 'mod_margic',
-            'entry', $entry->id, $entry->text);
+        $entrydata->text = writer::with_context($context)->rewrite_pluginfile_urls(
+            $subcontext,
+            'mod_margic',
+            'entry',
+            $entry->id,
+            $entry->text
+        );
 
         $entrydata->text = format_text($entrydata->text, $entry->format, (object) [
             'para' => false,
             'context' => $context,
         ]);
 
-        $entrydata->feedback = writer::with_context($context)->rewrite_pluginfile_urls($subcontext, 'mod_margic',
-            'feedback', $entry->id, $entry->feedback);
+        $entrydata->feedback = writer::with_context($context)->rewrite_pluginfile_urls(
+            $subcontext,
+            'mod_margic',
+            'feedback',
+            $entry->id,
+            $entry->feedback
+        );
 
         $entrydata->feedback = format_text($entrydata->feedback, $entry->formatfeedback, (object) [
             'para' => false,
@@ -357,8 +363,15 @@ class provider implements \core_privacy\local\metadata\provider,
             ->export_area_files($subcontext, 'mod_margic', 'feedback', $entry->id);
 
         // Store all ratings against this entry as the entry belongs to the user. All ratings on it are ratings of their content.
-        \core_rating\privacy\provider::export_area_ratings($userid, $context, $subcontext, 'mod_margic',
-            'entry', $entry->id, false);
+        \core_rating\privacy\provider::export_area_ratings(
+            $userid,
+            $context,
+            $subcontext,
+            'mod_margic',
+            'entry',
+            $entry->id,
+            false
+        );
     }
 
     /**
@@ -469,13 +482,21 @@ class provider implements \core_privacy\local\metadata\provider,
         }
 
         if ($margicpagecount = get_user_preferences('margic_pagecount', 0, $userid)) {
-            writer::export_user_preference('mod_margic', 'margic_pagecount', $margicpagecount,
-                get_string('privacy:metadata:preference:margic_pagecount', 'mod_margic'));
+            writer::export_user_preference(
+                'mod_margic',
+                'margic_pagecount',
+                $margicpagecount,
+                get_string('privacy:metadata:preference:margic_pagecount', 'mod_margic')
+            );
         }
 
         if ($margicactivepage = get_user_preferences('margic_activepage', 0, $userid)) {
-            writer::export_user_preference('mod_margic', 'margic_activepage', $margicactivepage,
-                get_string('privacy:metadata:preference:margic_activepage', 'mod_margic'));
+            writer::export_user_preference(
+                'mod_margic',
+                'margic_activepage',
+                $margicactivepage,
+                get_string('privacy:metadata:preference:margic_activepage', 'mod_margic')
+            );
         }
     }
 
@@ -549,8 +570,13 @@ class provider implements \core_privacy\local\metadata\provider,
                 'userid' => $userid,
             ];
 
-            \core_rating\privacy\provider::delete_ratings_select($context, 'mod_margic',
-                'entry', "IN ($entriessql)", $entriesparams);
+            \core_rating\privacy\provider::delete_ratings_select(
+                $context,
+                'mod_margic',
+                'entry',
+                "IN ($entriessql)",
+                $entriesparams
+            );
 
             // Delete all files from the entries.
             $fs = get_file_storage();
@@ -566,22 +592,18 @@ class provider implements \core_privacy\local\metadata\provider,
 
             // Delete entries for user.
             if ($DB->record_exists('margic_entries', ['margic' => $cm->instance, 'userid' => $userid])) {
-
                 $DB->delete_records('margic_entries', [
                     'margic' => $cm->instance,
                     'userid' => $userid,
                 ]);
-
             }
 
             // Delete annotations for user.
             if ($DB->record_exists('margic_annotations', ['margic' => $cm->instance, 'userid' => $userid])) {
-
                 $DB->delete_records('margic_annotations', [
                     'margic' => $cm->instance,
                     'userid' => $userid,
                 ]);
-
             }
         }
     }
@@ -597,7 +619,7 @@ class provider implements \core_privacy\local\metadata\provider,
         $context = $userlist->get_context();
         $cm = $DB->get_record('course_modules', ['id' => $context->instanceid]);
 
-        list($userinsql, $userinparams) = $DB->get_in_or_equal($userlist->get_userids(), SQL_PARAMS_NAMED);
+        [$userinsql, $userinparams] = $DB->get_in_or_equal($userlist->get_userids(), SQL_PARAMS_NAMED);
         $params = array_merge(['margicid' => $cm->instance], $userinparams);
 
         // Handle any advanced grading method data first (not implemented yet).

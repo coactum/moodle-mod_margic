@@ -26,7 +26,6 @@
  * Defines the structure step to restore one mod_margic activity.
  */
 class restore_margic_activity_structure_step extends restore_activity_structure_step {
-
     /** @var newmargicid Store id of new margic. */
     protected $newmargicid = false;
 

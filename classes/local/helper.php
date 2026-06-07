@@ -41,7 +41,6 @@ use calendar_event;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class helper {
-
     /**
      * Update the calendar entries for this margic activity.
      *
@@ -52,7 +51,7 @@ class helper {
     public static function margic_update_calendar(stdClass $margic, $cmid) {
         global $DB, $CFG;
 
-        require_once($CFG->dirroot.'/calendar/lib.php');
+        require_once($CFG->dirroot . '/calendar/lib.php');
 
         // Get CMID if not sent as part of $margic.
         if (! isset($margic->coursemodule)) {
@@ -67,12 +66,13 @@ class helper {
         // The MOOTYPER_EVENT_TYPE_OPEN event should only be an action event if no close time is specified.
         $event->type = empty($margic->timeclose) ? CALENDAR_EVENT_TYPE_ACTION : CALENDAR_EVENT_TYPE_STANDARD;
 
-        if ($event->id = $DB->get_field('event', 'id', [
+        if (
+            $event->id = $DB->get_field('event', 'id', [
             'modulename' => 'margic',
             'instance' => $margic->id,
             'eventtype' => $event->eventtype,
-        ])) {
-
+            ])
+        ) {
             if ((! empty($margic->timeopen)) && ($margic->timeopen > 0)) {
                 // Calendar event exists so update it.
                 $event->name = get_string('calendarstart', 'margic', $margic->name);
@@ -112,11 +112,13 @@ class helper {
         $event = new stdClass();
         $event->type = CALENDAR_EVENT_TYPE_ACTION;
         $event->eventtype = MARGIC_EVENT_TYPE_CLOSE;
-        if ($event->id = $DB->get_field('event', 'id', [
+        if (
+            $event->id = $DB->get_field('event', 'id', [
             'modulename' => 'margic',
             'instance' => $margic->id,
             'eventtype' => $event->eventtype,
-        ])) {
+            ])
+        ) {
             if ((! empty($margic->timeclose)) && ($margic->timeclose > 0)) {
                 // Calendar event exists so update it.
                 $event->name = get_string('calendarend', 'margic', $margic->name);
@@ -176,7 +178,7 @@ class helper {
      */
     public static function download_entries($context, $course, $margic) {
         global $CFG, $DB, $USER;
-        require_once($CFG->libdir.'/csvlib.class.php');
+        require_once($CFG->libdir . '/csvlib.class.php');
         $data = new stdClass();
         $data->margic = $margic->id;
 
@@ -191,17 +193,17 @@ class helper {
             $whichmargic = ('AND m.margic = ');
             $whichmargic .= ($margic->id);
             $csv->filename = clean_filename(get_string('exportfilenamemargicentries', 'margic'));
-            $csv->filename .= '_'.clean_filename(($course->shortname).'_');
+            $csv->filename .= '_' . clean_filename(($course->shortname) . '_');
             $csv->filename .= clean_filename(($margic->name));
         } else if (has_capability('mod/margic:addentries', $context)) {
             $whichmargic = ('AND m.margic = ');
             $whichmargic .= ($margic->id);
-            $whichuser = (' AND m.userid = '.$USER->id); // Not an admin or teacher so can only get their OWN entries.
+            $whichuser = (' AND m.userid = ' . $USER->id); // Not an admin or teacher so can only get their OWN entries.
             $csv->filename = clean_filename(get_string('exportfilenamemyentries', 'margic'));
-            $csv->filename .= '_'.clean_filename(($course->shortname).'_');
+            $csv->filename .= '_' . clean_filename(($course->shortname) . '_');
             $csv->filename .= clean_filename(($margic->name));
         }
-        $csv->filename .= '_'.clean_filename(gmdate("Ymd_Hi").'GMT.csv');
+        $csv->filename .= '_' . clean_filename(gmdate("Ymd_Hi") . 'GMT.csv');
 
         $fields = [];
         $fields = [
@@ -383,13 +385,13 @@ class helper {
         $params['userid'] = $ratingoptions->userid;
         $params['timecreated'] = $ratingoptions->timecreated;
 
-        $sql = 'SELECT * FROM '.$CFG->prefix.'rating'
-                      .' WHERE contextid =  ?'
-                        .' AND component =  ?'
-                        .' AND ratingarea =  ?'
-                        .' AND itemid =  ?'
-                        .' AND userid =  ?'
-                        .' AND timecreated = ?';
+        $sql = 'SELECT * FROM ' . $CFG->prefix . 'rating'
+                      . ' WHERE contextid =  ?'
+                        . ' AND component =  ?'
+                        . ' AND ratingarea =  ?'
+                        . ' AND itemid =  ?'
+                        . ' AND userid =  ?'
+                        . ' AND timecreated = ?';
 
         if ($rec = $DB->record_exists_sql($sql, $params)) {
             $rec = $DB->get_record_sql($sql, $params);
@@ -428,7 +430,7 @@ class helper {
                 break;
             default:
                 $aggregatestr = 'AVG'; // Default to this to avoid real breakage.
-                debugging('Incorrect call to get_aggregation_method(), incorrect aggregate method '.$aggregate, DEBUG_DEVELOPER);
+                debugging('Incorrect call to get_aggregation_method(), incorrect aggregate method ' . $aggregate, DEBUG_DEVELOPER);
         }
         return $aggregatestr;
     }
@@ -445,8 +447,16 @@ class helper {
      * @param bool $canmanageentries
      * @param bool $sendgradingmessage
      */
-    public static function margic_return_feedback_area_for_entry($cmid, $context, $course, $margic, $entry, $grades,
-        $canmanageentries, $sendgradingmessage) {
+    public static function margic_return_feedback_area_for_entry(
+        $cmid,
+        $context,
+        $course,
+        $margic,
+        $entry,
+        $grades,
+        $canmanageentries,
+        $sendgradingmessage
+    ) {
 
         $grade = false;
 
@@ -455,13 +465,15 @@ class helper {
         if ($entry) {
             global $USER, $DB, $CFG, $OUTPUT;
 
-            require_once(__DIR__ .'/../../../../lib/gradelib.php');
+            require_once(__DIR__ . '/../../../../lib/gradelib.php');
 
             if ($entry->teacher) {
                 $teacher = $DB->get_record('user', ['id' => $entry->teacher]);
                 if ($teacher) {
-                    $teacherimage = $OUTPUT->user_picture($teacher,
-                        ['courseid' => $course->id, 'link' => true, 'includefullname' => true, 'size' => 30]);
+                    $teacherimage = $OUTPUT->user_picture(
+                        $teacher,
+                        ['courseid' => $course->id, 'link' => true, 'includefullname' => true, 'size' => 30]
+                    );
                     $hasteacher = true;
                 } else {
                     $teacherimage = false;
@@ -494,18 +506,30 @@ class helper {
                 $data->{'feedback_' . $entry->id . 'format'} = $entry->formatfeedback;
                 $data->sendgradingmessage = $sendgradingmessage;
 
-                list ($editoroptions, $attachmentoptions) = self::margic_get_editor_and_attachment_options($course, $context,
-                    $margic);
+                 [$editoroptions, $attachmentoptions] = self::margic_get_editor_and_attachment_options(
+                     $course,
+                     $context,
+                     $margic
+                 );
 
                 $editoroptions['autosave'] = false;
 
-                $data = file_prepare_standard_editor($data, 'feedback_' . $entry->id, $editoroptions, $context,
-                    'mod_margic', 'feedback', $data->entry);
+                $data = file_prepare_standard_editor(
+                    $data,
+                    'feedback_' . $entry->id,
+                    $editoroptions,
+                    $context,
+                    'mod_margic',
+                    'feedback',
+                    $data->entry
+                );
 
                 $data->{'rating_' . $entry->id} = $entry->rating;
 
-                $mform = new \mod_margic_grading_form(new \moodle_url('/mod/margic/grade_entry.php',
-                    ['id' => $cmid, 'entryid' => $entry->id]), ['courseid' => $course->id, 'margic' => $margic,
+                $mform = new \mod_margic_grading_form(new \moodle_url(
+                    '/mod/margic/grade_entry.php',
+                    ['id' => $cmid, 'entryid' => $entry->id]
+                ), ['courseid' => $course->id, 'margic' => $margic,
                     'entry' => $entry, 'grades' => $grades, 'teacherimg' => $teacherimage, 'editoroptions' => $editoroptions,
                     'hasteacher' => $hasteacher, ]);
 

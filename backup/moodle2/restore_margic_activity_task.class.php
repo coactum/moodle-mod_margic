@@ -24,13 +24,12 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/mod/margic/backup/moodle2/restore_margic_stepslib.php');
+require_once($CFG->dirroot . '/mod/margic/backup/moodle2/restore_margic_stepslib.php');
 
 /**
  * Restore task for mod_margic.
  */
 class restore_margic_activity_task extends restore_activity_task {
-
     /**
      * Defines particular settings that this activity can have.
      */
@@ -74,8 +73,11 @@ class restore_margic_activity_task extends restore_activity_task {
         // Define the rules.
 
         $rules[] = new restore_decode_rule('MARGICINDEX', '/mod/margic/index.php?id=$1', 'course');
-        $rules[] = new restore_decode_rule('MARGICVIEWBYID', '/mod/margic/view.php?id=$1&userid=$2',
-            ['course_module', 'userid']);
+        $rules[] = new restore_decode_rule(
+            'MARGICVIEWBYID',
+            '/mod/margic/view.php?id=$1&userid=$2',
+            ['course_module', 'userid']
+        );
         $rules[] = new restore_decode_rule('MARGICEDITVIEW', '/mod/margic/edit.php?id=$1', ['course_module']);
         $rules[] = new restore_decode_rule('MARGICANNOTATIONSUMMARY', '/mod/margic/error_summary.php?id=$1', 'course_module');
         $rules[] = new restore_decode_rule('MARGICERRORTYPES', '/mod/margic/errortypes.php?id=$1', ['course_module']);

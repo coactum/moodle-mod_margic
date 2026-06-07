@@ -27,7 +27,6 @@
  * Define the complete structure for backup, with file and id annotations.
  */
 class backup_margic_activity_structure_step extends backup_activity_structure_step {
-
     /**
      * Defines the structure of the resulting xml file.
      *
@@ -83,7 +82,6 @@ class backup_margic_activity_structure_step extends backup_activity_structure_st
         $errortype->set_source_table('margic_errortypes', ['margic' => backup::VAR_PARENTID]);
 
         if ($userinfo) {
-
             // Entries.
             $entry->set_source_table('margic_entries', ['margic' => backup::VAR_PARENTID]);
 

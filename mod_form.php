@@ -34,7 +34,6 @@ require_once($CFG->dirroot . '/course/moodleform_mod.php');
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class mod_margic_mod_form extends moodleform_mod {
-
     /**
      * Define the margic activity settings form.
      *
@@ -71,10 +70,10 @@ class mod_margic_mod_form extends moodleform_mod {
             foreach ($errortypetemplates as $id => $type) {
                 if ($type->defaulttype == 1) {
                     $name = '<span style="margin-right: 10px; background-color: #' . $type->color . '" title="' .
-                        get_string('standardtype', 'mod_margic') .'">(S)</span>';
+                        get_string('standardtype', 'mod_margic') . '">(S)</span>';
                 } else {
                     $name = '<span style="margin-right: 10px; background-color: #' . $type->color . '" title="' .
-                        get_string('manualtype', 'mod_margic') .'">(M)</span>';
+                        get_string('manualtype', 'mod_margic') . '">(M)</span>';
                 }
 
                 if ($type->defaulttype == 1 && $strmanager->string_exists($type->name, 'mod_margic')) {
@@ -85,7 +84,6 @@ class mod_margic_mod_form extends moodleform_mod {
 
                 $mform->addElement('advcheckbox', 'errortypes[' . $id . ']', $name, ' ', ['group' => 1], [0, 1]);
             }
-
         }
 
         // Add the header for availability.

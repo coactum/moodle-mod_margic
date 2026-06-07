@@ -25,7 +25,7 @@
 use core\output\notification;
 use mod_margic\local\helper;
 
-require(__DIR__.'/../../config.php');
+require(__DIR__ . '/../../config.php');
 require_once($CFG->dirroot . '/mod/margic/grading_form.php');
 require_once($CFG->dirroot . '/mod/margic/locallib.php');
 
@@ -77,12 +77,26 @@ $data->{'feedback_' . $entry->id} = $entry->feedback;
 $data->{'feedback_' . $entry->id . 'format'} = $entry->formatfeedback;
 $data->sendgradingmessage = $moduleinstance->sendgradingmessage;
 
-list ($editoroptions, $attachmentoptions) = helper::margic_get_editor_and_attachment_options($course, $context, $moduleinstance);
+ [$editoroptions, $attachmentoptions] = helper::margic_get_editor_and_attachment_options($course, $context, $moduleinstance);
 
-$data = file_prepare_standard_editor($data, 'feedback_' . $entry->id, $editoroptions, $context,
-    'mod_margic', 'feedback', $data->entry);
-$data = file_prepare_standard_filemanager($data, 'attachment', $attachmentoptions, $context,
-    'mod_margic', 'attachment', $data->entry);
+$data = file_prepare_standard_editor(
+    $data,
+    'feedback_' . $entry->id,
+    $editoroptions,
+    $context,
+    'mod_margic',
+    'feedback',
+    $data->entry
+);
+$data = file_prepare_standard_filemanager(
+    $data,
+    'attachment',
+    $attachmentoptions,
+    $context,
+    'mod_margic',
+    'attachment',
+    $data->entry
+);
 
 $data->{'rating_' . $entry->id} = $entry->rating;
 
@@ -96,20 +110,41 @@ if ($fromform = $mform->get_data()) { // If grading form is submitted.
     // In this case you process validated data.
 
     if ($fromform->entry !== $entryid) {
-        redirect(new moodle_url('/mod/margic/view.php', ['id' => $id]), get_string('errfeedbacknotupdated', 'mod_margic'),
-            null, notification::NOTIFY_ERROR);
+        redirect(
+            new moodle_url('/mod/margic/view.php', ['id' => $id]),
+            get_string('errfeedbacknotupdated', 'mod_margic'),
+            null,
+            notification::NOTIFY_ERROR
+        );
     }
 
     if (!$fromform->{'feedback_' . $entry->id . '_editor'}) {
-        redirect(new moodle_url('/mod/margic/view.php', ['id' => $id]),
-            get_string('errnofeedbackorratingdisabled', 'mod_margic'), null, notification::NOTIFY_ERROR);
+        redirect(
+            new moodle_url('/mod/margic/view.php', ['id' => $id]),
+            get_string('errnofeedbackorratingdisabled', 'mod_margic'),
+            null,
+            notification::NOTIFY_ERROR
+        );
     }
 
-    $fromform = file_postupdate_standard_editor($fromform, 'feedback_' . $entry->id, $editoroptions, $editoroptions['context'],
-        'mod_margic', 'feedback', $entry->id);
+    $fromform = file_postupdate_standard_editor(
+        $fromform,
+        'feedback_' . $entry->id,
+        $editoroptions,
+        $editoroptions['context'],
+        'mod_margic',
+        'feedback',
+        $entry->id
+    );
 
-    $newfeedback = file_rewrite_pluginfile_urls($fromform->{'feedback_' . $entry->id}, 'pluginfile.php', $context->id,
-        'mod_margic', 'feedback', $entry->id);
+    $newfeedback = file_rewrite_pluginfile_urls(
+        $fromform->{'feedback_' . $entry->id},
+        'pluginfile.php',
+        $context->id,
+        'mod_margic',
+        'feedback',
+        $entry->id
+    );
 
     $newfeedback = format_text($newfeedback, $fromform->{'feedback_' . $entry->id . '_editor'}['format'], ['para' => false]);
 
@@ -142,8 +177,12 @@ if ($fromform = $mform->get_data()) { // If grading form is submitted.
         $entry->timemarked = $timenow;
 
         if (!$DB->update_record("margic_entries", $entry)) {
-            redirect(new moodle_url('/mod/margic/view.php', ['id' => $id]), get_string('errfeedbacknotupdated', 'mod_margic'),
-                null, notification::NOTIFY_ERROR);
+            redirect(
+                new moodle_url('/mod/margic/view.php', ['id' => $id]),
+                get_string('errfeedbacknotupdated', 'mod_margic'),
+                null,
+                notification::NOTIFY_ERROR
+            );
         }
 
         if ($moduleinstance->assessed != 0) {
@@ -224,16 +263,34 @@ if ($fromform = $mform->get_data()) { // If grading form is submitted.
         }
 
         // Redirect after updated from feedback and grades.
-        redirect(new moodle_url('/mod/margic/view.php',
-            ['id' => $id, 'focusgradingform' => $entry->id, 'annotationmode' => 1]),
-            get_string('feedbackupdated', 'mod_margic'), null, notification::NOTIFY_SUCCESS);
+        redirect(
+            new moodle_url(
+                '/mod/margic/view.php',
+                ['id' => $id, 'focusgradingform' => $entry->id, 'annotationmode' => 1]
+            ),
+            get_string('feedbackupdated', 'mod_margic'),
+            null,
+            notification::NOTIFY_SUCCESS
+        );
     } else {
-        redirect(new moodle_url('/mod/margic/view.php',
-            ['id' => $id, 'focusgradingform' => $entry->id, 'annotationmode' => 1]),
-            get_string('errfeedbacknotupdated', 'mod_margic'), null, notification::NOTIFY_ERROR);
+        redirect(
+            new moodle_url(
+                '/mod/margic/view.php',
+                ['id' => $id, 'focusgradingform' => $entry->id, 'annotationmode' => 1]
+            ),
+            get_string('errfeedbacknotupdated', 'mod_margic'),
+            null,
+            notification::NOTIFY_ERROR
+        );
     }
 } else {
-    redirect(new moodle_url('/mod/margic/view.php',
-        ['id' => $id, 'focusgradingform' => $entry->id, 'annotationmode' => 1]),
-        get_string('errfeedbacknotupdated', 'mod_margic'), null, notification::NOTIFY_ERROR);
+    redirect(
+        new moodle_url(
+            '/mod/margic/view.php',
+            ['id' => $id, 'focusgradingform' => $entry->id, 'annotationmode' => 1]
+        ),
+        get_string('errfeedbacknotupdated', 'mod_margic'),
+        null,
+        notification::NOTIFY_ERROR
+    );
 }

@@ -33,7 +33,6 @@ use mod_margic\local\helper;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class margic {
-
     /** @var context the context of the course module for this margic instance */
     private $context;
 
@@ -103,10 +102,10 @@ class margic {
         global $DB, $USER;
 
         if (isset($id) && $id != 0) {
-            list ($course, $cm) = get_course_and_cm_from_cmid($id, 'margic');
+             [$course, $cm] = get_course_and_cm_from_cmid($id, 'margic');
             $context = context_module::instance($cm->id);
         } else if (isset($d)) {
-            list ($course, $cm) = get_course_and_cm_from_instance($m, 'margic');
+             [$course, $cm] = get_course_and_cm_from_instance($m, 'margic');
             $context = context_module::instance($cm->id);
         } else {
             throw new moodle_exception('missingparameter');
@@ -128,23 +127,22 @@ class margic {
         $this->errortypes = (array) $DB->get_records_select('margic_errortypes', $select, null, 'priority ASC');
 
         foreach ($this->annotations as $key => $annotation) {
-
             // Check if annotation creation time should be shown.
             if (!has_capability('mod/margic:viewotherusersannotationtimes', $context) && $annotation->userid != $USER->id) {
                 $this->annotations[$key]->timecreated = false;
                 $this->annotations[$key]->timemodified = false;
             }
 
-            if (!array_key_exists($annotation->type, $this->errortypes) &&
-                $DB->record_exists('margic_errortypes', ['id' => $annotation->type])) {
-
+            if (
+                !array_key_exists($annotation->type, $this->errortypes) &&
+                $DB->record_exists('margic_errortypes', ['id' => $annotation->type])
+            ) {
                 $this->errortypes[$annotation->type] = $DB->get_record('margic_errortypes', ['id' => $annotation->type]);
             }
 
             if (isset($this->errortypes[$annotation->type])) {
                 $this->annotations[$key]->color = $this->errortypes[$annotation->type]->color;
             }
-
         }
 
         if ($canmanageentries = has_capability('mod/margic:manageentries', $context)) {
@@ -200,12 +198,10 @@ class margic {
                     $this->sortmode = get_string('currententry', 'mod_margic');
                     $sortoptions = 'timemodified DESC';
             }
-
         }
 
         // Page selector.
         if ($pagecount !== 0) {
-
             require_sesskey();
 
             if ($pagecount < 2) {
@@ -227,7 +223,6 @@ class margic {
 
         // Active page.
         if ($page) {
-
             if ($page < 1) {
                 $page = 1;
             }
@@ -243,12 +238,10 @@ class margic {
             $this->page = $oldpage;
         } else {
             $this->page = 1;
-
         }
 
         // Get entries.
         if ($this->mode == 'allentries') {
-
             if ($userid && $userid != 0) {
                 $this->entries = $DB->get_records('margic_entries', ['margic' => $this->instance->id, 'userid' => $userid,
                     'baseentry' => null, ], $sortoptions);
@@ -256,7 +249,6 @@ class margic {
                 $this->entries = $DB->get_records('margic_entries', ['margic' => $this->instance->id,
                     'baseentry' => null, ], $sortoptions);
             }
-
         } else if ($this->mode == 'ownentries') {
             $this->entries = $DB->get_records('margic_entries', ['margic' => $this->instance->id, 'userid' => $USER->id,
                 'baseentry' => null, ], $sortoptions);
@@ -404,7 +396,6 @@ class margic {
     public function get_entries_grouped_by_pagecount() {
         // Group entries by pagecount.
         if ($this->pagecount != 0) {
-
             $groupedentries = array_chunk($this->entries, $this->pagecount, true);
             array_unshift($groupedentries, "temp");
             unset($groupedentries[0]);
@@ -472,12 +463,12 @@ class margic {
             $obj = new stdClass();
 
             if ($number == $this->pagecount) {
-                $obj->option = 'value='.$number.' selected';
+                $obj->option = 'value=' . $number . ' selected';
                 $obj->text = $number;
 
                 $match = true;
             } else {
-                $obj->option = 'value='.$number;
+                $obj->option = 'value=' . $number;
                 $obj->text = $number;
             }
 
@@ -511,8 +502,18 @@ class margic {
      * @param object $annotationmode If annotationmode is activated.
      * @return object The entry or false if user is not allowed to see entry.
      */
-    public function prepare_entry($entry, $strmanager, $currentgroups, $allowedusers, $gradingstr, $regradingstr, $readonly,
-        $grades, $canmanageentries, $annotationmode) {
+    public function prepare_entry(
+        $entry,
+        $strmanager,
+        $currentgroups,
+        $allowedusers,
+        $gradingstr,
+        $regradingstr,
+        $readonly,
+        $grades,
+        $canmanageentries,
+        $annotationmode
+    ) {
 
         global $DB, $USER, $CFG, $OUTPUT;
 
@@ -531,16 +532,19 @@ class margic {
 
         if (!$currentgroups || ($allowedusers && in_array($entry->user, $allowedusers))) {
             // Get child entries for entry.
-            $entry->childentries = $DB->get_records('margic_entries',
-                ['margic' => $this->instance->id, 'baseentry' => $entry->id], 'timecreated DESC');
+            $entry->childentries = $DB->get_records(
+                'margic_entries',
+                ['margic' => $this->instance->id, 'baseentry' => $entry->id],
+                'timecreated DESC'
+            );
 
             $revisionnr = count($entry->childentries);
             foreach ($entry->childentries as $ci => $childentry) {
-
                 // Check if child entry creation time should be shown.
-                if (!has_capability('mod/margic:viewotherusersentrytimes', $this->context) &&
-                    $childentry->userid != $USER->id) {
-
+                if (
+                    !has_capability('mod/margic:viewotherusersentrytimes', $this->context) &&
+                    $childentry->userid != $USER->id
+                ) {
                     $entry->childentries[$ci]->timecreated = false;
                     $entry->childentries[$ci]->timemodified = false;
                 }
@@ -600,12 +604,22 @@ class margic {
             require_once($CFG->dirroot . '/mod/margic/annotation_form.php');
             require_once($CFG->dirroot . '/mod/margic/classes/local/helper.php');
 
-            $entry->user->userpicture = $OUTPUT->user_picture($entry->user,
-            ['courseid' => $this->course->id, 'link' => true, 'includefullname' => true, 'size' => 25]);
+            $entry->user->userpicture = $OUTPUT->user_picture(
+                $entry->user,
+                ['courseid' => $this->course->id, 'link' => true, 'includefullname' => true, 'size' => 25]
+            );
 
             // Add feedback area to entry.
-            $entry->gradingform = helper::margic_return_feedback_area_for_entry($this->cm->id, $this->context,
-                $this->course, $this->instance, $entry, $grades, $canmanageentries, $this->instance->sendgradingmessage);
+            $entry->gradingform = helper::margic_return_feedback_area_for_entry(
+                $this->cm->id,
+                $this->context,
+                $this->course,
+                $this->instance,
+                $entry,
+                $grades,
+                $canmanageentries,
+                $this->instance->sendgradingmessage
+            );
 
             $entry = $this->prepare_entry_annotations($entry, $strmanager, $annotationmode, $readonly);
 
@@ -628,11 +642,12 @@ class margic {
         global $DB, $USER, $CFG, $OUTPUT;
 
         // Get annotations for entry.
-        $entry->annotations = array_values($DB->get_records('margic_annotations',
-            ['margic' => $this->cm->instance, 'entry' => $entry->id]));
+        $entry->annotations = array_values($DB->get_records(
+            'margic_annotations',
+            ['margic' => $this->cm->instance, 'entry' => $entry->id]
+        ));
 
         foreach ($entry->annotations as $key => $annotation) {
-
             // Check if annotation creation time should be shown.
             if (!has_capability('mod/margic:viewotherusersannotationtimes', $this->context) && $annotation->userid != $USER->id) {
                 $entry->annotations[$key]->timecreated = false;
@@ -652,10 +667,11 @@ class margic {
                 }
             }
 
-            if (has_capability('mod/margic:makeannotations', $this->context) &&
+            if (
+                has_capability('mod/margic:makeannotations', $this->context) &&
                 ($this->instance->overwriteannotations || $annotation->userid == $USER->id) &&
-                !$readonly) {
-
+                !$readonly
+            ) {
                 $entry->annotations[$key]->canbeedited = true;
             } else {
                 $entry->annotations[$key]->canbeedited = false;
@@ -664,10 +680,11 @@ class margic {
             if ($annotationmode) {
                 // Add annotater images to annotations.
                 $annotater = $DB->get_record('user', ['id' => $annotation->userid]);
-                $annotaterimage = $OUTPUT->user_picture($annotater,
-                    ['courseid' => $this->course->id, 'link' => true, 'includefullname' => true, 'size' => 20]);
+                $annotaterimage = $OUTPUT->user_picture(
+                    $annotater,
+                    ['courseid' => $this->course->id, 'link' => true, 'includefullname' => true, 'size' => 20]
+                );
                 $entry->annotations[$key]->userpicturestr = $annotaterimage;
-
             } else {
                 $entry->annotationform = false;
             }
@@ -685,8 +702,10 @@ class margic {
             // Add annotation form.
             if (!$readonly) {
                 require_once($CFG->dirroot . '/mod/margic/annotation_form.php');
-                $mform = new mod_margic_annotation_form(new moodle_url('/mod/margic/annotations.php', ['id' => $this->cm->id]),
-                    ['types' => $this->get_errortypes_for_form()]);
+                $mform = new mod_margic_annotation_form(
+                    new moodle_url('/mod/margic/annotations.php', ['id' => $this->cm->id]),
+                    ['types' => $this->get_errortypes_for_form()]
+                );
                 // Set default data.
                 $mform->set_data(['id' => $this->cm->id, 'entry' => $entry->id]);
 

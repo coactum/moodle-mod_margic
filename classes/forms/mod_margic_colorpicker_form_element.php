@@ -38,10 +38,10 @@ class mod_margic_colorpicker_form_element extends HTML_QuickForm_text {
     public $forceltr = false;
 
     /** @var _helpbutton String html for help button, if empty then no help. */
-    public $_helpbutton = '';
+    public $_helpbutton = ''; // phpcs:ignore PSR2.Classes.PropertyDeclaration.Underscore -- Core override.
 
     /** @var _hiddenlabel If true label will be hidden. */
-    public $_hiddenlabel = false;
+    public $_hiddenlabel = false; // phpcs:ignore PSR2.Classes.PropertyDeclaration.Underscore -- Core override.
 
     /**
      * Constructor.
@@ -125,7 +125,7 @@ class mod_margic_colorpicker_form_element extends HTML_QuickForm_text {
                 </div>';
 
         if ($this->_hiddenlabel) {
-            return '<label class="accesshide" for="'.$this->getAttribute('id').'" >'.
+            return '<label class="accesshide" for="' . $this->getAttribute('id') . '" >' .
                         $this->getLabel() . '</label>' . $html;
         } else {
              return $html;

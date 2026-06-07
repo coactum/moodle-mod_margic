@@ -1,5 +1,12 @@
 ## Changelog ##
 
+- [1.4.2]:
+    - [Chore]: Fixed all CI pipeline failures introduced by the Moodle 5.x / moodle-plugin-ci v4 toolchain. No functional changes.
+        - Applied the stricter PSR-12 / Moodle coding-standard formatting across the PHP files (autofixed via phpcbf), so `codechecker --max-warnings 0` passes again.
+        - Sorted the language string keys in `lang/en/margic.php` and `lang/de/margic.php` alphabetically to satisfy the `moodle.Files.LangFilesOrdering` sniff (string values are unchanged).
+        - Annotated the `$_helpbutton` / `$_hiddenlabel` core form-element overrides in the colorpicker element with `phpcs:ignore` instead of renaming them.
+        - Rebuilt the AMD modules in `amd/build/` with the current Moodle grunt/rollup toolchain (the committed build was stale).
+
 - [1.4.1]:
     - [Security]: Removed the `RISK_XSS` flag from the `mod/margic:addentries` capability. Entry text submitted by participants is always run through `format_text()` with HTML cleaning enabled before it is stored, so participants cannot inject scripts. Moodle therefore no longer shows an XSS warning when assigning this capability to the student role (the `RISK_SPAM` flag is kept).
     - [Security]: Set the entry editor option `trusttext` to `false`. Entry text is always cleaned, so trusted (unfiltered) text was never honoured for entries anyway; making this explicit ensures the no-XSS guarantee also holds if the cleaning is ever moved to display time.

@@ -30,7 +30,7 @@ global $CFG;
 
 require_once("$CFG->libdir/formslib.php");
 require_once($CFG->dirroot . '/mod/margic/classes/local/helper.php');
-require_once(__DIR__ .'/../../lib/gradelib.php');
+require_once(__DIR__ . '/../../lib/gradelib.php');
 
 /**
  * The form for grading and rating entries in mod_margic.
@@ -40,7 +40,6 @@ require_once(__DIR__ .'/../../lib/gradelib.php');
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class mod_margic_grading_form extends moodleform {
-
     /**
      * Define the form - called by parent constructor
      */
@@ -65,18 +64,23 @@ class mod_margic_grading_form extends moodleform {
         $attr = [];
 
         if ($this->_customdata['margic']->assessed != 0) { // Append grading area only when grading is not disabled.
-
-            $gradinginfo = grade_get_grades($this->_customdata['courseid'], 'mod', 'margic',
-                $this->_customdata['margic']->id, $this->_customdata['entry']->userid);
+            $gradinginfo = grade_get_grades(
+                $this->_customdata['courseid'],
+                'mod',
+                'margic',
+                $this->_customdata['margic']->id,
+                $this->_customdata['entry']->userid
+            );
 
             $userfinalgrade = $gradinginfo->items[0]->grades[$this->_customdata['entry']->userid];
             $currentuserrating = $userfinalgrade->str_long_grade;
 
             // If margic already graded.
             if (!empty($gradinginfo->items[0]->grades[$this->_customdata['entry']->userid]->str_long_grade)) {
-                if ($gradingdisabled = $gradinginfo->items[0]->grades[$this->_customdata['entry']->userid]->locked
-                    || $gradinginfo->items[0]->grades[$this->_customdata['entry']->userid]->overridden) {
-
+                if (
+                    $gradingdisabled = $gradinginfo->items[0]->grades[$this->_customdata['entry']->userid]->locked
+                    || $gradinginfo->items[0]->grades[$this->_customdata['entry']->userid]->overridden
+                ) {
                     // If the grade was modified from the gradebook disable editing.
                     global $CFG;
 
@@ -95,30 +99,45 @@ class mod_margic_grading_form extends moodleform {
             }
 
             $aggregatestr = helper::get_margic_aggregation($this->_customdata['margic']->assessed) . ' '
-                . get_string('forallentries', 'margic') . ' '. $userfullname;
+                . get_string('forallentries', 'margic') . ' ' . $userfullname;
 
-            $mform->addElement('static', 'currentuserrating', $aggregatestr.': ', $currentuserrating);
+            $mform->addElement('static', 'currentuserrating', $aggregatestr . ': ', $currentuserrating);
 
             $mform->addElement('html', '<hr>');
 
             if (isset($this->_customdata['hasteacher'])) {
-
                 if ($this->_customdata['entry']->timemarked) {
-                    $mform->addElement('static', 'currentuserrating',
-                        get_string('grader', 'mod_margic'), $this->_customdata['teacherimg'] . ' - '
-                        . userdate($this->_customdata['entry']->timemarked));
-
+                    $mform->addElement(
+                        'static',
+                        'currentuserrating',
+                        get_string('grader', 'mod_margic'),
+                        $this->_customdata['teacherimg'] . ' - '
+                        . userdate($this->_customdata['entry']->timemarked)
+                    );
                 } else {
-                    $mform->addElement('static', 'currentuserrating',
-                        get_string('grader', 'mod_margic'), $this->_customdata['teacherimg']);
+                    $mform->addElement(
+                        'static',
+                        'currentuserrating',
+                        get_string('grader', 'mod_margic'),
+                        $this->_customdata['teacherimg']
+                    );
                 }
 
-                $mform->addElement('static', 'savedrating', get_string('savedrating', 'mod_margic'),
-                    $this->_customdata['entry']->rating);
+                $mform->addElement(
+                    'static',
+                    'savedrating',
+                    get_string('savedrating', 'mod_margic'),
+                    $this->_customdata['entry']->rating
+                );
             }
 
-            $select = $mform->addElement('select', 'rating_' . $this->_customdata['entry']->id,
-                get_string('newrating', 'margic') . ': ', $this->_customdata['grades'], $attr);
+            $select = $mform->addElement(
+                'select',
+                'rating_' . $this->_customdata['entry']->id,
+                get_string('newrating', 'margic') . ': ',
+                $this->_customdata['grades'],
+                $attr
+            );
             $mform->setType('rating_' . $this->_customdata['entry']->id, PARAM_INT);
             $mform->setDefault('rating_' . $this->_customdata['entry']->id, 0);
 
@@ -132,17 +151,19 @@ class mod_margic_grading_form extends moodleform {
         if ($feedbackdisabled) { // If override is set in the gradebook show feedback from there and dont show editor.
             $mform->addElement('static', 'gradebookfeedback', get_string('feedbackingradebook', 'margic')
                 . ': ', $gradebooklinkfeedback);
-
         } else {
-            $mform->addElement('editor', 'feedback_' . $this->_customdata['entry']->id . '_editor',
-                get_string('feedback', 'mod_margic'), null, $this->_customdata['editoroptions']);
+            $mform->addElement(
+                'editor',
+                'feedback_' . $this->_customdata['entry']->id . '_editor',
+                get_string('feedback', 'mod_margic'),
+                null,
+                $this->_customdata['editoroptions']
+            );
             $mform->setType('feedback_' . $this->_customdata['entry']->id . '_editor', PARAM_RAW);
 
             $mform->addElement('selectyesno', 'sendgradingmessage', get_string('sendgradingmessage', 'margic'));
 
             $this->add_action_buttons();
         }
-
     }
 }
-

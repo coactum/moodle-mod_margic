@@ -52,8 +52,12 @@ function margic_add_instance($margic) {
 
     // Add expected completion date.
     if (!empty($margic->completionexpected)) {
-        \core_completion\api::update_completion_date_event($margic->coursemodule,
-            'margic', $margic->id, $margic->completionexpected);
+        \core_completion\api::update_completion_date_event(
+            $margic->coursemodule,
+            'margic',
+            $margic->id,
+            $margic->completionexpected
+        );
     }
 
     margic_grade_item_update($margic);
@@ -352,7 +356,6 @@ function margic_print_recent_activity($course, $viewfullnames, $timestart) {
     echo $OUTPUT->heading(get_string('newmargicentries', 'margic') . ':', 6);
 
     foreach ($show as $entry) {
-
         $cm = $modinfo->get_cm($entry->cmid);
         $context = context_module::instance($entry->cmid);
         $link = $CFG->wwwroot . '/mod/margic/view.php?id=' . $cm->id;
@@ -375,8 +378,15 @@ function margic_print_recent_activity($course, $viewfullnames, $timestart) {
  * @param int $groupid Optional group id
  * @return void
  */
-function margic_get_recent_mod_activity(&$activities, &$index, $timestart, $courseid,
-    $cmid, $userid=0, $groupid=0) {
+function margic_get_recent_mod_activity(
+    &$activities,
+    &$index,
+    $timestart,
+    $courseid,
+    $cmid,
+    $userid = 0,
+    $groupid = 0
+) {
 
     global $CFG, $COURSE, $USER, $DB;
 
@@ -425,7 +435,9 @@ function margic_get_recent_mod_activity(&$activities, &$index, $timestart, $cour
         '  WHERE e.timecreated > :timestart AND
             m.id = :cminstance
             ' . $userselect . ' ' . $groupselect .
-            ' ORDER BY e.timecreated DESC', $params);
+        ' ORDER BY e.timecreated DESC',
+        $params
+    );
 
     if (!$entries) {
          return;
@@ -477,7 +489,7 @@ function margic_get_recent_mod_activity(&$activities, &$index, $timestart, $cour
     }
 
     if ($grader) {
-        require_once($CFG->libdir.'/gradelib.php');
+        require_once($CFG->libdir . '/gradelib.php');
         $userids = [];
         foreach ($show as $id => $entry) {
             $userids[] = $entry->userid;
@@ -615,12 +627,11 @@ function margic_reset_userdata($data) {
 
     // Delete entries and their annotations, files and ratings.
     if (!empty($data->reset_margic_all)) {
-
         $fs = get_file_storage();
 
         // Get ratings manager.
         $rm = new rating_manager();
-        $ratingdeloptions = new stdClass;
+        $ratingdeloptions = new stdClass();
         $ratingdeloptions->component = 'mod_margic';
         $ratingdeloptions->ratingarea = 'entry';
 
@@ -658,19 +669,22 @@ function margic_reset_userdata($data) {
     }
 
     // Delete errortypes.
-    if (!empty($data->reset_margic_errortypes) ) {
+    if (!empty($data->reset_margic_errortypes)) {
         $DB->delete_records_select('margic_errortypes', "margic IN ($sql)", $params);
 
         $status[] = ['component' => $modulename, 'item' => get_string('errortypesdeleted', 'margic'), 'error' => false];
-
     }
 
     // Updating dates - shift may be negative too.
     if ($data->timeshift) {
         // Any changes to the list of dates that needs to be rolled should be same during course restore and course reset.
         // See MDL-9367.
-        shift_course_mod_dates('margic', ['assesstimestart', 'assesstimefinish', 'timeopen', 'timeclose'],
-            $data->timeshift, $data->courseid);
+        shift_course_mod_dates(
+            'margic',
+            ['assesstimestart', 'assesstimefinish', 'timeopen', 'timeclose'],
+            $data->timeshift,
+            $data->courseid
+        );
         $status[] = ['component' => $modulename, 'item' => get_string('datechanged'), 'error' => false];
     }
 
