@@ -59,7 +59,7 @@ $capabilities = [
     ],
 
     'mod/margic:addentries' => [
-        'riskbitmask' => RISK_XSS | RISK_SPAM,
+        'riskbitmask' => RISK_SPAM,
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => [

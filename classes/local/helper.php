@@ -304,7 +304,7 @@ class helper {
 
         // For the editor.
         $editoroptions = [
-            'trusttext' => true,
+            'trusttext' => false,
             'maxfiles' => EDITOR_UNLIMITED_FILES,
             'maxbytes' => $maxbytes,
             'context' => $context,
